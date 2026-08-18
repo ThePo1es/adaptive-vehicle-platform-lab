@@ -4,6 +4,11 @@
 
 | Requirement | Design / ADR | Implementation | Verification | Result |
 | --- | --- | --- | --- | --- |
+| REQ-RTOS-001 | Planned | Planned | Planned | Not run |
+| REQ-RTOS-002 | Planned | Planned | Planned | Not run |
+| REQ-RTOS-003 | Planned | Planned | Planned | Not run |
+| REQ-RTOS-004 | Planned | Planned | Planned | Not run |
+| REQ-SAFE-001 | Planned | Planned | Planned | Not run |
 | REQ-COM-001 | Planned | Planned | Planned | Not run |
 | REQ-COM-002 | Planned | Planned | Planned | Not run |
 | REQ-COM-003 | Planned | Planned | Planned | Not run |
@@ -15,13 +20,24 @@
 | REQ-HEALTH-001 | Planned | Planned | Planned | Not run |
 | REQ-DIAG-001 | Planned | Planned | Planned | Not run |
 | REQ-DIAG-002 | Planned | Planned | Planned | Not run |
+| REQ-DIAG-003 | Planned | Planned | Planned | Not run |
 | REQ-CAN-001 | Planned | Planned | Planned | Not run |
 | REQ-CAN-002 | Planned | Planned | Planned | Not run |
+| REQ-CAN-003 | Planned | Planned | Planned | Not run |
+| REQ-BOOT-001 | Planned | Planned | Planned | Not run |
+| REQ-BOOT-002 | Planned | Planned | Planned | Not run |
+| REQ-BOOT-003 | Planned | Planned | Planned | Not run |
 | REQ-UCM-001 | Planned | Planned | Planned | Not run |
 | REQ-UCM-002 | Planned | Planned | Planned | Not run |
 | REQ-UCM-003 | Planned | Planned | Planned | Not run |
 | REQ-UCM-004 | Planned | Planned | Planned | Not run |
 | REQ-UCM-005 | Planned | Planned | Planned | Not run |
+| REQ-ARCH-001 | Planned | Planned | Planned | Not run |
+| REQ-ARCH-002 | Planned | Planned | Planned | Not run |
+| REQ-ARCH-003 | Planned | Planned | Planned | Not run |
+| REQ-ARCH-004 | Planned | Planned | Planned | Not run |
+| REQ-ARCH-005 | Planned | Planned | Planned | Not run |
+| REQ-TOOL-001 | Planned | Planned | Planned | Not run |
 | REQ-OBS-001 | Planned | Planned | Planned | Not run |
 | REQ-PERF-001 | Planned | Planned | Planned | Not run |
 | REQ-QUAL-001 | Planned | Planned | Planned | Not run |
@@ -34,4 +50,3 @@
 ```
 
 `Result`에는 단순히 Pass를 쓰지 말고 검증한 commit SHA 또는 CI run 링크를 함께 둡니다.
-

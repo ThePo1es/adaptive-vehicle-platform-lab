@@ -41,22 +41,26 @@ git clone git@github.com:ThePo1es/adaptive-vehicle-platform-lab.git
 
 | Label | Use |
 | --- | --- |
-| `study` | 주차별 학습 질문과 노트 |
+| `study` | Gate 내부의 주차별 학습 질문과 노트 |
 | `experiment` | 가설·실험·측정 |
 | `project` | 구현 작업 |
+| `mastery-gate` | Gate 승급 시험과 재시험 |
+| `expert-cycle` | G11 이후 유지보수·이식·연구·교육 증거 |
 | `documentation` | 아키텍처·요구사항·보고서 |
 | `blocked` | 외부 조건 때문에 진행 불가 |
 | `safety-review` | 실차·벤치·민감 데이터 검토 필요 |
 
-Milestone은 `Phase 1 — Foundation`부터 `Phase 6 — Portfolio`까지 여섯 개로 만듭니다. 각 Study/Project 이슈에 해당 milestone을 지정합니다.
+Milestone은 `G0 — Engineering Baseline`부터 `G11 — Architecture Capstone`까지 만듭니다. 각 Study/Experiment/Project 이슈에 현재 Gate milestone을 지정하고, 기간이 끝났다는 이유로 닫지 않습니다.
+
+G11 통과 뒤에는 `E1 — Maintainer`부터 `E4 — Architecture/Teaching` milestone을 필요할 때 추가합니다. Expert cycle은 선택 subsystem을 정한 뒤 시작합니다.
 
 GitHub Project를 추가한다면 Board view 하나로 충분합니다.
 
 ```text
-Backlog → This week → In progress → Evidence review → Done
+Backlog → This week → In progress → Evidence review → Gate review → Done
 ```
 
-`Done`에는 PR, 학습 노트, 테스트/측정 증거가 모두 연결된 이슈만 이동합니다. 일정만 끝난 이슈는 `Done`이 아닙니다.
+`Done`에는 PR, 학습 노트, 테스트/측정 증거가 모두 연결된 이슈만 이동합니다. Gate milestone은 `Mastery gate review`까지 통과해야 닫습니다.
 
 ## 4. 매주 반복할 명령
 
@@ -64,13 +68,13 @@ Backlog → This week → In progress → Evidence review → Done
 git switch main
 git pull --ff-only
 
-./scripts/new-study-log.sh 2 "POSIX process lifecycle"
-git switch -c study/w02-posix-process-lifecycle
+./scripts/new-study-log.sh 2 "C integer conversions and bit extraction"
+git switch -c study/g01-w02-integer-conversions
 
 # 학습·실험·코드 작성 후
 ./scripts/check_repo.sh
 git add .
-git commit -m "study(w02): document POSIX process lifecycle"
+git commit -m "study(g01-w02): test C integer conversions"
 git push -u origin HEAD
 ```
 
@@ -79,7 +83,7 @@ GitHub에서 PR을 열고 템플릿의 확인 항목을 채운 뒤 squash merge�
 ## 5. 커밋 규칙
 
 ```text
-study(wNN): 학습 내용
+study(gNN-wNN): 학습 내용
 feat(pNN): 프로젝트 기능
 test(pNN): 테스트 또는 장애 주입
 docs: 문서·아키텍처·측정 결과
@@ -90,11 +94,13 @@ chore: 빌드·CI·저장소 관리
 예시:
 
 ```text
-study(w05): compare UDP and multicast failure behavior
+study(g01-w05): compare defined and undefined bit extraction
 feat(p02): publish vehicle speed events through SOME/IP
 test(p04): reject rollback package after interrupted update
 docs: add p99 event latency report
 ```
+
+Gate를 통과할 때는 새 `Mastery gate review` 이슈를 만들고 [평가 기준](ASSESSMENTS.md)과 [review template](docs/templates/mastery-review.md)의 증거를 연결합니다. 2주·6주·12주·6개월 재시험도 같은 milestone 또는 후속 이슈로 예약합니다.
 
 ## 6. 올리면 안 되는 것
 

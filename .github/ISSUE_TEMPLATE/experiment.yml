@@ -17,7 +17,7 @@ body:
     id: requirement
     attributes:
       label: Requirement or roadmap item
-      placeholder: REQ-COM-002 / Week 07
+      placeholder: REQ-RTOS-002 / G5 / Week 31
     validations:
       required: true
 
@@ -56,4 +56,3 @@ body:
           required: true
         - label: 원본 capture가 필요하면 private 경로에 보관하고 Git에 커밋하지 않는다.
           required: true
-

@@ -28,4 +28,8 @@ adr-0003-update-slot-layout.md
 | ADR-0003 | heartbeat transport와 virtual-time test strategy | Proposed |
 | ADR-0004 | A/B slot metadata와 transaction journal 저장 방식 | Proposed |
 | ADR-0005 | SOME/IP adapter와 domain model 분리 | Proposed |
-
+| ADR-0006 | MCU task/ISR와 Linux process 사이 timing budget 분할 | Proposed |
+| ADR-0007 | bus-off·watchdog·process crash의 cross-node state propagation | Proposed |
+| ADR-0008 | MCU/Linux version compatibility와 coordinated rollback | Proposed |
+| ADR-0009 | simulator와 hardware에서 재사용할 transport/clock contract | Proposed |
+| ADR-0010 | Classic-like adapter와 Adaptive domain model의 경계 | Proposed |

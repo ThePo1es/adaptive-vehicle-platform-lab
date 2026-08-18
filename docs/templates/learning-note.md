@@ -3,10 +3,12 @@
 ## Metadata
 
 - Date:
+- Current gate:
 - Related issue:
 - Related project:
 - Baseline/spec version:
 - Environment:
+- AI assistance used (if any):
 
 ## Questions
 
@@ -55,4 +57,3 @@
 ## Next action
 
 - [ ] 
-

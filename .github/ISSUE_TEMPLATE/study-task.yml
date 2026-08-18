@@ -1,9 +1,29 @@
 name: Study task
-description: 한 주의 학습 질문, 근거, 실험, 통과 기준을 정의합니다.
+description: 현재 Gate 안에서 한 주의 질문, 근거, 실험과 완료 조건을 정의합니다.
 title: "[Study WNN] "
 labels:
   - study
 body:
+  - type: dropdown
+    id: gate
+    attributes:
+      label: Current gate
+      options:
+        - G0 Engineering Baseline
+        - G1 Systems C
+        - G2 Embedded C++
+        - G3 ARM and LLVM
+        - G4 Bare-metal MCU
+        - G5 RTOS ECU
+        - G6 Classic AUTOSAR concepts
+        - G7 Linux/QNX platform
+        - G8 Vehicle networks
+        - G9 Adaptive platform
+        - G10 Security and resilience
+        - G11 Architecture capstone
+    validations:
+      required: true
+
   - type: input
     id: week
     attributes:
@@ -53,6 +73,7 @@ body:
         - [ ] 적어도 하나의 실패 또는 오류 경로를 확인했다.
         - [ ] 근거와 내 실험의 관계가 명시되어 있다.
         - [ ] 불확실한 내용은 Unverified로 표시했다.
+        - [ ] 이 주차 완료와 Gate 통과를 혼동하지 않았다.
     validations:
       required: true
 
@@ -66,4 +87,3 @@ body:
         - Parked vehicle, receive-only
     validations:
       required: true
-

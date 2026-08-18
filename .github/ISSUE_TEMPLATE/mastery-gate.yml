@@ -1,0 +1,94 @@
+name: Mastery gate review
+description: 다음 Gate로 이동하기 전에 독립 구현·진단·측정·설계 증거를 심사합니다.
+title: "[Gate GNN] mastery review"
+labels:
+  - mastery-gate
+body:
+  - type: dropdown
+    id: gate
+    attributes:
+      label: Gate
+      options:
+        - G0 Engineering Baseline
+        - G1 Systems C
+        - G2 Embedded C++
+        - G3 ARM and LLVM
+        - G4 Bare-metal MCU
+        - G5 RTOS ECU
+        - G6 Classic AUTOSAR concepts
+        - G7 Linux/QNX platform
+        - G8 Vehicle networks
+        - G9 Adaptive platform
+        - G10 Security and resilience
+        - G11 Architecture capstone
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence index
+      description: Commit, test, report, raw data, packet/trace와 재현 명령을 연결합니다.
+      placeholder: |
+        - Implementation:
+        - Automated tests:
+        - Fault campaign:
+        - Measurement/raw data:
+        - Architecture/ADR:
+        - Clean-room reproduction:
+    validations:
+      required: true
+
+  - type: textarea
+    id: exams
+    attributes:
+      label: AI-independent exams
+      description: Closed-book, blank-page와 hidden-fault 시험의 조건·결과를 기록합니다.
+      placeholder: |
+        | Exam | Time limit | Result | Evidence/reviewer |
+        | --- | ---: | --- | --- |
+        | Closed-book explanation | 45 min |  |  |
+        | Blank-page implementation | 120 min |  |  |
+        | Hidden-fault diagnosis | 90 min |  |  |
+    validations:
+      required: true
+
+  - type: textarea
+    id: scorecard
+    attributes:
+      label: Scorecard
+      description: 각 항목을 0–4점으로 채우고 근거를 한 줄씩 적습니다.
+      value: |
+        | Dimension | Score | Evidence |
+        | --- | ---: | --- |
+        | Correctness |  |  |
+        | Depth |  |  |
+        | Debugging |  |  |
+        | Measurement |  |  |
+        | Reliability |  |  |
+        | Documentation |  |  |
+        | Independence |  |  |
+    validations:
+      required: true
+
+  - type: textarea
+    id: gaps
+    attributes:
+      label: Unverified assumptions and residual risks
+      description: 실패·미확인·외부 리뷰 지적과 보완 또는 재시험 날짜를 적습니다.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: decision
+    attributes:
+      label: Promotion decision
+      options:
+        - label: 모든 score가 3 이상이고 Depth/Reliability/Independence 중 두 항목이 4 이상이다.
+          required: true
+        - label: critical safety/security invariant 실패가 없다.
+          required: true
+        - label: clean-room reproduction을 제3자 또는 격리 환경에서 통과했다.
+          required: true
+        - label: 2주·6주·12주·6개월 재시험 항목을 등록했다.
+          required: true

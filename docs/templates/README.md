@@ -8,6 +8,6 @@
 | [ADR](adr.md) | 중요한 설계 대안과 결정을 남길 때 |
 | [Threat model](threat-model.md) | 자산·경계·공격 경로·완화를 분석할 때 |
 | [Performance report](performance-report.md) | latency, CPU, memory, recovery time을 측정할 때 |
+| [Mastery review](mastery-review.md) | Gate 시험 결과, 독립성, 재시험 계획을 심사할 때 |
 
 템플릿의 안내 문구는 작성 후 삭제하고, 비어 있는 절은 이유와 함께 `Not applicable`로 표시합니다.
-

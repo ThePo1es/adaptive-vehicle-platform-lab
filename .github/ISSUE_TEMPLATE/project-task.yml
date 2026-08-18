@@ -9,11 +9,13 @@ body:
     attributes:
       label: Project
       options:
+        - P00 MCU/RTOS ECU Node
         - P01 Process Supervisor
         - P02 Vehicle State Service
         - P03 Execution Manager
         - P04 Secure Update Manager
         - P05 Secure Adaptive Gateway
+        - P06 Mixed-Criticality Vehicle Platform
     validations:
       required: true
 
@@ -73,4 +75,3 @@ body:
         - [ ] 민감 정보와 외부 라이선스를 확인했다.
     validations:
       required: true
-
