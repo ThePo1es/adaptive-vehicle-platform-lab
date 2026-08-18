@@ -1,5 +1,5 @@
 name: Expert cycle evidence
-description: G11 이후 유지보수·이식·연구·교육을 Level 5 증거로 관리합니다.
+description: G12 이후 유지보수·이식·연구·교육을 Level 5 증거로 관리합니다.
 title: "[Expert EX] "
 labels:
   - expert-cycle
@@ -28,7 +28,7 @@ body:
     id: challenge
     attributes:
       label: New problem and falsifiable outcome
-      description: 기존 답을 재현하는 일이 아니라 처음 해결할 문제와 실패 기준을 적습니다.
+      description: 새로 해결할 문제, expected outcome과 실패 기준을 적습니다.
     validations:
       required: true
 

@@ -1,607 +1,503 @@
 # Vehicle Platform Mastery Roadmap
 
-이 로드맵은 “읽은 주제 수”가 아니라 **혼자 설계·구현·디버깅·측정·설명할 수 있는 범위**를 넓히는 과정입니다. Gate별 범위는 합계 92–121주이며, 재시험·통합·외부 리뷰를 포함하면 주 12–15시간 기준 약 24–30개월을 보수적으로 예상합니다. 실제 진도는 각 Gate의 통과 증거로만 결정합니다.
+진도는 시간표와 통과 증거를 함께 봅니다. 시간은 계획을 세우는 기준이고, 승급은 구현·진단·측정·전이 시험으로 결정합니다.
 
-## 운영 원칙
+## 전체 규모
 
-- 한 번에 진행 중인 Gate는 하나만 둡니다.
-- 학습 시간의 최소 60%를 코드·실험·디버깅에 사용합니다.
-- 공식 문서 요약만으로는 어떤 Gate도 통과할 수 없습니다.
-- 정상 동작을 만든 뒤 반드시 malformed input, timeout, resource pressure, restart를 주입합니다.
-- 측정은 hardware, OS, compiler, flags, commit, workload, sample count와 함께 기록합니다.
-- 모든 “안다”는 말은 code, test, packet, trace, assembly, measurement 중 둘 이상으로 증명합니다.
-- AUTOSAR 이름을 붙였다는 이유로 적합 구현이라고 주장하지 않습니다.
+| Gate | 집중시간 | 예상 2주 Sprint | 결과물 |
+| --- | ---: | ---: | --- |
+| G0 Engineering baseline | 48–60h | 2 | toolchain·CI·장비 ADR |
+| G1 Systems C | 120–150h | 5 | low-level component library |
+| G2 Embedded C++ | 96–120h | 4 | ownership-safe runtime |
+| G3 ARM ABI and LLVM | 120–150h | 5 | compiler analysis suite |
+| G4 Bare-metal Cortex-M | 144–180h | 6 | bootable MCU runtime |
+| G5 RTOS and real-time analysis | 168–210h | 7 | P00-A timing core |
+| G6 CAN and diagnostics | 192–240h | 8 | P00-B network extension |
+| G7 Classic Platform concepts | 144–180h | 6 | P00-C ECU stack |
+| G8 Linux platform and BSP | 168–210h | 7 | P01 + Linux image |
+| G9 Ethernet vehicle services | 192–240h | 8 | P02 + P05 vertical slice |
+| G10 Adaptive Platform concepts | 192–240h | 8 | P03 managed Linux node |
+| G11 Safety, security and update | 168–210h | 7 | P04 + assurance case |
+| G12 Architecture and integration | 288–360h | 12 | P06 final platform |
+| **본 과정 합계** | **2,040–2,550h** | **85** | **13 Gate** |
 
-## 전체 경로
+표의 시간은 2주 Sprint마다 24–30시간을 배정한 합계입니다. 한 Sprint 안에서 현재 Gate 70%, 누적 복습 15%, 리뷰·정리 10%, LLVM 분석 5%를 씁니다. Major Gate 시험은 마지막 Sprint의 시간에 포함하고, 분기 누적 시험은 복습 몫을 모아 진행합니다. 휴식, 장비 대기, 외부 검토, 보강 Sprint까지 포함한 달력 일정은 주 12–15시간 기준 약 3.5–4.5년입니다. 기존 실력은 사전 통과 시험으로 인정할 수 있습니다. G0–G2의 실제 속도로 남은 일정을 다시 계산합니다.
 
-| Gate | 예상 범위 | 중심 역량 | 승급 프로젝트 |
-| --- | ---: | --- | --- |
-| G0 | 2–3주 | 재현 환경·Git·테스트·측정 규율 | Baseline dossier |
-| G1 | 6–8주 | Systems C | Low-level component library |
-| G2 | 6–8주 | Embedded C++ | Ownership-safe runtime |
-| G3 | 8–10주 | ARM·ABI·LLVM | Compiler analysis suite |
-| G4 | 6–8주 | Bare-metal MCU | Minimal MCU runtime |
-| G5 | 8–10주 | RTOS·real-time evidence | Measured ECU simulator |
-| G6 | 8–10주 | Classic AUTOSAR concepts | ECU communication/diagnostic stack |
-| G7 | 8–10주 | Linux/QNX platform | Process Supervisor |
-| G8 | 8–10주 | CAN/Ethernet/diagnostics | Vehicle service and gateway |
-| G9 | 10–14주 | Adaptive platform concepts | Managed Linux vehicle node |
-| G10 | 8–10주 | Security·resilience·update | Fault-tolerant signed update |
-| G11 | 14–20주 | Architecture·integration | Mixed-Criticality Vehicle Platform |
-| **Total** | **92–121주** | 반복 평가 제외 | 일정이 아닌 Gate 증거로 종료 |
+## 의존 관계
 
-일부 Gate는 복습 차원에서 겹치지만, 첫 통과는 순서대로 진행합니다. G3의 compiler analysis와 OSS 기여는 이후 모든 Gate에서 20% 트랙으로 계속합니다.
+```mermaid
+flowchart TB
+    G0["G0 환경"] --> G1["G1 Systems C"]
+    G1 --> G2["G2 Embedded C++"]
+    G2 --> G3["G3 ARM ABI + LLVM"]
+    G3 --> G4["G4 Bare-metal"]
+    G4 --> G5["G5 RTOS + RTA"]
+    G5 --> G6["G6 CAN + 진단"]
+    G6 --> G7["G7 Classic 개념"]
+    G3 --> G8["G8 Linux + BSP"]
+    G8 --> G9["G9 Ethernet 서비스"]
+    G9 --> G10["G10 Adaptive 개념"]
+    G7 --> G11["G11 안전·보안·업데이트"]
+    G10 --> G11
+    G11 --> G12["G12 통합"]
+```
+
+G4–G7과 G8–G10은 공통 기반 뒤에 갈라지는 두 갈래입니다. Linux/Adaptive 플랫폼 통합을 목표로 한다면 `G8 → G9 → G10 → G4 → G5 → G6 → G7` 순서를 권합니다. MCU/Classic 기반을 먼저 다지고 싶다면 반대 순서로 진행해도 됩니다. 어느 쪽을 택해도 G11에 들어가기 전 두 갈래를 모두 통과해야 합니다.
+
+## 운영 규칙
+
+- 동시에 진행하는 주 Gate는 하나입니다.
+- 각 Sprint의 70%를 현재 Gate, 15%를 누적 복습, 10%를 리뷰·정리, 5%를 LLVM 분석에 사용합니다.
+- 8–16주마다 실행 가능한 release를 냅니다.
+- 각 실험에는 환경, compiler, flags, commit, workload, clock source를 기록합니다.
+- simulator와 실제 장비 결과를 따로 보관합니다.
+- 프로젝트 요구와 인수 예산은 구현 전에 정합니다. 실측이 기준을 넘으면 구현·모델·요구를 검토하고 ADR로 변경을 승인합니다.
+- Gate에서 늦어지면 확장 항목을 먼저 뺍니다. 필수 통과 결과물은 유지합니다.
+- 외부 검토를 받지 못한 Gate는 `Provisional`로 기록합니다.
+
+각 Sprint의 과제와 범위 조정 순서는 [Gate Playbook](docs/gate-playbook.md)에 있습니다. G0–G3은 바로 시작할 수 있는 [Lab Pack](gates/README.md)이 준비되어 있습니다.
+
+### 첫 공개 릴리스
+
+| 시점 | 릴리스 | 공개할 내용 |
+| --- | --- | --- |
+| G1 종료 | C component library | decoder, bounded storage, parser, corpus, 재현 명령 |
+| G2 종료 | C++ runtime layer | lifetime contract, fixed-capacity runtime, race test |
+| G4 종료 | board runtime | startup, timer, fault record, watchdog, board log |
+| G6 종료 | ISO-TP alpha | CAN timing, ISO-TP/UDS read path, 상호 운용 trace |
+| G12.5 | walking skeleton | 두 node의 시작과 최소 data path |
+| G12.9 | integration candidate | data·diagnostic·lifecycle·update 계약 |
 
 ---
 
 ## G0 — Engineering Baseline
 
-### 목표
+### 선수 조건
 
-코드가 “내 컴퓨터에서 한 번 실행됨”이 아니라 다른 환경에서 재현되고, 실패 이유와 측정 조건이 남는 작업 방식을 만든다.
+없음. 기존 프로젝트와 경력 자료를 함께 가져옵니다.
 
-### 학습·구현
+### 배울 내용
 
-- Git branch, atomic commit, self-review PR
-- CMake/Ninja 또는 선택한 빌드 시스템
-- GCC/Clang Debug/Release/Sanitizer profile
-- unit/integration/fault test 분리
-- warning policy, static analysis, formatter
-- raw evidence와 report 분리
-- reproducible environment 기록
+- Git branch와 PR, 작고 되돌릴 수 있는 commit
+- CMake/Ninja, GCC/Clang, Debug/Release/Sanitizer profile
+- unit/integration/fault test 구분
+- 재현 가능한 개발 환경과 원본 자료 관리
+- 라이선스·표준 문서·장비 접근 조건 기록
 
 ### 결과물
 
-- [Engineering baseline dossier](docs/baseline.md): 현재 C/C++·ARM·RTOS·Linux·CAN·AUTOSAR·LLVM 수준
-- clean clone에서 한 명령으로 실행되는 작은 C/C++ 테스트 프로젝트
-- 실패한 테스트 하나를 재현·원인 분석·수정한 기록
+- [baseline dossier](docs/baseline.md)와 이전 경험 근거 목록
+- 한 명령으로 build/test가 끝나는 작은 C/C++ skeleton
+- 고정된 compiler·RTOS·board·CAN bench 선택을 담은 ADR
+- `docs-integrity` CI와 첫 PR review
 
-### 통과 기준
+### Exit
 
-- [ ] 새 Ubuntu 환경에서 README만 보고 build/test가 통과한다.
-- [ ] GCC와 Clang 결과를 모두 남겼다.
-- [ ] ASan/UBSan이 실제 결함 하나를 탐지하는 예제를 설명한다.
-- [ ] 근거, 관찰, 해석, 미확인 가정을 구분한다.
-
----
-
-## G1 — Systems C Mastery
-
-### 핵심 범위
-
-- integer promotion, signed/unsigned conversion, overflow
-- object representation, effective type, strict aliasing
-- alignment, padding, endianness, bit fields의 위험
-- pointer arithmetic, lifetime, bounds
-- `volatile`, atomics, compiler barrier, memory barrier의 차이
-- stack/heap/static storage와 section
-- function pointer, callback, state machine
-- ring buffer, fixed-size pool, intrusive data structure
-- MMIO abstraction과 ISR-safe API 설계
-- defensive parser와 error propagation
-- MISRA 규칙이 막으려는 실제 failure mode
-
-### 구현 과제
-
-1. endian-safe CAN/DBC signal decoder
-2. overwrite/reject 정책을 선택할 수 있는 bounded ring buffer
-3. dynamic allocation 없는 fixed-size object pool
-4. length-aware ISO-TP/UDS parser core
-5. MMIO register access mock과 callback-driven driver shell
-
-### 깨뜨릴 것
-
-- unaligned input
-- truncated frame
-- shift width 경계
-- signed/unsigned comparison
-- buffer wrap-around
-- producer/consumer overflow
-- aliasing과 lifetime violation
-
-### 측정·분석
-
-- `sizeof`, alignment, padding map
-- stack usage와 code size
-- `-O0/-O2/-Oz` assembly 차이
-- UBSan/ASan/static analyzer 탐지 범위와 blind spot
-
-### 통과 기준
-
-- [ ] blank page에서 ring buffer와 parser를 다시 구현한다.
-- [ ] undefined, unspecified, implementation-defined behavior를 예제로 구분한다.
-- [ ] `volatile`만으로 동기화가 되지 않는 이유를 assembly와 memory model로 설명한다.
-- [ ] fuzz/property test가 malformed corpus를 자동 검증한다.
-- [ ] public API마다 ownership, bounds, concurrency contract가 있다.
+- 새 Ubuntu 환경에서 README만으로 build/test를 재현한다.
+- GCC와 Clang build가 경고 없이 끝난다.
+- ASan 또는 UBSan으로 결함 하나를 찾아 수정한다.
+- 소프트웨어 라이선스와 공개 가능한 자료의 범위를 기록한다.
 
 ---
 
-## G2 — Embedded C++ Mastery
+## G1 — Systems C
 
-### 핵심 범위
+### 배울 내용
 
-- object lifetime, value category, copy/move, RAII
-- deterministic ownership과 `unique_ptr`/`shared_ptr` 선택
+- integer conversion, overflow, object representation, alignment, endianness
+- lifetime, effective type, aliasing, pointer bounds
+- `volatile`, atomic, compiler barrier, hardware barrier
+- fixed-size pool, bounded queue, state machine, error propagation
+- parser hardening, fuzzing, property test, mutation score
+
+### 결과물
+
+- endian-safe signal decoder
+- bounded queue와 fixed-size pool
+- length-aware binary parser
+- MMIO/ISR boundary를 흉내 낸 driver shell
+- libFuzzer/AFL++ 또는 동등한 fuzz harness와 malformed corpus
+
+### Exit
+
+- packet pool 또는 DMA descriptor queue를 90분 안에 새로 구현한다.
+- 숨겨진 parser corpus에서 crash와 state corruption이 없다.
+- sanitizer, coverage, mutation 결과로 test strength를 설명한다.
+- API마다 bounds, ownership, concurrency, failure contract가 있다.
+
+---
+
+## G2 — Embedded C++
+
+### 배울 내용
+
+- object lifetime, RAII, move/copy, non-owning view
+- fixed-capacity container와 allocator policy
 - `span`, `optional`, `variant`, expected-style error
-- template instantiation과 code bloat
-- virtual dispatch와 type erasure trade-off
-- allocator, memory resource, fixed-capacity container
-- exception/RTTI on/off 정책
-- thread, mutex, condition variable, atomic ordering
-- zero-copy와 buffer lifetime
-- ABI, name mangling, vtable, structure passing
+- exception·RTTI·heap 정책과 code-size 영향
+- mutex, condition variable, atomic ordering, zero-copy lifetime
 
-### 구현 과제
+### 결과물
 
-1. fixed-capacity event queue
-2. ownership-safe message buffer와 zero-copy view
-3. variant 기반 vehicle event/state model
-4. RAII process/socket/file descriptor wrapper
-5. dependency injection 가능한 clock, transport, process launcher
+- ownership-safe message buffer
+- fixed-capacity event runtime
+- file descriptor·socket·process handle RAII wrapper
+- 대체 가능한 clock, transport, launcher interface
 
-### 깨뜨릴 것
+### Exit
 
-- dangling `span`/view
-- use-after-move
-- shared ownership cycle
-- destructor order
-- exception-disabled error path
-- data race와 relaxed ordering 오용
-
-### 통과 기준
-
-- [ ] heap을 허용한 설계와 금지한 설계를 각각 방어한다.
-- [ ] 동일 기능의 C/C++ 구현을 code size, lifetime risk, testability로 비교한다.
-- [ ] TSan 또는 deterministic concurrency test로 실제 race를 재현·수정한다.
-- [ ] public type의 move/copy/ownership contract를 설명한다.
+- 처음 보는 message pipeline의 dangling view와 race를 진단한다.
+- C와 C++ 구현을 lifetime risk, code size, testability로 비교한다.
+- heap 허용·제한 두 설계의 failure behavior를 설명한다.
 
 ---
 
-## G3 — ARM, Computer Architecture and LLVM
+## G3 — ARM ABI and LLVM
 
-### Cortex-M
+G3는 ISA·ABI·binary·compiler 분석에 집중합니다. Cortex-M fault handler와 peripheral bring-up은 G4에서 다룹니다.
 
-- reset sequence, vector table, startup code
-- MSP/PSP, exception entry/return, NVIC
-- interrupt priority와 tail chaining 개념
-- MPU, fault status register, fault handler
-- `.text/.rodata/.data/.bss`, linker script
-- memory-mapped peripheral, DMA와 memory ordering
+### 배울 내용
 
-### AArch64/Linux SoC
+- AAPCS32/AAPCS64, ELF, section, symbol, relocation, linker map
+- Cortex-M과 AArch64의 register·calling convention 차이
+- Clang AST, LLVM IR, optimization, instruction selection
+- cache·TLB·DMA coherency·memory ordering의 기본 모델
+- compiler/version/target별 지원 flag와 LTO 구성
 
-- exception level, virtual memory, page table
-- cache/TLB, locality, false sharing
-- DMA cache coherency 개념
-- SMP, atomic, barrier
-- ELF, ABI, calling convention, PLT/GOT
-- dynamic linker와 shared library
+### 결과물
 
-### LLVM 연결
+- CAN decode, CRC, queue, parser, state machine 분석 corpus
+- Clang LLVM IR과 GCC GIMPLE/RTL dump, 두 compiler의 assembly·size 재생성 script
+- 동일 target 안에서 수행한 성능 비교 보고서
+- upstream issue의 최소 reproducer 또는 test-first 분석
 
-```text
-C/C++ → Clang AST → LLVM IR → Optimization
-      → SelectionDAG/GlobalISel → Machine Instruction → Measurement
-```
+### Exit
 
-### 분석 corpus
-
-- CRC/checksum
-- CAN/DBC signal extraction
-- byte swap and lookup table
-- ring buffer
-- UDS parser
-- state machine
-- FIR/Kalman kernel 일부
-
-### 비교 행렬
-
-- GCC vs Clang
-- `-O0`, `-O2`, `-Oz`
-- LTO off/on
-- C vs C++
-- Cortex-M vs AArch64
-- code size, branch/load-store, latency/cycle, memory access, UB sensitivity
-
-### 통과 기준
-
-- [ ] linker map에서 모든 주요 section과 symbol의 위치를 설명한다.
-- [ ] HardFault/BusFault 계열 하나를 재현하고 stacked context로 원인을 찾는다.
-- [ ] AAPCS 관점에서 인자·구조체·return 전달을 assembly로 설명한다.
-- [ ] LLVM IR 최적화 전후와 실제 machine code의 차이를 연결한다.
-- [ ] 성능 차이를 추측이 아닌 동일 조건 측정으로 보고한다.
-
-상세 실험 형식은 [compiler-analysis/README.md](compiler-analysis/README.md)를 따릅니다.
+- AAPCS32와 AAPCS64의 인자·구조체·return 전달을 assembly에서 찾는다.
+- linker map의 주요 section과 symbol을 source까지 역추적한다.
+- source, IR, machine code, runtime 결과를 한 보고서로 연결한다.
+- upstream merge 여부와 함께 재현 품질, test, 검토 의견을 평가받는다.
 
 ---
 
-## G4 — Bare-metal MCU
+## G4 — Bare-metal Cortex-M
 
-### 목표
+### 기본 target
 
-HAL 예제 복사 이전에 부팅, interrupt, timing, memory와 peripheral의 최소 실행 구조를 이해한다.
+G0 ADR에서 Cortex-M4/M7 또는 M33 계열 하나를 고릅니다. 다른 core의 fault, cache, MPU, TrustZone 차이는 capability matrix에 기록합니다.
 
-### 구현 과제
+### 배울 내용
 
-- 직접 작성하거나 최소화한 startup/vector/linker 구성
-- monotonic timer와 deadline helper
-- GPIO/UART/CAN 중 하나의 interrupt-driven driver
-- lock-free라고 주장하지 않는 명확한 SPSC queue
-- fault handler와 crash record
-- watchdog reset reason 보존
-- A/B 또는 dual-image flash layout 설계
+- reset, vector table, startup, linker script, `.data/.bss`
+- interrupt priority, exception frame, fault status
+- clock tree, monotonic timer, UART, GPIO, DMA 또는 CAN driver shell
+- watchdog, reset reason, crash record, flash layout
+- reference manual, schematic, errata를 읽는 방법
 
-### 통과 기준
+### 결과물
 
-- [ ] reset부터 `main`까지 제어 흐름과 메모리 초기화를 설명한다.
-- [ ] ISR이 해도 되는 일과 task/main loop로 넘길 일을 contract로 정한다.
-- [ ] interrupt storm, queue full, peripheral timeout을 주입한다.
-- [ ] stack overflow 또는 fault를 GDB와 register dump로 진단한다.
-- [ ] boot time, ISR latency 또는 timer error를 측정한다.
+- 보드에서 부팅되는 최소 image
+- timer interrupt와 UART 진단 경로
+- fault register·stacked context를 보존하는 crash record
+- watchdog reset reason과 dual-image layout 설계
 
----
+### Exit
 
-## G5 — RTOS and Measured ECU
-
-### 핵심 범위
-
-- preemptive/cooperative scheduling
-- task states, priority, ready queue
-- ISR/task context와 deferred work
-- semaphore, mutex, queue, event, timer
-- priority inversion/inheritance
-- race, deadlock, starvation
-- periodic release, deadline, jitter, overrun
-- tick/tickless, monotonic time
-- watchdog, stack high-water mark, heap fragmentation
-- WCET 개념과 측정의 한계
-- MPU-based task isolation
-
-### 승급 프로젝트: P00 MCU/RTOS ECU Node
-
-- 1ms/10ms/100ms 주기 task
-- sensor/actuator simulation
-- CAN TX/RX와 bounded queue
-- UDS read session과 DTC
-- watchdog와 safe/degraded state
-- persistent firmware version
-
-### 필수 수치
-
-```text
-Period / deadline
-p50, p95, p99, worst execution time
-Maximum release jitter
-Stack peak per task
-Queue high-water mark and drops
-Deadline misses / total releases
-Watchdog detection and recovery time
-```
-
-### 통과 기준
-
-- [ ] 100,000회 이상 release에서 raw timing data를 보존한다.
-- [ ] 의도적 overload에서 deadline miss를 재현하고 정책을 설명한다.
-- [ ] priority inversion을 재현하고 inheritance 전후를 비교한다.
-- [ ] task별 stack budget을 측정 근거와 함께 정한다.
-- [ ] watchdog reset 뒤 safe state와 원인 기록을 검증한다.
+- 빈 프로젝트에서 reset부터 `main`까지 구성한다.
+- interrupt storm, queue full, peripheral timeout을 주입한다.
+- logic analyzer 또는 cycle counter로 timer/ISR 동작을 측정한다.
+- simulator 결과와 보드 결과의 차이를 기록한다.
 
 ---
 
-## G6 — Classic AUTOSAR Concepts and ECU Stack
+## G5 — RTOS and Real-Time Analysis
 
-### 구조 이해
+### 배울 내용
 
-```text
-SWC → RTE → Services → ECU Abstraction → MCAL → Hardware
-```
+- periodic·sporadic task model, release jitter, blocking, interference
+- rate/deadline monotonic, fixed-priority response-time analysis, EDF 개요
+- priority inversion, inheritance, ceiling protocol
+- ISR deferred work, queue, event, timer, watchdog
+- stack·heap·CPU budget, overload semantics, 측정 오차
 
-### 우선 모듈
+### 결과물: P00-A
 
-- AUTOSAR OS, RTE
-- COM, PduR, CanIf, CanTp
-- DCM, DEM, NvM
-- WdgM, EcuM, BswM
-- SecOC concept
-- Flash Bootloader
+- 요구사항에서 도출한 periodic task set과 deadline
+- response-time analysis sheet 또는 script
+- synthetic queue, watchdog, fallback state가 포함된 RTOS 핵심 모듈
+- timing·stack·queue 원본 자료와 분석 보고서
 
-### 직접 구현할 최소 흐름
+### Exit
 
-```text
-CAN RX → CanIf-like adapter → PduR-like router
-       → COM-like signal store → RTE-like port → Application
-
-Diagnostic RX → CanTp-like reassembly → PduR → DCM-like dispatcher
-              → Application → response
-
-Application fault → DEM-like event/DTC → NvM-like storage → reboot restore
-```
-
-### 통과 기준
-
-- [ ] 일반 통신, 진단, 고장 저장 경로를 packet과 call trace로 설명한다.
-- [ ] 각 layer가 가져야 할 책임과 가져가면 안 되는 책임을 구분한다.
-- [ ] timeout, NRC, multi-frame, storage corruption을 자동 테스트한다.
-- [ ] EcuM/BswM 스타일 startup·mode transition을 상태 머신으로 만든다.
-- [ ] 자체 미니 구현과 실제 AUTOSAR 사양의 차이를 매핑한다.
+- 분석한 response-time bound와 실측 분포를 비교한다.
+- priority inversion과 overload를 숨은 fault로 진단한다.
+- 장기 soak, interrupt interference, clock 조건을 나눠 시험한다.
+- `worst observed`와 WCET 상한을 문서에서 구분한다.
 
 ---
 
-## G7 — Linux/QNX Systems Platform
+## G6 — CAN, ISO-TP and UDS
 
-### 핵심 범위
+### 배울 내용
 
-- process lifecycle, signal, process group
-- thread scheduling, affinity, real-time policy
-- `epoll`, Unix socket, shared memory, `mmap`
-- TCP/UDP/multicast와 backpressure
-- zero-copy의 실제 ownership 조건
-- systemd service, watchdog, resource limit
-- core dump, `gdb`, `strace`, `perf`, heap analysis
-- cross compilation, Device Tree와 driver model 기초
-- boot time, logging, tracing, observability
+- CAN/CAN FD arbitration, bit timing, load, error confinement, bus-off
+- 고정 우선순위 CAN response-time analysis
+- DBC-style serialization과 freshness policy
+- ISO-TP addressing, flow control, BS, STmin, sequence, timer matrix
+- UDS session, P2/P2*, S3, NRC, read service, DTC 기본 흐름
 
-### 승급 프로젝트: P01 Process Supervisor
+### 결과물: P00-B
 
-- manifest parsing
-- dependency DAG
-- start/stop and graceful shutdown
-- heartbeat/deadline
-- bounded restart/backoff
-- resource policy and audit log
+- bounded CAN TX/RX queue와 signal encode/decode
+- ISO-TP state machine과 read-focused UDS endpoint
+- vcan 시험과 두 physical CAN node의 packet 자료
+- termination·bit-rate mismatch·bus-off fault report
 
-### 통과 기준
+### Exit
 
-- [ ] child crash, hang, fork/spawn failure, shutdown race를 자동 재현한다.
-- [ ] graceful stop → timeout → kill을 process group까지 검증한다.
-- [ ] CPU affinity/scheduling 설정의 효과와 위험을 측정한다.
-- [ ] core dump와 trace만으로 crash root cause를 설명한다.
-- [ ] clean machine에서 전체 supervisor test를 재현한다.
+- CAN load와 message response time을 계산하고 실측과 비교한다.
+- ISO-TP timeout·sequence 오류·flood corpus를 통과한다.
+- 실제 transceiver bench에서 bus-off와 복구 정책을 관찰한다.
+- 안전한 read service만 허용한 interoperability test를 수행한다.
 
 ---
 
-## G8 — Vehicle Networks and Diagnostics
+## G7 — Classic Platform Concept Fluency
 
-### CAN side
+### 배울 내용
 
-- arbitration, error frame, error active/passive, bus-off
-- CAN FD, SocketCAN, DBC encoding
-- ISO-TP, UDS session/service/NRC
-- Network Management 개념
-- gateway routing and rate policy
+- OS/RTE와 SWC runnable 책임
+- CanIf, PduR, COM, CanTp, DCM, DEM, NvM
+- EcuM, BswM, WdgM, ComM, CanSM, CanNm의 상태 책임
+- E2E, SecOC, CSM/CryptoIf의 적용 지점
+- ARXML/configuration/generated artifact의 역할
 
-### Ethernet side
+### 결과물: P00-C
 
-- VLAN, multicast, TCP/UDP selection
-- SOME/IP, SOME/IP-SD
-- DoIP
-- service availability and versioning
-- serialization and compatibility
-- E2E protection vs cryptographic integrity
-- time synchronization and TSN concepts
+- CAN → CanIf-like → PduR-like → COM-like → application 경로
+- ISO-TP → DCM-like → application → response 경로
+- fault → DEM-like → NvM-like → reboot restore 경로
+- 작은 schema에서 static configuration code를 생성하는 실습
+- 공식 release와 local behavior를 비교한 mapping table
 
-### 승급 프로젝트
+### Exit
 
-- P02 Vehicle State Service
-- CAN–SOME/IP signal gateway
-- DoIP–UDS–ISO-TP diagnostic gateway
+- 세 vertical slice를 packet과 call trace로 재현한다.
+- timeout, NRC, storage corruption, startup mode fault를 자동 시험한다.
+- AUTOSAR OS와 선택 RTOS의 차이를 설명한다.
+- 결과물 표기는 `Classic concept-aligned prototype`으로 유지한다.
 
-### 설계 질문
-
-- CAN 10ms signal을 Ethernet 100ms event로 어떻게 aggregate할 것인가?
-- on-change와 cyclic publish를 어떻게 선택할 것인가?
-- stale data와 unavailable service를 어떻게 구분할 것인가?
-- bus-off가 Linux service state와 diagnostic response에 어떻게 전파되는가?
-- version mismatch와 partial deployment를 어떻게 처리하는가?
-
-### 통과 기준
-
-- [ ] bus-off와 service restart를 end-to-end state로 전파한다.
-- [ ] SOME/IP-SD, SOME/IP, DoIP, ISO-TP 캡처를 layer별로 설명한다.
-- [ ] loss, duplication, reordering, flood, malformed input을 자동 주입한다.
-- [ ] latency뿐 아니라 drops, queue, CPU/RSS, recovery time을 보고한다.
+첫 포트폴리오 출구는 여기입니다. P00 v1 release와 외부 리뷰를 마치면 MCU/BSW 지원용 증거 묶음이 생깁니다.
 
 ---
 
-## G9 — Adaptive Platform Concepts
+## G8 — Linux Platform and BSP
 
-### Functional Clusters
+### 배울 내용
 
-- Communication Management
-- Execution Management
-- State Management
-- Platform Health Management
-- Persistency
-- Log and Trace
-- Diagnostics
-- Update and Configuration Management
-- Cryptography
-- Identity and Access Management
+- process group, signal, spawn/exec, exit status, bounded shutdown
+- thread scheduling, affinity, backpressure, shared memory, `epoll`
+- systemd, cgroup, capability, seccomp, core dump, `strace`, `perf`
+- cross sysroot, boot chain, kernel config, Device Tree
+- Buildroot 또는 Yocto image, package, SBOM, 재현 가능한 배포
 
-### 구현 순서
+### 결과물: P01
 
-```text
-Service Interface → Proxy/Skeleton pattern → SOME/IP
-→ Manifest → Process Lifecycle → Function Group State
-→ Health Supervision → Persistency/Logging
-→ Diagnostics → UCM/Update
-```
+- Process Supervisor와 deterministic test double
+- AArch64 board/VM용 Linux image와 service package
+- process crash, hang, forked-child, resource pressure fault report
+- PREEMPT_RT 또는 scheduling policy 비교 실험
 
-### 승급 프로젝트
+### Exit
 
-- P03 Manifest-driven Execution Manager
-- P04 Secure Update Manager
-- P05 Secure Adaptive Gateway
+- process tree 전체를 정해진 시간 안에 종료·복구한다.
+- 처음 보는 hang/crash를 core dump와 syscall trace로 진단한다.
+- image를 새 환경에서 build하고 target에서 service를 부팅한다.
+- privilege와 resource policy가 자동 시험으로 확인된다.
 
-### 통과 기준
-
-- [ ] EM, SM, PHM의 decision/action/observation 책임이 코드에서 분리된다.
-- [ ] dependency, state, health, persistency가 reboot/failure에서도 일관된다.
-- [ ] `ara::*`와 유사한 이름보다 observable behavior를 먼저 검증한다.
-- [ ] 구현/미구현/단순화 범위를 mapping table에 유지한다.
-- [ ] service discovery부터 update rollback까지 통합 시나리오가 재현된다.
+QNX는 [선택 심화](#선택-심화-gate)에서 같은 contract를 이식합니다.
 
 ---
 
-## G10 — Security, Update and Resilience
+## G9 — Ethernet Vehicle Services
 
-보안은 별도 exploit 모음이 아니라 모든 계층에 적용되는 품질 속성입니다.
+### 배울 내용
 
-### 구현 범위
+- Ethernet, VLAN, multicast, TCP/UDP, socket backpressure
+- SOME/IP header와 SOME/IP-SD lifecycle, TTL, eventgroup, counter
+- DoIP routing activation, alive check, diagnostic routing
+- service version·availability·stale-data 정책
+- PTP/gPTP 개념, clock offset·drift·uncertainty 측정
 
-- firmware/package signature verification
-- hash, canonical manifest, strict parser
-- anti-rollback and replay policy
-- A/B slot, activation, health check, rollback
-- MCU bootloader version/fallback policy
-- diagnostic access policy
-- process privilege separation
-- key abstraction and optional OP-TEE secure storage
-- audit log and tamper-evident evidence concept
-- malformed packet and resource exhaustion handling
+### 결과물
 
-### fault campaign
+- P02 SOME/IP Vehicle State Service
+- P05 CAN–SOME/IP vertical slice
+- DoIP read path의 최소 diagnostic gateway
+- packet capture, latency·drop·reconnect report
 
-- package/manifest/payload byte tamper
-- power loss at every update state
-- disk/flash full and short write
-- wrong key, old version, replay
-- process crash during activation
-- MCU watchdog reset during transfer
-- unauthorized diagnostic service
-- log storm, CAN flood, malformed SOME/IP/UDS
+### Exit
 
-### 통과 기준
-
-- [ ] 모든 security invariant에 negative test가 있다.
-- [ ] 어떤 실패 지점에서도 last-known-good boot path가 보존된다.
-- [ ] trust boundary, attacker capability, residual risk를 명시한다.
-- [ ] OP-TEE 없이 기본 플랫폼을 완성한 뒤 보호 가치가 있는 key/version만 이동한다.
+- 두 Linux node에서 discovery·subscription·reconnection을 재현한다.
+- 다른 implementation 또는 tester와 상호 운용 시험을 한다.
+- timestamp의 clock domain과 uncertainty를 interface contract에 적는다.
+- CAN data 하나가 SOME/IP event로 이어지는 작은 release를 낸다.
 
 ---
 
-## G11 — Architecture and Mixed-Criticality Capstone
+## G10 — Adaptive Platform Concept Fluency
 
-### 아키텍처 순서
+### 배울 내용
 
-```text
-Stakeholder Requirement → System Requirement → Architecture Driver
-→ Component Responsibility → Interface Contract
-→ Runtime/Deployment → Failure Handling → Verification
-```
+- Execution, State, Platform Health Management의 책임 분리
+- Communication, Persistency, Log and Trace, Diagnostics의 관계
+- Execution/Service Interface/Service Instance/Machine Manifest 구조
+- process dependency, function group state, health supervision
+- service deployment·version·persisted state 복구
 
-### 필수 산출물
+### 결과물: P03
 
-- System context, component, deployment diagrams
-- SRS/SADS/SUDS 수준의 요구사항·설계·단위 설계
-- interface and version specification
-- task/process/thread model
-- timing, CPU, memory, network budget
-- startup/shutdown/update sequence
-- failure mode and degraded/safe state table
-- threat model
-- requirement → architecture → code → test → result traceability
-- reproducible CI and release procedure
+- schema-validated manifest와 dependency DAG
+- state decision, process action, health observation이 분리된 manager
+- P01/P02를 사용하는 managed Linux vehicle node
+- 선택한 AUTOSAR release의 manifest 요소 매핑
 
-### 최종 프로젝트: P06 Mixed-Criticality Vehicle Platform
+### Exit
 
-- RTOS MCU ECU와 Linux vehicle computer
-- CAN/CAN FD signal path
-- SOME/IP vehicle service
-- DoIP–UDS gateway
-- lifecycle and health management
-- DTC/persistency/logging
-- signed Linux update와 MCU firmware update policy
-- watchdog, bus-off, service crash, network loss, update rollback
-- compiler analysis report for critical functions
+- dependency cycle, missed heartbeat, illegal state, corrupted state를 진단한다.
+- 비공개 설계 문제에서 EM/SM/PHM 경계를 찾아 고친다.
+- 공식 Adaptive SDK를 쓰지 않은 범위를 mapping 문서에 남긴다.
+- 외부 reviewer가 lifecycle·state·health trade-off를 검토한다.
 
-### 최종 데모
-
-1. 두 노드가 정의된 startup order로 부팅한다.
-2. MCU 주기 task의 vehicle data가 SOME/IP event로 전달된다.
-3. DoIP read request가 UDS/ISO-TP를 거쳐 응답한다.
-4. bus-off, task overrun, service crash가 상위 state로 전파된다.
-5. 변조 업데이트가 거부된다.
-6. 정상 업데이트 후 health failure를 주입해 rollback한다.
-7. traceability와 budget report에서 모든 동작을 추적한다.
-
-### 통과 기준
-
-- [ ] 처음 보는 사람이 문서만으로 clean build와 demo를 재현한다.
-- [ ] 최소 한 명의 외부 리뷰어 질문에 architecture trade-off를 방어한다.
-- [ ] timing/memory/CPU/network budget의 합계와 margin이 측정치와 연결된다.
-- [ ] 10개 이상의 fault scenario가 자동 실행되고 기대 state를 검증한다.
-- [ ] 영어 README와 5–10분 기술 데모가 문제·설계·증거·한계를 보여준다.
-- [ ] 프로젝트를 다시 처음부터 설계한다면 바꿀 결정을 ADR로 정리한다.
+두 번째 포트폴리오 출구는 여기입니다. P01–P03 release는 Linux/플랫폼 직무에 맞춘 증거 묶음으로 정리합니다.
 
 ---
 
-## 지속 트랙
+## G11 — Safety, Cybersecurity and Update Engineering
 
-### LLVM/OSS — 20%
+### 배울 내용
 
-- 매 Gate의 critical function을 compiler-analysis corpus에 추가
-- upstream issue reproduction과 test-first patch
-- ARM/AArch64 codegen 또는 optimizer 관련 작은 기여
-- 기여를 차량용 코드의 performance/reliability 분석과 연결
+- item definition, HARA, safety goal, ASIL 개념, technical safety requirement
+- FMEA/FTA, safety mechanism, freedom from interference, assurance case
+- asset·threat scenario·impact·attack path를 다루는 TARA
+- trust root, verified boot, key lifecycle, anti-rollback
+- transaction journal, canonical manifest, A/B activation, health check, rollback
+- ISO 26262, ISO/SAE 21434, software update engineering과 R156의 역할
 
-### Security research — 10%
+### 결과물: P04
 
-- 메인 프로젝트 기능을 밀어내지 않는 범위
-- secure boot/update, parser robustness, isolation, fault injection 중심
-- 신규 취약점 탐색은 별도 허가 범위와 disclosure 절차로 분리
+- T1 crash-consistent updater
+- T2 authenticated updater
+- T3 rollback-protected chain은 실제 trust root와 보호된 monotonic state를 쓸 수 있을 때 진행
+- boot root, key, monotonic state, caller identity의 신뢰 가정
+- 교육용 HARA·FMEA·TARA와 주장–논리–근거 문서
+- kill simulation과 실제 power-cut 결과를 분리한 fault matrix
 
-### Vehicle platform implementation — 70%
+### Exit
 
-- 요구사항부터 배포·복구까지 하나의 시스템 완성
-- 기능 수보다 failure handling, measurement, traceability 우선
+- package 경로·symlink·TOCTOU·encoding·signature negative corpus를 통과한다.
+- 가능한 모든 transaction state에서 중단 후 복구한다.
+- immutable trust root와 rollback counter가 없는 환경의 한계를 설명한다.
+- 두 명의 reviewer가 safety/security 주장과 evidence를 따로 검토한다.
 
-## G11 이후 — Level 5 Expert Cycle
+세부 과정은 [Safety and Security Engineering](docs/safety-security-engineering.md)을 따릅니다.
 
-G11을 통과해도 모든 분야를 “완벽하게 안다”고 주장하지 않습니다. core mastery 뒤 선택한 subsystem 하나를 깊게 파고드는 첫 expert cycle에 12–18개월을 예상하며, 이후 다른 subsystem으로 반복합니다.
+---
 
-| Cycle | 예상 범위 | Mission | 통과 증거 |
+## G12 — System Architecture and Integration
+
+### 결과물: P06 Heterogeneous MCU–Linux Vehicle Platform
+
+- P00 MCU node와 P01–P04 Linux node
+- CAN/CAN FD vehicle data path와 SOME/IP service
+- DoIP–UDS read path
+- lifecycle, health, persistency, logging
+- Linux update와 MCU firmware compatibility/fallback policy
+- task overrun, watchdog reset, bus-off, service crash, network loss, update rollback
+
+### 필수 계약
+
+| 계약 | 문서에 들어갈 내용 |
+| --- | --- |
+| Data | unit, range, quality, sequence, freshness, ownership |
+| Time | end-to-end deadline, hop budget, clock domain, uncertainty |
+| Queue | capacity, backpressure, drop/overwrite/block policy |
+| State | startup, driving, diagnostic, update, degraded, fallback |
+| Version | service·gateway·MCU compatibility와 partial deployment |
+| Recovery | detection, containment, action, time bound, 근거 |
+| Update | trust assumption, activation order, known-good recovery |
+
+### Exit
+
+- 제3자가 새 환경에서 문서만 보고 전체 demo를 재현한다.
+- 10개 이상의 fault scenario가 자동 실행된다.
+- RTA, timing, CPU, memory, network budget이 원본 자료와 연결된다.
+- requirement → architecture → code → test → result 추적이 완성된다.
+- 외부 요구 변경을 받아 영향 분석과 ADR 수정을 수행한다.
+- 영어 README, versioned release, 5–10분 기술 데모를 공개한다.
+
+세 번째 포트폴리오 출구는 전체 플랫폼 release입니다. 이 결과는 이 저장소에서 구현한 MCU–Linux 통합 역량을 보여 줍니다.
+
+---
+
+## Major Gate와 유지 시험
+
+종합시험은 G0, G3, G5, G7, G10, G12의 마지막 Sprint 안에서 실시합니다. 나머지 Gate는 lab exit test와 전이 과제로 마칩니다. 분기 누적 시험은 필수 선수 기술 2개, 간격 반복 대기열 1개, 무작위 기술 1개를 표본으로 삼습니다. 핵심 선수 기술에서 실패하면 관련 후속 Gate를 잠시 멈추고 1주 보강합니다.
+
+[ASSESSMENTS.md](ASSESSMENTS.md)에 외부 검토, 비공개 고장 과제, 재시험 규칙이 정리되어 있습니다.
+
+## 선택 심화 Gate
+
+### Q1 — QNX Neutrino portability
+
+정식 SDP와 문서 접근 권한이 있을 때 진행합니다.
+
+- `MsgSend/MsgReceive/MsgReply`, channel, connection, pulse
+- thread priority와 synchronous IPC의 priority behavior
+- resource manager와 namespace
+- procnto, tracing, crash 분석
+- P01의 lifecycle/fault contract를 QNX에 이식하고 Linux 결과와 비교
+
+### N1 — Advanced Vehicle Ethernet
+
+- gPTP clock error 측정
+- TSN scheduling·traffic shaping 개념 실습
+- switch configuration과 hardware timestamp
+- SOME/IP-TP, E2E protection profile 심화
+
+### B1 — BSP and SoC depth
+
+- U-Boot/UEFI, kernel port, SMMU/IOMMU, GIC
+- 작은 kernel module 또는 driver와 Yocto 비교
+- DMA mapping, cache coherency, driver 성능
+- virtualization·partitioning은 실제 격리 요구가 있을 때 추가
+
+### M1 — Mixed-Criticality Systems
+
+이 용어를 프로젝트에 사용하려면 별도 Gate를 통과합니다.
+
+- assurance/criticality level과 workload model
+- shared-resource interference와 temporal/spatial partitioning
+- mode change와 degraded service
+- schedulability·isolation·assurance 근거
+
+## Expert Cycle
+
+G12 뒤에는 한 subsystem을 정해 Level 5를 준비합니다. 수량보다 실제 영향, 유지 기간, 외부 반박을 반영한 품질을 봅니다.
+
+| Cycle | 집중시간 | Mission | 핵심 증거 |
 | --- | ---: | --- | --- |
-| E1 Maintainer | 12–16주 | 실제 upstream subsystem을 지속적으로 읽고 고친다 | issue triage, regression test, review 반영, release 변화 추적 |
-| E2 Portability | 12–16주 | 새 MCU/SoC/RTOS/Linux 환경으로 contract를 이식한다 | 동일 contract suite, target delta, timing/memory 재예산 |
-| E3 Performance/Reliability Research | 12–20주 | 측정으로 실제 병목·failure를 발견하고 개선한다 | reproducible artifact, before/after raw data, patch 또는 기술 보고서 |
-| E4 Architecture/Teaching | 12–16주 | 타인 설계를 리뷰하고 요구 변경을 주도한다 | review 기록, 공개 설명, external design defense, revised ADR |
+| E1 Maintainer | 180–240h | upstream subsystem을 한 release cycle 유지 | triage, regression, review 반영 |
+| E2 Portability | 180–260h | 새 MCU/OS/Linux target으로 이식 | 동일 contract suite, target delta |
+| E3 Research | 220–320h | 성능·신뢰성 질문을 재현 가능한 연구로 해결 | raw data, validity, regression |
+| E4 Architecture/Teaching | 180–240h | 타인 설계 리뷰와 요구 변경 주도 | 외부 defense, 교육 재현, ADR 재평가 |
 
-### E1 — Subsystem maintainer
+Level 5 endorsement에는 다음이 필요합니다.
 
-- LLVM backend/optimizer, Zephyr/FreeRTOS kernel·driver, Linux CAN/networking, vsomeip, diagnostic/update component 중 하나를 선택합니다.
-- 최소 3개월 동안 release note, issue, test와 relevant source를 추적합니다.
-- 처음 보는 defect 5개 이상을 재현·분류하고, 최소 2개는 regression test 또는 patch로 제안합니다.
-- merge 여부와 무관하게 maintainer feedback을 기록하고 설계 가정을 수정합니다.
+- 선택 subsystem에서 낯선 production-like incident를 독립적으로 해결한다.
+- 변경 사항이 최소 한 release cycle과 3–6개월 regression 관찰을 견딘다.
+- 독립 검토자 두 명 또는 upstream maintainer가 결과를 검토한다.
+- 반대 의견을 반영해 설계나 주장을 수정한 기록이 있다.
+- 다른 사람이 문서나 세션을 통해 핵심 실험을 재현한다.
 
-### E2 — Cross-target portability
-
-- 기존과 다른 MCU family 또는 RTOS 하나, 다른 AArch64/x86 Linux 환경 하나로 이식합니다.
-- source fork로 조건문을 늘리기 전에 clock, transport, storage, scheduler contract를 분리합니다.
-- simulator/board와 두 Linux target에서 동일 conformance/fault suite를 재사용합니다.
-- ABI, endian, alignment, cache, scheduling, boot와 toolchain 차이를 porting report에 남깁니다.
-
-### E3 — Measured research
-
-- 실제 vehicle function에서 latency/jitter/code-size/memory/recovery 질문 하나를 고릅니다.
-- 반증 가능한 hypothesis, controlled workload, raw data와 validity threat를 먼저 정의합니다.
-- source → LLVM IR → machine code → runtime/fault evidence를 연결합니다.
-- 개선이 다른 workload·target에서 만드는 regression과 trade-off까지 보고합니다.
-
-### E4 — Architecture and teaching
-
-- 다른 사람의 code/design review를 최소 5회 수행하고 actionable defect와 contract gap을 찾습니다.
-- 자신이 만든 플랫폼에 외부 requirement change와 hidden fault를 받아 즉석 impact analysis를 수행합니다.
-- 30–60분 기술 세션 또는 장문 문서로 subsystem을 가르치고 질문·오류 정정을 기록합니다.
-- 6개월 이상 유지된 architecture decision을 실제 운영 evidence로 재평가합니다.
-
-### 첫 expert cycle 통과 기준
-
-- [ ] 선택 subsystem에서 처음 보는 문제를 독립적으로 진단·설계·리뷰하는 Level 5 증거가 있다.
-- [ ] 두 target 이상에서 동일 contract와 fault suite가 재현된다.
-- [ ] upstream maintainer 또는 외부 expert의 비동의·수정 feedback을 반영했다.
-- [ ] 성능 또는 신뢰성 개선이 raw evidence와 regression analysis로 증명된다.
-- [ ] 다른 사람에게 가르치고, 그 사람이 독립적으로 재현한 결과가 있다.
-- [ ] 무엇을 아직 모르는지와 다음 12개월 연구 질문이 명확하다.
-
-마스터리는 주제를 한 번 끝내는 것이 아니라, 낯선 시스템에서도 같은 문제 해결 방식을 재현하고 다른 사람의 품질까지 높이는 능력으로 판단합니다.
+이 endorsement는 선택한 subsystem과 검토 시점에만 적용됩니다.

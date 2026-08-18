@@ -1,6 +1,14 @@
 # Engineering Baseline Dossier
 
-이 문서는 G0 시작 시 현재 능력을 측정하고, G0 종료 시 같은 조건으로 다시 평가하기 위한 기록입니다. 처음 답할 때는 검색·노트·AI를 사용하지 않습니다. 모르면 `Unknown`이라고 쓰고, 사후 학습 답변과 섞지 않습니다.
+G0 시작과 종료에 같은 조건으로 능력을 측정합니다. 첫 답변은 검색·노트·AI 없이 작성하고, 모르는 내용은 `Unknown`으로 기록합니다. 학습 뒤 보완한 답은 별도 칸에 남깁니다.
+
+## Prior evidence and challenge-out
+
+| Gate / skill | Public artifact | My contribution | Last reproduced | Reviewer | Decision |
+| --- | --- | --- | --- | --- | --- |
+|  |  |  |  |  | Challenge / Gap Sprint / Full Gate |
+
+Challenge-out evidence는 공개 가능한 작은 reproducer, 본인 기여 설명, reviewer 확인으로 구성합니다. 회사 비공개 자료는 제외합니다. 판정 절차는 [ASSESSMENTS.md](../ASSESSMENTS.md#challenge-out)를 따릅니다.
 
 ## Session metadata
 
@@ -21,7 +29,7 @@
 | 0 | 용어를 모르거나 잘못 설명함 |
 | 1 | 용어를 인식하지만 example/constraint를 설명하지 못함 |
 | 2 | 작은 예제에 적용하나 오류 경로에서 막힘 |
-| 3 | 독립 구현·진단하고 test로 증명함 |
+| 3 | 독립 구현·진단하고 test로 확인함 |
 | 4 | 요구사항에서 설계하고 대안·trade-off를 방어함 |
 | 5 | 낯선 문제로 전이하고 다른 구현을 리뷰·교육함 |
 
@@ -118,4 +126,4 @@ Result: `Passed / Needs more evidence`
 
 Reviewer or clean-room environment:
 
-Next retest dates: 2 weeks / 6 weeks / 12 weeks / 6 months
+Next quarterly retention window:

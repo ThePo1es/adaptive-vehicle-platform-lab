@@ -13,9 +13,9 @@ body:
         - P01 Process Supervisor
         - P02 Vehicle State Service
         - P03 Execution Manager
-        - P04 Secure Update Manager
-        - P05 Secure Adaptive Gateway
-        - P06 Mixed-Criticality Vehicle Platform
+        - P04 Update Assurance Lab
+        - P05 CAN-SOME/IP Vertical Slice
+        - P06 Heterogeneous MCU-Linux Vehicle Platform
     validations:
       required: true
 

@@ -4,7 +4,7 @@ Status: Planned
 
 ## 문제
 
-차량 상태를 versioned SOME/IP service로 제공하고, 서비스의 늦은 시작·네트워크 단절·프로세스 재시작 후에도 클라이언트가 availability를 올바르게 처리하는지 증명합니다.
+차량 상태를 versioned SOME/IP service로 제공합니다. 서비스의 늦은 시작, 네트워크 단절, 프로세스 재시작에서 클라이언트의 availability 전이를 packet과 test로 확인합니다.
 
 ## 인터페이스 초안
 
@@ -47,9 +47,21 @@ flowchart LR
 
 ## 관련 요구사항
 
-- `REQ-COM-001`–`REQ-COM-004`
+- `REQ-COM-001`–`REQ-COM-005`
+- `REQ-TIME-001`–`REQ-TIME-003`
 - `REQ-PERF-001`
 - `REQ-QUAL-001`
+
+## Time and availability contract
+
+| Field | Decision |
+| --- | --- |
+| Source timestamp | clock domain and capture point |
+| Sequence | wrap and gap handling |
+| Discovery | offer/find/TTL timing |
+| Subscription | eventgroup and resubscription policy |
+| Freshness | stale and unavailable threshold |
+| Latency | clock offset/drift/uncertainty or RTT method |
 
 ## 마일스톤
 
@@ -69,6 +81,7 @@ flowchart LR
 | incompatible major version | 연결 거부 또는 명시적 compatibility policy |
 | 10Hz vs 100Hz event | p50/p95/p99 latency, CPU, RSS, drops |
 | UDP vs TCP | loss/recovery/head-of-line behavior |
+| SD TTL expires | availability transition and resubscription behavior |
 
 ## 완료 증거
 
@@ -78,4 +91,3 @@ flowchart LR
 - 재연결 integration test
 - 성능 raw data와 보고서
 - `ara::com`과 동일하지 않은 지점 설명
-

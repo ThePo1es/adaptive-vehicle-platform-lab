@@ -1,209 +1,232 @@
 # Mastery Assessments
 
-체크박스를 채우는 것과 실력이 생기는 것은 다릅니다. 각 Gate는 **도움 없이 설명**, **빈 저장소에서 구현**, **고장 진단**, **측정 해석**, **설계 방어**, **깨끗한 환경 재현**을 모두 평가합니다.
+평가는 실제 작업과 가까운 형태로 진행합니다. 설명, 구현, 고장 진단, 측정, 설계 변경, 새 환경 재현을 함께 봅니다. 해당 Gate의 핵심 능력은 3–4개 과제로 확인합니다.
 
-## 숙련도 단계
+## 숙련도
 
-| Level | Observable ability |
+| Level | 관찰 가능한 행동 |
 | --- | --- |
-| 0 — Recognize | 용어나 코드를 보면 알아본다. |
-| 1 — Reproduce | 안내를 따라 동일 결과를 만든다. |
-| 2 — Apply | 비슷한 문제에 독립적으로 적용한다. |
-| 3 — Diagnose | 고장·성능 저하·경계 조건의 원인을 찾는다. |
-| 4 — Design | 요구사항과 제약에서 구조와 trade-off를 결정한다. |
-| 5 — Teach/Review | 다른 구현을 비평하고 명확히 가르친다. |
+| 0 — Recognize | 용어나 코드를 알아본다. |
+| 1 — Reproduce | 안내를 따라 같은 결과를 만든다. |
+| 2 — Apply | 익숙한 문제를 독립적으로 처리한다. |
+| 3 — Diagnose | 낯선 고장과 경계 조건의 원인을 찾는다. |
+| 4 — Design | 요구와 제약에서 구조를 정하고 trade-off를 책임진다. |
+| 5 — Teach/Review | 새로운 문제를 해결하고 타인의 판단과 구현 품질을 높인다. |
 
-Gate 통과는 핵심 항목이 최소 Level 3, 설계 항목이 최소 Level 4일 때만 인정합니다. Level 표와 아래 0–4점 scorecard는 서로 다른 척도입니다. Level은 장기 역량, scorecard는 해당 Gate 산출물의 품질을 평가합니다.
+본 과정의 Gate는 관련 역량 Level 3과 설계 항목 Level 4를 목표로 합니다. Level 5는 선택한 subsystem에서 전문가 사이클을 마친 뒤 외부 검토로 판정합니다.
 
-## 공통 시험 7종
+## 평가 종류
 
-### 1. Closed-book explanation
-
-- 노트와 검색 없이 30–45분 설명
-- 정의 나열이 아니라 input, state, output, failure, trade-off 설명
-- 질문이 바뀌어도 같은 원리로 답변
-
-### 2. Blank-page implementation
-
-- 빈 저장소에서 핵심 구성요소를 제한 시간 내 구현
-- 기존 코드를 복사하지 않음
-- compiler warning, unit test, error path 포함
-
-### 3. Fault diagnosis
-
-- 원인을 미리 모르는 fault 3개 이상
-- 증상 → 가설 → 관찰 도구 → root cause → regression test 순서 기록
-- 로그 추가만으로 우연히 고치는 방식 금지
-
-### 4. Measurement defense
-
-- 동일 조건 반복 측정
-- raw data와 요약 script 제공
-- p50/p95/p99/worst, sample count, environment 기록
-- 왜 그 metric과 workload를 선택했는지 방어
-
-### 5. Architecture defense
-
-- requirement, constraint, quality attribute에서 decision 도출
-- 최소 두 대안과 trade-off 비교
-- failure containment와 observability 포함
-- 구현 결과가 decision을 지지하지 않으면 수정
-
-### 6. Clean-room reproduction
-
-- 새 clone 또는 새 VM/container/board 환경 사용
-- README만으로 다른 사람이 build/test/demo
-- 숨은 환경 변수, 수동 복사, 개인 경로 제거
-
-### 7. Teach-back and review
-
-- 10–20분 기술 설명 또는 문서
-- 다른 구현의 결함·모호한 contract를 찾아 review
-- 질문을 받았을 때 불확실한 부분을 사실처럼 답하지 않음
-
-## AI 사용 규칙
-
-LLM은 탐색·비평·테스트 아이디어·문서 검토에 사용할 수 있지만, 학습 여부를 속이지 않도록 평가를 분리합니다.
-
-| Mode | AI allowed | Purpose |
+| 평가 | 적용 시점 | 방식 |
 | --- | --- | --- |
-| Learn | Yes | 자료 탐색, 설명 비교, 실험 후보 생성 |
-| Build | Yes, recorded | 구현 속도 향상과 code review |
-| Debug exam | No initial hints | 자신의 관찰·가설 능력 검증 |
-| Blank-page exam | No | 독립 구현 능력 검증 |
-| Architecture defense | No prepared answers | 실제 reasoning 검증 |
-| Postmortem | Yes | 빠진 반례와 대안 검토 |
+| Lab exit | 모든 Gate | 자동 oracle과 짧은 전이 과제 |
+| Major Gate exam | G0, G3, G5, G7, G10, G12 | 설명·구현·진단·설계 defense를 한 세션으로 통합 |
+| 포트폴리오 검토 | G7, G10, G12 | 릴리스, 재현성, 주장 범위를 외부 검토 |
+| Quarterly cumulative | 분기마다 | 이전 Gate의 기술 2–3개를 표본 재평가 |
+| 전문가 판정 | 전문가 사이클 종료 | 독립 검토자 두 명 또는 upstream maintainer 검토 |
 
-AI가 생성한 코드는 다음 질문에 답하지 못하면 병합하지 않습니다.
+## 공통 합격 조건
 
-- 각 state와 invariant는 무엇인가?
-- failure path에서 resource ownership은 어떻게 정리되는가?
-- thread/ISR/process boundary는 어디인가?
-- 이 test가 어떤 결함을 막는가?
-- compiler/OS/hardware가 달라지면 어떤 가정이 깨지는가?
+다음 항목을 모두 충족해야 합니다.
 
-## Gate scorecard
+- 필수 불변 조건과 인수 시험이 통과한다.
+- 숨겨진 fault의 root cause를 찾고 regression test를 추가한다.
+- 측정 환경과 원본 자료가 commit에 연결된다.
+- 새 환경에서 build/test/demo를 재현한다.
+- 주장, 확인된 근거, 남은 가정을 구분한다.
+- 치명적인 safety/security invariant 실패가 없다.
+- 검토자의 필수 수정 사항을 반영한다.
 
-| Dimension | 0 | 1 | 2 | 3 | 4 |
-| --- | --- | --- | --- | --- | --- |
-| Correctness | 실행 불가 | happy path 일부 | 정상 경로 | 오류 경로 포함 | invariant/property로 검증 |
-| Depth | 용어 암기 | API 사용 | 원리 설명 | 내부 동작·경계 설명 | 대안과 trade-off 설계 |
-| Debugging | 추측 | 로그 의존 | 도구 사용 | 체계적 root cause | 재발 방지 체계 설계 |
-| Measurement | 없음 | 단일 숫자 | 반복 수치 | 분포·환경·raw data | validity와 budget 연결 |
-| Reliability | 없음 | 재시도 | 몇 개 오류 처리 | fault campaign | containment/recovery 증명 |
-| Documentation | 메모 | 실행법 | 설계·테스트 | 요구사항·증거 연결 | 제3자 재현·review 가능 |
-| Independence | 복사 | 안내 의존 | 일부 독립 | blank-page 재현 | 다른 문제로 전이·교육 |
+외부 검토를 받기 전에는 `Provisional`로 표시합니다. 다음 Major Gate에 들어가기 전에 검토를 받거나 아래 대체 절차를 통과합니다.
 
-통과 조건:
+## 관찰 기준
 
-- 모든 dimension 3점 이상
-- Depth, Reliability, Independence 중 두 항목 4점 이상
-- critical safety/security invariant 실패 0개
-- clean-room reproduction 성공
-- `Unverified` 항목과 residual risk가 명시됨
+| 항목 | 실패 | 통과 | 강한 통과 |
+| --- | --- | --- | --- |
+| Correctness | 정상 경로도 불안정 | 오류 경로와 invariant test 통과 | property·model·differential test가 결함을 잡음 |
+| Diagnosis | 로그를 늘리며 추측 | 가설과 관찰 도구로 root cause 확인 | 작은 reproducer와 재발 방지 체계까지 완성 |
+| Measurement | 단일 숫자 | 조건·분포·원본 자료·오차 기록 | analytical budget과 validity threat까지 연결 |
+| Design | 구현을 사후 설명 | 요구와 대안에서 결정을 도출 | 요구 변경에도 영향과 trade-off를 즉시 추적 |
+| Reliability | 일부 retry | fault containment와 bounded recovery 확인 | 조합 fault와 장기 soak에서도 상태 일관성 유지 |
+| Independence | 기존 답을 재생 | 새로운 표면의 과제를 독립 수행 | 다른 target·codebase로 전이하고 review 가능 |
+| Reproducibility | 개인 환경 의존 | 제3자가 문서로 재현 | versioned 릴리스와 근거 자동 재생성 |
 
-## Gate별 실전 시험
+합격에는 전 항목 `통과`가 필요합니다. 해당 Gate의 중점 항목 두 개는 `강한 통과`를 받아야 합니다. Gate별 중점 항목과 즉시 탈락 조건은 [동결 평가 계약](assessments/README.md)에서 관리합니다.
 
-### G0 Engineering baseline
+## 시험 준비와 봉인 절차
 
-- 새 clone/VM에서 문서만으로 toolchain setup과 build/test 재현
-- GCC/Clang warning-clean build와 실제 ASan/UBSan defect 진단
-- 시작 baseline의 timed practical을 같은 조건으로 재시험
-- observation, interpretation, assumption과 `Unverified`를 구분한 evidence review
+### 시험 전
 
-### G1 Systems C
+1. 응시할 commit SHA를 고정합니다.
+2. build와 공개 test가 통과하는지 확인합니다.
+3. 검토자가 고장 문제 모음 또는 전이 과제를 고릅니다.
+4. fault 내용은 시험 시작 전까지 응시자에게 공개하지 않습니다.
+5. 제한 시간, 허용 도구, 인터넷·AI 사용 범위를 기록합니다.
 
-- 90분: bounded ring buffer와 test 작성
-- 45분: integer/aliasing/alignment UB 사례 분석
-- hidden corpus: malformed CAN/UDS frame parser
-- compiler flags 변화에 따른 behavior 설명
+### 시험 중
 
-### G2 Embedded C++
+- terminal transcript, 화면 기록 또는 command log를 남깁니다.
+- 증상, 가설, 다음 관찰, 결론을 시간 순서대로 적습니다.
+- 외부 힌트를 받으면 시각과 내용을 기록합니다.
+- 환경 문제로 중단되면 문제를 수정한 뒤 새 fault로 다시 시작합니다.
 
-- 120분: ownership-safe message pipeline
-- dangling view, use-after-move, race가 섞인 코드 진단
-- exception/RTTI/heap 정책 architecture defense
+### 시험 후
 
-### G3 ARM/LLVM
+- 검토자가 준비한 기준 원인과 비교합니다.
+- 놓친 경계 조건을 regression test로 추가합니다.
+- fault는 다음 응시자에게 재사용하지 않거나 공개 시점을 늦춥니다.
+- 재시험은 같은 개념을 다른 구현과 증상으로 바꿉니다.
 
-- C 함수에서 ABI와 assembly를 역으로 설명
-- linker map과 fault register로 crash 진단
-- `-O2/-Oz` 차이를 IR→machine code→measurement로 연결
+## Fault bank
 
-### G4 Bare-metal
+Fault bank에는 다음 필드를 둡니다.
 
-- 빈 프로젝트에서 vector/startup/timer/interrupt 경로 구성
-- interrupt storm 또는 stack fault 진단
-- boot/memory map whiteboard defense
+| 필드 | 내용 |
+| --- | --- |
+| ID | 공개 목록과 분리된 식별자 |
+| Target commit | 주입 가능한 기준 SHA |
+| Seed patch | 검토자만 보관하는 변경 |
+| Symptom | 응시자에게 제공할 관찰 |
+| Root cause | 기대 원인과 관련 invariant |
+| Required evidence | 최소 command·trace·test 근거 |
+| Fatal miss | 합격을 막는 오판 |
+| Partial credit | 원인 범위를 좁힌 정도와 근거 |
 
-### G5 RTOS
+학습자가 직접 만든 고장은 연습용으로 사용합니다. 평가용 문제는 검토자, upstream bug corpus, 다른 구현체의 conformance suite에서 가져옵니다. LLM이 만든 문제는 검토자가 먼저 실행해 정답과 재현성을 확인한 뒤 봉인합니다.
 
-- task set에 priority/deadline/stack budget 배정
-- priority inversion과 overload hidden fault
-- 100,000 release timing report 재생성
+## 검토자 기준
 
-### G6 Classic concepts
+### 필요한 사람
 
-- CAN frame부터 SWC-like application까지 call path 구현·설명
-- ISO-TP timeout/NRC/storage corruption 진단
-- CanIf/PduR/COM/RTE/DCM/DEM/NvM 책임 경계 방어
+- G1/G3: 해당 언어·compiler·binary 작업을 검토할 수 있는 개발자 1명
+- G5: RTOS·CAN·embedded 경험이 있는 검토자 1명
+- G7: Classic Platform 경험이 있거나 선택한 AUTOSAR release의 관련 공식 문서를 직접 검토한 사람 1명
+- G10: Adaptive Platform 경험이 있거나 선택한 release 문서와 Linux lifecycle·service architecture를 함께 검토한 사람 1명
+- G11: safety와 security 관점을 나눠 보는 검토자 2명
+- G12: embedded 또는 platform 검토자 1명과 새 환경 재현 담당 1명
 
-### G7 Linux platform
+### 대체 절차
 
-- hanging child/process group shutdown fault
-- `strace`, core dump, `perf` 중 적절한 도구 선택
-- restart policy와 resource limit 설계
+사람을 구하지 못하면 official test, second implementation, mutation test, known upstream bug로 기술 정확성을 보완합니다. architecture defense와 Level 5 endorsement는 자동 oracle만으로 끝낼 수 없습니다. 해당 상태는 `Provisional`로 남깁니다.
 
-### G8 Vehicle networks
+검토자는 다음 내용을 기록합니다.
 
-- unknown packet capture에서 SOME/IP/DoIP/ISO-TP 계층 식별
-- bus-off와 service restart end-to-end recovery
-- 주기·event·stale-data 정책 방어
+- 관련 경험과 이해관계
+- 검토한 commit과 환경
+- 필수 수정, 권고 수정, 동의하지 않은 주장
+- 재검토 결과
 
-### G9 Adaptive concepts
+## AI 사용
 
-- EM/SM/PHM 책임이 뒤섞인 설계 refactor
-- manifest dependency cycle와 health/reboot fault
-- concept mapping에서 과장 표현 찾기
+| 단계 | 허용 범위 |
+| --- | --- |
+| 학습 | 설명 비교, source 탐색, 반례 후보 생성 |
+| 구현 | 허용. 사용 지점과 검토 내용을 PR에 기록 |
+| 공개 test 작성 | 허용. mutation과 비공개 corpus로 강도를 확인 |
+| 비공개 고장 진단 | 초기 힌트 금지 |
+| timed implementation | 코드 생성 금지 |
+| design defense | 준비된 답변 없이 직접 응답 |
+| postmortem | 허용. 빠진 반례와 대안을 찾는 데 사용 |
 
-### G10 Security/resilience
+생성 코드를 병합한 사람은 state, invariant, ownership, concurrency boundary, cleanup과 test 목적을 직접 설명할 수 있어야 합니다.
 
-- signed package negative corpus
-- update state마다 kill/power-loss simulation
-- threat model에서 빠진 trust boundary와 residual risk 찾기
+## Major Gate 시험
 
-### G11 Architecture capstone
+### G0 — Engineering baseline
 
-- 요구사항 변경 3개를 architecture와 traceability에 반영
-- timing/memory/network budget 초과 원인 진단
-- 외부 reviewer 앞에서 45–60분 design defense
-- clean machine/board에서 end-to-end demo
+| 과제 | 시간 | 합격 기준 |
+| --- | ---: | --- |
+| 새 환경 build | 60분 | 문서만으로 GCC/Clang test 재현 |
+| sanitizer diagnosis | 45분 | 결함 원인과 regression test 확인 |
+| baseline replay | 기존과 동일 | 실제 향상과 남은 gap 기록 |
 
-## 유지 시험
+### G3 — ARM ABI and LLVM
 
-한 번 통과한 지식도 다음 간격에 짧게 재평가합니다.
+| 과제 | 시간 | 합격 기준 |
+| --- | ---: | --- |
+| ABI reverse walk | 60분 | source↔assembly↔AAPCS32/64 연결 |
+| binary diagnosis | 60분 | ELF/map/symbol에서 원인 찾기 |
+| compiler transfer | 90분 | 처음 보는 함수의 IR·기계어·측정 분석 |
 
-- 2주 후: 핵심 개념 closed-book 설명
-- 6주 후: blank-page 핵심 구성요소 구현
-- 12주 후: 새로운 fault 또는 다른 target으로 전이
-- 6개월 후: 이전 architecture decision 재검토
+### G5 — RTOS and Real-Time Analysis
 
-재평가에서 실패하면 Gate를 취소하는 대신 `Needs refresh`로 표시하고 1주 복구 sprint를 수행합니다.
+| 과제 | 시간 | 합격 기준 |
+| --- | ---: | --- |
+| task-set analysis | 75분 | blocking·jitter·interference를 포함한 RTA |
+| 비공개 scheduling 고장 | 90분 | inversion 또는 overload root cause와 수정 |
+| measurement defense | 45분 | 분석 bound, 실측, 오차, workload를 연결 |
 
-## Level 5 expert endorsement
+### G7 — Classic Platform Concepts
 
-G11 통과만으로 Level 5를 자동 부여하지 않습니다. 선택 subsystem에서 다음을 모두 증명해야 합니다.
+| 과제 | 시간 | 합격 기준 |
+| --- | ---: | --- |
+| unknown CAN/UDS path | 90분 | packet에서 application·DTC까지 추적 |
+| 비공개 책임 경계 고장 | 60분 | layer 오배치와 상태 결함 수정 |
+| concept defense | 45분 | 공식 책임과 local 단순화를 정확히 구분 |
 
-- 3개월 이상 upstream source/issue/release를 지속 추적했다.
-- 처음 보는 defect 5개 이상을 재현·진단하고 regression을 설계했다.
-- 두 target 이상에 이식해 같은 contract/fault suite를 재사용했다.
-- maintainer 또는 외부 expert feedback으로 자신의 결정을 수정했다.
-- 타인 code/design review 5회 이상과 교육 자료를 남겼다.
-- 학습자가 문서/세션만으로 핵심 실험을 독립 재현했다.
-- 성능·신뢰성 개선의 raw evidence와 부작용 분석이 있다.
+### G10 — Adaptive Platform Concepts
 
-Level 5는 “모든 것을 안다”가 아니라 특정 subsystem에서 새로운 문제를 해결하고 타인의 판단 품질도 높일 수 있다는 뜻입니다.
+| 과제 | 시간 | 합격 기준 |
+| --- | ---: | --- |
+| manifest/lifecycle fault | 90분 | dependency·state·health 원인 진단 |
+| design repair | 60분 | EM/SM/PHM 책임을 재배치하고 test 정의 |
+| managed-node replay | 45분 | 새 환경 배포와 failure recovery 재현 |
 
-## 승급 기록
+### G12 — Architecture and Integration
 
-각 Gate 종료 시 [mastery review template](docs/templates/mastery-review.md)을 작성합니다. “통과했다고 느낌”이 아니라 commit, test, raw data, packet, report, reviewer feedback 링크를 남깁니다.
+| 과제 | 시간 | 합격 기준 |
+| --- | ---: | --- |
+| 새 환경 재현 | 반나절 | 제3자가 릴리스를 재현 |
+| 비공개 end-to-end 고장 | 120분 | 두 node를 가로지르는 root cause와 regression |
+| requirement change | 60분 | 영향, budget, interface, test, ADR 갱신 |
+| design defense | 60분 | 외부 질문과 반대 의견에 근거로 응답 |
+
+## Gate별 Lab Exit
+
+| Gate | 전이 과제 | 핵심 oracle |
+| --- | --- | --- |
+| G1 | ring buffer 대신 packet pool 구현 | invariant + property/mutation test |
+| G2 | 처음 보는 ownership bug가 든 pipeline 수리 | sanitizer + lifetime contract |
+| G4 | 다른 interrupt/fault를 register dump로 진단 | reference manual + crash record |
+| G6 | 다른 timer parameter의 ISO-TP peer와 상호 운용 | packet trace + second stack |
+| G8 | forked child가 남는 supervisor 결함 수정 | process tree + bounded shutdown |
+| G9 | delayed SD offer와 version mismatch 처리 | packet/state oracle |
+| G11 | 새로운 중단 지점·attacker capability 추가 | state model + assurance review |
+
+## Challenge-out
+
+기존 프로젝트로 Gate의 일부 또는 전부를 인정할 수 있습니다.
+
+1. `docs/baseline.md`에 이전 근거, 본인 기여, 공개 가능한 범위를 적습니다.
+2. 현재 Gate의 독립 실습과 전이 과제를 그대로 수행합니다.
+3. Major Gate에서는 비공개 고장 과제와 설계 질의도 진행합니다.
+4. evidence가 오래됐으면 현재 toolchain에서 재현합니다.
+5. 통과하면 상태를 `Validated`로 기록하고 1–2주 보강 Sprint만 진행합니다.
+
+이전 경험의 근거는 공개 가능한 설명, 새로 만든 작은 reproducer, 검토자 확인으로 구성합니다. 소속 회사의 비공개 코드와 문서는 제외합니다.
+
+## 누적 유지 시험
+
+분기마다 필수 선수 기술 2개, 간격 반복 대기열 1개, 나머지 Gate에서 무작위 기술 1개를 뽑습니다. 총 소요 시간은 6–10시간이며 각 Sprint의 누적 복습 예산에서 충당합니다.
+
+- 도움 없는 설명 20분
+- 작은 전이 구현 60–90분
+- 숨겨진 fault 하나 60–90분
+- 오래된 릴리스의 새 환경 build
+- ADR 하나를 현재 근거로 재검토
+
+핵심 선수 기술에서 실패하면 상태를 `Needs refresh`로 바꾸고 1주 보강합니다. 후속 Gate가 해당 기술에 의존하면 보강을 마칠 때까지 승급을 멈춥니다.
+
+## Expert Endorsement
+
+Level 5는 선택 subsystem 이름과 검토 날짜를 함께 적습니다. 다음 증거가 필요합니다.
+
+- 한 release cycle 이상 upstream 또는 실제 사용자 요구를 따라 유지했다.
+- 낯선 incident의 root cause와 regression을 독립적으로 만들었다.
+- 두 target 또는 두 구현에서 같은 contract를 검증했다.
+- 독립 검토자 두 명 또는 upstream maintainer가 결과를 검토했다.
+- 반대 의견으로 설계나 주장을 수정했다.
+- 변경 후 3–6개월 동안 회귀 여부를 관찰했다.
+- 다른 사람이 설명 자료로 핵심 실험을 재현했다.
+
+Gate 종료 기록은 [mastery review template](docs/templates/mastery-review.md)을 사용합니다.

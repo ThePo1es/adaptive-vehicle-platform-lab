@@ -23,7 +23,7 @@ docs/short-topic
 
 다음 항목이 모두 충족돼야 PR을 병합합니다.
 
-- [ ] 이슈의 질문 또는 요구사항 ID가 명확하다.
+- [ ] 이슈의 질문 또는 요구사항 ID가 적혀 있다.
 - [ ] 구현 범위와 의도적으로 제외한 범위가 적혀 있다.
 - [ ] 명령과 환경을 포함한 재현 절차가 있다.
 - [ ] 정상 경로와 최소 하나의 오류 경로를 테스트했다.
@@ -35,15 +35,14 @@ docs/short-topic
 ## 측정 규칙
 
 - 하드웨어, OS, compiler, build type, commit SHA를 함께 기록합니다.
-- latency는 평균만 쓰지 않고 p50/p95/p99와 표본 수를 기록합니다.
+- latency에는 p50/p95/p99, measured worst와 표본 수를 기록합니다.
 - 비교 실험은 동일한 조건에서 반복하고 warm-up 여부를 명시합니다.
 - 실패한 실험도 삭제하지 말고 원인과 다음 가설을 남깁니다.
 - MCU/RTOS 결과는 simulator와 hardware, timer source와 probe overhead를 구분합니다.
-- 관찰한 worst time을 검증된 WCET upper bound라고 부르지 않습니다.
+- measured worst와 analytical/WCET bound를 별도 필드에 기록합니다.
 
 ## Gate 승급
 
-- 주차나 프로젝트 milestone 완료만으로 승급하지 않습니다.
-- [평가 기준](ASSESSMENTS.md)의 모든 dimension을 채운 `Mastery gate review` 이슈를 사용합니다.
-- blank-page와 hidden-fault 시험은 초기 AI 힌트 없이 수행합니다.
-- G11은 외부 reviewer의 architecture 질문과 clean environment 재현을 포함합니다.
+- `Mastery gate review` 이슈에 [평가 기준](ASSESSMENTS.md)의 관찰 결과를 기록합니다.
+- 독립·전이·비공개 고장 시험은 초기 AI 힌트 없이 수행합니다.
+- G12는 외부 reviewer의 architecture 질문과 clean environment 재현을 포함합니다.

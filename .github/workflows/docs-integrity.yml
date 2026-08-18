@@ -1,4 +1,4 @@
-name: repository-check
+name: docs-integrity
 
 on:
   push:
@@ -10,13 +10,13 @@ permissions:
   contents: read
 
 jobs:
-  repository-check:
+  docs-integrity:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Validate repository structure and internal links
+      - name: Validate curriculum structure, links and traceability
         run: bash scripts/check_repo.sh
 

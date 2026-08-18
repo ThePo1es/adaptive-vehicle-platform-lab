@@ -31,9 +31,21 @@ git clone git@github.com:ThePo1es/adaptive-vehicle-platform-lab.git
 3. `Pull Requests > Automatically delete head branches` 활성화
 4. `Branches > Add branch protection rule`에서 `main` 보호
 5. `Require a pull request before merging` 활성화
-6. `Require status checks to pass`에서 `repository-check` 선택
+6. `Require status checks to pass`에서 `docs-integrity` 선택
 
 혼자 쓰는 저장소이므로 승인자 수 강제는 필요 없습니다. 대신 모든 의미 있는 변경을 PR로 올려 self-review 기록을 남깁니다.
+
+현재 `docs-integrity`는 문서 구조, 내부 링크, 요구사항 추적 형식과 민감 확장자를 검사합니다. C/C++ source나 `CMakeLists.txt`가 생기면 `LICENSE` 또는 `LICENSE.md`, `THIRD_PARTY_NOTICES.md`, 별도 `code-build` workflow가 모두 있어야 검사를 통과합니다.
+
+| 구현 단계 | Required check |
+| --- | --- |
+| Host C/C++ | GCC/Clang build, unit test, ASan/UBSan |
+| Parser/state machine | fuzz smoke, coverage, mutation/model test |
+| Cortex-M | cross compile, size/map artifact, simulator smoke |
+| Linux service | integration test, package/image smoke |
+| Hardware | CI 밖의 HIL record와 reviewer link |
+
+`docs-integrity`의 녹색 상태는 문서 무결성만 표시합니다.
 
 ## 3. 이슈·마일스톤·Project 보드
 
@@ -45,14 +57,14 @@ git clone git@github.com:ThePo1es/adaptive-vehicle-platform-lab.git
 | `experiment` | 가설·실험·측정 |
 | `project` | 구현 작업 |
 | `mastery-gate` | Gate 승급 시험과 재시험 |
-| `expert-cycle` | G11 이후 유지보수·이식·연구·교육 증거 |
+| `expert-cycle` | G12 이후 유지보수·이식·연구·교육 증거 |
 | `documentation` | 아키텍처·요구사항·보고서 |
 | `blocked` | 외부 조건 때문에 진행 불가 |
 | `safety-review` | 실차·벤치·민감 데이터 검토 필요 |
 
-Milestone은 `G0 — Engineering Baseline`부터 `G11 — Architecture Capstone`까지 만듭니다. 각 Study/Experiment/Project 이슈에 현재 Gate milestone을 지정하고, 기간이 끝났다는 이유로 닫지 않습니다.
+Milestone은 `G0 — Engineering Baseline`부터 `G12 — Architecture and Integration`까지 만듭니다. 각 Study/Experiment/Project 이슈에 현재 Gate milestone을 지정하고, exit artifact가 준비되면 닫습니다.
 
-G11 통과 뒤에는 `E1 — Maintainer`부터 `E4 — Architecture/Teaching` milestone을 필요할 때 추가합니다. Expert cycle은 선택 subsystem을 정한 뒤 시작합니다.
+G12 통과 뒤에는 `E1 — Maintainer`부터 `E4 — Architecture/Teaching` milestone을 추가합니다. Expert Cycle은 선택 subsystem과 reviewer를 정한 뒤 시작합니다.
 
 GitHub Project를 추가한다면 Board view 하나로 충분합니다.
 
@@ -100,7 +112,7 @@ test(p04): reject rollback package after interrupted update
 docs: add p99 event latency report
 ```
 
-Gate를 통과할 때는 새 `Mastery gate review` 이슈를 만들고 [평가 기준](ASSESSMENTS.md)과 [review template](docs/templates/mastery-review.md)의 증거를 연결합니다. 2주·6주·12주·6개월 재시험도 같은 milestone 또는 후속 이슈로 예약합니다.
+Gate를 통과할 때는 새 `Mastery gate review` 이슈를 만들고 [평가 기준](ASSESSMENTS.md)과 [review template](docs/templates/mastery-review.md)의 증거를 연결합니다. 분기 누적 시험은 별도 `mastery-gate` 이슈로 기록합니다.
 
 ## 6. 올리면 안 되는 것
 

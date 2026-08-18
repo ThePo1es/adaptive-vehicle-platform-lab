@@ -40,6 +40,8 @@ Adaptive-style lifecycle을 학습하기 전에, Linux 프로세스를 예측 �
 - `REQ-OBS-001`
 - `REQ-QUAL-001`
 - `REQ-QUAL-002`
+- `REQ-PLAT-002`
+- `REQ-PLAT-003`
 
 ## 상태 모델
 
@@ -84,4 +86,3 @@ stateDiagram-v2
 - 실제 시간에 의존하지 않는 backoff test
 - ASan/UBSan 실행 결과
 - Execution Management와의 매핑 및 차이
-

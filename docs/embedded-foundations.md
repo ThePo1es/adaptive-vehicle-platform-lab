@@ -1,148 +1,59 @@
 # Embedded and Platform Foundations
 
-이 문서는 Gate 학습 중 빠진 기반이 없는지 확인하는 범위표입니다. 항목을 읽었다고 체크하지 않고 code/test/measurement 링크를 붙입니다.
+이 표는 개념 목록 대신 Gate별 결과를 확인합니다. 각 Outcome에는 구현, negative test, 원본 evidence, reviewer 결과를 연결합니다.
 
-## Systems C
+| ID | Gate | Outcome | Evidence link | Status |
+| --- | --- | --- | --- | --- |
+| OUT-C-01 | G1 | 정수·정렬·endianness 경계를 지키는 serialization | — | Not started |
+| OUT-C-02 | G1 | bounds·lifetime·aliasing 계약이 있는 parser | — | Not started |
+| OUT-C-03 | G1 | 명시적 overflow 정책을 가진 bounded storage | — | Not started |
+| OUT-C-04 | G1 | MMIO·ISR·thread 경계를 구분한 API | — | Not started |
+| OUT-XCUT-G1 | G1 | parser misuse case와 입력 경계 기록 | — | Not started |
+| OUT-CPP-01 | G2 | owner와 non-owning view의 수명이 검증된 message path | — | Not started |
+| OUT-CPP-02 | G2 | heap·exception·RTTI 정책과 binary 영향 보고서 | — | Not started |
+| OUT-CPP-03 | G2 | race와 backpressure를 자동 시험하는 runtime | — | Not started |
+| OUT-XCUT-G2 | G2 | 소유권 침해와 race의 failure path 기록 | — | Not started |
+| OUT-ABI-01 | G3 | AAPCS32/64와 ELF symbol을 source까지 추적 | — | Not started |
+| OUT-ABI-02 | G3 | source→LLVM IR→machine code→measurement 보고서 | — | Not started |
+| OUT-XCUT-G3 | G3 | compiler·ABI 가정과 깨지는 조건 기록 | — | Not started |
+| OUT-MCU-01 | G4 | reset·startup·linker·main 경로가 동작하는 image | — | Not started |
+| OUT-MCU-02 | G4 | interrupt·fault·watchdog 원인과 상태 기록 | — | Not started |
+| OUT-MCU-03 | G4 | clock·timer·peripheral 측정과 errata 검토 | — | Not started |
+| OUT-XCUT-G4 | G4 | debug·boot·key 신뢰 경계 기록 | — | Not started |
+| OUT-RT-01 | G5 | 요구에서 도출한 task model과 response-time analysis | — | Not started |
+| OUT-RT-02 | G5 | timing·stack·queue 원본 자료와 overload 정책 | — | Not started |
+| OUT-RT-03 | G5 | priority inversion·blocking hidden fault 진단 | — | Not started |
+| OUT-XCUT-G5 | G5 | deadline miss와 fallback 선택 근거 | — | Not started |
+| OUT-CAN-01 | G6 | physical CAN timing·load·bus-off evidence | — | Not started |
+| OUT-DIAG-01 | G6 | ISO-TP timer matrix와 UDS read interoperability | — | Not started |
+| OUT-XCUT-G6 | G6 | 진단 권한과 flood misuse case 시험 | — | Not started |
+| OUT-CP-01 | G7 | communication vertical slice | — | Not started |
+| OUT-CP-02 | G7 | diagnostic vertical slice | — | Not started |
+| OUT-CP-03 | G7 | DTC·persistent restore vertical slice | — | Not started |
+| OUT-XCUT-G7 | G7 | E2E·SecOC 적용 지점과 남은 보장 기록 | — | Not started |
+| OUT-LNX-01 | G8 | process tree lifecycle과 bounded recovery | — | Not started |
+| OUT-LNX-02 | G8 | image·kernel·DT·service clean build | — | Not started |
+| OUT-LNX-03 | G8 | core/syscall/performance 도구를 사용한 incident 진단 | — | Not started |
+| OUT-XCUT-G8 | G8 | privilege·resource 제한과 우회 시험 | — | Not started |
+| OUT-NET-01 | G9 | SOME/IP/SD availability·version·reconnect packet evidence | — | Not started |
+| OUT-NET-02 | G9 | DoIP read path와 CAN–SOME/IP vertical slice | — | Not started |
+| OUT-NET-03 | G9 | clock offset·drift·uncertainty가 있는 time contract | — | Not started |
+| OUT-XCUT-G9 | G9 | network service와 diagnostic gateway 위협 시나리오 | — | Not started |
+| OUT-AP-01 | G10 | manifest dependency와 lifecycle manager | — | Not started |
+| OUT-AP-02 | G10 | state decision·process action·health observation 분리 | — | Not started |
+| OUT-AP-03 | G10 | official release와 local behavior mapping | — | Not started |
+| OUT-XCUT-G10 | G10 | identity·policy·audit 책임 매핑 | — | Not started |
+| OUT-ASSURE-01 | G11 | 교육용 HARA·FMEA와 safety evidence | — | Not started |
+| OUT-ASSURE-02 | G11 | TARA·trust boundary와 update negative corpus | — | Not started |
+| OUT-ASSURE-03 | G11 | crash-consistent/authenticated update와 rollback | — | Not started |
+| OUT-SYS-01 | G12 | cross-node data·time·state·version contract | — | Not started |
+| OUT-SYS-02 | G12 | budget과 10개 이상 fault campaign | — | Not started |
+| OUT-SYS-03 | G12 | 제3자 clean reproduction과 design defense | — | Not started |
 
-- [ ] integer promotion과 usual arithmetic conversion
-- [ ] signed/unsigned overflow와 comparison
-- [ ] object representation, padding, trap/indeterminate value
-- [ ] effective type, strict aliasing, pointer provenance 개념
-- [ ] alignment와 unaligned access
-- [ ] endianness와 explicit serialization
-- [ ] `volatile`/atomic/barrier의 역할 구분
-- [ ] MMIO register abstraction
-- [ ] stack/heap/static storage duration
-- [ ] linker section과 startup initialization
-- [ ] callback/state machine/ring buffer/fixed pool
-- [ ] ISR-safe와 thread-safe contract 구분
-- [ ] MISRA 제한의 failure rationale
+## 상태
 
-## Embedded C++
+`Not started`, `Learning`, `Evidence ready`, `Provisional`, `Validated`, `Needs refresh`만 사용합니다. `Validated`에는 reviewer와 commit을 함께 적습니다.
 
-- [ ] lifetime, RAII, copy/move, rule of zero/five
-- [ ] `span`, `optional`, `variant`, fixed-capacity type
-- [ ] smart pointer와 non-owning view 선택
-- [ ] template instantiation/code bloat
-- [ ] exception/RTTI/dynamic allocation policy
-- [ ] custom/fixed allocator
-- [ ] virtual dispatch와 static polymorphism
-- [ ] thread/atomic memory ordering
-- [ ] zero-copy ownership and backpressure
-- [ ] ABI/name mangling/vtable/structure passing
+## 세부 범위
 
-## Cortex-M and bare metal
-
-- [ ] vector table/reset handler/startup code
-- [ ] MSP/PSP and exception frame
-- [ ] NVIC priority and interrupt nesting
-- [ ] fault status and crash record
-- [ ] MPU region and privilege concept
-- [ ] linker script and memory map
-- [ ] `.text/.rodata/.data/.bss/stack/heap`
-- [ ] memory-mapped peripheral and DMA
-- [ ] watchdog and reset reason
-- [ ] flash layout and boot selection
-
-## AArch64 and Linux SoC
-
-- [ ] exception level and privilege boundary
-- [ ] virtual memory/page table/MMU
-- [ ] cache/TLB/locality/false sharing
-- [ ] DMA coherency and barrier concept
-- [ ] SMP and atomics
-- [ ] ELF, AAPCS, calling convention
-- [ ] PLT/GOT, dynamic linker, shared library
-- [ ] bootloader → kernel → userspace
-
-## RTOS
-
-- [ ] preemptive/cooperative scheduling
-- [ ] task states and priority
-- [ ] ISR/task boundary
-- [ ] mutex/semaphore/queue/event/timer
-- [ ] priority inversion/inheritance
-- [ ] race/deadlock/starvation
-- [ ] period/deadline/execution/jitter/overrun
-- [ ] tick/tickless time behavior
-- [ ] stack high-water mark and heap fragmentation
-- [ ] watchdog and safe state
-- [ ] WCET concept and measurement limits
-- [ ] MPU-based task isolation
-
-## Classic AUTOSAR concept flow
-
-### General communication
-
-```text
-CAN Driver → CanIf → PduR → COM → RTE → SWC
-```
-
-### Diagnostics
-
-```text
-CAN Driver → CanIf → CanTp → PduR → DCM → Application
-```
-
-### Fault storage
-
-```text
-Application → DEM → NvM → Flash
-```
-
-### Module responsibility checklist
-
-- [ ] AUTOSAR OS, RTE
-- [ ] COM, PduR, CanIf, CanTp
-- [ ] DCM, DEM, NvM
-- [ ] EcuM, BswM, WdgM
-- [ ] SecOC concept
-- [ ] Flash Bootloader
-
-## Linux/QNX systems
-
-- [ ] process lifecycle, signal, process group
-- [ ] thread scheduling, affinity, priority inversion
-- [ ] `epoll`, Unix socket, shared memory, `mmap`
-- [ ] TCP/UDP/multicast and backpressure
-- [ ] systemd/service supervision
-- [ ] resource limit and watchdog
-- [ ] core dump, `gdb`, `strace`, `perf`
-- [ ] cross compilation and sysroot
-- [ ] Device Tree and driver model basics
-- [ ] boot time, logging, tracing, observability
-
-## Vehicle networks
-
-### CAN
-
-- [ ] arbitration and timing fundamentals
-- [ ] error frame, error active/passive, bus-off
-- [ ] CAN FD
-- [ ] SocketCAN and queue behavior
-- [ ] DBC signal encoding/decoding
-- [ ] ISO-TP and UDS
-- [ ] Network Management concept
-- [ ] routing/rate/stale-data policy
-
-### Ethernet
-
-- [ ] VLAN/multicast
-- [ ] TCP/UDP selection
-- [ ] SOME/IP and SOME/IP-SD
-- [ ] DoIP
-- [ ] service availability and versioning
-- [ ] serialization and compatibility
-- [ ] E2E vs cryptographic protection
-- [ ] time sync and TSN concepts
-
-## Completion rule
-
-체크 항목마다 가능한 경우 다음 링크를 붙입니다.
-
-```text
-Concept note → implementation → negative test → raw evidence → explanation/review
-```
-
-링크가 없으면 `Learned`가 아니라 `Unverified` 또는 `Needs practice`로 유지합니다.
-
+Outcome의 세부 학습 항목과 Sprint 순서는 [Gate Playbook](gate-playbook.md)에서 관리합니다.

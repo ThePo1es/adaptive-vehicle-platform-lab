@@ -1,12 +1,12 @@
 # AUTOSAR Concept Mapping
 
-이 문서는 자체 구현을 AUTOSAR Classic/Adaptive의 책임 경계와 비교하는 **학습용 매핑**입니다. 이름이 비슷하다는 이유만으로 API 호환성, ARXML 호환성, timing guarantee, safety certification 또는 규격 적합성을 의미하지 않습니다.
+이 표는 local prototype과 AUTOSAR Classic/Adaptive의 책임 경계를 비교합니다. 호환성 범위는 `Implemented scope`에 적힌 동작까지이며, API·ARXML·timing guarantee·규격 적합성·안전 인증은 포함하지 않습니다.
 
 ## Classic Platform concepts
 
-| Local component / flow | Related Classic concept | Implemented scope | Deliberate difference | Evidence |
+| Local component / flow | Related Classic concept | 구현한 범위 | 의도적으로 뺀 범위 | 근거 |
 | --- | --- | --- | --- | --- |
-| RTOS periodic task set | AUTOSAR OS | priority, periodic release, deadline/overrun, stack evidence | OSEK/AUTOSAR API, ScheduleTable, IOC와 conformance 미구현 | Planned |
+| RTOS periodic task set | AUTOSAR OS | priority, release, resource/blocking, deadline/overrun, stack evidence | OSEK/AUTOSAR API, event/alarm/ScheduleTable, IOC, protection과 conformance 미구현 | Planned |
 | application port facade | SWC / RTE | typed read/write/call contract와 generated-like adapter | ARXML, RTE generator, runnable semantics 미구현 | Planned |
 | CAN driver boundary | MCAL / CanIf | interrupt input, controller state, bounded frame queue | vendor MCAL API와 hardware abstraction breadth 미구현 | Planned |
 | PDU router | PduR | static route table과 upper/lower adapter 분리 | configuration generator와 모든 routing path 미구현 | Planned |
@@ -17,14 +17,18 @@
 | journaled storage | NvM | versioned records, CRC, restore/default path | block model, MemIf/Fee/Ea와 endurance algorithm 미구현 | Planned |
 | watchdog supervisor | WdgM | alive/deadline observation과 safe/degraded trigger | supervision entity/checkpoint model과 safety validation 미구현 | Planned |
 | startup/mode state machine | EcuM / BswM | deterministic startup, run, diagnostic, update, shutdown modes | generated rules, wakeup validation, 전체 BSW orchestration 미구현 | Planned |
-| boot/update prototype | Flash Bootloader | image metadata, integrity, known-good fallback | OEM protocol, HSM root, production secure boot chain 미구현 | Planned |
+| communication state manager | ComM / CanSM / CanNm | requested communication mode, controller state, bus-off recovery policy | full channel/user mapping, network-management timing과 generated configuration 미구현 | Planned |
+| data protection adapter | E2E Library concept | sequence, data ID, CRC와 receiver state 실험 | profile-specific conformance와 safety integration 미구현 | Planned |
+| authenticated PDU adapter | SecOC / CSM / CryptoIf concept | freshness, MAC verification, key-adapter boundary 실험 | production key management, HSM integration과 conformance 미구현 | Planned |
+| boot/update prototype | OEM/vendor flash-bootloader integration concept | image metadata, integrity, known-good fallback | standardized Classic BSW module로 취급하지 않음; OEM protocol, HSM root, production secure boot chain 미구현 | Planned |
 
 ## Adaptive Platform concepts
 
-| Local component | Related Adaptive concept | Implemented scope | Deliberate difference | Evidence |
+| Local component | Related Adaptive concept | 구현한 범위 | 의도적으로 뺀 범위 | 근거 |
 | --- | --- | --- | --- | --- |
 | `vehicle-state-service` | Communication Management / `ara::com` | service, method, event, discovery, reconnection | vsomeip API 사용, `ara::com` API·generator 미구현 | Planned |
 | `execution-manager` | Execution Management | process spawn/stop, dependency order, restart policy | 자체 manifest와 POSIX process 사용, `ara::exec` 미구현 | Planned |
+| manifest mapper | Execution/Service Interface/Service Instance/Machine Manifest concepts | selected fields, validation, deployment relation | 공식 ARXML schema와 generator/toolchain 미구현 | Planned |
 | `state-manager` | State Management | Startup/Driving/Diagnostic/Update/Shutdown 결정 | Function Group 모델을 단순 enum/config로 표현 | Planned |
 | `health-monitor` | Platform Health Management | alive/deadline supervision, recovery trigger | supervision 종류와 recovery policy 일부만 구현 | Planned |
 | `persistency-service` | Persistency | version/config/journal 저장과 복구 | `ara::per` API, redundancy 정책 미구현 | Planned |

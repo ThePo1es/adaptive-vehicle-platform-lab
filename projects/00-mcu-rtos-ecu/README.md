@@ -2,115 +2,119 @@
 
 Status: Planned
 
-## Problem
+P00은 세 번 release합니다. 각 release는 해당 Gate에서 배운 내용만 사용합니다.
 
-제한된 CPU·RAM·flash와 실시간 제약 아래에서 sensor data를 처리하고 CAN/UDS로 통신하며, task overrun·bus-off·watchdog reset·storage failure에서 정의된 상태로 복구하는 ECU node를 구현합니다.
+| Release | Gate | 범위 |
+| --- | --- | --- |
+| P00-A | G5 | RTOS task set, RTA, timing, queue, watchdog |
+| P00-B | G6 | CAN/CAN FD, ISO-TP, UDS read path, physical bus fault |
+| P00-C | G7 | Classic concept communication·diagnostic·DTC vertical slice |
 
-초기에는 QEMU/native simulation 또는 개발 보드에서 시작하고, 특정 MCU vendor HAL에 종속되기 전에 scheduler/timing/driver contract를 분리합니다.
+## P00-A — RTOS Timing Core
 
-## Functional scope
+### 기능
 
-- 1ms/10ms/100ms periodic task set
-- sensor and actuator simulation
-- CAN/CAN FD abstraction and bounded TX/RX queue
-- DBC-like signal encode/decode
-- ISO-TP and read-focused UDS services
-- DTC event/status and persistent restore
-- watchdog and safe/degraded state
-- bus-off detection/recovery policy
-- firmware version and flash layout
-- bootloader/update protocol prototype
+- 요구사항에서 도출한 periodic·sporadic task set
+- synthetic sensor와 defined output state
+- bounded ISR-to-task queue
+- watchdog와 deterministic fallback policy
+- monotonic timing recorder와 stack/queue counters
+
+### Timing contract
+
+| Field | 작성 시점 | 내용 |
+| --- | --- | --- |
+| Functional deadline | 구현 전 | 상위 기능 요구에서 도출 |
+| Task allocation | 구현 전 | period, deadline, priority, release model |
+| Provisional WCET estimate | 구현 전 | 근거와 uncertainty 포함 |
+| Response-time bound | 구현 전 | blocking, ISR, jitter, interference 포함 |
+| Measured distribution | 구현 후 | p50/p95/p99/measured worst와 환경 |
+| Acceptance decision | 시험 후 | analytical·measured evidence와 margin |
+
+1ms/10ms/100ms는 예제 값으로만 사용할 수 있습니다. 최종 task period와 deadline은 synthetic stakeholder requirement에 연결합니다.
+
+### P00-A Exit
+
+- task model과 fixed-priority response-time analysis
+- priority inversion·overload·queue saturation fault
+- workload phase와 interrupt load를 나눈 soak test
+- timing·stack·queue 원본 자료와 재생성 script
+- watchdog detection·recovery 시간과 reset reason
+
+## P00-B — CAN and Diagnostics Extension
+
+### 기능
+
+- CAN/CAN FD driver boundary와 bounded TX/RX queue
+- DBC-style signal encode/decode
+- ISO-TP sender/receiver state machine
+- read-focused UDS endpoint와 timer/session policy
+- physical bus-off detection과 bounded recovery
+
+### 필수 실험
+
+| Scenario | Evidence |
+| --- | --- |
+| arbitration/load change | calculated and measured response time |
+| termination or bit-rate mismatch | scope/controller error evidence |
+| bus-off | error state, unavailable state, recovery trace |
+| ISO-TP sequence/timer fault | packet trace and state assertion |
+| UDS malformed/unauthorized request | NRC/reject and unchanged application state |
+| flood | queue peak, drops, CPU/task impact |
+
+### P00-B Exit
+
+- vcan과 physical bench 결과를 분리한 보고서
+- Linux ISO-TP 또는 별도 tester와 상호 운용
+- 실제 bus-off fault와 복구 정책
+- 진단 write·download가 비활성화된 access policy
+
+## P00-C — Classic Concept Stack
+
+### 경로
+
+```text
+CAN RX → CanIf-like → PduR-like → COM-like → RTE-like → Application
+UDS RX → CanTp-like → PduR-like → DCM-like → Application → response
+Fault → DEM-like event/DTC → NvM-like journal → reboot restore
+```
+
+### 기능
+
+- static route·signal·runnable configuration
+- 작은 schema에서 generated configuration 생성
+- DTC status/snapshot과 persistent restore
+- startup, diagnostic, degraded, shutdown mode state
+- watchdog supervision과 communication-state interaction
+
+### P00-C Exit
+
+- 세 경로의 packet·call·state trace
+- timeout, NRC, storage corruption, startup mode negative tests
+- official release·문서 절과 local implementation mapping
+- P00 v1 clean-board release와 외부 review
 
 ## Architecture
 
 ```mermaid
 flowchart TB
-    ISR["Timer / CAN ISR"] --> Queue["Bounded ISR-to-task queue"]
-    Queue --> Fast["1 ms control/input task"]
-    Queue --> Vehicle["10 ms vehicle state task"]
-    Vehicle --> CAN["CAN + ISO-TP"]
-    CAN --> UDS["UDS dispatcher"]
-    Vehicle --> DTC["DTC manager"]
-    DTC --> Nv["Persistent storage"]
-    WDG["Watchdog supervisor"] --> Safe["Safe/degraded state"]
-    WDG --> Fast
-    WDG --> Vehicle
-    Boot["Boot/update manager"] --> Vehicle
+    ISR["Timer / CAN ISR"] --> Queue["Bounded queue"]
+    Queue --> Tasks["Periodic task set"]
+    Tasks --> RTE["Application port"]
+    RTE --> COM["COM-like signal store"]
+    COM --> CAN["PduR / CanIf / CAN"]
+    CAN --> UDS["CanTp / DCM read path"]
+    Tasks --> DEM["DEM-like DTC"]
+    DEM --> NVM["NvM-like journal"]
+    WDG["Watchdog supervisor"] --> Fallback["Defined fallback state"]
 ```
 
-## Timing contract
+## Requirements
 
-| Task | Period | Deadline | Initial budget | Failure policy |
-| --- | ---: | ---: | ---: | --- |
-| Fast input/control | 1 ms | 1 ms | measured, then fixed | safe output after consecutive misses |
-| Vehicle state | 10 ms | 10 ms | measured, then fixed | stale flag and degraded state |
-| Diagnostics | event-driven | bounded response | queue/timeout policy | NRC or timeout, never unbounded block |
-| DTC persistence | 100 ms/background | defined flush bound | write budget | journal/retry with wear assumption noted |
-| Watchdog supervision | 10 ms | defined detection bound | minimal | reset or safe state by policy |
+- P00-A: `REQ-RTOS-001`–`REQ-RTOS-006`, `REQ-FALLBACK-001`
+- P00-B: `REQ-CAN-001`–`REQ-CAN-004`, `REQ-ECU-DIAG-001`–`REQ-ECU-DIAG-003`
+- P00-C: `REQ-DTC-001`–`REQ-DTC-002`
 
-예산 숫자는 측정 전 임의로 확정하지 않습니다. 첫 baseline 뒤 hardware와 workload를 명시해 채웁니다.
+## 결과물 이름과 적용 범위
 
-## Related requirements
-
-- `REQ-RTOS-001`–`REQ-RTOS-004`
-- `REQ-CAN-001`–`REQ-CAN-003`
-- `REQ-DIAG-001`–`REQ-DIAG-003`
-- `REQ-BOOT-001`–`REQ-BOOT-003`
-- `REQ-SAFE-001`
-
-## Milestones
-
-- [ ] P00-M1: startup, timer, interrupt, fault record
-- [ ] P00-M2: periodic task set and timing recorder
-- [ ] P00-M3: CAN queue and signal encoding
-- [ ] P00-M4: ISO-TP/UDS read path
-- [ ] P00-M5: DTC and persistent state
-- [ ] P00-M6: watchdog, overrun and safe-state policy
-- [ ] P00-M7: boot/update and fallback prototype
-- [ ] P00-M8: 100,000-release report and Gate assessment
-
-## Required measurements
-
-| Metric | Required output |
-| --- | --- |
-| execution time | p50/p95/p99/worst per task |
-| release jitter | distribution and maximum |
-| deadline | misses / total releases |
-| stack | high-water mark per task plus margin |
-| queue | peak depth, drops, overflow policy |
-| watchdog | detection and recovery time |
-| CAN | load, latency, bus-off recovery time |
-| flash | image/section size and persistent write behavior |
-
-## Fault campaign
-
-| Fault | Expected behavior |
-| --- | --- |
-| task exceeds budget | overrun recorded; configured degraded/safe action |
-| high-priority task starves low task | supervision detects deadline miss |
-| priority inversion | reproduced, then bounded with protocol/policy |
-| CAN RX flood | bounded queue and explicit drop counter |
-| bus-off | communication unavailable state and bounded recovery attempt |
-| malformed ISO-TP/UDS | reject without memory/state corruption |
-| persistent record corruption | default/recovery path and DTC/audit evidence |
-| watchdog reset | reset reason retained; output enters safe state |
-| update interrupted | active known-good image remains bootable |
-
-## Explicit non-goals
-
-- production safety certification
-- AUTOSAR Classic conformance
-- actual vehicle actuator control
-- vendor-specific MCAL clone
-- cryptographic boot root before basic boot/recovery correctness
-
-## Completion evidence
-
-- clean board/simulator setup and one-command test
-- task/ISR/thread model and timing budget
-- raw timing/stack/queue data with analysis script
-- CAN/ISO-TP/UDS packet evidence
-- fault register and watchdog/bus-off postmortem
-- Classic concept mapping and deliberate differences
-- AI-independent blank-page and fault diagnosis assessment
-
+결과물 이름은 `Classic concept-aligned prototype`으로 표기하고, 호환성·인증 범위는 저장소 [README](../../README.md)의 기준을 따릅니다. G4에서는 기본 boot/fallback 경로만 다룹니다. `REQ-BOOT-001`–`003`의 신뢰 사슬은 P04-T3에서 실제 hardware root를 갖춘 뒤 검증합니다.

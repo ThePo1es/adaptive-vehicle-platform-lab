@@ -12,15 +12,16 @@ body:
         - G0 Engineering Baseline
         - G1 Systems C
         - G2 Embedded C++
-        - G3 ARM and LLVM
-        - G4 Bare-metal MCU
-        - G5 RTOS ECU
-        - G6 Classic AUTOSAR concepts
-        - G7 Linux/QNX platform
-        - G8 Vehicle networks
-        - G9 Adaptive platform
-        - G10 Security and resilience
-        - G11 Architecture capstone
+        - G3 ARM ABI and LLVM
+        - G4 Bare-metal Cortex-M
+        - G5 RTOS and real-time analysis
+        - G6 CAN and diagnostics
+        - G7 Classic Platform concepts
+        - G8 Linux platform and BSP
+        - G9 Ethernet vehicle services
+        - G10 Adaptive Platform concepts
+        - G11 Safety security and update
+        - G12 Architecture and integration
     validations:
       required: true
 
@@ -40,7 +41,7 @@ body:
       description: 이번 작업으로 답할 수 있어야 하는 기술 질문을 1–3개 작성합니다.
       placeholder: |
         1. State Management와 Execution Management의 책임은 어디서 나뉘는가?
-        2. 그 경계를 코드와 테스트로 어떻게 증명할 것인가?
+        2. 그 경계를 어떤 코드와 테스트로 확인할 것인가?
     validations:
       required: true
 

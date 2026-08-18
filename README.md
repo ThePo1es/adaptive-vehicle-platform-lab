@@ -1,61 +1,70 @@
 # Adaptive Vehicle Platform Lab
 
-MCU 기반 실시간 ECU부터 Linux 기반 차량 컴퓨팅 플랫폼까지 직접 구현하며, 컴파일러·OS·차량 네트워크·진단·업데이트·고장 복구를 하나의 시스템으로 연결하는 장기 학습 저장소입니다.
+MCU ECU와 Linux 차량 컴퓨터를 직접 만들면서 C/C++, ARM, RTOS, 차량 통신, 진단, 업데이트, 고장 복구를 한 시스템으로 묶는 장기 학습 과정입니다.
 
-> 목표 포지션: **컴파일러부터 MCU·OS·미들웨어·차량 네트워크까지 이해하는 차량 플랫폼 개발자**
+현재 저장소에는 커리큘럼과 평가 체계가 들어 있습니다. 구현 프로젝트는 모두 `Planned` 상태이며, 코드와 측정 결과는 Gate를 진행하면서 채웁니다.
 
-> 이 저장소는 AUTOSAR Classic/Adaptive 적합 구현이 아닙니다. 공개 사양의 구조와 책임을 C/C++, Zephyr/FreeRTOS, Linux, SocketCAN, SOME/IP 등의 공개 기술로 실험하는 **concept-aligned prototype**입니다.
+## 목표
 
-## 최종적으로 증명할 역량
+이 과정을 마치면 다음 작업을 독립적으로 수행할 수 있어야 합니다.
 
-- C의 object representation, UB, alignment, MMIO, linker/startup을 설명하고 검증한다.
-- C++ 객체 수명·소유권·동시성을 제한된 임베디드 환경에 맞게 설계한다.
-- Cortex-M의 exception/interrupt/MPU와 AArch64의 MMU/cache/ABI를 코드 생성까지 연결한다.
-- RTOS task, ISR, 우선순위, jitter, WCET 근사치, stack 사용량을 수치로 관리한다.
-- Classic AUTOSAR의 통신·진단·고장 저장 흐름을 미니 ECU stack으로 구현한다.
-- Linux/QNX 스타일 process lifecycle, IPC, scheduling, logging, tracing을 플랫폼 수준으로 다룬다.
-- CAN/CAN FD/ISO-TP/UDS와 Ethernet/SOME-IP/DoIP를 게이트웨이 설계로 연결한다.
-- Adaptive의 EM·SM·PHM·Persistency·Diagnostics·UCM 개념을 실제 장애 복구와 매핑한다.
-- LLVM IR부터 ARM/AArch64 assembly, 코드 크기, cycle/latency, UB까지 비교한다.
-- 요구사항, timing/memory/CPU budget, architecture, code, test, evidence를 추적한다.
+- C/C++의 수명, 메모리 표현, UB, 동시성 계약을 코드와 테스트로 다룬다.
+- Cortex-M의 부팅·예외·인터럽트와 AArch64/Linux의 ABI·메모리·프로세스 모델을 분석한다.
+- RTOS task set을 모델링하고 response-time analysis와 실측 결과를 함께 검토한다.
+- CAN/CAN FD, ISO-TP, UDS, SOME/IP, DoIP 경로를 구현하고 패킷과 상태 전이로 진단한다.
+- Classic과 Adaptive Platform의 책임 경계를 공개 사양에 맞춰 설명한다.
+- Linux 프로세스, 서비스, 이미지, 배포, 관측 체계를 운영한다.
+- 업데이트 상태 머신과 신뢰 사슬을 설계하고 중단 지점별 복구를 시험한다.
+- 요구사항, 아키텍처, 예산, 코드, 시험, 결과를 한 흐름으로 추적한다.
+- 차량 코드의 LLVM IR, ARM/AArch64 기계어, 크기와 실행 시간을 비교한다.
 
-## 기간이 아니라 마스터리 게이트
+직무 방향은 **Linux/Adaptive 플랫폼 통합**을 주축으로 삼고, **MCU/Classic 구현**을 두 번째 축으로 둡니다. LLVM/ABI/codegen 분석은 모든 Gate에 이어지는 차별화 트랙입니다. 최상위 숙련도는 선택한 한 subsystem에서 외부 리뷰와 유지보수 기록으로 판정합니다.
 
-Gate별 학습량은 합계 92–121주이며, 재시험·통합·외부 리뷰까지 포함하면 주 12–15시간 기준 약 **24–30개월**을 보수적으로 예상합니다. 일정이 끝났다고 통과하지 않습니다. 각 단계의 closed-book 설명, blank-page 구현, fault injection, 측정, 설계 방어를 모두 통과해야 다음 단계로 이동합니다.
+## 과정 구조
 
-G11은 끝이 아니라 core mastery입니다. 선택한 subsystem에서 Level 5(teach/review)를 증명하는 첫 전문가 사이클은 추가 **12–18개월**을 예상합니다. 즉 첫 전체 순환은 대략 3–4년이며, 이후에도 유지보수·이식·연구·교육을 반복합니다.
+본 과정은 **2,040–2,550시간**으로 설계했습니다. 주 12–15시간을 꾸준히 쓰면 휴식, 장비 지연, 재시험을 포함해 **약 3.5–4.5년**이 걸립니다. 이미 가진 역량은 사전 통과 시험으로 인정받을 수 있습니다.
+
+| 구간 | Gate | 핵심 결과 |
+| --- | --- | --- |
+| 기반 | G0–G3 | 재현 환경, Systems C/C++, ARM ABI, LLVM 분석 |
+| MCU | G4–G7 | 보드 bring-up, RTOS, CAN/진단, Classic 개념 stack |
+| Linux | G8–G10 | Linux 이미지·프로세스, SOME/IP/DoIP, Adaptive runtime |
+| 보증·통합 | G11–G12 | 안전·보안·업데이트, MCU–Linux 최종 통합 |
+
+상세 순서는 [ROADMAP.md](ROADMAP.md), 2주 단위 실행안은 [Gate Playbook](docs/gate-playbook.md), 준비된 초반 과제는 [Gate Lab Packs](gates/README.md), 시험 방식은 [ASSESSMENTS.md](ASSESSMENTS.md)에서 확인합니다.
+
+## Gate 지도
 
 | Gate | Focus | 대표 결과물 |
 | --- | --- | --- |
-| G0 | Baseline and engineering workflow | 재현 가능한 개발·측정 환경 |
-| G1 | Systems C | CAN decoder, ring buffer, memory/UB lab |
-| G2 | Embedded C++ | ownership-safe event/runtime library |
-| G3 | ARM and LLVM | Cortex-M/AArch64 compiler analysis suite |
-| G4 | Bare-metal MCU | startup, interrupt, fault, peripheral runtime |
-| G5 | RTOS ECU | measured periodic ECU simulator |
-| G6 | Classic AUTOSAR concepts | communication/diagnostic/DTC mini stack |
-| G7 | Linux/QNX platform | Process Supervisor and observability |
-| G8 | Vehicle networks | CAN–SOME/IP and DoIP–UDS gateway |
-| G9 | Adaptive platform | execution/state/health/persistency/update services |
-| G10 | Security and resilience | signed update, rollback, policy, fault campaign |
-| G11 | System architecture | Mixed-Criticality Vehicle Compute Platform |
+| G0 | Engineering baseline | 고정된 toolchain, CI, hardware/access ADR |
+| G1 | Systems C | parser·queue·pool library와 fuzz corpus |
+| G2 | Embedded C++ | ownership-safe runtime layer |
+| G3 | ARM ABI and LLVM | Cortex-M/AArch64 compiler analysis suite |
+| G4 | Bare-metal Cortex-M | bootable image, timer/interrupt, crash record |
+| G5 | RTOS and real-time analysis | P00-A 실시간 핵심 모듈 |
+| G6 | CAN and diagnostics | P00-B CAN/ISO-TP/UDS extension |
+| G7 | Classic Platform concepts | P00-C communication·diagnostic·DTC stack |
+| G8 | Linux platform and BSP | P01 Process Supervisor와 재현 가능한 이미지 |
+| G9 | Ethernet vehicle services | P02, P05 vertical slice |
+| G10 | Adaptive Platform concepts | P03 managed Linux node |
+| G11 | Safety, security and update | P04 update lab와 assurance case |
+| G12 | System architecture and integration | P06 Heterogeneous MCU–Linux Vehicle Platform |
 
-G11 이후에는 E1 Maintainer → E2 Portability → E3 Performance/Reliability Research → E4 Architecture/Teaching 사이클로 넘어갑니다. 상세 조건은 [ROADMAP의 Expert Cycle](ROADMAP.md)을 따릅니다.
+본 과정 이후에는 유지보수, 이식, 성능·신뢰성 연구, 설계 검토·교육 순서로 전문가 사이클을 진행합니다.
 
-전체 순서와 통과 기준은 [ROADMAP.md](ROADMAP.md), 평가 방식은 [ASSESSMENTS.md](ASSESSMENTS.md), 현재 상태는 [PROGRESS.md](PROGRESS.md)에서 관리합니다.
-
-## 최종 아키텍처
+## 최종 시스템
 
 ```mermaid
 flowchart TB
-    Client["External Client / Tester"]
+    Client["Client / Diagnostic Tester"]
 
     subgraph Linux["Linux Vehicle Computer"]
         VSS["SOME/IP Vehicle Service"]
         DG["Diagnostic Gateway"]
         EM["Execution + State Manager"]
         HM["Health Monitor"]
-        UM["Secure Update Manager"]
+        UM["Update Manager"]
         OBS["Persistency + Logging"]
     end
 
@@ -63,8 +72,8 @@ flowchart TB
         Tasks["Periodic Tasks"]
         CAN["CAN + ISO-TP / UDS"]
         DTC["DTC + Persistent State"]
-        WDG["Watchdog + Safe State"]
-        Boot["Flash Bootloader"]
+        WDG["Watchdog + Fallback State"]
+        Boot["Boot / Fallback Path (verified at T3)"]
     end
 
     Client <-->|"SOME/IP / DoIP"| Linux
@@ -82,73 +91,56 @@ flowchart TB
 
 ## 프로젝트 사다리
 
-| ID | Project | 핵심 증거 |
-| --- | --- | --- |
-| P00 | [MCU/RTOS ECU Node](projects/00-mcu-rtos-ecu/README.md) | deadline, jitter, stack, watchdog, UDS/DTC, boot |
-| P01 | [Process Supervisor](projects/01-process-supervisor/README.md) | lifecycle and bounded recovery |
-| P02 | [Vehicle State Service](projects/02-vehicle-state-service/README.md) | discovery, event, versioning, reconnection |
-| P03 | [Execution Manager](projects/03-execution-manager/README.md) | manifest, dependency, state, health |
-| P04 | [Secure Update Manager](projects/04-secure-update-manager/README.md) | verification, activation, journal, rollback |
-| P05 | [Secure Adaptive Gateway](projects/05-secure-adaptive-gateway/README.md) | Linux platform integration |
-| P06 | [Mixed-Criticality Vehicle Platform](projects/06-mixed-criticality-platform/README.md) | MCU–Linux end-to-end architecture |
+| ID | Project | Gate | 핵심 증거 |
+| --- | --- | --- | --- |
+| P00 | [MCU/RTOS ECU Node](projects/00-mcu-rtos-ecu/README.md) | G5–G7 | RTA, timing trace, CAN/UDS, DTC, watchdog |
+| P01 | [Process Supervisor](projects/01-process-supervisor/README.md) | G8 | lifecycle, process group, bounded recovery |
+| P02 | [Vehicle State Service](projects/02-vehicle-state-service/README.md) | G9 | discovery, versioning, reconnection, packet trace |
+| P03 | [Execution Manager](projects/03-execution-manager/README.md) | G10 | manifest, dependency, state, health |
+| P04 | [Update Assurance Lab](projects/04-secure-update-manager/README.md) | G11 | crash consistency, authenticity, rollback |
+| P05 | [CAN–SOME/IP Vertical Slice](projects/05-can-ethernet-vertical-slice/README.md) | G9/G12 | 작게 완성한 MCU–Linux 통신 경로 |
+| P06 | [Heterogeneous Vehicle Platform](projects/06-heterogeneous-vehicle-platform/README.md) | G12 | 두 노드의 timing·state·version·recovery 계약 |
 
-차별화 트랙은 [compiler-analysis/README.md](compiler-analysis/README.md)에서 모든 프로젝트의 차량용 함수를 GCC/Clang, LLVM IR, Cortex-M/AArch64 assembly, 코드 크기와 runtime 관점으로 분석합니다.
+프로젝트는 8–16주마다 실행 가능한 릴리스를 만듭니다. 첫 공개 후보는 G1 component library, G2 runtime layer, G4 board runtime, G6 ISO-TP alpha입니다. 작은 범위를 먼저 끝내고 확장 작업은 필수 근거를 확보한 뒤 넣습니다.
 
-## 학습 루프
+## 매주 하는 일
 
-```mermaid
-flowchart LR
-    Q["Question"] --> S["Primary source"]
-    S --> I["Implement"]
-    I --> B["Break it"]
-    B --> M["Measure"]
-    M --> E["Explain and review"]
-    E --> R["Reproduce from clean state"]
-    R --> Q
-```
+1. 설계를 바꿀 만한 질문을 하나 고른다.
+2. 공식 문서와 upstream source에서 근거를 찾는다.
+3. 작은 구현과 자동 시험을 만든다.
+4. malformed input, timeout, overload, restart 중 하나를 주입한다.
+5. 원본 측정 자료와 해석을 따로 기록한다.
+6. 도움 없이 설명하거나 새로운 과제로 다시 구현한다.
+7. PR에 재현 명령과 남은 위험을 적는다.
 
-매주 Issue 하나를 만들고 다음을 남깁니다.
+주간 시간은 `현재 Gate 70% / 누적 복습 15% / 리뷰·정리 10% / LLVM 분석 5%`를 기본으로 사용합니다. LLVM이 현재 Gate의 핵심이면 비중을 늘립니다.
 
-1. 답할 기술 질문과 반증 가능한 가설
-2. 공식 문서·소스·테스트에서 확인한 근거
-3. 직접 작성한 코드와 완전한 실행 명령
-4. 정상 경로뿐 아니라 오류·자원 고갈·타이밍 실패
-5. raw evidence와 해석을 분리한 측정 보고서
-6. 아직 확인되지 않은 가정과 다음 실험
-
-## 처음 시작하기
+## 시작하기
 
 ```bash
 git clone https://github.com/ThePo1es/adaptive-vehicle-platform-lab.git
 cd adaptive-vehicle-platform-lab
 
 bash scripts/check_repo.sh
-git switch -c study/g00-w01-baseline
-# study/week-01/README.md와 docs/baseline.md부터 작성
+git switch -c study/g00-baseline
 ```
 
-첫 단계는 [G0/G1 계획](ROADMAP.md)과 [마스터리 평가 기준](ASSESSMENTS.md)을 읽고 자신의 baseline을 기록하는 것입니다.
+첫 주에는 [baseline dossier](docs/baseline.md)를 작성하고, [개발 환경](docs/development-environment.md)에서 보드·RTOS·toolchain의 기본 조합을 정합니다. 기존 경험으로 Gate를 건너뛰려면 [challenge-out 절차](ASSESSMENTS.md#challenge-out)를 사용합니다.
 
 ## 핵심 문서
 
-- [역량 지도와 시간 배분](docs/competency-map.md)
-- [시작 실력 진단과 G0 재시험](docs/baseline.md)
-- [저수준·MCU·RTOS·Classic 기초](docs/embedded-foundations.md)
-- [문서 학습 순서](docs/learning-strategy.md)
-- [시스템·SW 아키텍처 학습법](docs/architecture-engineering.md)
-- [개발 환경과 도입 순서](docs/development-environment.md)
+- [역량 지도](docs/competency-map.md)
+- [Gate별 실행안](docs/gate-playbook.md)
+- [평가와 외부 검토 절차](ASSESSMENTS.md)
+- [안전·보안 공학](docs/safety-security-engineering.md)
+- [개발 환경과 장비](docs/development-environment.md)
 - [AUTOSAR 개념 매핑](docs/autosar-mapping.md)
-- [요구사항](docs/requirements.md)
-- [추적성 매트릭스](docs/traceability.md)
+- [요구사항](docs/requirements.md)과 [추적성](docs/traceability.md)
 - [공식 참고 자료](docs/references.md)
-- [GitHub 운영](GITHUB_SETUP.md)
+- [현재 진행 상태](PROGRESS.md)
 
-## 안전 및 공개 범위
+## 주장 범위와 안전
 
-- 실차는 정차 상태에서 수신 전용으로 시작합니다.
-- actuator, 진단 쓰기, RoutineControl, 다운로드는 소유·허가된 벤치 ECU에서만 수행합니다.
-- VIN, 인증서, 키, 토큰, 위치, 개인 데이터, OEM 비공개 펌웨어·DBC·ARXML은 커밋하지 않습니다.
-- AUTOSAR 사양 PDF를 재배포하지 않고 공식 링크와 자체 요약만 남깁니다.
-- 보안은 exploit 수집이 아니라 secure boot/update, 접근 제어, 격리, malformed input, 복구 정책의 횡단 품질로 구현합니다.
+이 저장소의 Classic/Adaptive 구현은 공개 사양을 공부하기 위한 개념 prototype입니다. API·ARXML 호환이나 규격 적합성을 주장하지 않습니다. 안전·보안 산출물도 교육용이며 인증 근거로 사용할 수 없습니다. 측정된 최악 시간은 분석으로 검증된 WCET 상한과 구분합니다.
 
-자세한 공개 원칙은 [SECURITY.md](SECURITY.md)를 따릅니다.
+실차 시험은 정차·수신 전용으로 시작합니다. 진단 쓰기, actuator 제어, 다운로드는 소유하거나 명시적으로 허가받은 벤치 장비에서만 수행합니다. VIN, 키, 인증서, 위치 정보, OEM 비공개 펌웨어·DBC·ARXML은 저장소에 올리지 않습니다. 세부 운영 규칙은 [SECURITY.md](SECURITY.md)에 있습니다.

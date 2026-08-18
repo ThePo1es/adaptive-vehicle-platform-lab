@@ -70,11 +70,15 @@
 
 ## Interpretation
 
-수치가 의미하는 것과 의미하지 않는 것을 구분합니다.
+- Budget decision:
+- Supported claim:
+- Measurement limit:
+- Next experiment:
 
 ## Threats to validity
 
 - simulator와 target hardware 결과가 구분되어 있는가?
 - timer resolution, probe overhead, cache/warm-up과 clock drift를 확인했는가?
-- worst observed time을 검증된 WCET upper bound로 과장하지 않았는가?
+- measured worst와 analytical/WCET bound를 별도 필드에 기록했는가?
+- cross-node timestamp의 clock domain, offset, drift와 uncertainty를 기록했는가?
 - interrupt/background load와 release policy가 실제 workload를 대표하는가?

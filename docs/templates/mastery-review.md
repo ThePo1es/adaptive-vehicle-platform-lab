@@ -2,14 +2,14 @@
 
 ## Decision
 
-- Result: Passed / Needs more evidence / Needs refresh
+- Result: Provisional / Validated / Needs more evidence / Needs refresh
 - Date:
-- Reviewer:
+- Reviewer and relevant experience:
 - Commit/release:
 
-## Claims and evidence
+## 판단과 근거
 
-| Claim | Code | Test/fault | Raw measurement | Explanation/review | Confidence |
+| 판단 | Code | 시험·고장 | 원본 측정 | 설명·검토 | 확신도 |
 | --- | --- | --- | --- | --- | --- |
 |  |  |  |  |  |  |
 
@@ -17,33 +17,40 @@
 
 | Assessment | Conditions | Result | Evidence | Gap |
 | --- | --- | --- | --- | --- |
-| Closed-book explanation |  |  |  |  |
-| Blank-page implementation |  |  |  |  |
-| Fault diagnosis |  |  |  |  |
-| Measurement defense |  |  |  |  |
-| Architecture defense |  |  |  |  |
-| Clean-room reproduction |  |  |  |  |
-| Teach-back/review |  |  |  |  |
+| Lab exit / 독립 과제 |  |  |  |  |
+| 전이 과제 |  |  |  |  |
+| 비공개 고장 |  |  |  |  |
+| Measurement or design defense |  |  |  |  |
+| Clean reproduction |  |  |  |  |
 
-## Scorecard
+## Observable anchors
 
-| Dimension | Score 0–4 | Reason |
-| --- | ---: | --- |
+| Dimension | Fail / Pass / Strong | Observation |
+| --- | --- | --- |
 | Correctness |  |  |
-| Depth |  |  |
-| Debugging |  |  |
+| Diagnosis |  |  |
 | Measurement |  |  |
+| Design |  |  |
 | Reliability |  |  |
-| Documentation |  |  |
 | Independence |  |  |
+| Reproducibility |  |  |
 
-## Hidden faults diagnosed
+## Sealed fault record
 
 | Symptom | Initial hypothesis | Evidence used | Root cause | Regression test |
 | --- | --- | --- | --- | --- |
 |  |  |  |  |  |
 
-## AI-independent check
+- Target commit:
+- Fault-bank ID:
+- Assessment version:
+- Task manifest SHA-256:
+- Freeze time and timezone:
+- Time limit / tools:
+- Hints received:
+- Reviewer gold root cause:
+
+## Independent work
 
 - 무엇을 도움 없이 설명했는가?
 - 무엇을 빈 페이지에서 다시 구현했는가?
@@ -55,10 +62,9 @@
 - Known limitation:
 - Risk accepted:
 
-## Retest schedule
+## Follow-up
 
-- 2-week explanation:
-- 6-week implementation:
-- 12-week transfer task:
-- 6-month architecture review:
-
+- Required changes:
+- Quarterly retention window:
+- Skills to sample:
+- Reviewer recheck:

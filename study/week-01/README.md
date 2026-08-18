@@ -9,7 +9,7 @@
 
 ## 이번 주 결론 목표
 
-현재 실력을 과장 없이 측정하고, C의 object representation·alignment·integer conversion·bounds·lifetime 문제가 실제 compiler behavior와 sanitizer 결과에 어떻게 나타나는지 작은 실험으로 증명합니다.
+현재 실력을 같은 조건에서 측정합니다. C의 object representation, alignment, integer conversion, bounds, lifetime 문제가 compiler와 sanitizer 결과에 어떻게 나타나는지 작은 실험으로 확인합니다.
 
 ## 핵심 질문
 
@@ -49,7 +49,7 @@
 
 ```text
 GCC / Clang
--O0 / -O2 / -Oz
+-O0 / -O2 / compiler가 지원하는 size profile
 warnings / ASan+UBSan / Release
 ```
 
@@ -74,9 +74,9 @@ warnings / ASan+UBSan / Release
 - [ ] sanitizer가 찾은 결함과 찾지 못한 결함을 구분했다.
 - [ ] AI 도움 없이 핵심 decoder를 빈 파일에서 다시 작성했다.
 
-## 주차 완료와 Gate 통과의 차이
+## 이번 주 결과
 
-이번 주 완료는 G0/G1 통과가 아닙니다. 다음 결과만 만들면 됩니다.
+다음 네 가지를 완료합니다.
 
 - 재현 가능한 baseline
 - 첫 C component와 fault evidence

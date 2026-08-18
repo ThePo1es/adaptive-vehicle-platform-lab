@@ -89,4 +89,4 @@ applications:
 - 부팅·상태 전환·장애 복구 시퀀스
 - EM/SM/PHM 책임 분리 설명
 - [AUTOSAR mapping](../../docs/autosar-mapping.md) 갱신
-
+- 선택한 AUTOSAR release의 Execution, Service Interface, Service Instance, Machine Manifest 요소 매핑

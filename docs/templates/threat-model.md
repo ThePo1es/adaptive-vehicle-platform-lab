@@ -2,9 +2,12 @@
 
 ## Scope and assumptions
 
+- Assurance tier: T0 / T1 / T2 / T3 / T4
 - In scope:
 - Out of scope:
 - Trusted assumptions:
+- Trust root and protected state actually available:
+- 상위 tier에서만 쓸 수 있는 표현:
 
 ## Assets
 
@@ -32,11 +35,11 @@ flowchart LR
 
 ## Security invariants
 
-- An unverified update is never staged or activated.
+- T2+: A package whose authenticity or payload integrity has not passed is never staged or activated.
 - A diagnostic request outside policy is never forwarded to CAN.
-- A failed update cannot remove the last known-good bootable version.
+- T1+: A failed transaction leaves the previous committed slot or the documented recovery state available.
+- T3: A lower version cannot pass the protected minimum-version check.
 
 ## Open risks
 
 - 
-

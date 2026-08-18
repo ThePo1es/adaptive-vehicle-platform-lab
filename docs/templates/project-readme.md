@@ -14,11 +14,11 @@
 
 - 
 
-## Related concepts
+## 관련 표준과 적용 범위
 
-| Local element | Related Adaptive concept | Difference |
-| --- | --- | --- |
-|  |  |  |
+| Local element | Related standard / concept | 확인한 호환 범위 | 의도적으로 뺀 범위 |
+| --- | --- | --- | --- |
+|  |  |  |  |
 
 ## Requirements
 
@@ -48,10 +48,11 @@ flowchart TB
 
 ## Results
 
-측정 환경과 p50/p95/p99, CPU, RSS, recovery time 중 관련 수치를 기록합니다.
+이 프로젝트에 맞는 인수 예산과 수치를 기록합니다. MCU에는 response-time analysis, measured worst, jitter, stack을 사용하고 Linux에는 latency distribution, CPU, RSS, recovery time을 사용합니다.
 
-## Limitations
+## 확인한 범위와 남은 일
 
-- AUTOSAR compliance를 검증하지 않음
-- 
-
+- Verified:
+- Provisional:
+- Out of scope:
+- Next release:

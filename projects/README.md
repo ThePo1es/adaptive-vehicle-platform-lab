@@ -1,22 +1,20 @@
 # Projects
 
-프로젝트는 앞 단계의 결과물을 재사용하며, 각 프로젝트가 독립적으로 빌드·테스트될 수 있도록 유지합니다. P00에서 MCU의 시간·메모리 제약을 먼저 증명하고, P01–P05에서 Linux/Adaptive-style 플랫폼을 만든 뒤, P06에서 두 영역의 contract와 failure propagation을 통합합니다.
+프로젝트는 작은 release를 차례로 재사용합니다. 각 release는 독립적으로 build·test할 수 있어야 합니다.
 
-| ID | Project | Primary proof | Depends on |
+| ID | Project | Gate / release | Primary evidence |
 | --- | --- | --- | --- |
-| P00 | [MCU/RTOS ECU Node](00-mcu-rtos-ecu/README.md) | deadline, jitter, stack, CAN/UDS, watchdog, boot | G1–G5 foundations |
-| P01 | [Process Supervisor](01-process-supervisor/README.md) | lifecycle and bounded recovery | G7 Linux foundation |
-| P02 | [Vehicle State Service](02-vehicle-state-service/README.md) | discovery, event, reconnection | Network fundamentals |
-| P03 | [Execution Manager](03-execution-manager/README.md) | manifest, dependency, state, health | P01 |
-| P04 | [Secure Update Manager](04-secure-update-manager/README.md) | verification, activation, rollback | P01/P03 lifecycle hooks |
-| P05 | [Secure Adaptive Gateway](05-secure-adaptive-gateway/README.md) | integrated platform behavior | P01–P04 + CAN/diagnostics |
-| P06 | [Mixed-Criticality Vehicle Platform](06-mixed-criticality-platform/README.md) | MCU–Linux timing, state, update and recovery contracts | P00–P05 |
+| P00 | [MCU/RTOS ECU Node](00-mcu-rtos-ecu/README.md) | G5 P00-A, G6 P00-B, G7 P00-C | RTA, board timing, CAN/UDS, DTC |
+| P01 | [Process Supervisor](01-process-supervisor/README.md) | G8 | process tree, crash diagnosis, bounded recovery |
+| P02 | [Vehicle State Service](02-vehicle-state-service/README.md) | G9 | SOME/IP-SD, version, reconnect, latency |
+| P03 | [Execution Manager](03-execution-manager/README.md) | G10 | manifest, dependency, state, health |
+| P04 | [Update Assurance Lab](04-secure-update-manager/README.md) | G11 | crash consistency, authenticity, rollback |
+| P05 | [CAN–SOME/IP Vertical Slice](05-can-ethernet-vertical-slice/README.md) | G9 | 첫 MCU–Linux walking skeleton |
+| P06 | [Heterogeneous Vehicle Platform](06-heterogeneous-vehicle-platform/README.md) | G12 | end-to-end contract, budget, fault campaign |
 
-각 프로젝트는 정상 데모만이 아니라 요구사항, architecture decision, 자동화된 fault campaign, raw measurement, clean-room reproduction과 mastery review까지 완료해야 통과합니다.
+P05는 통신 경로 하나를 완성합니다. P06은 P00–P05 release의 통합과 복구에 집중합니다.
 
-## 공통 디렉터리 권장안
-
-구현을 시작할 때 다음 구조를 사용합니다.
+## 공통 구조
 
 ```text
 project-name/
@@ -34,4 +32,14 @@ project-name/
     └── README.md
 ```
 
-프로젝트마다 구조가 달라져야 할 이유가 있으면 ADR에 남깁니다.
+## Release 완료 조건
+
+- 측정 가능한 요구사항과 인수 예산
+- 정상·오류·고장 주입 시험
+- 원본 자료와 재생성 script
+- 새 환경 재현
+- 확인한 범위와 의도적으로 뺀 범위
+- reviewer 의견과 수정 기록
+- requirement → design → code → test → result link
+
+프로젝트 구조를 바꾸면 ADR에 이유와 이관 비용을 남깁니다.

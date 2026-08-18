@@ -1,86 +1,80 @@
 # Vehicle Platform Competency Map
 
-## Career thesis
+## 깊이 배분
 
-```text
-Primary
-C/C++ → ARM/MCU → RTOS/Linux → CAN/Ethernet → AUTOSAR → Platform Integration
-
-Differentiator
-LLVM/Compiler → UB, ABI, code generation, code size, performance
-
-Cross-cutting quality
-Security → boot/update, access control, isolation, malformed input, recovery
-```
-
-목표는 관심 분야를 많이 나열하는 것이 아니라, **MCU ECU와 Linux vehicle computer를 요구사항부터 통합·복구까지 구현하는 차량 플랫폼 개발자**로 증거를 모으는 것입니다.
-
-## Target roles
-
-| Priority | Role family | Portfolio proof |
+| 축 | 목표 깊이 | 설명 |
 | --- | --- | --- |
-| 1 | Vehicle platform / middleware SW | C++/Linux/QNX, SOME/IP, diagnostics, lifecycle, update |
-| 2 | MCU / ECU / BSW development | C, Cortex-M, RTOS, CAN, UDS, watchdog, bootloader |
-| 3 | SW integration | configuration, deployment, interface, traceability, fault recovery |
-| Long-term | Component/System Architect | budgets, trade-offs, failure containment, design defense |
+| Primary | Linux/Adaptive platform integration, Level 4 | process·service·deployment·diagnostics·update를 통합 설계 |
+| Secondary | MCU/RTOS/Classic concepts, Level 3–4 | 실제 보드와 CAN bench에서 구현·진단 |
+| Differentiator | LLVM/ABI/codegen, Level 4–5 | 차량 함수의 source부터 target code까지 분석 |
+| Cross-cutting | Safety·cybersecurity·architecture, Level 3–4 | 요구·위험·예산·복구를 각 프로젝트에 적용 |
 
-“Architect”는 첫 직무명보다 성장 방향으로 둡니다. 먼저 BSW·MCU·플랫폼·미들웨어·통합 개발에서 구현 책임을 경험하고, 이후 component/system architecture로 확장합니다.
+Primary 축은 baseline과 목표 공고를 보고 바꿀 수 있습니다. Level 5는 한 번에 한 subsystem만 선택합니다.
 
-## Two compute domains
+## 목표 역할
 
-| Dimension | ECU / MCU | HPC / Domain Controller |
+| 우선순위 | Role family | 필요한 포트폴리오 근거 |
 | --- | --- | --- |
-| Typical CPU | Cortex-M/R class | Cortex-A/x86/vehicle SoC |
-| OS | Bare metal / RTOS | Linux / QNX |
-| Main language | C, restricted C++ | Modern C++ |
-| Network | CAN/CAN FD/LIN | Ethernet/SOME-IP/DoIP |
-| AUTOSAR lens | Classic | Adaptive |
-| Core constraint | determinism, interrupt, memory | process, service, distribution |
-| Recovery | watchdog, safe state, reset | restart, degraded state, rollback |
-| Evidence | jitter, WCET bound, stack | latency distribution, CPU/RSS, recovery |
+| 1 | Vehicle platform / middleware SW | C++/Linux, SOME/IP, diagnostics, lifecycle, image, update |
+| 2 | MCU / ECU / BSW development | C, Cortex-M, RTOS, CAN, UDS, watchdog, boot |
+| 3 | SW integration | configuration, deployment, version, traceability, recovery |
+| 성장 방향 | Component/System Architect | budgets, failure containment, safety/security argument, design defense |
 
-한쪽을 먼저 깊게 배우되 최종 프로젝트에서는 timing, state, diagnostic, update contract로 둘을 연결합니다.
+분기마다 목표 공고 10–15개를 표본으로 확인합니다. 반복해서 등장하는 기술과 산출물을 현재 Gate backlog에 연결하고, vendor tool은 합법적인 접근이 있을 때 선택 과제로 추가합니다.
 
-## Main gap this repository closes
+## 두 compute domain
 
-리버싱·취약점·환경 구축 경험만으로는 개발 직무의 다음 질문에 충분히 답하기 어렵습니다.
+| 항목 | MCU ECU | Linux vehicle computer |
+| --- | --- | --- |
+| CPU | Cortex-M/R 계열 | Cortex-A/x86/vehicle SoC |
+| OS | Bare metal / RTOS | Linux; QNX 선택 이식 |
+| 언어 | C, 제한된 C++ | Modern C++ |
+| 통신 | CAN/CAN FD | Ethernet/SOME-IP/DoIP |
+| AUTOSAR 관점 | Classic concept flow | Adaptive concept flow |
+| 주요 제약 | interrupt, deadline, RAM/flash | process, service, distribution, deployment |
+| 복구 | watchdog, reset, fallback | restart, degraded state, rollback |
+| 증거 | RTA, jitter, measured worst, stack | latency distribution, CPU/RSS, recovery |
 
-- 요구사항을 검증 가능한 문장으로 정의했는가?
-- interface와 state machine을 설계했는가?
-- CPU, memory, timing, network budget을 정하고 측정했는가?
-- 장애를 어느 boundary에서 격리하고 어떤 state로 복구하는가?
-- code와 test가 requirement까지 추적되는가?
-- target board와 distributed node에서 재현했는가?
+두 영역은 data, time, state, version, update, recovery 계약으로 연결합니다.
 
-따라서 모든 프로젝트는 분석 결과가 아니라 **정상 제품 경로 + 고장 경로 + 수치 + 설계 문서**를 완료 조건으로 둡니다.
+## Gate별 성장
 
-## Time allocation
-
-장기 평균 기준입니다. 특정 Gate에서는 비율이 달라질 수 있습니다.
-
-| Track | Share | Rule |
-| --- | ---: | --- |
-| Vehicle embedded/platform implementation | 70% | 메인 시스템을 실제로 전진시킴 |
-| LLVM and upstream OSS | 20% | 현재 Gate의 critical code와 연결 |
-| Security research/CTF | 10% | 메인 프로젝트 기능을 밀어내지 않음 |
-
-## Evidence map
-
-| Claimed strength | Minimum credible evidence |
+| 구간 | 독립적으로 할 수 있어야 하는 일 |
 | --- | --- |
-| Systems C | malformed corpus, sanitizer result, assembly/ABI explanation |
-| Real-time | period/execution/jitter/stack/deadline raw data |
-| Classic concepts | communication/diagnostic/DTC end-to-end trace |
-| Linux platform | lifecycle faults, core/trace analysis, bounded recovery |
-| SOME/IP/DoIP | packet capture, reconnection/version policy, latency/drops |
-| Adaptive concepts | explicit mapping, state/health/update recovery tests |
-| Security | negative corpus, trust boundary, last-known-good invariant |
-| Architecture | budgets, ADRs, failure table, traceability, external review |
-| LLVM | IR/assembly/code-size/runtime comparison tied to vehicle code |
+| G0–G3 | 저수준 결함을 언어·ABI·compiler 수준에서 재현하고 설명 |
+| G4–G5 | 보드와 RTOS에서 timing·memory·fault를 분석하고 수정 |
+| G6–G7 | CAN·진단과 Classic 책임 경계를 세 vertical slice로 구현 |
+| G8–G10 | Linux image·process·service·state·health를 운영하고 복구 |
+| G11 | safety/security 요구와 update trust chain을 evidence로 검토 |
+| G12 | 두 node의 예산·상태·version·고장을 통합 설계 |
 
-## Portfolio positioning
+## 신뢰할 수 있는 증거
 
-나열식 표현보다 다음처럼 하나의 축으로 설명합니다.
+| 주장 | 최소 근거 |
+| --- | --- |
+| Systems C | malformed corpus, sanitizer, mutation, ABI 설명 |
+| Real-time | task model, response-time analysis, timing·stack 원본 자료 |
+| CAN/diagnostics | physical trace, timer matrix, tester interoperability |
+| Classic concepts | communication·diagnostic·DTC vertical slice와 release mapping |
+| Linux platform | image build, lifecycle 고장, core/syscall 분석, bounded recovery |
+| SOME/IP/DoIP | packet, version·availability 정책, latency·drop·reconnect 자료 |
+| Adaptive concepts | manifest·state·health artifact와 deliberate-difference mapping |
+| Update security | trust assumption, negative corpus, power-cut/rollback 근거 |
+| Safety engineering | 교육용 HARA/FMEA와 주장–논리–근거 |
+| Architecture | budgets, ADR, fault table, traceability, external review |
+| LLVM | source→IR→assembly→runtime 보고서와 upstream feedback |
 
-> MCU 기반 실시간 ECU부터 Linux/QNX 기반 차량 컴퓨팅 플랫폼까지 구현하며, 차량 통신·진단·업데이트·고장 복구를 통합하는 임베디드 플랫폼 개발자를 목표로 한다. LLVM 기여 경험을 통해 컴파일러 최적화와 ARM 코드 생성까지 분석하고, 보안은 secure boot/update와 격리·접근 제어·복구 정책에 반영한다.
+## Portfolio release
 
+| 시점 | 공개 release | 보여 주는 역량 |
+| --- | --- | --- |
+| G3 | Compiler Analysis Pack | C/C++·ABI·LLVM 분석 |
+| G5 | P00-A | RTOS modeling·RTA·timing 근거 |
+| G7 | P00 v1 | MCU/CAN/diagnostics/Classic concept flow |
+| G8 | P01 v1 | Linux lifecycle·image·observability |
+| G9 | P02 + P05 v1 | SOME/IP/DoIP와 CAN–Ethernet vertical slice |
+| G10 | Managed Linux Node v1 | manifest·state·health·persistency |
+| G11 | P04 v1 | update crash consistency·authenticity·assurance |
+| G12 | P06 v1 | MCU–Linux end-to-end platform |
+
+각 릴리스에는 영어 요약, 재현 명령, 짧은 demo, 원본 자료, 검토 의견을 포함합니다. 완성된 vertical slice부터 차례로 공개합니다.
