@@ -1,0 +1,57 @@
+# Build outputs
+build/
+build-*/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+compile_commands.json
+Testing/
+*.o
+*.a
+*.so
+*.out
+
+# Coverage and sanitizer artifacts
+coverage/
+*.gcda
+*.gcno
+*.profraw
+*.profdata
+asan.*
+tsan.*
+ubsan.*
+
+# Python tools
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Editors and OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Generated logs, captures, secrets and private vehicle data
+logs/
+captures/private/
+*.pcap
+*.pcapng
+*.key
+*.pem
+*.p12
+*.env
+.env.*
+secrets/
+private/
+
+# Update test artifacts
+slots/
+staging/
+update-packages/
+*.journal
+

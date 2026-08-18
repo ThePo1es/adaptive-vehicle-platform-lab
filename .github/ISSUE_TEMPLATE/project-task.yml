@@ -1,0 +1,76 @@
+name: Project task
+description: 프로젝트 기능, 요구사항, 검증 범위를 작은 작업으로 나눕니다.
+title: "[P0N] "
+labels:
+  - project
+body:
+  - type: dropdown
+    id: project
+    attributes:
+      label: Project
+      options:
+        - P01 Process Supervisor
+        - P02 Vehicle State Service
+        - P03 Execution Manager
+        - P04 Secure Update Manager
+        - P05 Secure Adaptive Gateway
+    validations:
+      required: true
+
+  - type: input
+    id: requirements
+    attributes:
+      label: Requirement IDs
+      placeholder: REQ-EXEC-001, REQ-OBS-001
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: 이 작업에서 구현할 것과 명시적으로 제외할 것을 분리합니다.
+      placeholder: |
+        In:
+        - 
+
+        Out:
+        - 
+    validations:
+      required: true
+
+  - type: textarea
+    id: design
+    attributes:
+      label: Design and interfaces
+      description: 변경할 구성요소, 입력·출력, 상태, 오류를 적습니다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification scenarios
+      value: |
+        | Scenario | Expected result | Test/evidence |
+        | --- | --- | --- |
+        | Normal |  |  |
+        | Invalid input |  |  |
+        | Dependency unavailable |  |  |
+        | Resource/fault case |  |  |
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: Definition of done
+      value: |
+        - [ ] 구현과 자동 테스트가 완료되었다.
+        - [ ] 정상 경로와 오류 경로가 모두 검증되었다.
+        - [ ] sanitizer 또는 관련 동적 검증을 실행했다.
+        - [ ] README와 traceability matrix를 갱신했다.
+        - [ ] 민감 정보와 외부 라이선스를 확인했다.
+    validations:
+      required: true
+

@@ -1,0 +1,59 @@
+name: Experiment
+description: 반증 가능한 가설과 재현 가능한 검증 계획을 등록합니다.
+title: "[Experiment] "
+labels:
+  - experiment
+body:
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Hypothesis
+      description: 관찰 가능하고 반증 가능한 한 문장으로 작성합니다.
+      placeholder: Restarted SOME/IP service becomes available to the unchanged client within 2 seconds.
+    validations:
+      required: true
+
+  - type: input
+    id: requirement
+    attributes:
+      label: Requirement or roadmap item
+      placeholder: REQ-COM-002 / Week 07
+    validations:
+      required: true
+
+  - type: textarea
+    id: setup
+    attributes:
+      label: Controlled setup
+      description: hardware, OS, build, interface, workload, repetitions를 작성합니다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: procedure
+    attributes:
+      label: Procedure
+      description: 깨끗한 환경에서 반복 가능한 순서와 명령을 작성합니다.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected observations
+      description: 성공·실패 판정에 사용할 출력과 수치를 작성합니다.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: publication
+    attributes:
+      label: Publication check
+      options:
+        - label: 테스트 대상은 본인 소유 또는 명시적으로 허가된 환경이다.
+          required: true
+        - label: 공개 증거에서 VIN, 키, 인증서, 토큰, 위치와 개인 데이터를 제거한다.
+          required: true
+        - label: 원본 capture가 필요하면 private 경로에 보관하고 Git에 커밋하지 않는다.
+          required: true
+
