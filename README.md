@@ -31,7 +31,7 @@ MCU ECU와 Linux 차량 컴퓨터를 직접 만들면서 C/C++, ARM, RTOS, 차�
 | Linux | G8–G10 | Linux 이미지·프로세스, Service Interface·SOME/IP·DoIP, Adaptive runtime |
 | 보증·통합 | G11A–G12 | Adaptive 보안·UCM, 교차 도메인 보증, MCU–Linux 최종 통합 |
 
-상세 순서는 [ROADMAP.md](ROADMAP.md), 2주 단위 실행안은 [Gate Playbook](docs/gate-playbook.md), 명세가 작성된 G0–G3·G8–G11A 과제는 [Gate Lab Packs](gates/README.md), 시험 방식은 [ASSESSMENTS.md](ASSESSMENTS.md)에서 확인합니다.
+상세 순서는 [ROADMAP.md](ROADMAP.md), Gate별 실행안은 [Gate Playbook](docs/gate-playbook.md), 91개 과제 명세는 [Gate Lab Packs](gates/README.md), 시험 방식은 [ASSESSMENTS.md](ASSESSMENTS.md)에서 확인합니다.
 
 현재 완성도와 남은 차단 항목은 [2026-08-19 커리큘럼 감사](docs/curriculum-audit.md)에 공개합니다.
 

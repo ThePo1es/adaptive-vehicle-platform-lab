@@ -1,9 +1,9 @@
 # Sprint 10.1 — AUTOSAR Adaptive R25-11 책임 지도
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `1dfdf95770be0e77ee591a537c8998c545e1dd83`
-> - 공개 입력 SHA-256: `1e3e3c4e1a5ead6496ccafe25cdd678b50a0f2c9d63106b9e292091947398b20`
-> - 실행 기록: [G10.1 실행 명세](../../evidence/runnable/g10.1/run-manifest.json)
+> - 시작 커밋: `18c49188cff076c8ef5c88111a6a2bc1a7baf46d`
+> - 공개 입력 SHA-256: `17337bf24d659dec4be6d241881c5890420da1d828a2870e229b641503cb1c9c`
+> - 실행 기록: [G10.1 실행 명세 v2](../../evidence/runnable/g10.1/run-manifest-v2.json)
 
 현재 확인된 범위는 시작 커밋과 검사 경로 재현까지입니다. 다음 실행에서 원문 검토, 독립 실습, 학습 시간을 기록합니다.
 
@@ -23,7 +23,7 @@ G9에서 구현한 P02와 P03 구성요소를 펼쳐 놓고 다음 순서로 자
 
 functional cluster마다 맡는 결정, 실행, 관찰, 데이터 경계를 한 문장으로 씁니다. `ara::com` proxy/skeleton 호출과 P02 vsomeip 호출을 sequence diagram 두 장으로 만들고 서비스 contract, generated code, binding configuration, runtime discovery가 만나는 지점을 표시합니다.
 
-[G10.1 책임 지도 검사기](../../labs/g10_1_release_map/README.md)를 먼저 실행합니다. 공개 입력에는 통과 graph 하나와 node type·phase, role coverage, edge, scenario owner, citation profile, 매핑 완성도 등을 흔든 음성 사례 10개가 있습니다. 구조 검사가 끝나면 인용 절과 로컬 파일을 검토자가 직접 맞춰 봅니다.
+[G10.1 책임 지도 검사기](../../labs/g10_1_release_map/README.md)를 먼저 실행합니다. 공개 입력에는 통과 graph 하나와 node type·phase, role coverage, edge 방향·연결, scenario owner, 과대 주장, 근거 재사용, 위조 review 등을 흔든 음성 사례 17개가 있습니다. 구조 검사가 끝나면 인용 절과 로컬 파일을 검토자가 직접 맞춰 봅니다.
 
 ## 독립 실습
 
@@ -35,12 +35,12 @@ R25-11에서 확인한 Application Design, Execution, Service Instance, Machine 
 
 ## 판정 기준
 
-- 모든 node에 동결된 R25-11 document ID, section citation, PDF hash, 로컬 파일 hash 존재
+- 모든 node에 역할별 R25-11 document ID, section citation, 로컬 PDF와 구현 파일의 실제 hash가 존재
 - Service Interface, generated code, runtime Proxy/Skeleton, binding, discovery 책임을 별도 node로 분리함
 - lifecycle scenario마다 reporter, policy decision owner, transition executor, recovery reporter가 citation과 함께 설명됨
 - 로컬 구현의 `Mapped`, `Partial`, `Missing`, `Out of scope` 수를 집계
 - 공식 API·ARXML을 사용하지 않은 지점을 AUTOSAR 구현으로 표기하지 않음
-- 제출물은 `STRUCTURE_PASS`, 외부 검토 뒤에는 review manifest hash가 붙은 `REVIEWED_PASS`를 출력
+- `REVIEWED_PASS`가 실제 review manifest의 reviewer·node·citation·evidence hash를 다시 검증함
 
 ## 문서를 대조할 때
 

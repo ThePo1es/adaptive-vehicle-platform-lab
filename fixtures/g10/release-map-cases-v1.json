@@ -1,11 +1,13 @@
 {
   "schema_version": 2,
-  "description": "G10.1 typed graph 검사기의 공개 양성 1개와 단일 결함 음성 10개",
+  "description": "G10.1 typed graph 검사기의 공개 양성 1개와 구조·주장·리뷰 결함 음성 17개",
   "guided_submission": {
     "schema_version": 2,
     "profile": "harness",
     "release": "R25-11",
     "claim_scope": "concept-aligned local prototype",
+    "conformance_claim": false,
+    "production_status": "educational-prototype",
     "source_ledger": [
       {
         "citation_id": "SYN-BOUNDARY-001",
@@ -226,7 +228,7 @@
       }
     ],
     "summary": {"Mapped": 0, "Partial": 11, "Missing": 0, "Out of scope": 0},
-    "review": {"status": "Pending", "reviewer_id": "", "review_manifest_sha256": "", "reviewed_citation_ids": []}
+    "review": {"status": "Pending", "reviewer_id": "", "review_manifest_path": "", "review_manifest_sha256": "", "reviewed_citation_ids": []}
   },
   "negative_cases": [
     {"id": "artifact-phase", "operation": "replace", "path": "/nodes/0/phase", "value": "runtime", "expected_errors": ["E_PHASE"]},
@@ -238,6 +240,59 @@
     {"id": "profile-downgrade", "operation": "replace", "path": "/profile", "value": "submission", "expected_errors": ["E_PROFILE_DOWNGRADE"]},
     {"id": "all-missing", "operation": "set-all-mapping-status", "value": "Missing", "expected_errors": ["E_MAPPING_INCOMPLETE"]},
     {"id": "gibberish-claim", "operation": "replace", "path": "/nodes/0/claim", "value": "x", "expected_errors": ["E_NODE_FIELD"]},
-    {"id": "binding-reference", "operation": "replace", "path": "/selected_binding/node_id", "value": "runtime-proxy", "expected_errors": ["E_BINDING"]}
+    {"id": "binding-reference", "operation": "replace", "path": "/selected_binding/node_id", "value": "runtime-proxy", "expected_errors": ["E_BINDING"]},
+    {
+      "id": "self-loop-only",
+      "operation": "replace",
+      "path": "/edges",
+      "value": [{"from": "service-interface", "relation": "communicates-with", "to": "service-interface"}],
+      "expected_errors": ["E_EDGE_SEMANTICS", "E_GRAPH_CONNECTIVITY"]
+    },
+    {
+      "id": "reversed-edge",
+      "operation": "replace",
+      "path": "/edges/0",
+      "value": {"from": "generated-proxy", "relation": "generates", "to": "service-interface"},
+      "expected_errors": ["E_EDGE_SEMANTICS", "E_GRAPH_CONNECTIVITY"]
+    },
+    {
+      "id": "missing-required-edge",
+      "operation": "remove",
+      "path": "/edges/10",
+      "expected_errors": ["E_GRAPH_CONNECTIVITY"]
+    },
+    {
+      "id": "production-overclaim",
+      "operation": "replace",
+      "path": "/nodes/0/claim",
+      "value": "This node is a complete production-ready implementation of the AUTOSAR Adaptive Platform",
+      "expected_errors": ["E_SCOPE_CLAIM"]
+    },
+    {
+      "id": "structured-conformance",
+      "operation": "replace",
+      "path": "/conformance_claim",
+      "value": true,
+      "expected_errors": ["E_SCOPE_CLAIM"]
+    },
+    {
+      "id": "reused-local-evidence",
+      "operation": "set-all-local-evidence",
+      "value": [{"path": "synthetic/shared-readme", "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"}],
+      "expected_errors": ["E_LOCAL_EVIDENCE_DIVERSITY"]
+    },
+    {
+      "id": "forged-review",
+      "operation": "replace",
+      "path": "/review",
+      "value": {
+        "status": "Reviewed",
+        "reviewer_id": "fake-reviewer",
+        "review_manifest_path": "fixtures/g10/missing-review.json",
+        "review_manifest_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "reviewed_citation_ids": ["SYN-BOUNDARY-001"]
+      },
+      "expected_errors": ["E_REVIEW"]
+    }
   ]
 }

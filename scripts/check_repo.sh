@@ -111,6 +111,23 @@ required_files=(
     gates/g11/sprint-11.2.md
     gates/g11/sprint-11.3.md
     gates/g11/sprint-11.4.md
+    gates/g11/sprint-11.5.md
+    gates/g11/sprint-11.6.md
+    gates/g11/sprint-11.7.md
+    gates/g11/assurance-contract.md
+    gates/g12/sprint-12.1.md
+    gates/g12/sprint-12.2.md
+    gates/g12/sprint-12.3.md
+    gates/g12/sprint-12.4.md
+    gates/g12/sprint-12.5.md
+    gates/g12/sprint-12.6.md
+    gates/g12/sprint-12.7.md
+    gates/g12/sprint-12.8.md
+    gates/g12/sprint-12.9.md
+    gates/g12/sprint-12.10.md
+    gates/g12/sprint-12.11.md
+    gates/g12/sprint-12.12.md
+    gates/g12/contract.md
     fixtures/README.md
     fixtures/g05/task-set-v1.yml
     fixtures/g06/can-fd-dlc-v1.csv
@@ -121,15 +138,24 @@ required_files=(
     fixtures/g07/dtc-journal-reset-v1.json
     fixtures/g07/mode-security-permutations-v1.json
     fixtures/g10/release-map-cases-v1.json
+    fixtures/g10/review-manifest-v1.json
+    fixtures/g11/assurance-change-v1.json
+    fixtures/g12/integration-contract-v1.json
     labs/g10_1_release_map/README.md
     labs/g10_1_release_map/r25-11-document-lock.json
     labs/g10_1_release_map/validator.py
     labs/g10_1_release_map/run_harness.py
     labs/g10_1_release_map/starter/release-map.json
     labs/g10_1_release_map/tests/test_release_map.py
+    sources/autosar-r25-11/README.md
     evidence/runnable/g10.1/README.md
     evidence/runnable/g10.1/harness.stdout
+    evidence/runnable/g10.1/harness-v2.stdout
+    evidence/runnable/g10.1/repository-check-v2.stdout
+    evidence/runnable/g10.1/repository-check-v2.stderr
     evidence/runnable/g10.1/run-manifest.json
+    evidence/runnable/g10.1/run-manifest-v2.json
+    evidence/runnable/index.json
     projects/00-mcu-rtos-ecu/README.md
     projects/05-can-ethernet-vertical-slice/README.md
     projects/06-heterogeneous-vehicle-platform/README.md
@@ -157,10 +183,11 @@ documented_lab_files=(
     gates/g09/sprint-*.md
     gates/g10/sprint-*.md
     gates/g11/sprint-*.md
+    gates/g12/sprint-*.md
 )
 
-if (( ${#documented_lab_files[@]} != 76 )); then
-    echo "error: expected 76 documented lab packs, found ${#documented_lab_files[@]}" >&2
+if (( ${#documented_lab_files[@]} != 91 )); then
+    echo "error: expected 91 documented lab packs, found ${#documented_lab_files[@]}" >&2
     exit 1
 fi
 
@@ -198,7 +225,7 @@ python3 scripts/check_traceability.py
 python3 scripts/check_fixture_semantics.py
 python3 labs/g10_1_release_map/run_harness.py
 python3 -m unittest discover -s labs/g10_1_release_map/tests -p 'test_*.py' >/dev/null 2>&1
-echo "G10.1 unit tests: OK (5 tests)"
+echo "G10.1 unit tests: OK (8 tests)"
 if [[ ${SKIP_RUNNABLE_EVIDENCE:-0} != 1 ]]; then
     python3 scripts/check_runnable_evidence.py
 fi

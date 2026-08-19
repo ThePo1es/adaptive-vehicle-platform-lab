@@ -237,6 +237,99 @@ def check_text_fixtures() -> None:
             check(marker in text, f"{relative}: missing semantic marker {marker!r}")
 
 
+def check_g11_assurance_changes() -> None:
+    data = load_json("fixtures/g11/assurance-change-v1.json")
+    cases = {case["id"]: case for case in data["change_cases"]}
+    check(
+        set(cases) == {"SCENARIO-SPEED-001", "COMMON-CLOCK-001", "TRUST-ROOT-001"},
+        "G11 assurance fixture must contain the three frozen change cases",
+    )
+    if "SCENARIO-SPEED-001" in cases:
+        speed_impacts = set(cases["SCENARIO-SPEED-001"]["expected_impacts"])
+        check(
+            speed_impacts
+            == {"item-definition", "HARA", "safety-goal", "safety-requirement", "fault-test", "assurance-claim"},
+            "G11 speed change impact set drifted",
+        )
+    if "COMMON-CLOCK-001" in cases:
+        clock_impacts = set(cases["COMMON-CLOCK-001"]["expected_impacts"])
+        check(
+            clock_impacts
+            == {"FMEA", "FTA", "TARA", "freshness-contract", "timing-budget", "degraded-transition", "assurance-claim"},
+            "G11 common-clock impact set drifted",
+        )
+        check(
+            set(cases["COMMON-CLOCK-001"]["required_reviewers"]) == {"safety", "security"},
+            "G11 common-clock change needs both reviewer roles",
+        )
+    if "TRUST-ROOT-001" in cases:
+        check(
+            cases["TRUST-ROOT-001"].get("expected_tier_ceiling") == "T2",
+            "G11 removed trust root must cap the claim at T2",
+        )
+
+
+def expected_version_decision(case: dict[str, Any]) -> str:
+    service = case["service"]
+    gateway = case["gateway"]
+    mcu = case["mcu"]
+    fallback = case["fallback_translation"]
+    if service == gateway == mcu:
+        return "Compatible"
+    if service > gateway and not fallback:
+        return "Block activation"
+    if service == gateway and gateway > mcu and fallback:
+        return "Degraded read-only"
+    return "Unspecified"
+
+
+def check_g12_integration_contract() -> None:
+    data = load_json("fixtures/g12/integration-contract-v1.json")
+    budget = data["data_path_budget"]
+    allocations = budget["allocations"]
+    total = sum(item["budget_us"] for item in allocations)
+    check(len(allocations) == 6, "G12 data-path budget must have six owned allocations")
+    check(
+        len({item["owner"] for item in allocations}) == len(allocations),
+        "G12 data-path budget owners must be unique",
+    )
+    check(total == budget["expected_total_us"], "G12 allocation sum differs from expected total")
+    check(total == budget["deadline_us"] == 20_000, "G12 data-path deadline must remain 20,000 us")
+
+    version_cases = data["version_cases"]
+    check(len({case["id"] for case in version_cases}) == 3, "G12 needs three unique version cases")
+    for case in version_cases:
+        check(
+            expected_version_decision(case) == case["expected_decision"],
+            f"G12 {case['id']}: version oracle mismatch",
+        )
+
+    lifecycle = {case["id"]: case for case in data["lifecycle_cases"]}
+    expected_order = [
+        "withdraw VehicleState",
+        "mark source unavailable",
+        "restart service",
+        "observe new MCU session",
+        "recheck version",
+        "resume degraded read-only",
+    ]
+    check(
+        lifecycle.get("LIFECYCLE-DUAL-FAULT-001", {}).get("expected_order") == expected_order,
+        "G12 dual-fault lifecycle order drifted",
+    )
+    check(
+        lifecycle.get("LIFECYCLE-DUAL-FAULT-001", {}).get("expected_terminal_state") == "Degraded read-only",
+        "G12 dual-fault terminal state drifted",
+    )
+
+    faults = data["fault_catalog"]
+    expected_fault_ids = {f"F{number:02d}" for number in range(1, 13)}
+    check({fault["id"] for fault in faults} == expected_fault_ids, "G12 fault catalog must contain F01 through F12")
+    for fault in faults:
+        check(bool(fault.get("first_observer")), f"G12 {fault['id']}: first observer is empty")
+        check(bool(fault.get("expected_state")), f"G12 {fault['id']}: expected state is empty")
+
+
 def main() -> int:
     check_g05_rta()
     check_dlc()
@@ -244,12 +337,14 @@ def main() -> int:
     check_journal()
     check_mode_security()
     check_text_fixtures()
+    check_g11_assurance_changes()
+    check_g12_integration_contract()
     if FAILURES:
         print("Fixture semantic checks failed:", file=sys.stderr)
         for failure in FAILURES:
             print(f"- {failure}", file=sys.stderr)
         return 1
-    print("Fixture semantic checks: OK (8 files)")
+    print("Fixture semantic checks: OK (10 files)")
     return 0
 
 

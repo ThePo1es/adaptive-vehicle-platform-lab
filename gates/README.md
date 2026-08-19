@@ -18,18 +18,19 @@
 | G9 | [10 Sprint](g09/) | Specified |
 | G10 | [10 Sprint](g10/) | 9 Specified; [10.1](g10/sprint-10.1.md) Runnable |
 | G11A | [4 Sprint](g11/) | Specified |
-| G11B·G12 | [Gate Playbook](../docs/gate-playbook.md) | Outline; 15 Sprint 작성 필요 |
+| G11B | [3 Sprint](g11/) | Specified |
+| G12 | [12 Sprint](g12/) | Specified |
 
-현재 91개 중 75개가 `Specified`, 1개가 `Runnable`, 15개가 `Outline`입니다. 이 수치는 준비 상태이며 학습 완료 수가 아닙니다. G10.1의 starter와 실행 기록은 [run manifest](../evidence/runnable/g10.1/run-manifest.json)에 있습니다.
+현재 91개 중 90개가 `Specified`, G10.1이 `Runnable`입니다. 상태 기준은 아래 표를 따르고, 실제 학습 진도는 [PROGRESS.md](../PROGRESS.md)에 기록합니다. G10.1의 시작 파일과 실행 기록은 [실행 명세 v2](../evidence/runnable/g10.1/run-manifest-v2.json)에 있습니다.
 
 | 상태 | 필요한 근거 |
 | --- | --- |
 | Outline | 주제, 선수 관계, 종료 결과가 Gate Playbook에 있음 |
 | Specified | 기준 자료, 과제, oracle 성격, 전이 과제, 재시험 조건이 문서화됨 |
-| Runnable | starter commit, fixture·corpus hash, 실행 명령, expected output, active/wall time이 검증됨 |
+| Runnable | 시작 커밋, 시험 입력·입력 모음 해시, 실행 명령, 기준 출력, CPU·경과 시간이 검증됨 |
 | Assessment-ready | 봉인 과제와 독립 oracle을 검토자가 실행했고 assessment manifest hash가 있음 |
 
-파일을 `Runnable`로 올릴 때는 starter와 fixture commit SHA를 이 문서에 연결합니다. 빈 SHA나 아직 실행하지 않은 inline fixture는 `Specified` 상태로 둡니다. Gate 공통 수치와 산출물 계보는 각 Sprint가 연결한 `contract.md`에 둘 수 있습니다.
+파일을 `Runnable`로 올릴 때는 시작 파일과 시험 입력이 들어 있는 커밋 SHA를 이 문서에 연결합니다. 빈 SHA나 아직 실행하지 않은 inline fixture는 `Specified` 상태로 둡니다. Gate 공통 수치와 산출물 계보는 각 Sprint가 연결한 `contract.md`에 둘 수 있습니다.
 
 Linux/Adaptive 경로는 G3 다음에 G8부터 시작합니다. 권장 순서는 `G8 → G9 → G10 → G11A → G4–G7 → G11B → G12`입니다.
 
@@ -45,6 +46,6 @@ Linux/Adaptive 경로는 G3 다음에 G8부터 시작합니다. 권장 순서는
 - 재시험 조건과 채점 기준
 - Core, Gate evidence, Stretch별 active time과 build·soak wall time
 
-G4–G7 공통 계약: [G4](g04/contract.md), [G5](g05/contract.md), [G6](g06/contract.md)·[physical bench](g06/bench-contract.md), [G7](g07/contract.md)·[R25-11 ledger](g07/source-ledger.md).
+Gate 공통 계약: [G4](g04/contract.md), [G5](g05/contract.md), [G6](g06/contract.md)·[physical bench](g06/bench-contract.md), [G7](g07/contract.md)·[R25-11 ledger](g07/source-ledger.md), [G11B](g11/assurance-contract.md), [G12](g12/contract.md).
 
 평가용 비공개 고장은 이 디렉터리에 저장하지 않습니다. 시험 때 사용하는 manifest의 hash와 검증 날짜만 [mastery review](../docs/templates/mastery-review.md)에 기록합니다.

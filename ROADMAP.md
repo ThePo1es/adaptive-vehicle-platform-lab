@@ -56,7 +56,7 @@ G4–G7과 G8–G10은 공통 기반 뒤에 갈라집니다. Linux/Adaptive 플�
 - Gate에서 늦어지면 확장 항목을 먼저 뺍니다. 필수 통과 결과물은 유지합니다.
 - 외부 검토를 받지 못한 Gate는 `Provisional`로 기록합니다.
 
-각 Sprint의 과제와 범위 조정 순서는 [Gate Playbook](docs/gate-playbook.md)에 있습니다. G0–G3, G8–G10, G11A는 [Lab Pack](gates/README.md)에 명세가 있습니다. Starter, fixture hash, oracle까지 붙기 전 상태는 `Specified`이며 실행 가능하다는 뜻으로 쓰지 않습니다.
+각 Sprint의 과제와 범위 조정 순서는 [Gate Playbook](docs/gate-playbook.md)에 있습니다. 91개 Sprint의 시간, 입력, 실습, 전이 과제, 판정 기준은 [Lab Pack](gates/README.md)에 있습니다. 시작 commit, 입력 hash, 실행 기록까지 검증된 과제는 `Runnable`로 올립니다.
 
 ### 첫 공개 릴리스
 

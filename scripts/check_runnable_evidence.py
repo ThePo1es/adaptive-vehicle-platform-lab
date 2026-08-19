@@ -21,6 +21,7 @@ EVIDENCE_ROOT = REPO_ROOT / "evidence/runnable"
 INDEX_PATH = EVIDENCE_ROOT / "index.json"
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
+LAB_ID = re.compile(r"^G\d+\.\d+$")
 REQUIRED_ROLES = {"fixture", "validator", "runner", "starter"}
 
 
@@ -78,11 +79,32 @@ def active_manifest_paths() -> dict[str, str]:
         fail("evidence/runnable/index.json has an invalid schema")
     active: dict[str, str] = {}
     for lab_id, value in index["active"].items():
+        if not isinstance(lab_id, str) or not LAB_ID.fullmatch(lab_id):
+            fail(f"active index has an invalid lab ID: {lab_id}")
         path = repository_path(value)
         if not path.is_file():
             fail(f"active Runnable manifest is missing: {value}")
-        active[str(path.relative_to(REPO_ROOT))] = str(lab_id)
+        relative = str(path.relative_to(REPO_ROOT))
+        expected_parent = EVIDENCE_ROOT / lab_id.lower()
+        if path.parent != expected_parent:
+            fail(f"active manifest path does not match {lab_id}: {value}")
+        if relative in active:
+            fail(f"one manifest is assigned to multiple lab IDs: {value}")
+        active[relative] = lab_id
     return active
+
+
+def runnable_gate_lab_ids() -> set[str]:
+    runnable: set[str] = set()
+    for path in sorted((REPO_ROOT / "gates").glob("g*/sprint-*.md")):
+        text = path.read_text(encoding="utf-8")
+        if "준비 상태: `Runnable`" not in text:
+            continue
+        heading = re.search(r"^# Sprint (\d+\.\d+)\b", text, re.MULTILINE)
+        if heading is None:
+            fail(f"Runnable Sprint has no parseable ID: {path.relative_to(REPO_ROOT)}")
+        runnable.add(f"G{heading.group(1)}")
+    return runnable
 
 
 def verify_artifacts(
@@ -218,10 +240,14 @@ def verify_repository_check(manifest: dict[str, Any], snapshot: Path) -> None:
         fail("repository_check stderr does not match evidence")
 
 
-def verify_manifest(path: Path, active: bool) -> str:
+def verify_manifest(path: Path, active: bool, indexed_lab_id: str | None = None) -> str:
     manifest = json.loads(path.read_text(encoding="utf-8"))
     if manifest.get("schema_version") != 2 or manifest.get("status") != "Runnable":
         fail(f"invalid manifest header: {path.relative_to(REPO_ROOT)}")
+    if active and manifest.get("lab_id") != indexed_lab_id:
+        fail(
+            f"active index lab ID {indexed_lab_id} does not match manifest lab ID {manifest.get('lab_id')}"
+        )
     starter = manifest.get("starter_commit")
     if not isinstance(starter, str) or not FULL_SHA.fullmatch(starter):
         fail("starter_commit must be a full lowercase SHA")
@@ -294,13 +320,20 @@ def verify_manifest(path: Path, active: bool) -> str:
 def main() -> int:
     try:
         active = active_manifest_paths()
+        gate_runnable = runnable_gate_lab_ids()
+        indexed_runnable = set(active.values())
+        if indexed_runnable != gate_runnable:
+            fail(
+                "active index and Runnable Sprint headers differ: "
+                f"index={sorted(indexed_runnable)}, gates={sorted(gate_runnable)}"
+            )
         manifests = sorted(EVIDENCE_ROOT.glob("*/run-manifest*.json"))
         if not manifests:
             fail("no Runnable manifests found")
         verified = []
         for path in manifests:
             relative = str(path.relative_to(REPO_ROOT))
-            verified.append(verify_manifest(path, relative in active))
+            verified.append(verify_manifest(path, relative in active, active.get(relative)))
         missing_active = set(active) - {str(path.relative_to(REPO_ROOT)) for path in manifests}
         if missing_active:
             fail(f"active manifests were not discovered: {', '.join(sorted(missing_active))}")

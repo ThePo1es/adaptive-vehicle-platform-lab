@@ -3,15 +3,19 @@
   "profile": "submission",
   "release": "R25-11",
   "claim_scope": "concept-aligned local prototype",
+  "conformance_claim": false,
+  "production_status": "educational-prototype",
   "source_ledger": [
     {
       "citation_id": "AP-MANIFEST",
       "source_kind": "official",
       "release": "R25-11",
       "document_id": "AUTOSAR_AP_TPS_ManifestSpecification",
+      "document_revision": "R25-11",
       "section_title": "",
       "section_locator": "",
-      "source_url": "https://www.autosar.org/standards/adaptive-platform/",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_TPS_ManifestSpecification.pdf",
+      "source_file_path": "sources/autosar-r25-11/AUTOSAR_AP_TPS_ManifestSpecification.pdf",
       "access_status": "Not read",
       "accessed_on": "",
       "source_file_sha256": ""
@@ -21,9 +25,11 @@
       "source_kind": "official",
       "release": "R25-11",
       "document_id": "AUTOSAR_AP_SWS_CommunicationManagement",
+      "document_revision": "R25-11",
       "section_title": "",
       "section_locator": "",
-      "source_url": "https://www.autosar.org/standards/adaptive-platform/",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_CommunicationManagement.pdf",
+      "source_file_path": "sources/autosar-r25-11/AUTOSAR_AP_SWS_CommunicationManagement.pdf",
       "access_status": "Not read",
       "accessed_on": "",
       "source_file_sha256": ""
@@ -33,9 +39,11 @@
       "source_kind": "official",
       "release": "R25-11",
       "document_id": "AUTOSAR_AP_SWS_ExecutionManagement",
+      "document_revision": "R25-11",
       "section_title": "",
       "section_locator": "",
-      "source_url": "https://www.autosar.org/standards/adaptive-platform/",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_ExecutionManagement.pdf",
+      "source_file_path": "sources/autosar-r25-11/AUTOSAR_AP_SWS_ExecutionManagement.pdf",
       "access_status": "Not read",
       "accessed_on": "",
       "source_file_sha256": ""
@@ -45,9 +53,11 @@
       "source_kind": "official",
       "release": "R25-11",
       "document_id": "AUTOSAR_AP_SWS_StateManagement",
+      "document_revision": "R25-11",
       "section_title": "",
       "section_locator": "",
-      "source_url": "https://www.autosar.org/standards/adaptive-platform/",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_StateManagement.pdf",
+      "source_file_path": "sources/autosar-r25-11/AUTOSAR_AP_SWS_StateManagement.pdf",
       "access_status": "Not read",
       "accessed_on": "",
       "source_file_sha256": ""
@@ -57,9 +67,11 @@
       "source_kind": "official",
       "release": "R25-11",
       "document_id": "AUTOSAR_AP_SWS_PlatformHealthManagement",
+      "document_revision": "R25-11",
       "section_title": "",
       "section_locator": "",
-      "source_url": "https://www.autosar.org/standards/adaptive-platform/",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_PlatformHealthManagement.pdf",
+      "source_file_path": "sources/autosar-r25-11/AUTOSAR_AP_SWS_PlatformHealthManagement.pdf",
       "access_status": "Not read",
       "accessed_on": "",
       "source_file_sha256": ""
@@ -271,5 +283,5 @@
     }
   ],
   "summary": {"Mapped": 0, "Partial": 0, "Missing": 11, "Out of scope": 0},
-  "review": {"status": "Pending", "reviewer_id": "", "review_manifest_sha256": "", "reviewed_citation_ids": []}
+  "review": {"status": "Pending", "reviewer_id": "", "review_manifest_path": "", "review_manifest_sha256": "", "reviewed_citation_ids": []}
 }

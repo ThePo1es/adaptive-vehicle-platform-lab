@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "fixture_id": "G12-INTEGRATION-CONTRACT-V1",
+  "data_path_budget": {
+    "deadline_us": 20000,
+    "allocations": [
+      {"owner": "MCU sampling and processing", "budget_us": 3000},
+      {"owner": "RTOS queue and CAN scheduling", "budget_us": 4000},
+      {"owner": "CAN transmission and gateway", "budget_us": 5000},
+      {"owner": "Linux decode and service publish", "budget_us": 4000},
+      {"owner": "network and client", "budget_us": 2000},
+      {"owner": "margin", "budget_us": 2000}
+    ],
+    "expected_total_us": 20000
+  },
+  "version_cases": [
+    {
+      "id": "VERSION-COMPATIBLE-001",
+      "service": 1,
+      "gateway": 1,
+      "mcu": 1,
+      "fallback_translation": false,
+      "expected_decision": "Compatible"
+    },
+    {
+      "id": "VERSION-BLOCK-001",
+      "service": 2,
+      "gateway": 1,
+      "mcu": 1,
+      "fallback_translation": false,
+      "expected_decision": "Block activation"
+    },
+    {
+      "id": "VERSION-DEGRADED-001",
+      "service": 2,
+      "gateway": 2,
+      "mcu": 1,
+      "fallback_translation": true,
+      "expected_decision": "Degraded read-only"
+    }
+  ],
+  "lifecycle_cases": [
+    {
+      "id": "LIFECYCLE-START-001",
+      "events": ["Linux manager ready", "gateway ready", "MCU session observed", "version accepted", "VehicleState offered"],
+      "expected_terminal_state": "Driving-ready"
+    },
+    {
+      "id": "LIFECYCLE-DUAL-FAULT-001",
+      "events": ["MCU reset", "Linux service crash"],
+      "expected_order": ["withdraw VehicleState", "mark source unavailable", "restart service", "observe new MCU session", "recheck version", "resume degraded read-only"],
+      "expected_terminal_state": "Degraded read-only"
+    }
+  ],
+  "fault_catalog": [
+    {"id": "F01", "fault": "MCU task overrun", "first_observer": "MCU watchdog supervisor", "expected_state": "Degraded"},
+    {"id": "F02", "fault": "MCU watchdog reset", "first_observer": "gateway session tracker", "expected_state": "Unavailable"},
+    {"id": "F03", "fault": "CAN bus-off", "first_observer": "CAN state manager", "expected_state": "Unavailable"},
+    {"id": "F04", "fault": "CAN flood", "first_observer": "gateway queue monitor", "expected_state": "Degraded"},
+    {"id": "F05", "fault": "malformed UDS request", "first_observer": "diagnostic endpoint", "expected_state": "Unchanged"},
+    {"id": "F06", "fault": "Linux service crash", "first_observer": "process supervisor", "expected_state": "Recovering"},
+    {"id": "F07", "fault": "SOME/IP network loss", "first_observer": "service client", "expected_state": "Unavailable"},
+    {"id": "F08", "fault": "version mismatch", "first_observer": "activation policy", "expected_state": "Blocked"},
+    {"id": "F09", "fault": "tampered update", "first_observer": "package verifier", "expected_state": "Rejected"},
+    {"id": "F10", "fault": "activation power interruption", "first_observer": "update journal recovery", "expected_state": "Known-good"},
+    {"id": "F11", "fault": "simultaneous MCU reset and Linux crash", "first_observer": "lifecycle coordinator", "expected_state": "Degraded read-only"},
+    {"id": "F12", "fault": "clock uncertainty overflow", "first_observer": "freshness evaluator", "expected_state": "Uncertain"}
+  ]
+}

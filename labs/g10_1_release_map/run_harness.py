@@ -28,10 +28,25 @@ def replace_at_pointer(document: dict[str, Any], pointer: str, value: Any) -> No
         target[leaf] = value
 
 
+def remove_at_pointer(document: dict[str, Any], pointer: str) -> None:
+    parts = [part.replace("~1", "/").replace("~0", "~") for part in pointer.split("/")[1:]]
+    target: Any = document
+    for part in parts[:-1]:
+        target = target[int(part)] if isinstance(target, list) else target[part]
+    leaf = parts[-1]
+    if isinstance(target, list):
+        del target[int(leaf)]
+    else:
+        del target[leaf]
+
+
 def apply_operation(document: dict[str, Any], case: dict[str, Any]) -> None:
     operation = case["operation"]
     if operation == "replace":
         replace_at_pointer(document, case["path"], case["value"])
+        return
+    if operation == "remove":
+        remove_at_pointer(document, case["path"])
         return
     if operation == "set-all-mapping-status":
         for node in document["nodes"]:
@@ -40,6 +55,10 @@ def apply_operation(document: dict[str, Any], case: dict[str, Any]) -> None:
             status: len(document["nodes"]) if status == case["value"] else 0
             for status in MAPPING_STATUSES
         }
+        return
+    if operation == "set-all-local-evidence":
+        for node in document["nodes"]:
+            node["local_evidence"] = copy.deepcopy(case["value"])
         return
     raise AssertionError(f"unknown fixture operation: {operation}")
 
