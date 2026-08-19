@@ -18,12 +18,11 @@ CPU, stack·heap, CAN load, socket queue, storage에도 별도 budget을 만듭�
 
 ## 전이 과제
 
-gateway decode가 4 ms에서 6 ms로 늘고 network 구간이 1 ms를 쓰는 workload를 받습니다. 조용히 margin을 옮기지 말고 최적화, sampling rate 조정, deadline 변경 중 하나를 택해 ADR과 새 budget을 제시합니다.
+gateway decode가 4 ms에서 6 ms로 늘고 network 구간이 1 ms를 쓰는 workload를 받습니다. 최적화, 표본 주기 조정, 기한 변경 가운데 하나를 선택해 ADR과 새 예산을 제시합니다.
 
 ## 판정 기준
 
-- 여섯 구간 합계와 expected total이 정확히 20,000 µs임
-- 모든 구간에 owner·두 event·clock domain·측정 오차가 있음
+- 여섯 구간에 owner·두 event·clock domain·측정 오차가 있고 합계가 정확히 20,000 µs임
 - SIM과 HW 결과가 다른 run manifest에 저장됨
 - 부하 조합별 raw sample, 표본 수, percentile, 최대값, miss 수가 남음
 - CPU·memory·network·storage 장부가 timing run과 같은 release를 가리킴
@@ -32,4 +31,4 @@ gateway decode가 4 ms에서 6 ms로 늘고 network 구간이 1 ms를 쓰는 wor
 
 ## 수치가 맞지 않을 때
 
-timestamp가 서로 다른 clock인데 단순 차감했거나 raw sample이 사라졌다면 해당 percentile을 비웁니다. 한 clock에서 잴 수 있는 두 구간으로 실험을 축소하고 계측 오차를 다시 구한 뒤 전체 경로를 재시험합니다.
+서로 다른 시계를 뺀 결과와 원본 표본이 없는 백분위 값은 보고서에서 제외합니다. 복구 순서는 동일 시계의 두 구간 측정, 계측 오차 재산정, 전체 경로 재시험입니다.

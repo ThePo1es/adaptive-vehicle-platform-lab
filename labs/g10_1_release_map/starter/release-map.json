@@ -90,9 +90,16 @@
       "failure_observation": "스키마 호환성 검사 보고서",
       "mapping_status": "Missing",
       "implementation_origin": "local-prototype",
-      "limitations": ["직접 읽은 절과 로컬 파일의 차이를 기록해야 함"],
-      "citation_ids": ["AP-COM"],
-      "local_evidence": []
+      "limitations": [
+        "직접 읽은 절과 로컬 파일의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-COM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "mapped_behavior": "P02 로컬 IDL과 R25-11 Service Interface의 대응 관계를 원문으로 작성한다",
+      "excluded_behavior": "직접 읽은 절과 로컬 파일의 차이를 기록해야 함"
     },
     {
       "id": "generated-proxy",
@@ -106,9 +113,16 @@
       "failure_observation": "생성 트리와 공개 함수 목록 비교",
       "mapping_status": "Missing",
       "implementation_origin": "local-prototype",
-      "limitations": ["공식 생성 코드와 로컬 adapter의 차이를 기록해야 함"],
-      "citation_ids": ["AP-COM"],
-      "local_evidence": []
+      "limitations": [
+        "공식 생성 코드와 로컬 adapter의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-COM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "mapped_behavior": "생성된 client 코드를 런타임 proxy 객체와 분리해 원문 책임에 연결한다",
+      "excluded_behavior": "공식 생성 코드와 로컬 adapter의 차이를 기록해야 함"
     },
     {
       "id": "generated-skeleton",
@@ -122,9 +136,16 @@
       "failure_observation": "생성 트리와 provider override 목록 비교",
       "mapping_status": "Missing",
       "implementation_origin": "local-prototype",
-      "limitations": ["공식 생성 코드와 로컬 adapter의 차이를 기록해야 함"],
-      "citation_ids": ["AP-COM"],
-      "local_evidence": []
+      "limitations": [
+        "공식 생성 코드와 로컬 adapter의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-COM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "mapped_behavior": "생성된 provider 코드를 런타임 skeleton 객체와 분리해 원문 책임에 연결한다",
+      "excluded_behavior": "공식 생성 코드와 로컬 adapter의 차이를 기록해야 함"
     },
     {
       "id": "service-instance-deployment",
@@ -138,9 +159,16 @@
       "failure_observation": "배치 명세 유효성 검사 결과",
       "mapping_status": "Missing",
       "implementation_origin": "local-prototype",
-      "limitations": ["공식 manifest taxonomy와 로컬 필드의 차이를 기록해야 함"],
-      "citation_ids": ["AP-MANIFEST"],
-      "local_evidence": []
+      "limitations": [
+        "공식 manifest taxonomy와 로컬 필드의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-MANIFEST"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "mapped_behavior": "서비스 인스턴스 배치와 통신 binding 설정의 경계를 원문과 대조한다",
+      "excluded_behavior": "공식 manifest taxonomy와 로컬 필드의 차이를 기록해야 함"
     },
     {
       "id": "someip-binding",
@@ -154,9 +182,17 @@
       "failure_observation": "packet과 discovery state 비교",
       "mapping_status": "Missing",
       "implementation_origin": "local-prototype",
-      "limitations": ["다른 통신 binding과 공식 ara::com 배포 의미를 기록해야 함"],
-      "citation_ids": ["AP-COM", "AP-MANIFEST"],
-      "local_evidence": []
+      "limitations": [
+        "다른 통신 binding과 공식 ara::com 배포 의미를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-COM",
+        "AP-MANIFEST"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "mapped_behavior": "선택한 SOME/IP 배치 설정과 런타임 통신 역할의 연결을 원문으로 확인한다",
+      "excluded_behavior": "다른 통신 binding과 공식 ara::com 배포 의미를 기록해야 함"
     },
     {
       "id": "runtime-proxy",
@@ -170,9 +206,16 @@
       "failure_observation": "availability와 subscription 상태 기록",
       "mapping_status": "Missing",
       "implementation_origin": "local-prototype",
-      "limitations": ["공식 runtime API와 service handle 차이를 기록해야 함"],
-      "citation_ids": ["AP-COM"],
-      "local_evidence": []
+      "limitations": [
+        "공식 runtime API와 service handle 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-COM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "mapped_behavior": "런타임 client 객체의 discovery와 호출 책임을 생성 코드에서 분리해 설명한다",
+      "excluded_behavior": "공식 runtime API와 service handle 차이를 기록해야 함"
     },
     {
       "id": "runtime-skeleton",
@@ -186,9 +229,16 @@
       "failure_observation": "요청 처리와 이벤트 발행 상태 기록",
       "mapping_status": "Missing",
       "implementation_origin": "local-prototype",
-      "limitations": ["공식 skeleton lifecycle과 로컬 객체의 차이를 기록해야 함"],
-      "citation_ids": ["AP-COM"],
-      "local_evidence": []
+      "limitations": [
+        "공식 skeleton lifecycle과 로컬 객체의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-COM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "mapped_behavior": "런타임 provider 객체의 요청 처리와 이벤트 발행 책임을 생성 코드에서 분리한다",
+      "excluded_behavior": "공식 skeleton lifecycle과 로컬 객체의 차이를 기록해야 함"
     },
     {
       "id": "vehicle-state-executable",
@@ -202,9 +252,17 @@
       "failure_observation": "실행 계획 생성 보고서",
       "mapping_status": "Missing",
       "implementation_origin": "local-prototype",
-      "limitations": ["공식 Execution Manifest 요소와 로컬 필드의 차이를 기록해야 함"],
-      "citation_ids": ["AP-EM", "AP-MANIFEST"],
-      "local_evidence": []
+      "limitations": [
+        "공식 Execution Manifest 요소와 로컬 필드의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-EM",
+        "AP-MANIFEST"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "mapped_behavior": "실행 파일 배치와 런타임 process의 관계를 manifest 원문으로 확인한다",
+      "excluded_behavior": "공식 Execution Manifest 요소와 로컬 필드의 차이를 기록해야 함"
     },
     {
       "id": "vehicle-state-process",
@@ -218,9 +276,16 @@
       "failure_observation": "pidfd, exit status와 cgroup event",
       "mapping_status": "Missing",
       "implementation_origin": "local-prototype",
-      "limitations": ["ara::exec API와 공식 process state 보고를 사용하지 않음"],
-      "citation_ids": ["AP-EM"],
-      "local_evidence": []
+      "limitations": [
+        "ara::exec API와 공식 process state 보고를 사용하지 않음"
+      ],
+      "citation_ids": [
+        "AP-EM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "mapped_behavior": "P01 process 실행 동작과 Execution Management 책임의 차이를 원문으로 설명한다",
+      "excluded_behavior": "ara::exec API와 공식 process state 보고를 사용하지 않음"
     },
     {
       "id": "driving-function-state",
@@ -234,9 +299,17 @@
       "failure_observation": "상태 결정 audit event",
       "mapping_status": "Missing",
       "implementation_origin": "local-prototype",
-      "limitations": ["교육용 상태 모델과 공식 Function Group 의미의 차이를 기록해야 함"],
-      "citation_ids": ["AP-SM", "AP-EM"],
-      "local_evidence": []
+      "limitations": [
+        "교육용 상태 모델과 공식 Function Group 의미의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-SM",
+        "AP-EM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "mapped_behavior": "heartbeat 시나리오에서 policy 결정과 실행 전이 책임을 원문에 맞춰 나눈다",
+      "excluded_behavior": "교육용 상태 모델과 공식 Function Group 의미의 차이를 기록해야 함"
     },
     {
       "id": "deadline-supervision",
@@ -250,25 +323,80 @@
       "failure_observation": "deadline supervision event log",
       "mapping_status": "Missing",
       "implementation_origin": "local-prototype",
-      "limitations": ["PHM API와 공식 supervision manifest의 차이를 기록해야 함"],
-      "citation_ids": ["AP-PHM", "AP-SM"],
-      "local_evidence": []
+      "limitations": [
+        "PHM API와 공식 supervision manifest의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-PHM",
+        "AP-SM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "mapped_behavior": "health observation과 recovery policy 결정을 한 책임으로 합치지 않고 설명한다",
+      "excluded_behavior": "PHM API와 공식 supervision manifest의 차이를 기록해야 함"
     }
   ],
   "edges": [
-    {"from": "service-interface", "relation": "generates", "to": "generated-proxy"},
-    {"from": "service-interface", "relation": "generates", "to": "generated-skeleton"},
-    {"from": "service-instance-deployment", "relation": "configures", "to": "someip-binding"},
-    {"from": "generated-proxy", "relation": "loads-as", "to": "runtime-proxy"},
-    {"from": "generated-skeleton", "relation": "loads-as", "to": "runtime-skeleton"},
-    {"from": "someip-binding", "relation": "binds", "to": "runtime-proxy"},
-    {"from": "someip-binding", "relation": "binds", "to": "runtime-skeleton"},
-    {"from": "vehicle-state-executable", "relation": "instantiates", "to": "vehicle-state-process"},
-    {"from": "driving-function-state", "relation": "governs-lifecycle", "to": "vehicle-state-process"},
-    {"from": "vehicle-state-process", "relation": "is-supervised-by", "to": "deadline-supervision"},
-    {"from": "runtime-proxy", "relation": "communicates-with", "to": "runtime-skeleton"}
+    {
+      "from": "service-interface",
+      "relation": "generates",
+      "to": "generated-proxy"
+    },
+    {
+      "from": "service-interface",
+      "relation": "generates",
+      "to": "generated-skeleton"
+    },
+    {
+      "from": "service-instance-deployment",
+      "relation": "configures",
+      "to": "someip-binding"
+    },
+    {
+      "from": "generated-proxy",
+      "relation": "loads-as",
+      "to": "runtime-proxy"
+    },
+    {
+      "from": "generated-skeleton",
+      "relation": "loads-as",
+      "to": "runtime-skeleton"
+    },
+    {
+      "from": "someip-binding",
+      "relation": "binds",
+      "to": "runtime-proxy"
+    },
+    {
+      "from": "someip-binding",
+      "relation": "binds",
+      "to": "runtime-skeleton"
+    },
+    {
+      "from": "vehicle-state-executable",
+      "relation": "instantiates",
+      "to": "vehicle-state-process"
+    },
+    {
+      "from": "driving-function-state",
+      "relation": "governs-lifecycle",
+      "to": "vehicle-state-process"
+    },
+    {
+      "from": "vehicle-state-process",
+      "relation": "is-supervised-by",
+      "to": "deadline-supervision"
+    },
+    {
+      "from": "runtime-proxy",
+      "relation": "communicates-with",
+      "to": "runtime-skeleton"
+    }
   ],
-  "selected_binding": {"kind": "SOME/IP", "node_id": "someip-binding"},
+  "selected_binding": {
+    "kind": "SOME/IP",
+    "node_id": "someip-binding"
+  },
   "lifecycle_scenarios": [
     {
       "scenario": "Driving 상태에서 VehicleState heartbeat deadline 위반",
@@ -279,9 +407,28 @@
       "transition_executor": "Execution Management",
       "recovery_reporter": "Platform Health Management",
       "recovery_report": "deadline 위반과 복구 뒤 supervision 결과",
-      "citation_ids": ["AP-PHM", "AP-SM", "AP-EM"]
+      "citation_ids": [
+        "AP-PHM",
+        "AP-SM",
+        "AP-EM"
+      ]
     }
   ],
-  "summary": {"Mapped": 0, "Partial": 0, "Missing": 11, "Out of scope": 0},
-  "review": {"status": "Pending", "reviewer_id": "", "review_manifest_path": "", "review_manifest_sha256": "", "reviewed_citation_ids": []}
+  "summary": {
+    "Mapped": 0,
+    "Partial": 0,
+    "Missing": 11,
+    "Out of scope": 0
+  },
+  "review": {
+    "status": "Pending",
+    "reviewer_id": "",
+    "review_manifest_path": "",
+    "review_manifest_sha256": "",
+    "reviewed_citation_ids": [],
+    "reviewer_key_fingerprint": "",
+    "subject_commit": "",
+    "review_signature_path": ""
+  },
+  "submitter_id": ""
 }

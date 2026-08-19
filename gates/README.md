@@ -21,7 +21,7 @@
 | G11B | [3 Sprint](g11/) | Specified |
 | G12 | [12 Sprint](g12/) | Specified |
 
-현재 91개 중 90개가 `Specified`, G10.1이 `Runnable`입니다. 상태 기준은 아래 표를 따르고, 실제 학습 진도는 [PROGRESS.md](../PROGRESS.md)에 기록합니다. G10.1의 시작 파일과 실행 기록은 [실행 명세 v2](../evidence/runnable/g10.1/run-manifest-v2.json)에 있습니다.
+현재 91개 중 90개가 `Specified`, G10.1이 `Runnable`입니다. 상태 기준은 아래 표를 따르고, 실제 학습 진도는 [PROGRESS.md](../PROGRESS.md)에 기록합니다. G10.1의 시작 파일과 실행 기록은 [실행 명세 v3](../evidence/runnable/g10.1/run-manifest-v3.json)에 있습니다.
 
 | 상태 | 필요한 근거 |
 | --- | --- |
@@ -32,7 +32,7 @@
 
 파일을 `Runnable`로 올릴 때는 시작 파일과 시험 입력이 들어 있는 커밋 SHA를 이 문서에 연결합니다. 빈 SHA나 아직 실행하지 않은 inline fixture는 `Specified` 상태로 둡니다. Gate 공통 수치와 산출물 계보는 각 Sprint가 연결한 `contract.md`에 둘 수 있습니다.
 
-Linux/Adaptive 경로는 G3 다음에 G8부터 시작합니다. 권장 순서는 `G8 → G9 → G10 → G11A → G4–G7 → G11B → G12`입니다.
+Gate 번호는 기술 묶음을 찾기 위한 표기입니다. G3 다음에는 `G8 → G9 → G10 → G11A`로 Linux/Adaptive 축을 완성하고, 이어서 `G4–G7`의 MCU/Classic 축을 진행합니다. 두 축의 결과는 `G11B → G12`에서 보증과 종단 통합으로 합칩니다.
 
 각 Gate에 들어가기 전에는 [입구 진단](../docs/gate-entry-diagnostics.md)을 먼저 수행합니다. 필수 항목에서 막힌 경우 전체 선행 과정을 반복하지 않고 해당 8–16시간 보강 모듈만 마친 뒤 다른 입력으로 재시험합니다.
 

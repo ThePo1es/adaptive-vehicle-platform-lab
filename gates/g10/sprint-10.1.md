@@ -1,9 +1,9 @@
 # Sprint 10.1 — AUTOSAR Adaptive R25-11 책임 지도
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `18c49188cff076c8ef5c88111a6a2bc1a7baf46d`
-> - 공개 입력 SHA-256: `17337bf24d659dec4be6d241881c5890420da1d828a2870e229b641503cb1c9c`
-> - 실행 기록: [G10.1 실행 명세 v2](../../evidence/runnable/g10.1/run-manifest-v2.json)
+> - 시작 커밋: `89004ceb7bcfde7309299a30cbb429480e8db401`
+> - 공개 입력 SHA-256: `1f9d12c5a00c9eafb2610d46bfde0609183604f2273fe70ab39db0197b7f9555`
+> - 실행 기록: [G10.1 실행 명세 v3](../../evidence/runnable/g10.1/run-manifest-v3.json)
 
 현재 확인된 범위는 시작 커밋과 검사 경로 재현까지입니다. 다음 실행에서 원문 검토, 독립 실습, 학습 시간을 기록합니다.
 
@@ -17,13 +17,13 @@ G9에서 구현한 P02와 P03 구성요소를 펼쳐 놓고 다음 순서로 자
 
 `Service Interface → generated Proxy/Skeleton 역할 → Service Instance/Deployment → SOME/IP binding → Executable/Process → Function Group State → Health Supervision`
 
-이 순서는 학습 경로입니다. 결과물은 하나의 직선 pipeline 대신 설계 산출물, 생성 코드, 배치 설정, 런타임 객체, lifecycle scenario를 분리한 typed graph로 그립니다. 공식 SDK나 generator를 쓰지 않은 부분은 시작부터 `local prototype`으로 표시합니다.
+이 순서는 학습 경로입니다. 결과물은 설계 산출물, 생성 코드, 배치 설정, 런타임 객체, 생명주기 시나리오를 구분한 관계 그래프입니다. 공식 SDK나 생성기를 쓰지 않은 부분은 시작부터 `local prototype`으로 표시합니다.
 
 ## 안내 실습
 
 functional cluster마다 맡는 결정, 실행, 관찰, 데이터 경계를 한 문장으로 씁니다. `ara::com` proxy/skeleton 호출과 P02 vsomeip 호출을 sequence diagram 두 장으로 만들고 서비스 contract, generated code, binding configuration, runtime discovery가 만나는 지점을 표시합니다.
 
-[G10.1 책임 지도 검사기](../../labs/g10_1_release_map/README.md)를 먼저 실행합니다. 공개 입력에는 통과 graph 하나와 node type·phase, role coverage, edge 방향·연결, scenario owner, 과대 주장, 근거 재사용, 위조 review 등을 흔든 음성 사례 17개가 있습니다. 구조 검사가 끝나면 인용 절과 로컬 파일을 검토자가 직접 맞춰 봅니다.
+[G10.1 책임 지도 검사기](../../labs/g10_1_release_map/README.md)를 먼저 실행합니다. 공개 입력에는 통과 graph 하나와 node type·phase, role coverage, edge 방향·연결, scenario owner, 과대 주장, 근거 재사용, 위조 review 등을 흔든 음성 사례 20개가 있습니다. 구조 검사가 끝나면 인용 절과 로컬 파일을 검토자가 직접 맞춰 봅니다.
 
 ## 독립 실습
 
@@ -44,8 +44,8 @@ R25-11에서 확인한 Application Design, Execution, Service Instance, Machine 
 
 ## 문서를 대조할 때
 
-1. 이름이 비슷한 class보다 책임과 lifecycle을 먼저 비교합니다.
-2. design-time artifact와 runtime API를 같은 열에 넣지 않습니다.
+1. 비교 순서는 책임, 생명주기, 클래스 이름입니다.
+2. 설계 단계 산출물과 런타임 API는 표의 서로 다른 열에 둡니다.
 3. 이전 릴리스 blog나 예제는 R25-11 원문과 다른 지점을 표시합니다.
 
 ## 매핑을 다시 작성할 조건

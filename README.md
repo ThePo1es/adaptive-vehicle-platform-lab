@@ -24,6 +24,8 @@ MCU ECU와 Linux 차량 컴퓨터를 직접 만들면서 C/C++, ARM, RTOS, 차�
 
 현재 계획치는 **2,198–2,792시간, 91개 Sprint**입니다. 난도가 높은 G8.6, G9.6, G10.1, G11.4를 먼저 실행해 실제 시간으로 다시 계산합니다. 주 12–15시간 기준 달력 일정은 장비 대기와 재시험을 포함해 약 **3.5–5년**으로 봅니다. 이미 가진 역량은 사전 통과 시험으로 인정받을 수 있습니다.
 
+아래 표는 기술 범위를 Gate 번호로 묶은 지도입니다. 실제 학습은 G0–G3에서 공통 기반을 만든 뒤 Linux/Adaptive 축을 먼저 진행합니다.
+
 | 구간 | Gate | 핵심 결과 |
 | --- | --- | --- |
 | 기반 | G0–G3 | 재현 환경, Systems C/C++, ARM ABI, LLVM 분석 |
@@ -32,6 +34,8 @@ MCU ECU와 Linux 차량 컴퓨터를 직접 만들면서 C/C++, ARM, RTOS, 차�
 | 보증·통합 | G11A–G12 | Adaptive 보안·UCM, 교차 도메인 보증, MCU–Linux 최종 통합 |
 
 상세 순서는 [ROADMAP.md](ROADMAP.md), Gate별 실행안은 [Gate Playbook](docs/gate-playbook.md), 91개 과제 명세는 [Gate Lab Packs](gates/README.md), 시험 방식은 [ASSESSMENTS.md](ASSESSMENTS.md)에서 확인합니다.
+
+권장 실행 순서는 `G0–G3 → G8 → G9 → G10 → G11A → G4–G7 → G11B → G12`입니다. G11B는 Adaptive 보안 결과와 MCU/Classic 결과를 함께 검토하므로 두 축을 마친 뒤 들어갑니다.
 
 현재 완성도와 남은 차단 항목은 [2026-08-19 커리큘럼 감사](docs/curriculum-audit.md)에 공개합니다.
 

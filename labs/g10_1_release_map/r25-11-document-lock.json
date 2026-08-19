@@ -3,12 +3,18 @@
   "release": "R25-11",
   "landing_page": "https://www.autosar.org/standards/adaptive-platform/",
   "local_directory": "sources/autosar-r25-11",
+  "official_hash_manifest": {
+    "algorithm": "SHA-512",
+    "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_TR_SpecificationHashes",
+    "pin_status": "Pending independent review"
+  },
   "documents": [
     {
       "document_id": "AUTOSAR_AP_TPS_ManifestSpecification",
       "document_revision": "R25-11",
       "filename": "AUTOSAR_AP_TPS_ManifestSpecification.pdf",
       "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_TPS_ManifestSpecification.pdf",
+      "official_sha512": null,
       "required_semantic_roles": ["Service Instance Deployment", "Executable"],
       "purpose": "manifest taxonomy and deployment artifacts"
     },
@@ -17,6 +23,7 @@
       "document_revision": "R25-11",
       "filename": "AUTOSAR_AP_SWS_CommunicationManagement.pdf",
       "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_CommunicationManagement.pdf",
+      "official_sha512": null,
       "required_semantic_roles": [
         "Service Interface",
         "Generated Proxy",
@@ -32,6 +39,7 @@
       "document_revision": "R25-11",
       "filename": "AUTOSAR_AP_SWS_ExecutionManagement.pdf",
       "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_ExecutionManagement.pdf",
+      "official_sha512": null,
       "required_semantic_roles": ["Executable", "Process", "Function Group State"],
       "purpose": "executable, process and lifecycle execution"
     },
@@ -40,6 +48,7 @@
       "document_revision": "R25-11",
       "filename": "AUTOSAR_AP_SWS_StateManagement.pdf",
       "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_StateManagement.pdf",
+      "official_sha512": null,
       "required_semantic_roles": ["Function Group State"],
       "purpose": "Function Group State policy and requests"
     },
@@ -48,9 +57,10 @@
       "document_revision": "R25-11",
       "filename": "AUTOSAR_AP_SWS_PlatformHealthManagement.pdf",
       "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_PlatformHealthManagement.pdf",
+      "official_sha512": null,
       "required_semantic_roles": ["Health Supervision"],
       "purpose": "supervision and recovery reporting"
     }
   ],
-  "maintenance": "릴리스가 바뀌면 AUTOSAR 배포 페이지와 PDF 앞표지에서 URL, 파일명, release를 다시 확인한다."
+  "maintenance": "공식 Specification Hashes에서 SHA-512를 확인한 뒤 별도 검토 커밋으로 pin한다. 릴리스가 바뀌면 URL, 파일명, release와 digest를 함께 갱신한다."
 }

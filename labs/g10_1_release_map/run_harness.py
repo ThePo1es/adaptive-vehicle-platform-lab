@@ -51,6 +51,8 @@ def apply_operation(document: dict[str, Any], case: dict[str, Any]) -> None:
     if operation == "set-all-mapping-status":
         for node in document["nodes"]:
             node["mapping_status"] = case["value"]
+            if case["value"] in {"Missing", "Out of scope"}:
+                node["claim_type"] = "known-gap"
         document["summary"] = {
             status: len(document["nodes"]) if status == case["value"] else 0
             for status in MAPPING_STATUSES

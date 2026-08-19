@@ -24,14 +24,12 @@
 
 ## 판정 기준
 
-- 여섯 선행 릴리스의 tag·전체 SHA·interface version이 잠김
-- context diagram의 actor, 두 node, 외부 시스템, trust boundary에 설명이 있음
+- 여섯 선행 릴리스의 tag·전체 SHA·interface version과 context diagram의 actor·두 node·trust boundary가 고정됨
 - 세 성공 장면마다 시작 조건·관찰 결과·실패 상태·증거 등급이 정해짐
 - 포함 범위와 외부 의존성의 owner가 확인됨
-- demo 지표와 내부 timing·recovery 지표가 구분됨
-- 변경 요청이 activation 조건과 회귀 시험까지 전파됨
+- demo 지표와 내부 timing·recovery 지표가 구분되고 변경 요청이 activation 조건과 회귀 시험까지 전파됨
 - claim 문구가 교육용 bench에서 얻은 근거 범위를 유지함
 
 ## 범위를 다시 잡는 신호
 
-비어 있는 선행 릴리스를 가정으로 덮었거나 actor가 원하는 결과가 수치로 이어지지 않으면 `Driving-ready` 한 장면만 남깁니다. 실제 tag 두 개와 SIM 증거로 context를 다시 완성한 뒤 나머지 장면을 복원합니다.
+비어 있는 선행 릴리스는 범위 표에 차단 사유와 담당자를 적습니다. `Driving-ready` 장면의 실제 tag 두 개와 SIM 근거가 모이면 다음 장면의 일정을 다시 잡습니다.

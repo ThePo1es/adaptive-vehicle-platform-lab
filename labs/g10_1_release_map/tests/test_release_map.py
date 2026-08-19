@@ -4,8 +4,10 @@ import copy
 import hashlib
 import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 LAB_DIR = Path(__file__).resolve().parents[1]
@@ -13,6 +15,7 @@ REPO_ROOT = LAB_DIR.parents[1]
 sys.path.insert(0, str(LAB_DIR))
 
 from run_harness import apply_operation, run  # noqa: E402
+import validator  # noqa: E402
 from validator import pass_line, validate_harness, validate_submission  # noqa: E402
 
 
@@ -27,7 +30,7 @@ class ReleaseMapValidatorTest(unittest.TestCase):
 
     def test_pass_line_is_stable(self) -> None:
         self.assertEqual(
-            "STRUCTURE_PASS G10.1-MAP nodes=11 edges=11 citations=1 statuses=Mapped:0,Partial:11,Missing:0,Out of scope:0 review=Pending",
+            "STRUCTURE_PASS G10.1-MAP profile=harness nodes=11 edges=11 citations=1 statuses=Mapped:0,Partial:11,Missing:0,Out of scope:0 review=Pending",
             pass_line(self.case_set["guided_submission"]),
         )
 
@@ -40,7 +43,7 @@ class ReleaseMapValidatorTest(unittest.TestCase):
                 self.assertEqual(sorted(case["expected_errors"]), observed)
 
     def test_harness_summary(self) -> None:
-        self.assertEqual("G10.1 harness: PASS (1 valid, 17 negative cases)", run()[-1])
+        self.assertEqual("G10.1 harness: PASS (1 valid, 20 negative cases)", run()[-1])
 
     def test_submission_profile_rejects_synthetic_fixture(self) -> None:
         observed = {finding.code for finding in validate_submission(self.case_set["guided_submission"])}
@@ -53,12 +56,16 @@ class ReleaseMapValidatorTest(unittest.TestCase):
         document["review"] = {
             "status": "Reviewed",
             "reviewer_id": "synthetic-harness-reviewer",
+            "reviewer_key_fingerprint": "SHA256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "subject_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "review_manifest_path": "fixtures/g10/review-manifest-v1.json",
             "review_manifest_sha256": hashlib.sha256(review_path.read_bytes()).hexdigest(),
+            "review_signature_path": "",
             "reviewed_citation_ids": ["SYN-BOUNDARY-001"],
         }
         self.assertEqual([], validate_harness(document))
-        self.assertTrue(pass_line(document).startswith("REVIEWED_PASS G10.1-MAP"))
+        self.assertTrue(pass_line(document).startswith("HARNESS_REVIEW_BINDING_PASS G10.1-MAP profile=harness"))
+        self.assertNotIn("REVIEWED_PASS", pass_line(document))
         document["review"]["review_manifest_sha256"] = "d" * 64
         self.assertIn("E_REVIEW", {finding.code for finding in validate_harness(document)})
         with self.assertRaises(ValueError):
@@ -92,6 +99,52 @@ class ReleaseMapValidatorTest(unittest.TestCase):
         document["edges"].pop()
         observed = {finding.code for finding in validate_harness(document)}
         self.assertEqual({"E_GRAPH_CONNECTIVITY"}, observed)
+
+    def test_fake_pdf_is_rejected_without_official_digest(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            directory = Path(temporary_directory)
+            fake_pdf = directory / "AUTOSAR_AP_TPS_ManifestSpecification.pdf"
+            payload = b"%PDF-1.4\nFAKE AUTOSAR DOCUMENT\n%%EOF\n"
+            fake_pdf.write_bytes(payload)
+            source = {
+                "source_file_path": "sources/autosar-r25-11/AUTOSAR_AP_TPS_ManifestSpecification.pdf",
+                "source_file_sha256": hashlib.sha256(payload).hexdigest(),
+            }
+            locked = {
+                "filename": fake_pdf.name,
+                "official_sha512": None,
+            }
+            findings: list[validator.Finding] = []
+            with (
+                mock.patch.object(validator, "_repo_path", return_value=fake_pdf),
+                mock.patch.object(validator, "SOURCE_DIRECTORY", directory),
+            ):
+                validator._validate_source_file(source, locked, 1, findings)
+            self.assertIn("E_SOURCE_TRUST", {finding.code for finding in findings})
+
+    def test_submission_review_needs_detached_trusted_signature(self) -> None:
+        document = copy.deepcopy(self.case_set["guided_submission"])
+        review_path = REPO_ROOT / "fixtures/g10/review-manifest-v1.json"
+        review = {
+            "status": "Reviewed",
+            "reviewer_id": "synthetic-harness-reviewer",
+            "reviewer_key_fingerprint": "SHA256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "subject_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "review_manifest_path": "fixtures/g10/review-manifest-v1.json",
+            "review_manifest_sha256": hashlib.sha256(review_path.read_bytes()).hexdigest(),
+            "review_signature_path": "fixtures/g10/missing-review.sig",
+            "reviewed_citation_ids": ["SYN-BOUNDARY-001"],
+        }
+        findings: list[validator.Finding] = []
+        validator._validate_review_manifest(
+            review,
+            document,
+            {"SYN-BOUNDARY-001"},
+            {node["id"] for node in document["nodes"]},
+            "submission",
+            findings,
+        )
+        self.assertIn("E_REVIEW_TRUST", {finding.code for finding in findings})
 
 
 if __name__ == "__main__":

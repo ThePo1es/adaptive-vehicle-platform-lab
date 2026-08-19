@@ -26,7 +26,8 @@ Linux 쪽만 새 schema로 배포된 상태를 받습니다. 90분 동안 offer 
 
 ## 판정 기준
 
-- field마다 type·단위·범위·invalid 값·owner·version 규칙이 있음
+- field마다 type·단위·범위·invalid 값이 있음
+- field owner와 version 규칙이 schema에 고정됨
 - 새 source session 전에는 이전 counter와 값을 이어 쓰지 않음
 - uncertainty 초과 시 quality와 latency 판정이 동결된 결과를 냄
 - 세 version 사례가 fixture의 결정과 일치함
@@ -36,4 +37,4 @@ Linux 쪽만 새 schema로 배포된 상태를 받습니다. 90분 동안 offer 
 
 ## 계약을 다시 펼칠 때
 
-consumer가 모르는 enum을 정상값으로 받거나 version 불일치가 연결 실패 하나로만 보이면 field 하나와 client 하나로 범위를 줄입니다. raw frame부터 API 결과까지 다시 추적하고 다섯 음성 입력을 재시험합니다.
+모르는 enum과 버전 불일치를 각각 별도 결함 ID로 기록합니다. raw frame, gateway 결과, client API의 세 관찰값을 붙인 뒤 다섯 음성 입력에 예상 결과를 다시 고정합니다.

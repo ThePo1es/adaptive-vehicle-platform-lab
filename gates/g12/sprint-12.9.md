@@ -22,8 +22,7 @@ service 2·gateway 2·MCU 1 조합에서 translation module이 시작 뒤 crash�
 
 ## 판정 기준
 
-- 세 version 조합의 결정이 fixture와 일치함
-- activation 전 조건과 decision owner가 run마다 기록됨
+- 세 version 조합의 결정, activation 전 조건, decision owner가 fixture와 실행 기록에서 일치함
 - health check가 data freshness와 lifecycle 상태까지 확인함
 - kill 지점마다 known-good·candidate·recovery 상태 중 하나로 수렴함
 - 물리 power interruption과 process kill 결과가 구분됨
@@ -32,4 +31,4 @@ service 2·gateway 2·MCU 1 조합에서 translation module이 시작 뒤 crash�
 
 ## update를 다시 묶을 조건
 
-slot만 이전 것으로 돌아가고 MCU version이나 저장 schema가 남아 있으면 복구 완료로 기록하지 않습니다. Linux-only candidate로 범위를 줄여 모든 kill boundary를 다시 통과한 뒤 MCU firmware가 포함된 조합을 재시험합니다.
+slot, MCU version, 저장 schema가 함께 돌아오지 않은 실행은 부분 rollback 결함으로 남깁니다. 상태 차이와 마지막 durable write를 붙여 다음 후보의 재시험 조건으로 사용합니다.

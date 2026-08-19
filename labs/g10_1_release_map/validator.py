@@ -7,7 +7,9 @@ import argparse
 import hashlib
 import json
 import re
+import subprocess
 import sys
+import tempfile
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
@@ -16,6 +18,7 @@ from typing import Any, Iterable
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SOURCE_LOCK = REPO_ROOT / "labs/g10_1_release_map/r25-11-document-lock.json"
+TRUSTED_REVIEWERS = REPO_ROOT / "labs/g10_1_release_map/trusted-reviewers.json"
 MAPPING_STATUSES = ("Mapped", "Partial", "Missing", "Out of scope")
 ROLE_MODEL = {
     "Service Interface": ("design-artifact", "design-time"),
@@ -70,10 +73,23 @@ FORBIDDEN_CLAIMS = (
     re.compile(r"\b(?:certified|certification[- ]ready)\b", re.IGNORECASE),
     re.compile(r"\b(?:compatible with|meets|implements)\s+(?:the\s+)?AUTOSAR\b", re.IGNORECASE),
     re.compile(r"\b(?:vehicle|road)[- ]ready\b", re.IGNORECASE),
+    re.compile(r"\bproduction[- ]grade\b", re.IGNORECASE),
+    re.compile(r"\b(?:series[- ](?:vehicle|production)|automotive[- ]grade)\b", re.IGNORECASE),
+    re.compile(r"\bsuitable\s+for\s+(?:series|production|vehicle)[^.!?\n]*deployment\b", re.IGNORECASE),
+    re.compile(r"\bdeployable\s+in\s+production\b", re.IGNORECASE),
+    re.compile(r"\bready\s+for\s+series\s+production\b", re.IGNORECASE),
+    re.compile(r"양산\s*(?:적용|배포|사용)?\s*(?:가능|준비|완료)?", re.IGNORECASE),
+    re.compile(r"AUTOSAR\s*(?:적합|준수|호환)\s*(?:구현|제품)?", re.IGNORECASE),
+    re.compile(r"차량\s*(?:적용|배포)\s*(?:가능|준비|완료)", re.IGNORECASE),
+    re.compile(r"(?:제품급|상용\s*(?:배포|적용)\s*가능)", re.IGNORECASE),
 )
 PLACEHOLDER = re.compile(r"(?:\bTODO\b|\bTBD\b|<[^>]+>|확인 필요|미작성)", re.IGNORECASE)
 NODE_ID = re.compile(r"^[a-z][a-z0-9-]{2,63}$")
 FULL_SHA256 = re.compile(r"^[0-9a-f]{64}$")
+FULL_SHA512 = re.compile(r"^[0-9a-f]{128}$")
+FULL_GIT_SHA = re.compile(r"^[0-9a-f]{40}$")
+SSH_FINGERPRINT = re.compile(r"^SHA256:[A-Za-z0-9+/]{43}$")
+REVIEWER_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._@-]{2,63}$")
 ISO_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 SOURCE_DIRECTORY = REPO_ROOT / "sources/autosar-r25-11"
 REVIEW_DIRECTORY = REPO_ROOT / "evidence/reviews/g10.1"
@@ -83,6 +99,7 @@ REVIEW_SUBJECT_FIELDS = (
     "claim_scope",
     "conformance_claim",
     "production_status",
+    "submitter_id",
     "source_ledger",
     "nodes",
     "edges",
@@ -90,6 +107,8 @@ REVIEW_SUBJECT_FIELDS = (
     "lifecycle_scenarios",
     "summary",
 )
+CLAIM_TYPES = {"observed-local-behavior", "document-mapping", "known-gap"}
+REVIEW_NAMESPACE = "adaptive-vehicle-platform-lab-g10.1"
 
 
 @dataclass(frozen=True, order=True)
@@ -126,6 +145,20 @@ def _source_lock() -> dict[str, dict[str, Any]]:
     return {entry["document_id"]: entry for entry in lock["documents"]}
 
 
+def _trusted_reviewers() -> dict[str, dict[str, Any]]:
+    registry = json.loads(TRUSTED_REVIEWERS.read_text(encoding="utf-8"))
+    if registry.get("schema_version") != 1 or registry.get("namespace") != REVIEW_NAMESPACE:
+        raise ValueError("trusted reviewer registry has an invalid header")
+    reviewers = registry.get("reviewers")
+    if not isinstance(reviewers, list):
+        raise ValueError("trusted reviewer registry needs a reviewers list")
+    return {
+        reviewer["reviewer_id"]: reviewer
+        for reviewer in reviewers
+        if isinstance(reviewer, dict) and isinstance(reviewer.get("reviewer_id"), str)
+    }
+
+
 def _canonical_hash(value: Any) -> str:
     encoded = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
@@ -133,6 +166,54 @@ def _canonical_hash(value: Any) -> str:
 
 def _review_subject_hash(document: dict[str, Any]) -> str:
     return _canonical_hash({field: document.get(field) for field in REVIEW_SUBJECT_FIELDS})
+
+
+def _public_key_fingerprint(public_key: str) -> str | None:
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as key_file:
+        key_file.write(public_key.rstrip() + "\n")
+        key_file.flush()
+        result = subprocess.run(
+            ["ssh-keygen", "-lf", key_file.name, "-E", "sha256"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    if result.returncode != 0:
+        return None
+    fields = result.stdout.split()
+    return fields[1] if len(fields) >= 2 and SSH_FINGERPRINT.fullmatch(fields[1]) else None
+
+
+def _verify_review_signature(
+    manifest_path: Path,
+    signature_path: Path,
+    reviewer_id: str,
+    public_key: str,
+) -> bool:
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8") as allowed_signers:
+        allowed_signers.write(
+            f'{reviewer_id} namespaces="{REVIEW_NAMESPACE}" {public_key.rstrip()}\n'
+        )
+        allowed_signers.flush()
+        result = subprocess.run(
+            [
+                "ssh-keygen",
+                "-Y",
+                "verify",
+                "-f",
+                allowed_signers.name,
+                "-I",
+                reviewer_id,
+                "-n",
+                REVIEW_NAMESPACE,
+                "-s",
+                str(signature_path),
+            ],
+            input=manifest_path.read_bytes(),
+            check=False,
+            capture_output=True,
+        )
+    return result.returncode == 0
 
 
 def _validate_source_file(
@@ -164,6 +245,16 @@ def _validate_source_file(
         findings.append(Finding("E_SOURCE_HASH", f"source {index} needs the downloaded PDF SHA-256"))
     elif hashlib.sha256(payload).hexdigest() != expected_hash:
         findings.append(Finding("E_SOURCE_HASH", f"source {index} PDF hash drifted"))
+    official_sha512 = locked.get("official_sha512")
+    if not isinstance(official_sha512, str) or not FULL_SHA512.fullmatch(official_sha512):
+        findings.append(
+            Finding(
+                "E_SOURCE_TRUST",
+                f"source {index} has no independently pinned AUTOSAR SHA-512 digest",
+            )
+        )
+    elif hashlib.sha512(payload).hexdigest() != official_sha512:
+        findings.append(Finding("E_SOURCE_TRUST", f"source {index} differs from the pinned AUTOSAR digest"))
 
 
 def _validate_review_manifest(
@@ -175,8 +266,24 @@ def _validate_review_manifest(
     findings: list[Finding],
 ) -> None:
     reviewer_id = review.get("reviewer_id")
-    if not _meaningful(reviewer_id, 4):
+    submitter_id = document.get("submitter_id")
+    if not isinstance(reviewer_id, str) or not REVIEWER_ID.fullmatch(reviewer_id):
         findings.append(Finding("E_REVIEW", "Reviewed status needs reviewer_id"))
+    if not _meaningful(submitter_id, 4) or reviewer_id == submitter_id:
+        findings.append(Finding("E_REVIEW_TRUST", "reviewer and submitter must be distinct identities"))
+    subject_commit = review.get("subject_commit")
+    reviewer_fingerprint = review.get("reviewer_key_fingerprint")
+    if not isinstance(subject_commit, str) or not FULL_GIT_SHA.fullmatch(subject_commit):
+        findings.append(Finding("E_REVIEW_TRUST", "Reviewed status needs a full subject commit SHA"))
+    elif profile == "submission" and subprocess.run(
+        ["git", "cat-file", "-e", f"{subject_commit}^{{commit}}"],
+        cwd=REPO_ROOT,
+        check=False,
+        capture_output=True,
+    ).returncode != 0:
+        findings.append(Finding("E_REVIEW_TRUST", "review subject commit is unavailable in this repository"))
+    if not isinstance(reviewer_fingerprint, str) or not SSH_FINGERPRINT.fullmatch(reviewer_fingerprint):
+        findings.append(Finding("E_REVIEW_TRUST", "Reviewed status needs a SHA-256 reviewer key fingerprint"))
     relative_path = review.get("review_manifest_path")
     expected_hash = review.get("review_manifest_sha256")
     if not isinstance(relative_path, str) or not relative_path:
@@ -216,11 +323,15 @@ def _validate_review_manifest(
         manifest.get("lab_id") == "G10.1",
         manifest.get("decision") == "Approved",
         manifest.get("reviewer_id") == reviewer_id,
+        manifest.get("submitter_id") == submitter_id,
+        manifest.get("subject_commit") == subject_commit,
+        manifest.get("reviewer_key_fingerprint") == reviewer_fingerprint,
         isinstance(manifest_date, str) and bool(ISO_DATE.fullmatch(manifest_date)),
         manifest.get("claim_scope") == "concept-aligned local prototype",
         set(manifest.get("reviewed_citation_ids", [])) == citation_ids,
         set(manifest.get("reviewed_node_ids", [])) == node_ids,
         manifest.get("source_ledger_sha256") == _canonical_hash(document.get("source_ledger")),
+        manifest.get("source_lock_sha256") == hashlib.sha256(SOURCE_LOCK.read_bytes()).hexdigest(),
         manifest.get("review_subject_sha256") == _review_subject_hash(document),
         manifest.get("local_evidence_sha256s") == expected_evidence_hashes,
         manifest.get("limitations_acknowledged") is True,
@@ -230,6 +341,39 @@ def _validate_review_manifest(
         findings.append(Finding("E_REVIEW", "review manifest does not bind every claim, citation, limitation, and evidence hash"))
     if set(review.get("reviewed_citation_ids", [])) != citation_ids:
         findings.append(Finding("E_REVIEW", "reviewed citation set must cover the source ledger"))
+
+    if profile != "submission":
+        return
+
+    signature_relative = review.get("review_signature_path")
+    signature_path = _repo_path(signature_relative) if isinstance(signature_relative, str) else None
+    if (
+        signature_path is None
+        or not signature_path.is_file()
+        or not signature_path.is_relative_to(REVIEW_DIRECTORY)
+    ):
+        findings.append(Finding("E_REVIEW_TRUST", "submission review needs a detached signature under evidence/reviews/g10.1"))
+        return
+    try:
+        trusted = _trusted_reviewers().get(str(reviewer_id))
+    except (OSError, json.JSONDecodeError, ValueError):
+        findings.append(Finding("E_REVIEW_TRUST", "trusted reviewer registry is unavailable or invalid"))
+        return
+    if not isinstance(trusted, dict):
+        findings.append(Finding("E_REVIEW_TRUST", "reviewer is absent from the trusted reviewer registry"))
+        return
+    public_key = trusted.get("public_key")
+    trusted_fingerprint = trusted.get("fingerprint")
+    if (
+        not isinstance(public_key, str)
+        or not isinstance(trusted_fingerprint, str)
+        or trusted_fingerprint != reviewer_fingerprint
+        or _public_key_fingerprint(public_key) != trusted_fingerprint
+    ):
+        findings.append(Finding("E_REVIEW_TRUST", "reviewer key does not match the trusted registry"))
+        return
+    if not _verify_review_signature(path, signature_path, str(reviewer_id), public_key):
+        findings.append(Finding("E_REVIEW_TRUST", "detached review signature verification failed"))
 
 
 def _validate_evidence(
@@ -278,6 +422,8 @@ def _validate(document: dict[str, Any], profile: str) -> list[Finding]:
         findings.append(Finding("E_SCOPE_CLAIM", "conformance_claim must remain false"))
     if document.get("production_status") != "educational-prototype":
         findings.append(Finding("E_SCOPE_CLAIM", "production_status must remain educational-prototype"))
+    if profile == "submission" and not _meaningful(document.get("submitter_id"), 4):
+        findings.append(Finding("E_SUBMITTER", "submission needs a stable submitter_id"))
 
     for text in _strings(document):
         if any(pattern.search(text) for pattern in FORBIDDEN_CLAIMS):
@@ -372,6 +518,16 @@ def _validate(document: dict[str, Any], profile: str) -> list[Finding]:
             status = node.get("mapping_status")
             if status not in MAPPING_STATUSES:
                 findings.append(Finding("E_MAPPING_STATUS", f"node {index} has an unknown mapping status"))
+            claim_type = node.get("claim_type")
+            if claim_type not in CLAIM_TYPES:
+                findings.append(Finding("E_SCOPE_CLAIM", f"node {index} has an unknown claim_type"))
+            elif status in {"Mapped", "Partial"} and claim_type == "known-gap":
+                findings.append(Finding("E_SCOPE_CLAIM", f"node {index} maps evidence while declaring only a known gap"))
+            elif status in {"Missing", "Out of scope"} and claim_type == "observed-local-behavior":
+                findings.append(Finding("E_SCOPE_CLAIM", f"node {index} claims observed behavior without mapped evidence"))
+            for field in ("mapped_behavior", "excluded_behavior"):
+                if not _meaningful(node.get(field), 8):
+                    findings.append(Finding("E_SCOPE_CLAIM", f"node {index} needs a concrete {field}"))
             if node.get("implementation_origin") != "local-prototype":
                 findings.append(Finding("E_IMPLEMENTATION_ORIGIN", f"node {index} must identify local-prototype origin"))
             limitations = node.get("limitations")
@@ -519,7 +675,15 @@ def _validate(document: dict[str, Any], profile: str) -> list[Finding]:
         _validate_review_manifest(review, document, citation_ids, node_ids, profile, findings)
     elif any(
         review.get(field) not in (None, "", [])
-        for field in ("reviewer_id", "review_manifest_path", "review_manifest_sha256", "reviewed_citation_ids")
+        for field in (
+            "reviewer_id",
+            "reviewer_key_fingerprint",
+            "subject_commit",
+            "review_manifest_path",
+            "review_manifest_sha256",
+            "review_signature_path",
+            "reviewed_citation_ids",
+        )
     ):
         findings.append(Finding("E_REVIEW", "Pending review fields must remain empty"))
 
@@ -549,10 +713,24 @@ def pass_line(document: dict[str, Any]) -> str:
         raise ValueError(f"cannot emit a pass line for invalid evidence: {codes}")
     summary = document["summary"]
     counts = ",".join(f"{status}:{summary[status]}" for status in MAPPING_STATUSES)
-    prefix = "REVIEWED_PASS" if document.get("review", {}).get("status") == "Reviewed" else "STRUCTURE_PASS"
+    review = document.get("review", {})
+    reviewed = review.get("status") == "Reviewed"
+    if reviewed and profile == "submission":
+        prefix = "REVIEWED_PASS"
+    elif reviewed:
+        prefix = "HARNESS_REVIEW_BINDING_PASS"
+    else:
+        prefix = "STRUCTURE_PASS"
+    trust_detail = ""
+    if reviewed:
+        trust_detail = (
+            f" reviewer_key={review.get('reviewer_key_fingerprint')}"
+            f" subject_commit={review.get('subject_commit')}"
+        )
     return (
-        f"{prefix} G10.1-MAP nodes={len(document['nodes'])} edges={len(document['edges'])} "
-        f"citations={len(document['source_ledger'])} statuses={counts} review={document['review']['status']}"
+        f"{prefix} G10.1-MAP profile={profile} nodes={len(document['nodes'])} "
+        f"edges={len(document['edges'])} citations={len(document['source_ledger'])} "
+        f"statuses={counts} review={review['status']}{trust_detail}"
     )
 
 

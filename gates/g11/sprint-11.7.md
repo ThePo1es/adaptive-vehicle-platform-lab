@@ -14,7 +14,7 @@
 
 서로 충돌하는 두 질문을 먼저 만듭니다. 예를 들어 safety 검토자는 빠른 fallback을 요구하고 security 검토자는 인증되지 않은 상태 전이를 막으라고 요구할 수 있습니다. 해당 충돌을 decision owner, 제한 시간, degraded state, audit event가 있는 요구사항으로 바꾸고 두 고장을 함께 실행합니다.
 
-검토자는 `Accepted`, `Change requested`, `Question`으로 의견을 남깁니다. 답변에는 설명 문장만 붙이지 않고 변경된 claim·시험·result hash를 연결합니다.
+검토자는 `Accepted`, `Change requested`, `Question`으로 의견을 남깁니다. 답변마다 변경한 주장·시험·결과 해시를 연결합니다.
 
 ## 독립 실습
 
@@ -26,7 +26,8 @@
 
 ## 판정 기준
 
-- safety와 security 검토 기록에 서로 다른 reviewer ID와 시간이 있음
+- safety 검토 기록에 reviewer ID, 시각, 이해관계가 있음
+- security 검토 기록에 별도의 reviewer ID, 시각, 이해관계가 있음
 - 모든 Supported claim이 전체 commit과 원본 result hash까지 추적됨
 - 두 검토자가 각각 약한 주장과 common cause를 실제로 지적함
 - Change requested 의견마다 변경 또는 수용하지 않은 근거가 남음
@@ -36,4 +37,4 @@
 
 ## 방어가 막혔을 때
 
-두 역할 중 한 검토가 비어 있으면 릴리스 후보와 실행 자료를 그대로 보존하고 claim 상태를 `Provisional`로 정리합니다. 지적이 여러 경계를 한꺼번에 건드리면 가장 약한 claim 하나로 범위를 축소해 시험과 답변을 다시 준비합니다.
+한 검토 역할이 비어 있으면 릴리스 후보를 `Provisional`로 보관합니다. 여러 경계에 걸친 지적은 주장별 이슈로 나누고, 담당자와 필요한 시험을 지정해 다시 검토합니다.

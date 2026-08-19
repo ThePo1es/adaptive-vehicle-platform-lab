@@ -26,8 +26,7 @@ VehicleState의 speed·quality·source session·timestamp 네 field를 선택해
 
 ## 판정 기준
 
-- item, 운행 시나리오, top event, 합성 척도의 판과 commit이 고정됨
-- hazardous event에서 safety goal, safety requirement, 실행 시험까지 끊기지 않음
+- item, 운행 시나리오, top event, 합성 척도의 판과 commit이 고정되고 safety goal·requirement·실행 시험까지 이어짐
 - FMEA와 FTA가 freshness·session·clock의 서로 다른 실패 조합을 다룸
 - TARA에 attacker capability, trust boundary, security requirement, negative test가 연결됨
 - `SCENARIO-SPEED-001`의 기대 영향 6개와 유지 영역을 모두 검토함
@@ -36,4 +35,4 @@ VehicleState의 speed·quality·source session·timestamp 네 field를 선택해
 
 ## 다시 좁혀 볼 때
 
-hazard와 attack path가 같은 원인 목록으로 끝나거나 claim에서 raw log까지 추적되지 않으면 speed field 하나만 남깁니다. 정상·stale·MCU reset 세 입력으로 표를 다시 만들고, 누락된 연결을 새 식별자와 함께 재시험합니다.
+검토가 끊긴 첫 연결을 작업 대기열의 맨 위에 둡니다. speed field의 정상·stale·MCU reset 표를 복구한 뒤 새 식별자에서 추적을 다시 이어 갑니다.

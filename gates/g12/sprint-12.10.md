@@ -24,7 +24,8 @@ F01–F12를 최소 10 seed로 실행합니다. 같은 first observer와 termina
 
 ## 판정 기준
 
-- F01–F12가 고유 ID와 fixture의 first observer·expected state를 가짐
+- F01–F12가 고유 ID를 가짐
+- fixture에 first observer와 expected state가 고정됨
 - 모든 run이 주입 성공 여부와 원본 자료 hash를 기록함
 - HW 필수 고장에 실제 controller·reset·power 자료가 있음
 - 열 seed에서 terminal state 차이가 설명되거나 결함으로 등록됨
@@ -34,4 +35,4 @@ F01–F12를 최소 10 seed로 실행합니다. 같은 first observer와 termina
 
 ## campaign을 멈출 때
 
-주입 확인 probe가 없거나 cleanup 뒤 baseline smoke가 실패하면 뒤 고장을 이어서 돌리지 않습니다. 오염된 결과를 격리하고 마지막 정상 run부터 고장 하나씩 다시 실행합니다.
+주입 확인 probe가 없는 실행은 시작 단계에서 중단합니다. cleanup 뒤 baseline smoke가 깨지면 오염된 결과를 격리하고 마지막 정상 실행을 복구 기준으로 삼습니다.

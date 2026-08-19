@@ -26,8 +26,7 @@ data, diagnostic, lifecycle, update 네 묶음에서 최소 6개씩 작성합니
 
 ## 판정 기준
 
-- 네 영역에 최소 24개 요구사항과 고유 ID가 있음
-- 모든 항목에 조건·응답·허용치·관찰자·검증 방법이 있음
+- 네 영역의 요구사항 24개 이상에 고유 ID, 조건·응답·허용치·관찰자·검증 방법이 있음
 - 단위 없는 시간 표현과 의미가 겹치는 중복 항목을 lint가 잡음
 - source session, freshness, version, diagnostic 결과 경계가 요구사항에 나타남
 - safety·security 항목이 failure state와 audit event를 가짐
@@ -36,4 +35,4 @@ data, diagnostic, lifecycle, update 네 묶음에서 최소 6개씩 작성합니
 
 ## 보강 기준
 
-lint 통과 뒤에도 두 독자가 다른 상태를 예상하면 그 요구사항을 봉인 입력으로 보지 않습니다. stimulus와 observer만 남겨 문장을 다시 쓰고 양성 1개·경계 2개·실패 2개 시험으로 재확인합니다.
+두 독자의 예상 상태가 갈린 문장은 평가 입력 목록에서 빼고 이슈로 등록합니다. 조건과 관찰자를 고친 판은 양성 1개, 경계 2개, 실패 2개 사례로 다시 확인합니다.

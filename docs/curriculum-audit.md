@@ -52,9 +52,9 @@
 현재 검사 결과:
 
 - 내부 Markdown 링크 정상
-- 요구사항 98개와 traceability 98개 일치; G4–G7 관련 31개 `Baselined`
+- 요구사항 98개와 traceability 98개 일치; 설계·검증 계획을 연결한 92개 `Baselined`
 - Specified Lab Pack 90개와 Runnable Lab Pack 1개 확인
 - G5–G7·G11·G12 합성 입력 10개의 RTA·DLC·journal·mode/security·변경 영향·통합 oracle 재계산 통과
-- G10.1 공개 입력의 양성 1개·음성 17개 재실행과 시작 파일·시험 입력·출력 해시 확인
+- G10.1 공개 입력의 양성 1개·음성 20개 재실행과 시작 파일·시험 입력·출력 해시 확인
 - 자동 검사에서 잡히는 동일 문장 반복 0건
 - `bash -n`과 `git diff --check` 통과

@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "description": "G10.1 typed graph 검사기의 공개 양성 1개와 구조·주장·리뷰 결함 음성 17개",
+  "description": "G10.1 typed graph 검사기의 공개 양성 1개와 구조·주장·리뷰 결함 음성 20개",
   "guided_submission": {
     "schema_version": 2,
     "profile": "harness",
@@ -35,9 +35,21 @@
         "failure_observation": "스키마 호환성 검사 보고서",
         "mapping_status": "Partial",
         "implementation_origin": "local-prototype",
-        "limitations": ["ARXML과 공식 서비스 인터페이스 생성기를 사용하지 않음"],
-        "citation_ids": ["SYN-BOUNDARY-001"],
-        "local_evidence": [{"path": "synthetic/service-interface", "sha256": "1111111111111111111111111111111111111111111111111111111111111111"}]
+        "limitations": [
+          "ARXML과 공식 서비스 인터페이스 생성기를 사용하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/service-interface",
+            "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "mapped_behavior": "로컬 IDL은 VehicleState 메서드와 이벤트 의미를 설계 시점에 고정한다",
+        "excluded_behavior": "ARXML과 공식 서비스 인터페이스 생성기를 사용하지 않음"
       },
       {
         "id": "generated-proxy",
@@ -51,9 +63,21 @@
         "failure_observation": "생성 트리와 공개 함수 목록 비교",
         "mapping_status": "Partial",
         "implementation_origin": "local-prototype",
-        "limitations": ["ara::com Proxy 코드와 ABI를 구현하지 않음"],
-        "citation_ids": ["SYN-BOUNDARY-001"],
-        "local_evidence": [{"path": "synthetic/generated-proxy", "sha256": "2222222222222222222222222222222222222222222222222222222222222222"}]
+        "limitations": [
+          "ara::com Proxy 코드와 ABI를 구현하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/generated-proxy",
+            "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "mapped_behavior": "생성된 proxy 코드는 클라이언트 호출과 이벤트 구독 경계를 제공한다",
+        "excluded_behavior": "ara::com Proxy 코드와 ABI를 구현하지 않음"
       },
       {
         "id": "generated-skeleton",
@@ -67,9 +91,21 @@
         "failure_observation": "생성 트리와 provider override 목록 비교",
         "mapping_status": "Partial",
         "implementation_origin": "local-prototype",
-        "limitations": ["ara::com Skeleton 코드와 상태 모델을 구현하지 않음"],
-        "citation_ids": ["SYN-BOUNDARY-001"],
-        "local_evidence": [{"path": "synthetic/generated-skeleton", "sha256": "3333333333333333333333333333333333333333333333333333333333333333"}]
+        "limitations": [
+          "ara::com Skeleton 코드와 상태 모델을 구현하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/generated-skeleton",
+            "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "mapped_behavior": "생성된 skeleton 코드는 서비스 제공자의 구현 진입점을 코드로 만든다",
+        "excluded_behavior": "ara::com Skeleton 코드와 상태 모델을 구현하지 않음"
       },
       {
         "id": "service-instance-deployment",
@@ -83,9 +119,21 @@
         "failure_observation": "배치 명세 유효성 검사 결과",
         "mapping_status": "Partial",
         "implementation_origin": "local-prototype",
-        "limitations": ["공식 manifest schema와 배포 도구를 사용하지 않음"],
-        "citation_ids": ["SYN-BOUNDARY-001"],
-        "local_evidence": [{"path": "synthetic/service-instance", "sha256": "4444444444444444444444444444444444444444444444444444444444444444"}]
+        "limitations": [
+          "공식 manifest schema와 배포 도구를 사용하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/service-instance",
+            "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "mapped_behavior": "로컬 배치 항목은 provider 인스턴스와 선택한 통신 binding을 연결한다",
+        "excluded_behavior": "공식 manifest schema와 배포 도구를 사용하지 않음"
       },
       {
         "id": "someip-binding",
@@ -99,9 +147,21 @@
         "failure_observation": "packet과 discovery state 비교",
         "mapping_status": "Partial",
         "implementation_origin": "local-prototype",
-        "limitations": ["선택한 SOME/IP 경로만 다루며 다른 통신 binding은 별도 검토가 필요함"],
-        "citation_ids": ["SYN-BOUNDARY-001"],
-        "local_evidence": [{"path": "synthetic/someip-binding", "sha256": "5555555555555555555555555555555555555555555555555555555555555555"}]
+        "limitations": [
+          "선택한 SOME/IP 경로만 다루며 다른 통신 binding은 별도 검토가 필요함"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/someip-binding",
+            "sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "mapped_behavior": "선택한 SOME/IP 배치 설정은 서비스 ID와 endpoint를 로컬 adapter에 제공한다",
+        "excluded_behavior": "선택한 SOME/IP 경로만 다루며 다른 통신 binding은 별도 검토가 필요함"
       },
       {
         "id": "runtime-proxy",
@@ -115,9 +175,21 @@
         "failure_observation": "availability와 subscription 상태 기록",
         "mapping_status": "Partial",
         "implementation_origin": "local-prototype",
-        "limitations": ["공식 ara::com runtime API와 service handle 의미를 제공하지 않음"],
-        "citation_ids": ["SYN-BOUNDARY-001"],
-        "local_evidence": [{"path": "synthetic/runtime-proxy", "sha256": "6666666666666666666666666666666666666666666666666666666666666666"}]
+        "limitations": [
+          "공식 ara::com runtime API와 service handle 의미를 제공하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/runtime-proxy",
+            "sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "mapped_behavior": "런타임 proxy 객체는 discovery 결과를 사용해 호출과 이벤트 수신을 수행한다",
+        "excluded_behavior": "공식 ara::com runtime API와 service handle 의미를 제공하지 않음"
       },
       {
         "id": "runtime-skeleton",
@@ -131,9 +203,21 @@
         "failure_observation": "요청 처리와 이벤트 발행 상태 기록",
         "mapping_status": "Partial",
         "implementation_origin": "local-prototype",
-        "limitations": ["공식 skeleton lifecycle과 field 의미를 전부 제공하지 않음"],
-        "citation_ids": ["SYN-BOUNDARY-001"],
-        "local_evidence": [{"path": "synthetic/runtime-skeleton", "sha256": "7777777777777777777777777777777777777777777777777777777777777777"}]
+        "limitations": [
+          "공식 skeleton lifecycle과 field 의미를 전부 제공하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/runtime-skeleton",
+            "sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "mapped_behavior": "런타임 skeleton 객체는 provider 구현을 transport 요청과 이벤트 발행에 연결한다",
+        "excluded_behavior": "공식 skeleton lifecycle과 field 의미를 전부 제공하지 않음"
       },
       {
         "id": "vehicle-state-executable",
@@ -147,9 +231,21 @@
         "failure_observation": "실행 계획 생성 보고서",
         "mapping_status": "Partial",
         "implementation_origin": "local-prototype",
-        "limitations": ["공식 Execution Manifest 요소를 일부 로컬 필드로 축소함"],
-        "citation_ids": ["SYN-BOUNDARY-001"],
-        "local_evidence": [{"path": "synthetic/executable", "sha256": "8888888888888888888888888888888888888888888888888888888888888888"}]
+        "limitations": [
+          "공식 Execution Manifest 요소를 일부 로컬 필드로 축소함"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/executable",
+            "sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "mapped_behavior": "executable 배치 설명은 실행 파일과 process 설정의 입력 경계를 고정한다",
+        "excluded_behavior": "공식 Execution Manifest 요소를 일부 로컬 필드로 축소함"
       },
       {
         "id": "vehicle-state-process",
@@ -163,9 +259,21 @@
         "failure_observation": "pidfd, exit status와 cgroup event",
         "mapping_status": "Partial",
         "implementation_origin": "local-prototype",
-        "limitations": ["ara::exec API와 공식 process state 보고를 구현하지 않음"],
-        "citation_ids": ["SYN-BOUNDARY-001"],
-        "local_evidence": [{"path": "synthetic/process", "sha256": "9999999999999999999999999999999999999999999999999999999999999999"}]
+        "limitations": [
+          "ara::exec API와 공식 process state 보고를 구현하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/process",
+            "sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "mapped_behavior": "P01 supervisor는 생성된 실행 계획에 따라 process의 시작과 종료를 적용한다",
+        "excluded_behavior": "ara::exec API와 공식 process state 보고를 구현하지 않음"
       },
       {
         "id": "driving-function-state",
@@ -179,9 +287,21 @@
         "failure_observation": "상태 결정 audit event",
         "mapping_status": "Partial",
         "implementation_origin": "local-prototype",
-        "limitations": ["Function Group 모델을 교육용 상태와 요청으로 축소함"],
-        "citation_ids": ["SYN-BOUNDARY-001"],
-        "local_evidence": [{"path": "synthetic/function-state", "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}]
+        "limitations": [
+          "Function Group 모델을 교육용 상태와 요청으로 축소함"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/function-state",
+            "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "mapped_behavior": "로컬 policy component는 이 시나리오에서 health event를 목표 상태 요청으로 바꾼다",
+        "excluded_behavior": "Function Group 모델을 교육용 상태와 요청으로 축소함"
       },
       {
         "id": "deadline-supervision",
@@ -195,25 +315,84 @@
         "failure_observation": "deadline supervision event log",
         "mapping_status": "Partial",
         "implementation_origin": "local-prototype",
-        "limitations": ["PHM API와 공식 supervision manifest를 사용하지 않음"],
-        "citation_ids": ["SYN-BOUNDARY-001"],
-        "local_evidence": [{"path": "synthetic/health-supervision", "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}]
+        "limitations": [
+          "PHM API와 공식 supervision manifest를 사용하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/health-supervision",
+            "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "mapped_behavior": "로컬 health monitor는 heartbeat deadline 위반을 관찰하고 policy 입력으로 보고한다",
+        "excluded_behavior": "PHM API와 공식 supervision manifest를 사용하지 않음"
       }
     ],
     "edges": [
-      {"from": "service-interface", "relation": "generates", "to": "generated-proxy"},
-      {"from": "service-interface", "relation": "generates", "to": "generated-skeleton"},
-      {"from": "service-instance-deployment", "relation": "configures", "to": "someip-binding"},
-      {"from": "generated-proxy", "relation": "loads-as", "to": "runtime-proxy"},
-      {"from": "generated-skeleton", "relation": "loads-as", "to": "runtime-skeleton"},
-      {"from": "someip-binding", "relation": "binds", "to": "runtime-proxy"},
-      {"from": "someip-binding", "relation": "binds", "to": "runtime-skeleton"},
-      {"from": "vehicle-state-executable", "relation": "instantiates", "to": "vehicle-state-process"},
-      {"from": "driving-function-state", "relation": "governs-lifecycle", "to": "vehicle-state-process"},
-      {"from": "vehicle-state-process", "relation": "is-supervised-by", "to": "deadline-supervision"},
-      {"from": "runtime-proxy", "relation": "communicates-with", "to": "runtime-skeleton"}
+      {
+        "from": "service-interface",
+        "relation": "generates",
+        "to": "generated-proxy"
+      },
+      {
+        "from": "service-interface",
+        "relation": "generates",
+        "to": "generated-skeleton"
+      },
+      {
+        "from": "service-instance-deployment",
+        "relation": "configures",
+        "to": "someip-binding"
+      },
+      {
+        "from": "generated-proxy",
+        "relation": "loads-as",
+        "to": "runtime-proxy"
+      },
+      {
+        "from": "generated-skeleton",
+        "relation": "loads-as",
+        "to": "runtime-skeleton"
+      },
+      {
+        "from": "someip-binding",
+        "relation": "binds",
+        "to": "runtime-proxy"
+      },
+      {
+        "from": "someip-binding",
+        "relation": "binds",
+        "to": "runtime-skeleton"
+      },
+      {
+        "from": "vehicle-state-executable",
+        "relation": "instantiates",
+        "to": "vehicle-state-process"
+      },
+      {
+        "from": "driving-function-state",
+        "relation": "governs-lifecycle",
+        "to": "vehicle-state-process"
+      },
+      {
+        "from": "vehicle-state-process",
+        "relation": "is-supervised-by",
+        "to": "deadline-supervision"
+      },
+      {
+        "from": "runtime-proxy",
+        "relation": "communicates-with",
+        "to": "runtime-skeleton"
+      }
     ],
-    "selected_binding": {"kind": "SOME/IP", "node_id": "someip-binding"},
+    "selected_binding": {
+      "kind": "SOME/IP",
+      "node_id": "someip-binding"
+    },
     "lifecycle_scenarios": [
       {
         "scenario": "Driving 상태에서 VehicleState heartbeat deadline 위반",
@@ -224,62 +403,215 @@
         "transition_executor": "Execution Management",
         "recovery_reporter": "Platform Health Management",
         "recovery_report": "deadline 위반과 복구 뒤 supervision 결과",
-        "citation_ids": ["SYN-BOUNDARY-001"]
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ]
       }
     ],
-    "summary": {"Mapped": 0, "Partial": 11, "Missing": 0, "Out of scope": 0},
-    "review": {"status": "Pending", "reviewer_id": "", "review_manifest_path": "", "review_manifest_sha256": "", "reviewed_citation_ids": []}
+    "summary": {
+      "Mapped": 0,
+      "Partial": 11,
+      "Missing": 0,
+      "Out of scope": 0
+    },
+    "review": {
+      "status": "Pending",
+      "reviewer_id": "",
+      "review_manifest_path": "",
+      "review_manifest_sha256": "",
+      "reviewed_citation_ids": [],
+      "reviewer_key_fingerprint": "",
+      "subject_commit": "",
+      "review_signature_path": ""
+    },
+    "submitter_id": "synthetic-learner"
   },
   "negative_cases": [
-    {"id": "artifact-phase", "operation": "replace", "path": "/nodes/0/phase", "value": "runtime", "expected_errors": ["E_PHASE"]},
-    {"id": "role-coverage", "operation": "replace", "path": "/nodes/1/semantic_role", "value": "Service Interface", "expected_errors": ["E_GRAPH_COVERAGE", "E_PHASE"]},
-    {"id": "edge-reference", "operation": "replace", "path": "/edges/0/to", "value": "unknown-node", "expected_errors": ["E_EDGE_REF"]},
-    {"id": "owner-conflict", "operation": "replace", "path": "/lifecycle_scenarios/0/policy_decision_owner", "value": "Execution Management", "expected_errors": ["E_OWNER_BOUNDARY"]},
-    {"id": "scope-overclaim", "operation": "replace", "path": "/claim_scope", "value": "AUTOSAR compliant", "expected_errors": ["E_SCOPE_CLAIM"]},
-    {"id": "summary-drift", "operation": "replace", "path": "/summary/Partial", "value": 10, "expected_errors": ["E_SUMMARY"]},
-    {"id": "profile-downgrade", "operation": "replace", "path": "/profile", "value": "submission", "expected_errors": ["E_PROFILE_DOWNGRADE"]},
-    {"id": "all-missing", "operation": "set-all-mapping-status", "value": "Missing", "expected_errors": ["E_MAPPING_INCOMPLETE"]},
-    {"id": "gibberish-claim", "operation": "replace", "path": "/nodes/0/claim", "value": "x", "expected_errors": ["E_NODE_FIELD"]},
-    {"id": "binding-reference", "operation": "replace", "path": "/selected_binding/node_id", "value": "runtime-proxy", "expected_errors": ["E_BINDING"]},
+    {
+      "id": "artifact-phase",
+      "operation": "replace",
+      "path": "/nodes/0/phase",
+      "value": "runtime",
+      "expected_errors": [
+        "E_PHASE"
+      ]
+    },
+    {
+      "id": "role-coverage",
+      "operation": "replace",
+      "path": "/nodes/1/semantic_role",
+      "value": "Service Interface",
+      "expected_errors": [
+        "E_GRAPH_COVERAGE",
+        "E_PHASE"
+      ]
+    },
+    {
+      "id": "edge-reference",
+      "operation": "replace",
+      "path": "/edges/0/to",
+      "value": "unknown-node",
+      "expected_errors": [
+        "E_EDGE_REF"
+      ]
+    },
+    {
+      "id": "owner-conflict",
+      "operation": "replace",
+      "path": "/lifecycle_scenarios/0/policy_decision_owner",
+      "value": "Execution Management",
+      "expected_errors": [
+        "E_OWNER_BOUNDARY"
+      ]
+    },
+    {
+      "id": "scope-overclaim",
+      "operation": "replace",
+      "path": "/claim_scope",
+      "value": "AUTOSAR compliant",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "summary-drift",
+      "operation": "replace",
+      "path": "/summary/Partial",
+      "value": 10,
+      "expected_errors": [
+        "E_SUMMARY"
+      ]
+    },
+    {
+      "id": "profile-downgrade",
+      "operation": "replace",
+      "path": "/profile",
+      "value": "submission",
+      "expected_errors": [
+        "E_PROFILE_DOWNGRADE"
+      ]
+    },
+    {
+      "id": "all-missing",
+      "operation": "set-all-mapping-status",
+      "value": "Missing",
+      "expected_errors": [
+        "E_MAPPING_INCOMPLETE"
+      ]
+    },
+    {
+      "id": "gibberish-claim",
+      "operation": "replace",
+      "path": "/nodes/0/claim",
+      "value": "x",
+      "expected_errors": [
+        "E_NODE_FIELD"
+      ]
+    },
+    {
+      "id": "binding-reference",
+      "operation": "replace",
+      "path": "/selected_binding/node_id",
+      "value": "runtime-proxy",
+      "expected_errors": [
+        "E_BINDING"
+      ]
+    },
     {
       "id": "self-loop-only",
       "operation": "replace",
       "path": "/edges",
-      "value": [{"from": "service-interface", "relation": "communicates-with", "to": "service-interface"}],
-      "expected_errors": ["E_EDGE_SEMANTICS", "E_GRAPH_CONNECTIVITY"]
+      "value": [
+        {
+          "from": "service-interface",
+          "relation": "communicates-with",
+          "to": "service-interface"
+        }
+      ],
+      "expected_errors": [
+        "E_EDGE_SEMANTICS",
+        "E_GRAPH_CONNECTIVITY"
+      ]
     },
     {
       "id": "reversed-edge",
       "operation": "replace",
       "path": "/edges/0",
-      "value": {"from": "generated-proxy", "relation": "generates", "to": "service-interface"},
-      "expected_errors": ["E_EDGE_SEMANTICS", "E_GRAPH_CONNECTIVITY"]
+      "value": {
+        "from": "generated-proxy",
+        "relation": "generates",
+        "to": "service-interface"
+      },
+      "expected_errors": [
+        "E_EDGE_SEMANTICS",
+        "E_GRAPH_CONNECTIVITY"
+      ]
     },
     {
       "id": "missing-required-edge",
       "operation": "remove",
       "path": "/edges/10",
-      "expected_errors": ["E_GRAPH_CONNECTIVITY"]
+      "expected_errors": [
+        "E_GRAPH_CONNECTIVITY"
+      ]
     },
     {
       "id": "production-overclaim",
       "operation": "replace",
       "path": "/nodes/0/claim",
       "value": "This node is a complete production-ready implementation of the AUTOSAR Adaptive Platform",
-      "expected_errors": ["E_SCOPE_CLAIM"]
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
     },
     {
       "id": "structured-conformance",
       "operation": "replace",
       "path": "/conformance_claim",
       "value": true,
-      "expected_errors": ["E_SCOPE_CLAIM"]
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
     },
     {
       "id": "reused-local-evidence",
       "operation": "set-all-local-evidence",
-      "value": [{"path": "synthetic/shared-readme", "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"}],
-      "expected_errors": ["E_LOCAL_EVIDENCE_DIVERSITY"]
+      "value": [
+        {
+          "path": "synthetic/shared-readme",
+          "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        }
+      ],
+      "expected_errors": [
+        "E_LOCAL_EVIDENCE_DIVERSITY"
+      ]
+    },
+    {
+      "id": "production-grade-series-deployment",
+      "operation": "replace",
+      "path": "/nodes/0/claim",
+      "value": "This component is production grade and suitable for series vehicle deployment",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "korean-conformance-overclaim",
+      "operation": "replace",
+      "path": "/nodes/0/claim",
+      "value": "이 구성요소는 AUTOSAR 적합 구현이며 양산 적용 가능",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "claim-status-conflict",
+      "operation": "replace",
+      "path": "/nodes/0/claim_type",
+      "value": "known-gap",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
     },
     {
       "id": "forged-review",
@@ -290,9 +622,14 @@
         "reviewer_id": "fake-reviewer",
         "review_manifest_path": "fixtures/g10/missing-review.json",
         "review_manifest_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-        "reviewed_citation_ids": ["SYN-BOUNDARY-001"]
+        "reviewed_citation_ids": [
+          "SYN-BOUNDARY-001"
+        ]
       },
-      "expected_errors": ["E_REVIEW"]
+      "expected_errors": [
+        "E_REVIEW",
+        "E_REVIEW_TRUST"
+      ]
     }
   ]
 }

@@ -26,7 +26,8 @@ tester에는 timeout만 보이지만 gateway log에는 ECU NRC가 기록된 사�
 
 ## 판정 기준
 
-- 네 결과군이 wire, gateway API, audit에서 일관되게 구분됨
+- transport 거부와 backend 실패가 wire, gateway API, audit에서 구분됨
+- ECU NRC와 application provider 실패가 별도 결과로 유지됨
 - trace ID로 tester request부터 MCU provider 결과까지 따라갈 수 있음
 - alive timeout 뒤 route와 pending request가 제한 시간 안에 정리됨
 - 권한 실패 시 backend provider 호출 횟수가 0임
@@ -36,4 +37,4 @@ tester에는 timeout만 보이지만 gateway log에는 ECU NRC가 기록된 사�
 
 ## 경계를 다시 찾는 법
 
-transport 오류와 ECU 응답이 같은 timeout으로 뭉치면 정상 DID 한 개와 실패 사례 두 개만 남깁니다. packet capture, route log, provider counter를 다시 맞춘 뒤 나머지 음성 입력을 차례로 복구합니다.
+같은 timeout으로 뭉친 결과는 최초 변환 지점을 결함 위치로 잡습니다. packet capture, route log, provider counter의 상관 ID를 보완해 경계별 결과를 다시 대조합니다.

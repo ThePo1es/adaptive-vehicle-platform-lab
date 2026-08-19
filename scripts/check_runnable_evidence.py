@@ -23,6 +23,13 @@ FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 LAB_ID = re.compile(r"^G\d+\.\d+$")
 REQUIRED_ROLES = {"fixture", "validator", "runner", "starter"}
+ACTIVE_REQUIRED_ROLES = REQUIRED_ROLES | {
+    "evidence-checker",
+    "review-fixture",
+    "reviewer-registry",
+    "source-lock",
+    "unit-tests",
+}
 
 
 def fail(message: str) -> None:
@@ -137,7 +144,8 @@ def verify_artifacts(
                 fail(f"active artifact hash drifted: {relative_path}")
         by_role[role] = artifact
         paths.add(relative_path)
-    missing = REQUIRED_ROLES - set(by_role)
+    required_roles = ACTIVE_REQUIRED_ROLES if active else REQUIRED_ROLES
+    missing = required_roles - set(by_role)
     if missing:
         fail(f"required artifact roles are missing: {', '.join(sorted(missing))}")
     return by_role

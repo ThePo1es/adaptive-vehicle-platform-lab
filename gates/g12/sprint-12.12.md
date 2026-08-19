@@ -1,6 +1,6 @@
 # Sprint 12.12 — 설계 방어와 P06 릴리스
 
-마지막 Sprint는 새 기능보다 P06의 주장, trade-off, 재현 자료를 한 릴리스로 잠그는 작업입니다. [P06 통합 계약](contract.md)의 Gate 종료 조건을 그대로 심사표로 사용합니다.
+마지막 Sprint에서는 P06의 주장, 절충안, 재현 자료를 하나의 릴리스로 고정합니다. [P06 통합 계약](contract.md)의 Gate 종료 조건을 그대로 심사표로 사용합니다.
 
 ## 시간과 심사 구성
 
@@ -24,14 +24,14 @@ system context, 요구사항 추적, interface pack, timing·resource budget, li
 
 ## 판정 기준
 
-- requirement에서 code·test·result까지 표본 10개가 끊김 없이 추적됨
+- requirement에서 code·test·result까지 표본 10개가 끊김 없이 추적되고 P06 tag에 고정됨
 - demo가 한 release lock으로 정상과 고장 경로를 재생함
 - 20 ms와 자원 예산을 raw 자료와 ADR로 방어함
 - lifecycle·diagnostic·update owner 질문에 서로 모순 없는 답을 냄
 - 변경 요청의 영향과 유지 영역이 regression 결과에 연결됨
 - 비공개 문제에서 최초 계약 경계와 추가 관찰을 90분 안에 제시함
-- 검토 의견, EXT 기록, SBOM·image·firmware hash가 P06 tag에 고정됨
+- 검토 의견, EXT 기록, SBOM·image·firmware hash가 릴리스 색인에서 조회됨
 
 ## 릴리스를 미룰 조건
 
-질문에 설명만 있고 result hash를 찾지 못하거나 변경 요청 뒤 회귀가 비어 있으면 tag 후보를 보존합니다. 해당 주장 한 개로 범위를 축소해 근거와 시험을 다시 연결한 뒤 같은 질문으로 재검토합니다.
+결과 해시나 변경 뒤 회귀가 빠진 항목은 릴리스 차단 이슈로 등록합니다. tag 후보에는 이슈 번호, 필요한 근거, 담당자와 다시 검토할 날짜를 남깁니다.

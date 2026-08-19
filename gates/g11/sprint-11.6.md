@@ -24,14 +24,12 @@ fixture의 `TRUST-ROOT-001`처럼 immutable trust root와 보호 monotonic state
 
 ## 판정 기준
 
-- 서명 검증과 설치·활성화 권한의 owner가 각각 표시됨
-- 부팅의 첫 검증자, key provisioning, recovery image 갱신 경계가 자료 절과 연결됨
-- 이전 signed image와 counter corruption이 자동 시험에 포함됨
-- 모든 power-cut 결과가 확정 slot 또는 명시된 recovery 상태로 수렴함
+- 서명 검증, 설치·활성화 권한, 부팅의 첫 검증자와 key provisioning 책임이 자료 절에 연결됨
+- 이전 signed image, counter corruption, 모든 power-cut 결과가 확정 slot 또는 명시된 recovery 상태로 수렴함
 - version, rollback counter, application health의 commit 순서가 state model과 일치함
 - T3 claim에는 같은 target에서 얻은 boot·보호 저장소·전원 차단 근거가 모두 붙음
 - trust root 제거 사례의 상한이 T2로 계산됨
 
 ## 근거를 보강할 조건
 
-serial log만으로 전원 차단 결과를 추정했거나 protected counter의 실제 저장 위치가 비어 있으면 현재 결과를 `Provisional`로 둡니다. T2 범위에서는 signature·journal oracle을 다시 돌리고, T3 재시험은 필요한 장비와 자료가 준비된 뒤 별도 run ID로 시작합니다.
+전원 차단과 보호 counter의 근거가 갖춰진 범위까지 등급을 정합니다. T2 기록에는 signature·journal 판정 결과를 붙이고, T3 장비가 준비되면 별도 실행 ID로 재시험합니다.

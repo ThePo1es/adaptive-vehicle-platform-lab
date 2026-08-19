@@ -34,7 +34,7 @@ monitor는 supervision 결과와 recovery request만 냅니다. P03 Process Cont
 
 1. heartbeat payload에는 프로세스 instance와 sequence를 둡니다.
 2. deadline의 양 끝 checkpoint 포함 여부를 테스트 vector로 고정합니다.
-3. supervision failure가 곧바로 restart를 뜻하지는 않습니다. policy가 action을 고릅니다.
+3. supervision failure 뒤의 action은 policy가 고릅니다.
 
 ## 감시 결과를 인정하지 않는 경우
 

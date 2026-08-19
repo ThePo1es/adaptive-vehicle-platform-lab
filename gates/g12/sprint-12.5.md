@@ -1,4 +1,4 @@
-# Sprint 12.5 — 두 node 걷는 골격
+# Sprint 12.5 — 두 노드 최소 통합 골격
 
 목표는 동결한 P00–P05 구성요소가 한 번에 시작되어 VehicleState 한 값을 전달하는 최소 통합 경로입니다. [P06 통합 계약](contract.md)의 lifecycle과 증거 등급을 적용합니다.
 
@@ -22,14 +22,12 @@ hostname, network interface 이름, CAN bitrate가 다른 격리 환경을 받�
 
 ## 판정 기준
 
-- release lock의 artifact와 실제 image·firmware hash가 일치함
+- release lock의 artifact·image·firmware hash와 실행 명령·원본 log·smoke 결과가 한 manifest에 묶임
 - 다섯 startup case가 최초 실패 단계와 책임 owner를 정확히 냄
-- 기준 시작 순서가 `Driving-ready`에 도달함
-- 종료 중 새 VehicleState offer가 생기지 않고 queue가 제한 시간 안에 비워짐
+- 기준 시작 순서가 `Driving-ready`에 도달하고 종료 중 queue가 제한 시간 안에 비워짐
 - 세 재부팅에서 새 MCU session을 관찰하고 이전 값을 폐기함
 - 환경 차이가 configuration에만 반영되고 code commit은 유지됨
-- 실행 명령, 원본 log, smoke 결과가 run manifest에 묶임
 
 ## 골격부터 다시 세울 조건
 
-수동 실행 순서에 기대야 통과하거나 readiness를 sleep으로 대신했다면 signal 하나, process 두 개, 정상 시작 한 건으로 되돌아갑니다. event와 timeout을 먼저 고정하고 순서 교환 네 건을 다시 추가합니다.
+수동 순서와 sleep 의존은 setup 결함으로 등록합니다. readiness 이벤트, timeout, process 두 개의 최소 시작 절차를 고친 뒤 순서 교환 네 건을 다시 붙입니다.

@@ -5,7 +5,9 @@
   "reviewer_id": "synthetic-harness-reviewer",
   "reviewed_on": "2026-08-19",
   "claim_scope": "concept-aligned local prototype",
-  "reviewed_citation_ids": ["SYN-BOUNDARY-001"],
+  "reviewed_citation_ids": [
+    "SYN-BOUNDARY-001"
+  ],
   "reviewed_node_ids": [
     "service-interface",
     "generated-proxy",
@@ -20,7 +22,8 @@
     "deadline-supervision"
   ],
   "source_ledger_sha256": "ce7532b3054d8522be795d1bbe290bc0a53276d48dd4b2b04da2c082e7fc9352",
-  "review_subject_sha256": "00c6d3a3e27ed360b0dfda19dd6ea91081c6f057966ddc14ab9b637bdd816f27",
+  "source_lock_sha256": "ab9864e606b3cbc6e6c3a078cd5741e19aea9d3cdaec49ba4af9766d2181cfe9",
+  "review_subject_sha256": "6ef046f5140e24bd54f9734f00f915ac2608091dac7efc8e52a5b5cb60273bd3",
   "local_evidence_sha256s": [
     "1111111111111111111111111111111111111111111111111111111111111111",
     "2222222222222222222222222222222222222222222222222222222222222222",
@@ -35,5 +38,8 @@
     "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
   ],
   "limitations_acknowledged": true,
-  "review_notes": "검사기의 review binding 경로를 확인하는 합성 검토 자료"
+  "review_notes": "검사기의 review binding 경로를 확인하는 합성 검토 자료",
+  "submitter_id": "synthetic-learner",
+  "subject_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "reviewer_key_fingerprint": "SHA256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 }

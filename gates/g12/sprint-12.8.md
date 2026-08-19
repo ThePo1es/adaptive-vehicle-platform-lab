@@ -23,13 +23,11 @@ process supervisor와 P03이 동시에 restart를 요청하는 기록을 받습�
 ## 판정 기준
 
 - 상태와 event마다 decision owner·executor·reporter가 명시됨
-- 정상 시작이 fixture의 `Driving-ready`에 도달함
-- dual fault의 여섯 expected event가 고정 순서로 나타남
+- 정상 시작과 dual fault가 fixture의 `Driving-ready` 및 여섯 expected event 순서를 재현함
 - 고장 순서와 간격이 바뀌어도 허용된 terminal state로 수렴함
-- 새 MCU session 확인 전 VehicleState가 재공개되지 않음
-- 중복·유실 event가 무한 restart나 queue 증가를 만들지 않음
+- 새 MCU session 전 VehicleState가 재공개되지 않으며 중복·유실 event에도 restart와 queue가 bounded 상태를 유지함
 - 실제 target 전이 시간과 virtual clock 판정이 별도 자료로 남음
 
 ## 순서가 흔들리면
 
-동일 seed에서 terminal state가 달라지면 dual fault를 단일 MCU reset과 단일 service crash로 분리합니다. event ledger와 owner를 다시 맞추고 두 고장 간격을 100 ms부터 줄여 가며 재시험합니다.
+동일 seed의 terminal state가 달라진 실행은 nondeterminism incident로 묶습니다. event ledger와 책임 주체를 대조한 뒤 같은 간격을 다시 실행해 원본 순서와 함께 보존합니다.

@@ -223,16 +223,22 @@ Fault bank에는 다음 필드를 둡니다.
 
 ## Gate별 Lab Exit
 
-| Gate | 전이 과제 | 핵심 oracle |
-| --- | --- | --- |
-| G1 | ring buffer 대신 packet pool 구현 | invariant + property/mutation test |
-| G2 | 처음 보는 ownership bug가 든 pipeline 수리 | sanitizer + lifetime contract |
-| G4 | 다른 interrupt/fault를 register dump로 진단 | reference manual + crash record |
-| G6 | 다른 timer parameter의 ISO-TP peer와 상호 운용 | packet trace + second stack |
-| G8 | session을 이탈한 child와 stale PID action 수정 | cgroup/pidfd + bounded shutdown |
-| G9 | delayed SD offer, version mismatch, source-session 변경 처리 | packet/state/contract oracle |
-| G11A | 새로운 중단 지점·attacker capability 추가 | update state model + policy corpus |
-| G11B | operating scenario와 common-cause 가정 변경 | safety/security argument review |
+| Gate | 제한 시간 | 전이 과제 | 독립 판정 | 치명적 누락 | 재시험 입력 |
+| --- | ---: | --- | --- | --- | --- |
+| G0 | 90분 | 깨끗한 환경에서 기준선과 결함 하나 재현 | 새 checkout의 전체 검사와 동결된 결함 정답 | build 불가, 원인 오판 | OS·toolchain·결함을 모두 변경 |
+| G1 | 90분 | ring buffer와 다른 정책의 packet pool 구현 | property test와 mutation score | 범위 밖 접근, 오류 뒤 데이터 훼손 | 용량·full policy·입력 분포 변경 |
+| G2 | 90분 | 처음 보는 ownership bug가 든 pipeline 수리 | sanitizer와 수명 계약 대조 | dangling owner/view, data race | owner graph와 취소 시점 변경 |
+| G3 | 90분 | 새 함수의 source·IR·assembly·ABI 연결 | ABI 문서와 assembly assertion | GCC 결과를 LLVM IR로 설명, target 혼합 | 함수·ABI·compiler 변경 |
+| G4 | 90분 | 다른 interrupt 또는 fault를 register dump로 진단 | reference manual과 crash record decoder | 원인 유실, 무한 ISR, 잘못된 reset 상태 | vector·fault class·최적화 변경 |
+| G5 | 120분 | 바뀐 task set의 분석과 overload 진단 | 별도 RTA 계산기와 scheduler trace | blocking·jitter 누락, overflow 미탐지 | period·priority·resource 공유 변경 |
+| G6 | 120분 | 새 timer 조합의 ISO-TP peer와 상호 운용 | 두 번째 stack과 packet trace | malformed 입력이 application state를 바꿈 | BS·STmin·timeout·frame type 변경 |
+| G7 | 120분 | 낯선 packet에서 application·DTC까지 추적 | 생성 설정, 상태 모델, raw trace 대조 | 계층 소유권 오배치, 잘못된 DTC 복구 | signal·service·reset 경계 변경 |
+| G8 | 120분 | session을 이탈한 child와 stale PID action 수리 | cgroup/pidfd 관찰과 깨끗한 image 재현 | descendant 잔류, 새 process 오동작, image 재현 실패 | fork 형태·image 설정·policy 변경 |
+| G9 | 120분 | 지연된 SD offer, version, source session 변경 처리 | packet·상태 모델·interface contract 대조 | generated boundary 우회, 시계 불확실성 누락 | timing·version·session을 새 조합으로 변경 |
+| G10 | 120분 | 처음 보는 manifest 요소와 lifecycle 고장 배치 | 공식 절, 책임 지도 검사기, 봉인 owner fault | 중복 lifecycle owner, 저장 운행 상태 자동 적용 | 요소·Function Group·고장 순서 변경 |
+| G11A | 150분 | 중단 지점과 공격자 능력을 하나씩 추가 | update reference model과 package attack corpus | health 전 commit, 선택 tier보다 강한 주장 | 중단 위치·키 상태·filesystem 공격 변경 |
+| G11B | 120분 | 운행 시나리오와 common-cause 가정 갱신 | 변경 영향 oracle와 safety/security 두 검토 | 근거 없는 safety/security 주장 | 시나리오·trust root·공유 자원 변경 |
+| G12 | 180분 | 비공개 종단 고장과 요구 변경을 함께 처리 | 12고장 실행기와 제3자 clean replay | 기준선 요구 누락, 새 환경 재현 실패 | fault·version 조합·budget 압력 변경 |
 
 ## Challenge-out
 
