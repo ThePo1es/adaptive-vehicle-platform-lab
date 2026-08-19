@@ -25,7 +25,7 @@
   "source_lock_sha256": "004c542975ab7ce66de6313c30f102b9593c173efe6141bc433d55f8c25c5db6",
   "reviewer_registry_sha256": "f2b7b135aed4bc7822f01be91976f387b78267db195d1e128882fa1f5d4ad2c3",
   "review_policy_sha256": "fdc5109770121dff83234219a778f8ce9fba84f28ada3a9b494725923cd6d790",
-  "review_subject_sha256": "d32aae1a1c44fbcf414daf50b7e1fd0dbe67a20630a2852d1a31a92ffbbbda40",
+  "review_subject_sha256": "4bbaece1d5280104e662a8c4275c74b2364b10f78b0fc6006626e535cd37c801",
   "local_evidence_sha256s": [
     "1111111111111111111111111111111111111111111111111111111111111111",
     "2222222222222222222222222222222222222222222222222222222222222222",
@@ -40,6 +40,8 @@
     "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
   ],
   "limitations_acknowledged": true,
+  "semantic_claim_reviewed": true,
+  "deployment_readiness_asserted": false,
   "review_notes": "검사기의 review binding 경로를 확인하는 합성 검토 자료",
   "submitter_id": "synthetic-learner",
   "submitter_principal_id": "principal-synthetic-learner",

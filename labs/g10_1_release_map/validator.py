@@ -125,6 +125,25 @@ REVIEW_SUBJECT_FIELDS = (
     "summary",
 )
 CLAIM_TYPES = {"observed-local-behavior", "document-mapping", "known-gap"}
+BEHAVIOR_MODEL = {
+    "Service Interface": ("defines-contract", "local-method-event-schema"),
+    "Generated Proxy": ("adapts-client", "local-method-event-boundary"),
+    "Generated Skeleton": ("adapts-provider", "local-provider-entrypoints"),
+    "Service Instance Deployment": ("configures-instance", "local-provider-binding"),
+    "Communication Binding": ("configures-transport", "local-someip-endpoint"),
+    "Runtime Proxy": ("invokes-service", "local-client-runtime"),
+    "Runtime Skeleton": ("handles-service", "local-provider-runtime"),
+    "Executable": ("describes-deployment", "local-executable-entry"),
+    "Process": ("executes-plan", "local-process-instance"),
+    "Function Group State": ("requests-state", "local-driving-state"),
+    "Health Supervision": ("reports-health", "local-heartbeat-deadline"),
+}
+READINESS_BY_CLAIM_TYPE = {
+    "observed-local-behavior": "educational-prototype-observed",
+    "document-mapping": "document-mapping-only",
+    "known-gap": "not-observed",
+}
+BEHAVIOR_FIELDS = {"subject", "action", "object", "readiness"}
 REVIEW_NAMESPACE = "adaptive-vehicle-platform-lab-g10.1"
 RELEASE_POLICY_NAMESPACE = "adaptive-vehicle-platform-lab-g10.1-release-policy-v1"
 RELEASE_AUTHORITIES = (
@@ -501,6 +520,8 @@ def _validate_review_manifest(
         manifest.get("review_subject_sha256") == _review_subject_hash(document),
         manifest.get("local_evidence_sha256s") == expected_evidence_hashes,
         manifest.get("limitations_acknowledged") is True,
+        manifest.get("semantic_claim_reviewed") is True,
+        manifest.get("deployment_readiness_asserted") is False,
         _meaningful(manifest.get("review_notes"), 12),
     ]
     if profile == "submission":
@@ -760,16 +781,12 @@ def _validate(document: dict[str, Any], profile: str, input_path: Path | None = 
             for field in (
                 "subject",
                 "boundary",
-                "observed_behavior",
                 "excluded_conformance",
                 "configuration_source",
                 "failure_observation",
             ):
                 if not _meaningful(node.get(field), 8):
                     findings.append(Finding("E_NODE_FIELD", f"node {index} needs a concrete {field}"))
-            if isinstance(node.get("observed_behavior"), str):
-                observed_behaviors.append(node["observed_behavior"])
-
             status = node.get("mapping_status")
             if status not in MAPPING_STATUSES:
                 findings.append(Finding("E_MAPPING_STATUS", f"node {index} has an unknown mapping status"))
@@ -780,6 +797,18 @@ def _validate(document: dict[str, Any], profile: str, input_path: Path | None = 
                 findings.append(Finding("E_SCOPE_CLAIM", f"node {index} maps evidence while declaring only a known gap"))
             elif status in {"Missing", "Out of scope"} and claim_type == "observed-local-behavior":
                 findings.append(Finding("E_SCOPE_CLAIM", f"node {index} claims observed behavior without mapped evidence"))
+            behavior = node.get("observed_behavior")
+            expected_action_object = BEHAVIOR_MODEL.get(str(role))
+            if not isinstance(behavior, dict) or set(behavior) != BEHAVIOR_FIELDS:
+                findings.append(Finding("E_SCOPE_CLAIM", f"node {index} needs the closed observed_behavior structure"))
+            elif expected_action_object is None or (
+                behavior.get("subject") != role
+                or (behavior.get("action"), behavior.get("object")) != expected_action_object
+                or behavior.get("readiness") != READINESS_BY_CLAIM_TYPE.get(str(claim_type))
+            ):
+                findings.append(Finding("E_SCOPE_CLAIM", f"node {index} observed_behavior does not match its role and claim type"))
+            else:
+                observed_behaviors.append(_canonical_hash(behavior))
             if node.get("implementation_origin") != "local-prototype":
                 findings.append(Finding("E_IMPLEMENTATION_ORIGIN", f"node {index} must identify local-prototype origin"))
             limitations = node.get("limitations")
@@ -990,10 +1019,11 @@ def pass_line(document: dict[str, Any], input_path: Path | None = None) -> str:
             f" reviewer_key={review.get('reviewer_key_fingerprint')}"
             f" subject_commit={review.get('subject_commit')}"
         )
+    semantic_detail = " semantic_claim=Reviewed" if reviewed else " semantic_claim=Unreviewed"
     return (
         f"{prefix} G10.1-MAP profile={profile} nodes={len(document['nodes'])} "
         f"edges={len(document['edges'])} citations={len(document['source_ledger'])} "
-        f"statuses={counts} review={review['status']}{trust_detail}"
+        f"statuses={counts} review={review['status']}{semantic_detail}{trust_detail}"
     )
 
 

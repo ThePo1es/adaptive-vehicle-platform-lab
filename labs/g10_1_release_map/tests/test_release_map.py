@@ -30,7 +30,7 @@ class ReleaseMapValidatorTest(unittest.TestCase):
 
     def test_pass_line_is_stable(self) -> None:
         self.assertEqual(
-            "STRUCTURE_PASS G10.1-MAP profile=harness nodes=11 edges=11 citations=1 statuses=Mapped:0,Partial:11,Missing:0,Out of scope:0 review=Pending",
+            "STRUCTURE_PASS G10.1-MAP profile=harness nodes=11 edges=11 citations=1 statuses=Mapped:0,Partial:11,Missing:0,Out of scope:0 review=Pending semantic_claim=Unreviewed",
             pass_line(self.case_set["guided_submission"]),
         )
 
@@ -43,7 +43,7 @@ class ReleaseMapValidatorTest(unittest.TestCase):
                 self.assertEqual(sorted(case["expected_errors"]), observed)
 
     def test_harness_summary(self) -> None:
-        self.assertEqual("G10.1 harness: PASS (1 valid, 23 negative cases)", run()[-1])
+        self.assertEqual("G10.1 harness: PASS (1 valid, 26 negative cases)", run()[-1])
 
     def test_submission_profile_rejects_synthetic_fixture(self) -> None:
         observed = {finding.code for finding in validate_submission(self.case_set["guided_submission"])}

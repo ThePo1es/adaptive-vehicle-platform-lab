@@ -160,8 +160,8 @@
 ## 변경 규칙
 
 - 공개한 ID는 재사용하지 않습니다.
-- `bounded`, `configured`, `supported`가 가리키는 수치와 목록을 versioned 파일에 연결합니다.
+- `bounded`, `configured`, `supported`가 가리키는 수치와 목록을 버전이 고정된 파일에 연결합니다.
 - `Baselined` 요구사항은 설계 배정과 검증 계획을 연결합니다.
 - `Implemented` 요구사항은 설계·구현·자동 검증 링크를 모두 가집니다.
-- `Verified` 요구사항은 전체 40자리 commit SHA 또는 CI 실행을 붙인 `Pass` 결과와 검토자를 가집니다.
+- `Verified` 요구사항은 전체 40자리 커밋 SHA 또는 CI 실행을 붙인 `Pass` 결과와 검토자를 가집니다.
 - 변경 PR은 [traceability.md](traceability.md)와 영향 받는 budget·test를 함께 갱신합니다.

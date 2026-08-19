@@ -1,6 +1,6 @@
 # Traceability Matrix
 
-요구사항 98개는 설계 배정과 검증 계획을 연결해 `Baselined`로 올렸습니다. 구현 링크는 실제 code가 생긴 PR에서 채우고, `Verified`에는 전체 commit SHA 또는 CI 실행과 검토자를 기록합니다.
+요구사항 98개는 설계 배정과 검증 계획을 연결해 `Baselined`로 올렸습니다. 구현 링크는 실제 코드가 생긴 PR에서 채우고, `Verified`에는 전체 커밋 SHA 또는 CI 실행과 검토자를 기록합니다.
 
 | Requirement | Design / ADR | Implementation | Verification | Result | Reviewer |
 | --- | --- | --- | --- | --- | --- |
@@ -109,4 +109,4 @@
 | REQ-EXEC-001 | [P03 design](../projects/03-execution-manager/README.md) | Planned | [Sprint 10.3](../gates/g10/sprint-10.3.md) | Not run | — |
 ```
 
-`Pass`에는 검증한 전체 commit SHA 또는 CI 실행 URL을 붙입니다. 상태별 필수 링크와 결과 형식은 `scripts/check_traceability.py`가 검사하고, Markdown 링크의 실제 대상은 `scripts/check_internal_links.py`가 확인합니다.
+`Pass`에는 검증한 전체 커밋 SHA 또는 CI 실행 URL을 붙입니다. 상태별 필수 링크와 결과 형식은 `scripts/check_traceability.py`가 검사하고, Markdown 링크의 실제 대상은 `scripts/check_internal_links.py`가 확인합니다.

@@ -1,6 +1,6 @@
 {
   "schema_version": 3,
-  "description": "G10.1 typed graph 검사기의 공개 양성 1개와 구조·주장·리뷰 결함 음성 23개",
+  "description": "G10.1 typed graph 검사기의 공개 양성 1개와 구조·주장·리뷰 결함 음성 26개",
   "guided_submission": {
     "schema_version": 3,
     "profile": "harness",
@@ -47,7 +47,12 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "observed_behavior": "로컬 IDL은 VehicleState 메서드와 이벤트 의미를 설계 시점에 고정한다",
+        "observed_behavior": {
+          "subject": "Service Interface",
+          "action": "defines-contract",
+          "object": "local-method-event-schema",
+          "readiness": "educational-prototype-observed"
+        },
         "excluded_conformance": "ARXML과 공식 서비스 인터페이스 생성기를 사용하지 않음"
       },
       {
@@ -74,7 +79,12 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "observed_behavior": "생성된 proxy 코드는 클라이언트 호출과 이벤트 구독 경계를 제공한다",
+        "observed_behavior": {
+          "subject": "Generated Proxy",
+          "action": "adapts-client",
+          "object": "local-method-event-boundary",
+          "readiness": "educational-prototype-observed"
+        },
         "excluded_conformance": "ara::com Proxy 코드와 ABI를 구현하지 않음"
       },
       {
@@ -101,7 +111,12 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "observed_behavior": "생성된 skeleton 코드는 서비스 제공자의 구현 진입점을 코드로 만든다",
+        "observed_behavior": {
+          "subject": "Generated Skeleton",
+          "action": "adapts-provider",
+          "object": "local-provider-entrypoints",
+          "readiness": "educational-prototype-observed"
+        },
         "excluded_conformance": "ara::com Skeleton 코드와 상태 모델을 구현하지 않음"
       },
       {
@@ -128,7 +143,12 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "observed_behavior": "로컬 배치 항목은 provider 인스턴스와 선택한 통신 binding을 연결한다",
+        "observed_behavior": {
+          "subject": "Service Instance Deployment",
+          "action": "configures-instance",
+          "object": "local-provider-binding",
+          "readiness": "educational-prototype-observed"
+        },
         "excluded_conformance": "공식 manifest schema와 배포 도구를 사용하지 않음"
       },
       {
@@ -155,7 +175,12 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "observed_behavior": "선택한 SOME/IP 배치 설정은 서비스 ID와 endpoint를 로컬 adapter에 제공한다",
+        "observed_behavior": {
+          "subject": "Communication Binding",
+          "action": "configures-transport",
+          "object": "local-someip-endpoint",
+          "readiness": "educational-prototype-observed"
+        },
         "excluded_conformance": "선택한 SOME/IP 경로만 다루며 다른 통신 binding은 별도 검토가 필요함"
       },
       {
@@ -182,7 +207,12 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "observed_behavior": "런타임 proxy 객체는 discovery 결과를 사용해 호출과 이벤트 수신을 수행한다",
+        "observed_behavior": {
+          "subject": "Runtime Proxy",
+          "action": "invokes-service",
+          "object": "local-client-runtime",
+          "readiness": "educational-prototype-observed"
+        },
         "excluded_conformance": "공식 ara::com runtime API와 service handle 의미를 제공하지 않음"
       },
       {
@@ -209,7 +239,12 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "observed_behavior": "런타임 skeleton 객체는 provider 구현을 transport 요청과 이벤트 발행에 연결한다",
+        "observed_behavior": {
+          "subject": "Runtime Skeleton",
+          "action": "handles-service",
+          "object": "local-provider-runtime",
+          "readiness": "educational-prototype-observed"
+        },
         "excluded_conformance": "공식 skeleton lifecycle과 field 의미를 전부 제공하지 않음"
       },
       {
@@ -236,7 +271,12 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "observed_behavior": "executable 배치 설명은 실행 파일과 process 설정의 입력 경계를 고정한다",
+        "observed_behavior": {
+          "subject": "Executable",
+          "action": "describes-deployment",
+          "object": "local-executable-entry",
+          "readiness": "educational-prototype-observed"
+        },
         "excluded_conformance": "공식 Execution Manifest 요소를 일부 로컬 필드로 축소함"
       },
       {
@@ -263,7 +303,12 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "observed_behavior": "P01 supervisor는 생성된 실행 계획에 따라 process의 시작과 종료를 적용한다",
+        "observed_behavior": {
+          "subject": "Process",
+          "action": "executes-plan",
+          "object": "local-process-instance",
+          "readiness": "educational-prototype-observed"
+        },
         "excluded_conformance": "ara::exec API와 공식 process state 보고를 구현하지 않음"
       },
       {
@@ -290,7 +335,12 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "observed_behavior": "로컬 policy component는 이 시나리오에서 health event를 목표 상태 요청으로 바꾼다",
+        "observed_behavior": {
+          "subject": "Function Group State",
+          "action": "requests-state",
+          "object": "local-driving-state",
+          "readiness": "educational-prototype-observed"
+        },
         "excluded_conformance": "Function Group 모델을 교육용 상태와 요청으로 축소함"
       },
       {
@@ -317,7 +367,12 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "observed_behavior": "로컬 health monitor는 heartbeat deadline 위반을 관찰하고 policy 입력으로 보고한다",
+        "observed_behavior": {
+          "subject": "Health Supervision",
+          "action": "reports-health",
+          "object": "local-heartbeat-deadline",
+          "readiness": "educational-prototype-observed"
+        },
         "excluded_conformance": "PHM API와 공식 supervision manifest를 사용하지 않음"
       }
     ],
@@ -435,7 +490,8 @@
       "value": "Service Interface",
       "expected_errors": [
         "E_GRAPH_COVERAGE",
-        "E_PHASE"
+        "E_PHASE",
+        "E_SCOPE_CLAIM"
       ]
     },
     {
@@ -497,7 +553,7 @@
       "path": "/nodes/0/observed_behavior",
       "value": "x",
       "expected_errors": [
-        "E_NODE_FIELD"
+        "E_SCOPE_CLAIM"
       ]
     },
     {
@@ -630,6 +686,33 @@
       "value": "검증 범위를 벗어난 자유문 주장",
       "expected_errors": [
         "E_NODE_FIELD"
+      ]
+    },
+    {
+      "id": "novel-fleet-rollout-overclaim",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior",
+      "value": "This stack is cleared for fleet rollout to paying customers.",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "novel-korean-customer-overclaim",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior",
+      "value": "유료 고객 차량에 바로 출고할 수 있는 품질이다.",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "closed-readiness-tamper",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior/readiness",
+      "value": "fleet-ready",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
       ]
     },
     {

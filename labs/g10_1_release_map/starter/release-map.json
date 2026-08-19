@@ -97,7 +97,12 @@
       ],
       "local_evidence": [],
       "claim_type": "known-gap",
-      "observed_behavior": "P02 로컬 IDL과 R25-11 Service Interface의 대응 관계를 원문으로 작성한다",
+      "observed_behavior": {
+        "subject": "Service Interface",
+        "action": "defines-contract",
+        "object": "local-method-event-schema",
+        "readiness": "not-observed"
+      },
       "excluded_conformance": "직접 읽은 절과 로컬 파일의 차이를 기록해야 함"
     },
     {
@@ -119,7 +124,12 @@
       ],
       "local_evidence": [],
       "claim_type": "known-gap",
-      "observed_behavior": "생성된 client 코드를 런타임 proxy 객체와 분리해 원문 책임에 연결한다",
+      "observed_behavior": {
+        "subject": "Generated Proxy",
+        "action": "adapts-client",
+        "object": "local-method-event-boundary",
+        "readiness": "not-observed"
+      },
       "excluded_conformance": "공식 생성 코드와 로컬 adapter의 차이를 기록해야 함"
     },
     {
@@ -141,7 +151,12 @@
       ],
       "local_evidence": [],
       "claim_type": "known-gap",
-      "observed_behavior": "생성된 provider 코드를 런타임 skeleton 객체와 분리해 원문 책임에 연결한다",
+      "observed_behavior": {
+        "subject": "Generated Skeleton",
+        "action": "adapts-provider",
+        "object": "local-provider-entrypoints",
+        "readiness": "not-observed"
+      },
       "excluded_conformance": "공식 생성 코드와 로컬 adapter의 차이를 기록해야 함"
     },
     {
@@ -163,7 +178,12 @@
       ],
       "local_evidence": [],
       "claim_type": "known-gap",
-      "observed_behavior": "서비스 인스턴스 배치와 통신 binding 설정의 경계를 원문과 대조한다",
+      "observed_behavior": {
+        "subject": "Service Instance Deployment",
+        "action": "configures-instance",
+        "object": "local-provider-binding",
+        "readiness": "not-observed"
+      },
       "excluded_conformance": "공식 manifest taxonomy와 로컬 필드의 차이를 기록해야 함"
     },
     {
@@ -186,7 +206,12 @@
       ],
       "local_evidence": [],
       "claim_type": "known-gap",
-      "observed_behavior": "선택한 SOME/IP 배치 설정과 런타임 통신 역할의 연결을 원문으로 확인한다",
+      "observed_behavior": {
+        "subject": "Communication Binding",
+        "action": "configures-transport",
+        "object": "local-someip-endpoint",
+        "readiness": "not-observed"
+      },
       "excluded_conformance": "다른 통신 binding과 공식 ara::com 배포 의미를 기록해야 함"
     },
     {
@@ -208,7 +233,12 @@
       ],
       "local_evidence": [],
       "claim_type": "known-gap",
-      "observed_behavior": "런타임 client 객체의 discovery와 호출 책임을 생성 코드에서 분리해 설명한다",
+      "observed_behavior": {
+        "subject": "Runtime Proxy",
+        "action": "invokes-service",
+        "object": "local-client-runtime",
+        "readiness": "not-observed"
+      },
       "excluded_conformance": "공식 runtime API와 service handle 차이를 기록해야 함"
     },
     {
@@ -230,7 +260,12 @@
       ],
       "local_evidence": [],
       "claim_type": "known-gap",
-      "observed_behavior": "런타임 provider 객체의 요청 처리와 이벤트 발행 책임을 생성 코드에서 분리한다",
+      "observed_behavior": {
+        "subject": "Runtime Skeleton",
+        "action": "handles-service",
+        "object": "local-provider-runtime",
+        "readiness": "not-observed"
+      },
       "excluded_conformance": "공식 skeleton lifecycle과 로컬 객체의 차이를 기록해야 함"
     },
     {
@@ -253,7 +288,12 @@
       ],
       "local_evidence": [],
       "claim_type": "known-gap",
-      "observed_behavior": "실행 파일 배치와 런타임 process의 관계를 manifest 원문으로 확인한다",
+      "observed_behavior": {
+        "subject": "Executable",
+        "action": "describes-deployment",
+        "object": "local-executable-entry",
+        "readiness": "not-observed"
+      },
       "excluded_conformance": "공식 Execution Manifest 요소와 로컬 필드의 차이를 기록해야 함"
     },
     {
@@ -275,7 +315,12 @@
       ],
       "local_evidence": [],
       "claim_type": "known-gap",
-      "observed_behavior": "P01 process 실행 동작과 Execution Management 책임의 차이를 원문으로 설명한다",
+      "observed_behavior": {
+        "subject": "Process",
+        "action": "executes-plan",
+        "object": "local-process-instance",
+        "readiness": "not-observed"
+      },
       "excluded_conformance": "ara::exec API와 공식 process state 보고를 사용하지 않음"
     },
     {
@@ -298,7 +343,12 @@
       ],
       "local_evidence": [],
       "claim_type": "known-gap",
-      "observed_behavior": "heartbeat 시나리오에서 policy 결정과 실행 전이 책임을 원문에 맞춰 나눈다",
+      "observed_behavior": {
+        "subject": "Function Group State",
+        "action": "requests-state",
+        "object": "local-driving-state",
+        "readiness": "not-observed"
+      },
       "excluded_conformance": "교육용 상태 모델과 공식 Function Group 의미의 차이를 기록해야 함"
     },
     {
@@ -321,7 +371,12 @@
       ],
       "local_evidence": [],
       "claim_type": "known-gap",
-      "observed_behavior": "health observation과 recovery policy 결정을 한 책임으로 합치지 않고 설명한다",
+      "observed_behavior": {
+        "subject": "Health Supervision",
+        "action": "reports-health",
+        "object": "local-heartbeat-deadline",
+        "readiness": "not-observed"
+      },
       "excluded_conformance": "PHM API와 공식 supervision manifest의 차이를 기록해야 함"
     }
   ],

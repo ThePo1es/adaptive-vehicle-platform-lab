@@ -157,16 +157,21 @@ required_files=(
     evidence/runnable/g10.1/harness-v2.stdout
     evidence/runnable/g10.1/harness-v3.stdout
     evidence/runnable/g10.1/harness-v4.stdout
+    evidence/runnable/g10.1/harness-v5.stdout
+    evidence/runnable/g10.1/harness-v5.stderr
     evidence/runnable/g10.1/repository-check-v2.stdout
     evidence/runnable/g10.1/repository-check-v2.stderr
     evidence/runnable/g10.1/repository-check-v3.stdout
     evidence/runnable/g10.1/repository-check-v3.stderr
     evidence/runnable/g10.1/repository-check-v4.stdout
     evidence/runnable/g10.1/repository-check-v4.stderr
+    evidence/runnable/g10.1/repository-check-v5.stdout
+    evidence/runnable/g10.1/repository-check-v5.stderr
     evidence/runnable/g10.1/run-manifest.json
     evidence/runnable/g10.1/run-manifest-v2.json
     evidence/runnable/g10.1/run-manifest-v3.json
     evidence/runnable/g10.1/run-manifest-v4.json
+    evidence/runnable/g10.1/run-manifest-v5.json
     evidence/runnable/index.json
     projects/00-mcu-rtos-ecu/README.md
     projects/05-can-ethernet-vertical-slice/README.md
