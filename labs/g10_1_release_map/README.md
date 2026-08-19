@@ -33,8 +33,11 @@ PASS negative=reused-local-evidence expected=E_LOCAL_EVIDENCE_DIVERSITY observed
 PASS negative=production-grade-series-deployment expected=E_SCOPE_CLAIM observed=E_SCOPE_CLAIM
 PASS negative=korean-conformance-overclaim expected=E_SCOPE_CLAIM observed=E_SCOPE_CLAIM
 PASS negative=claim-status-conflict expected=E_SCOPE_CLAIM observed=E_SCOPE_CLAIM
+PASS negative=customer-vehicle-overclaim expected=E_SCOPE_CLAIM observed=E_SCOPE_CLAIM
+PASS negative=korean-oem-overclaim expected=E_SCOPE_CLAIM observed=E_SCOPE_CLAIM
+PASS negative=unstructured-claim-field expected=E_NODE_FIELD observed=E_NODE_FIELD
 PASS negative=forged-review expected=E_REVIEW,E_REVIEW_TRUST observed=E_REVIEW,E_REVIEW_TRUST
-G10.1 harness: PASS (1 valid, 20 negative cases)
+G10.1 harness: PASS (1 valid, 23 negative cases)
 ```
 
 별도 단위 시험도 실행합니다.
@@ -43,7 +46,7 @@ G10.1 harness: PASS (1 valid, 20 negative cases)
 python3 -m unittest discover -s labs/g10_1_release_map/tests -p 'test_*.py' -v
 ```
 
-`Ran 10 tests`와 마지막 `OK`를 확인합니다.
+`Ran 14 tests`와 마지막 `OK`를 확인합니다.
 
 ## 내 책임 지도 만들기
 
@@ -58,15 +61,30 @@ python3 labs/g10_1_release_map/validator.py study/g10.1/release-map.json
 첫 실행에는 `E_SUBMITTER`, `E_SOURCE_ACCESS`, `E_SOURCE_PATH`, `E_SOURCE_TRUST`, `E_CITATION_LOCATOR`, `E_MAPPING_INCOMPLETE`가 나옵니다. 제출자 ID, 공식 digest, 원문 절, 로컬 근거를 채우면서 항목별로 해소합니다.
 
 1. AUTOSAR Adaptive Platform 공식 페이지에서 R25-11 문서를 내려받아 `sources/autosar-r25-11/`에 둔다. 이 PDF는 `.gitignore`에 들어 있다.
-2. AUTOSAR의 `Adaptive Platform Specification Hashes`에서 각 PDF의 SHA-512를 확인한다. [R25-11 문서 lock](r25-11-document-lock.json)의 `official_sha512` 갱신은 제출물과 분리한 검토 커밋으로 진행한다.
+2. AUTOSAR의 `Adaptive Platform Specification Hashes`에서 각 PDF의 SHA-512를 확인한다. [R25-11 문서 고정 정보](r25-11-document-lock.json)를 갱신하고 아래 신뢰 루트 절차로 정책 묶음에 서명한다.
 3. `source_ledger`에 revision, 로컬 PDF 경로, 절 제목, 절 번호 또는 requirement ID, 실제 파일 SHA-256, 확인 날짜를 적는다.
 4. 안정적으로 식별할 `submitter_id`를 넣고 P02/P03 파일의 SHA-256을 관련 node의 `local_evidence`에 연결한다.
-5. 각 node의 `claim_type`, `mapped_behavior`, `excluded_behavior`를 채워 로컬 관찰과 제외 범위를 구조화한다.
+5. 각 node의 `subject`, `observed_behavior`, `boundary`, `excluded_conformance`를 채운다. node에 자유문 필드를 더하면 검사가 멈춘다.
 6. generated Proxy/Skeleton 코드와 런타임 Proxy/Skeleton 객체를 별도 node로 유지한다. `edges`는 role·relation·방향이 동결된 11개 필수 관계를 모두 담는다.
 7. 생명주기 시나리오마다 trigger reporter, policy decision owner, transition executor, recovery reporter를 원문 citation과 함께 정한다.
 8. `Mapped / Partial / Missing / Out of scope`를 고르고 `summary`를 다시 계산한다.
 
-공식 SHA-512 pin과 내부 일관성이 맞으면 `STRUCTURE_PASS profile=submission`이 출력됩니다. `REVIEWED_PASS`는 제출자와 다른 검토자의 서명까지 확인합니다. review manifest에는 전체 commit SHA, 검토자 SSH key fingerprint, node·citation·local evidence hash, source ledger와 source lock hash, limitation 확인, 승인 결정을 담습니다. manifest 원문은 `adaptive-vehicle-platform-lab-g10.1` namespace의 OpenSSH SSHSIG로 서명합니다. [검토자 registry](trusted-reviewers.json)에 등록된 공개키만 승인에 쓰며 registry 변경은 별도 검토 커밋으로 남깁니다.
+공식 SHA-512와 내부 일관성이 맞으면 `STRUCTURE_PASS profile=submission`이 출력됩니다. `REVIEWED_PASS`에는 제출자와 다른 검토자의 서명이 더 필요합니다. 먼저 Pending 제출물과 로컬 근거를 커밋합니다. review manifest의 `subject_commit`과 `subject_path`는 그 파일을 가리켜야 합니다. 검사기는 해당 커밋에서 제출물, 로컬 근거, 문서 고정 정보, 검토자 등록부를 다시 읽습니다.
+
+review manifest에는 검토자 키 지문, node·citation·local evidence hash, source ledger, 정책 묶음의 세 hash, 제한사항 확인, 승인 결정을 담습니다. 검토자 서명은 `adaptive-vehicle-platform-lab-g10.1` namespace의 OpenSSH SSHSIG를 사용합니다. [검토자 등록부](trusted-reviewers.json)는 principal·소속·검토 범위를 함께 보관합니다.
+
+## 신뢰 루트 세팅
+
+[review-policy.json](review-policy.json)은 문서 고정 정보와 검토자 등록부의 SHA-256을 묶습니다. 두 [분리 서명 A](review-policy.authority-a.sshsig)·[분리 서명 B](review-policy.authority-b.sshsig)는 검사기에 고정된 release-authority 공개키 두 개로 확인합니다. 둘이 모두 맞아야 정책이 열립니다. 현재 정책은 검토자가 없는 상태로 동결돼 있으며 초기 개인키 두 개는 폐기했습니다.
+
+실제 검토자를 처음 등록할 때는 새 release-authority 키를 오프라인에서 만들고 다음 항목을 한 커밋에 모읍니다.
+
+1. 문서 고정 정보와 검토자 등록부를 갱신한다.
+2. 두 파일의 SHA-256을 review policy에 기록하고 서로 다른 보관자가 가진 권한 키 두 개로 서명한다.
+3. `RELEASE_AUTHORITIES`의 공개키와 fingerprint를 교체한다.
+4. 권한 키 교체 커밋을 독립 검토자가 확인하고 보호된 브랜치나 서명 tag로 승인한다.
+
+개인키와 AUTOSAR PDF는 저장소에 넣지 않습니다. 검사는 로컬 PDF를 권한 정책에 묶인 공식 digest와 대조합니다.
 
 [합성 review fixture](../../fixtures/g10/review-manifest-v1.json)는 hash 결속만 시험하고 출력도 `HARNESS_REVIEW_BINDING_PASS`로 구분합니다. 현재 registry에는 독립 검토자가 등록되지 않았습니다. 첫 검토자를 등록할 때 공개키 fingerprint, 이해관계, 검토 범위를 함께 기록합니다.
 

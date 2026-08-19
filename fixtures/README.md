@@ -14,7 +14,7 @@ G5–G7 입력은 개별 실습의 계산 기준이고, G10 책임 지도 입력
 | `g07/classic-config-v1.yml` | OS/RTE·통신·진단 생성 설정 |
 | `g07/dtc-journal-reset-v1.json` | two-slot journal의 모든 write 경계 reset 결과 |
 | `g07/mode-security-permutations-v1.json` | 동시 mode event 우선순위와 합성 freshness 입력 |
-| `g10/release-map-cases-v1.json` | 책임 지도 검사기의 양성 1개와 구조·주장·review 결함 음성 20개 |
+| `g10/release-map-cases-v1.json` | 책임 지도 검사기의 양성 1개와 구조·주장·review 결함 음성 23개 |
 | `g10/review-manifest-v1.json` | reviewer·node·citation·근거 hash 결속을 확인하는 합성 review |
 | `g11/assurance-change-v1.json` | 운행 조건·공통 시계·trust root 변경의 보증 영향 |
 | `g12/integration-contract-v1.json` | 20 ms 예산, version·lifecycle 결정, F01–F12 고장 목록 |

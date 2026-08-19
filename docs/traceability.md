@@ -1,6 +1,6 @@
 # Traceability Matrix
 
-92개 요구사항은 설계 배정과 검증 계획을 연결해 `Baselined`로 올렸습니다. 관측·성능·도구·공통 품질 요구사항 6개는 상세 설계가 정해질 때까지 `Draft`로 둡니다. 구현 링크는 실제 code가 생긴 PR에서 채우고, `Verified`에는 전체 commit SHA 또는 CI 실행과 검토자를 기록합니다.
+요구사항 98개는 설계 배정과 검증 계획을 연결해 `Baselined`로 올렸습니다. 구현 링크는 실제 code가 생긴 PR에서 채우고, `Verified`에는 전체 commit SHA 또는 CI 실행과 검토자를 기록합니다.
 
 | Requirement | Design / ADR | Implementation | Verification | Result | Reviewer |
 | --- | --- | --- | --- | --- | --- |
@@ -95,12 +95,12 @@
 | REQ-SAFE-002 | [P06 design](../projects/06-heterogeneous-vehicle-platform/README.md) | Planned | [Sprint 11.5](../gates/g11/sprint-11.5.md) | Not run | — |
 | REQ-SEC-001 | [P04 design](../projects/04-secure-update-manager/README.md) | Planned | [Sprint 11.1](../gates/g11/sprint-11.1.md) | Not run | — |
 | REQ-SEC-002 | [P04 design](../projects/04-secure-update-manager/README.md) | Planned | [Sprint 10.8](../gates/g10/sprint-10.8.md) | Not run | — |
-| REQ-OBS-001 | Planned | Planned | Planned | Not run | — |
-| REQ-PERF-001 | Planned | Planned | Planned | Not run | — |
-| REQ-TOOL-001 | Planned | Planned | Planned | Not run | — |
-| REQ-QUAL-001 | Planned | Planned | Planned | Not run | — |
-| REQ-QUAL-002 | Planned | Planned | Planned | Not run | — |
-| REQ-QUAL-003 | Planned | Planned | Planned | Not run | — |
+| REQ-OBS-001 | [P03 audit logger](../projects/03-execution-manager/README.md) | Planned | [Sprint 10.6](../gates/g10/sprint-10.6.md) | Not run | — |
+| REQ-PERF-001 | [P06 budget design](../projects/06-heterogeneous-vehicle-platform/README.md) | Planned | [Sprint 12.4](../gates/g12/sprint-12.4.md) | Not run | — |
+| REQ-TOOL-001 | [Compiler analysis track](../compiler-analysis/README.md) | Planned | [Sprint 3.4](../gates/g03/sprint-3.4.md) | Not run | — |
+| REQ-QUAL-001 | [Development baseline](development-environment.md) | Planned | [Sprint 0.1](../gates/g00/sprint-0.1.md) | Not run | — |
+| REQ-QUAL-002 | [Development baseline](development-environment.md) | Planned | [Sprint 0.1](../gates/g00/sprint-0.1.md) | Not run | — |
+| REQ-QUAL-003 | [Learning and test strategy](learning-strategy.md) | Planned | [Sprint 1.4](../gates/g01/sprint-1.4.md) | Not run | — |
 | REQ-QUAL-004 | [P06 design](../projects/06-heterogeneous-vehicle-platform/README.md) | Planned | [Sprint 12.11](../gates/g12/sprint-12.11.md) | Not run | — |
 
 ## Link format

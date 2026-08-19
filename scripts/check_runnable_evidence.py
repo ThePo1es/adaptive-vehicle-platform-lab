@@ -26,6 +26,9 @@ REQUIRED_ROLES = {"fixture", "validator", "runner", "starter"}
 ACTIVE_REQUIRED_ROLES = REQUIRED_ROLES | {
     "evidence-checker",
     "review-fixture",
+    "review-policy",
+    "review-policy-signature-a",
+    "review-policy-signature-b",
     "reviewer-registry",
     "source-lock",
     "unit-tests",

@@ -23,7 +23,7 @@ hostname, network interface 이름, CAN bitrate가 다른 격리 환경을 받�
 ## 판정 기준
 
 - release lock의 artifact·image·firmware hash와 실행 명령·원본 log·smoke 결과가 한 manifest에 묶임
-- 다섯 startup case가 최초 실패 단계와 책임 owner를 정확히 냄
+- 다섯 startup case가 최초 실패 단계와 책임 주체를 정확히 냄
 - 기준 시작 순서가 `Driving-ready`에 도달하고 종료 중 queue가 제한 시간 안에 비워짐
 - 세 재부팅에서 새 MCU session을 관찰하고 이전 값을 폐기함
 - 환경 차이가 configuration에만 반영되고 code commit은 유지됨

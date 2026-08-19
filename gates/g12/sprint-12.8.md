@@ -25,7 +25,7 @@ process supervisor와 P03이 동시에 restart를 요청하는 기록을 받습�
 - 상태와 event마다 decision owner·executor·reporter가 명시됨
 - 정상 시작과 dual fault가 fixture의 `Driving-ready` 및 여섯 expected event 순서를 재현함
 - 고장 순서와 간격이 바뀌어도 허용된 terminal state로 수렴함
-- 새 MCU session 전 VehicleState가 재공개되지 않으며 중복·유실 event에도 restart와 queue가 bounded 상태를 유지함
+- 새 MCU session 전 VehicleState가 재공개되지 않으며 이벤트가 중복되거나 유실돼도 재시작 횟수와 큐 크기가 정한 상한을 지킴
 - 실제 target 전이 시간과 virtual clock 판정이 별도 자료로 남음
 
 ## 순서가 흔들리면

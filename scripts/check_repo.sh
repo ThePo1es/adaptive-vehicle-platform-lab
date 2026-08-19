@@ -143,6 +143,9 @@ required_files=(
     fixtures/g12/integration-contract-v1.json
     labs/g10_1_release_map/README.md
     labs/g10_1_release_map/r25-11-document-lock.json
+    labs/g10_1_release_map/review-policy.json
+    labs/g10_1_release_map/review-policy.authority-a.sshsig
+    labs/g10_1_release_map/review-policy.authority-b.sshsig
     labs/g10_1_release_map/trusted-reviewers.json
     labs/g10_1_release_map/validator.py
     labs/g10_1_release_map/run_harness.py
@@ -153,13 +156,17 @@ required_files=(
     evidence/runnable/g10.1/harness.stdout
     evidence/runnable/g10.1/harness-v2.stdout
     evidence/runnable/g10.1/harness-v3.stdout
+    evidence/runnable/g10.1/harness-v4.stdout
     evidence/runnable/g10.1/repository-check-v2.stdout
     evidence/runnable/g10.1/repository-check-v2.stderr
     evidence/runnable/g10.1/repository-check-v3.stdout
     evidence/runnable/g10.1/repository-check-v3.stderr
+    evidence/runnable/g10.1/repository-check-v4.stdout
+    evidence/runnable/g10.1/repository-check-v4.stderr
     evidence/runnable/g10.1/run-manifest.json
     evidence/runnable/g10.1/run-manifest-v2.json
     evidence/runnable/g10.1/run-manifest-v3.json
+    evidence/runnable/g10.1/run-manifest-v4.json
     evidence/runnable/index.json
     projects/00-mcu-rtos-ecu/README.md
     projects/05-can-ethernet-vertical-slice/README.md
@@ -230,12 +237,12 @@ python3 scripts/check_traceability.py
 python3 scripts/check_fixture_semantics.py
 python3 labs/g10_1_release_map/run_harness.py
 unit_output=$(python3 -m unittest discover -s labs/g10_1_release_map/tests -p 'test_*.py' 2>&1)
-if ! grep -Fq 'Ran 10 tests' <<<"$unit_output" || ! grep -Fxq 'OK' <<<"$unit_output"; then
+if ! grep -Fq 'Ran 14 tests' <<<"$unit_output" || ! grep -Fxq 'OK' <<<"$unit_output"; then
     printf '%s\n' "$unit_output" >&2
     echo "error: G10.1 unit-test count or result changed" >&2
     exit 1
 fi
-echo "G10.1 unit tests: OK (10 tests)"
+echo "G10.1 unit tests: OK (14 tests)"
 if [[ ${SKIP_RUNNABLE_EVIDENCE:-0} != 1 ]]; then
     python3 scripts/check_runnable_evidence.py
 fi

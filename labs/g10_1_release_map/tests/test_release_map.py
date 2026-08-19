@@ -43,7 +43,7 @@ class ReleaseMapValidatorTest(unittest.TestCase):
                 self.assertEqual(sorted(case["expected_errors"]), observed)
 
     def test_harness_summary(self) -> None:
-        self.assertEqual("G10.1 harness: PASS (1 valid, 20 negative cases)", run()[-1])
+        self.assertEqual("G10.1 harness: PASS (1 valid, 23 negative cases)", run()[-1])
 
     def test_submission_profile_rejects_synthetic_fixture(self) -> None:
         observed = {finding.code for finding in validate_submission(self.case_set["guided_submission"])}
@@ -58,6 +58,7 @@ class ReleaseMapValidatorTest(unittest.TestCase):
             "reviewer_id": "synthetic-harness-reviewer",
             "reviewer_key_fingerprint": "SHA256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             "subject_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "subject_path": "fixtures/g10/synthetic-reviewed-submission.json",
             "review_manifest_path": "fixtures/g10/review-manifest-v1.json",
             "review_manifest_sha256": hashlib.sha256(review_path.read_bytes()).hexdigest(),
             "review_signature_path": "",
@@ -130,6 +131,7 @@ class ReleaseMapValidatorTest(unittest.TestCase):
             "reviewer_id": "synthetic-harness-reviewer",
             "reviewer_key_fingerprint": "SHA256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
             "subject_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "subject_path": "fixtures/g10/synthetic-reviewed-submission.json",
             "review_manifest_path": "fixtures/g10/review-manifest-v1.json",
             "review_manifest_sha256": hashlib.sha256(review_path.read_bytes()).hexdigest(),
             "review_signature_path": "fixtures/g10/missing-review.sig",
@@ -142,9 +144,85 @@ class ReleaseMapValidatorTest(unittest.TestCase):
             {"SYN-BOUNDARY-001"},
             {node["id"] for node in document["nodes"]},
             "submission",
+            {},
+            {},
+            None,
             findings,
         )
         self.assertIn("E_REVIEW_TRUST", {finding.code for finding in findings})
+
+    def test_release_policy_signature_and_hashes_are_valid(self) -> None:
+        findings: list[validator.Finding] = []
+        source_lock, reviewers, hashes = validator._load_attested_trust(None, findings)
+        self.assertEqual([], findings)
+        self.assertEqual(5, len(source_lock))
+        self.assertEqual({}, reviewers)
+        self.assertEqual(
+            {"source_lock_sha256", "reviewer_registry_sha256", "review_policy_sha256"},
+            set(hashes),
+        )
+
+    def test_unsigned_source_lock_change_invalidates_policy(self) -> None:
+        findings: list[validator.Finding] = []
+        original = validator._trust_bytes
+
+        def changed_trust_file(commit: str | None, relative_path: str) -> bytes:
+            payload = original(commit, relative_path)
+            if relative_path == validator.SOURCE_LOCK_RELATIVE:
+                return payload + b"\n"
+            return payload
+
+        with mock.patch.object(validator, "_trust_bytes", side_effect=changed_trust_file):
+            source_lock, reviewers, hashes = validator._load_attested_trust(None, findings)
+        self.assertEqual({}, source_lock)
+        self.assertEqual({}, reviewers)
+        self.assertEqual({}, hashes)
+        self.assertIn("E_TRUST_POLICY", {finding.code for finding in findings})
+
+    def test_both_authority_signatures_are_required(self) -> None:
+        findings: list[validator.Finding] = []
+        original = validator._trust_bytes
+
+        def missing_second_signature(commit: str | None, relative_path: str) -> bytes:
+            if relative_path == validator.REVIEW_POLICY_SIGNATURE_RELATIVES[1]:
+                return b"invalid signature\n"
+            return original(commit, relative_path)
+
+        with mock.patch.object(validator, "_trust_bytes", side_effect=missing_second_signature):
+            source_lock, reviewers, hashes = validator._load_attested_trust(None, findings)
+        self.assertEqual(({}, {}, {}), (source_lock, reviewers, hashes))
+        self.assertIn("E_TRUST_POLICY", {finding.code for finding in findings})
+
+    def test_unrelated_subject_commit_is_rejected(self) -> None:
+        document = copy.deepcopy(self.case_set["guided_submission"])
+        review_path = REPO_ROOT / "fixtures/g10/review-manifest-v1.json"
+        head = "a" * 40
+        review = {
+            "status": "Reviewed",
+            "reviewer_id": "synthetic-harness-reviewer",
+            "reviewer_key_fingerprint": "SHA256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "subject_commit": head,
+            "subject_path": "README.md",
+            "review_manifest_path": "fixtures/g10/review-manifest-v1.json",
+            "review_manifest_sha256": hashlib.sha256(review_path.read_bytes()).hexdigest(),
+            "review_signature_path": "fixtures/g10/missing-review.sig",
+            "reviewed_citation_ids": ["SYN-BOUNDARY-001"],
+        }
+        findings: list[validator.Finding] = []
+        with mock.patch.object(validator, "_git_blob", return_value=b"# unrelated file\n"):
+            validator._validate_review_manifest(
+                review,
+                document,
+                {"SYN-BOUNDARY-001"},
+                {node["id"] for node in document["nodes"]},
+                "submission",
+                {},
+                {},
+                REPO_ROOT / "README.md",
+                findings,
+            )
+        messages = {finding.message for finding in findings if finding.code == "E_REVIEW_TRUST"}
+        self.assertIn("subject commit does not contain the reviewed submission at subject_path", messages)
 
 
 if __name__ == "__main__":

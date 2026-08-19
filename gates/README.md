@@ -21,7 +21,7 @@
 | G11B | [3 Sprint](g11/) | Specified |
 | G12 | [12 Sprint](g12/) | Specified |
 
-현재 91개 중 90개가 `Specified`, G10.1이 `Runnable`입니다. 상태 기준은 아래 표를 따르고, 실제 학습 진도는 [PROGRESS.md](../PROGRESS.md)에 기록합니다. G10.1의 시작 파일과 실행 기록은 [실행 명세 v3](../evidence/runnable/g10.1/run-manifest-v3.json)에 있습니다.
+현재 91개 중 90개가 `Specified`, G10.1이 `Runnable`입니다. 상태 기준은 아래 표를 따르고, 실제 학습 진도는 [PROGRESS.md](../PROGRESS.md)에 기록합니다. G10.1의 시작 파일과 실행 기록은 [실행 명세 v4](../evidence/runnable/g10.1/run-manifest-v4.json)에 있습니다.
 
 | 상태 | 필요한 근거 |
 | --- | --- |

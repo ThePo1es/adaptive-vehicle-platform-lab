@@ -22,8 +22,10 @@
     "deadline-supervision"
   ],
   "source_ledger_sha256": "ce7532b3054d8522be795d1bbe290bc0a53276d48dd4b2b04da2c082e7fc9352",
-  "source_lock_sha256": "ab9864e606b3cbc6e6c3a078cd5741e19aea9d3cdaec49ba4af9766d2181cfe9",
-  "review_subject_sha256": "6ef046f5140e24bd54f9734f00f915ac2608091dac7efc8e52a5b5cb60273bd3",
+  "source_lock_sha256": "004c542975ab7ce66de6313c30f102b9593c173efe6141bc433d55f8c25c5db6",
+  "reviewer_registry_sha256": "f2b7b135aed4bc7822f01be91976f387b78267db195d1e128882fa1f5d4ad2c3",
+  "review_policy_sha256": "fdc5109770121dff83234219a778f8ce9fba84f28ada3a9b494725923cd6d790",
+  "review_subject_sha256": "d32aae1a1c44fbcf414daf50b7e1fd0dbe67a20630a2852d1a31a92ffbbbda40",
   "local_evidence_sha256s": [
     "1111111111111111111111111111111111111111111111111111111111111111",
     "2222222222222222222222222222222222222222222222222222222222222222",
@@ -40,6 +42,13 @@
   "limitations_acknowledged": true,
   "review_notes": "검사기의 review binding 경로를 확인하는 합성 검토 자료",
   "submitter_id": "synthetic-learner",
+  "submitter_principal_id": "principal-synthetic-learner",
+  "submitter_affiliation": "synthetic-lab",
   "subject_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "subject_path": "fixtures/g10/synthetic-reviewed-submission.json",
+  "reviewer_principal_id": "principal-synthetic-reviewer",
+  "reviewer_affiliation": "synthetic-review-board",
+  "independence_confirmed": true,
+  "conflict_of_interest": "None declared",
   "reviewer_key_fingerprint": "SHA256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 }

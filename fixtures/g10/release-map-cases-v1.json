@@ -1,8 +1,8 @@
 {
-  "schema_version": 2,
-  "description": "G10.1 typed graph 검사기의 공개 양성 1개와 구조·주장·리뷰 결함 음성 20개",
+  "schema_version": 3,
+  "description": "G10.1 typed graph 검사기의 공개 양성 1개와 구조·주장·리뷰 결함 음성 23개",
   "guided_submission": {
-    "schema_version": 2,
+    "schema_version": 3,
     "profile": "harness",
     "release": "R25-11",
     "claim_scope": "concept-aligned local prototype",
@@ -28,9 +28,8 @@
         "semantic_role": "Service Interface",
         "node_type": "design-artifact",
         "phase": "design-time",
-        "artifact": "VehicleState 서비스 계약",
-        "claim": "로컬 IDL은 VehicleState 메서드와 이벤트 의미를 설계 시점에 고정한다",
-        "local_component": "P02 local IDL",
+        "subject": "VehicleState 서비스 계약",
+        "boundary": "P02 local IDL",
         "configuration_source": "versioned local IDL",
         "failure_observation": "스키마 호환성 검사 보고서",
         "mapping_status": "Partial",
@@ -48,17 +47,16 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "mapped_behavior": "로컬 IDL은 VehicleState 메서드와 이벤트 의미를 설계 시점에 고정한다",
-        "excluded_behavior": "ARXML과 공식 서비스 인터페이스 생성기를 사용하지 않음"
+        "observed_behavior": "로컬 IDL은 VehicleState 메서드와 이벤트 의미를 설계 시점에 고정한다",
+        "excluded_conformance": "ARXML과 공식 서비스 인터페이스 생성기를 사용하지 않음"
       },
       {
         "id": "generated-proxy",
         "semantic_role": "Generated Proxy",
         "node_type": "generated-artifact",
         "phase": "generation-time",
-        "artifact": "생성된 VehicleState client proxy 코드",
-        "claim": "생성된 proxy 코드는 클라이언트 호출과 이벤트 구독 경계를 제공한다",
-        "local_component": "P02 generated-like client adapter",
+        "subject": "생성된 VehicleState client proxy 코드",
+        "boundary": "P02 generated-like client adapter",
         "configuration_source": "versioned local IDL and generator lock",
         "failure_observation": "생성 트리와 공개 함수 목록 비교",
         "mapping_status": "Partial",
@@ -76,17 +74,16 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "mapped_behavior": "생성된 proxy 코드는 클라이언트 호출과 이벤트 구독 경계를 제공한다",
-        "excluded_behavior": "ara::com Proxy 코드와 ABI를 구현하지 않음"
+        "observed_behavior": "생성된 proxy 코드는 클라이언트 호출과 이벤트 구독 경계를 제공한다",
+        "excluded_conformance": "ara::com Proxy 코드와 ABI를 구현하지 않음"
       },
       {
         "id": "generated-skeleton",
         "semantic_role": "Generated Skeleton",
         "node_type": "generated-artifact",
         "phase": "generation-time",
-        "artifact": "생성된 VehicleState provider skeleton 코드",
-        "claim": "생성된 skeleton 코드는 서비스 제공자의 구현 진입점을 코드로 만든다",
-        "local_component": "P02 generated-like provider adapter",
+        "subject": "생성된 VehicleState provider skeleton 코드",
+        "boundary": "P02 generated-like provider adapter",
         "configuration_source": "versioned local IDL and generator lock",
         "failure_observation": "생성 트리와 provider override 목록 비교",
         "mapping_status": "Partial",
@@ -104,17 +101,16 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "mapped_behavior": "생성된 skeleton 코드는 서비스 제공자의 구현 진입점을 코드로 만든다",
-        "excluded_behavior": "ara::com Skeleton 코드와 상태 모델을 구현하지 않음"
+        "observed_behavior": "생성된 skeleton 코드는 서비스 제공자의 구현 진입점을 코드로 만든다",
+        "excluded_conformance": "ara::com Skeleton 코드와 상태 모델을 구현하지 않음"
       },
       {
         "id": "service-instance-deployment",
         "semantic_role": "Service Instance Deployment",
         "node_type": "deployment-artifact",
         "phase": "deployment-time",
-        "artifact": "VehicleState 인스턴스 배치 항목",
-        "claim": "로컬 배치 항목은 provider 인스턴스와 선택한 통신 binding을 연결한다",
-        "local_component": "P03 service deployment entry",
+        "subject": "VehicleState 인스턴스 배치 항목",
+        "boundary": "P03 service deployment entry",
         "configuration_source": "immutable local deployment JSON",
         "failure_observation": "배치 명세 유효성 검사 결과",
         "mapping_status": "Partial",
@@ -132,17 +128,16 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "mapped_behavior": "로컬 배치 항목은 provider 인스턴스와 선택한 통신 binding을 연결한다",
-        "excluded_behavior": "공식 manifest schema와 배포 도구를 사용하지 않음"
+        "observed_behavior": "로컬 배치 항목은 provider 인스턴스와 선택한 통신 binding을 연결한다",
+        "excluded_conformance": "공식 manifest schema와 배포 도구를 사용하지 않음"
       },
       {
         "id": "someip-binding",
         "semantic_role": "Communication Binding",
         "node_type": "binding-artifact",
         "phase": "deployment-time",
-        "artifact": "VehicleState SOME/IP endpoint binding",
-        "claim": "선택한 SOME/IP 배치 설정은 서비스 ID와 endpoint를 로컬 adapter에 제공한다",
-        "local_component": "P02 vsomeip adapter configuration",
+        "subject": "VehicleState SOME/IP endpoint binding",
+        "boundary": "P02 vsomeip adapter configuration",
         "configuration_source": "versioned local binding JSON",
         "failure_observation": "packet과 discovery state 비교",
         "mapping_status": "Partial",
@@ -160,17 +155,16 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "mapped_behavior": "선택한 SOME/IP 배치 설정은 서비스 ID와 endpoint를 로컬 adapter에 제공한다",
-        "excluded_behavior": "선택한 SOME/IP 경로만 다루며 다른 통신 binding은 별도 검토가 필요함"
+        "observed_behavior": "선택한 SOME/IP 배치 설정은 서비스 ID와 endpoint를 로컬 adapter에 제공한다",
+        "excluded_conformance": "선택한 SOME/IP 경로만 다루며 다른 통신 binding은 별도 검토가 필요함"
       },
       {
         "id": "runtime-proxy",
         "semantic_role": "Runtime Proxy",
         "node_type": "runtime-role",
         "phase": "runtime",
-        "artifact": "VehicleState client proxy 객체",
-        "claim": "런타임 proxy 객체는 discovery 결과를 사용해 호출과 이벤트 수신을 수행한다",
-        "local_component": "P02 client runtime adapter",
+        "subject": "VehicleState client proxy 객체",
+        "boundary": "P02 client runtime adapter",
         "configuration_source": "generated client code and binding configuration",
         "failure_observation": "availability와 subscription 상태 기록",
         "mapping_status": "Partial",
@@ -188,17 +182,16 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "mapped_behavior": "런타임 proxy 객체는 discovery 결과를 사용해 호출과 이벤트 수신을 수행한다",
-        "excluded_behavior": "공식 ara::com runtime API와 service handle 의미를 제공하지 않음"
+        "observed_behavior": "런타임 proxy 객체는 discovery 결과를 사용해 호출과 이벤트 수신을 수행한다",
+        "excluded_conformance": "공식 ara::com runtime API와 service handle 의미를 제공하지 않음"
       },
       {
         "id": "runtime-skeleton",
         "semantic_role": "Runtime Skeleton",
         "node_type": "runtime-role",
         "phase": "runtime",
-        "artifact": "VehicleState provider skeleton 객체",
-        "claim": "런타임 skeleton 객체는 provider 구현을 transport 요청과 이벤트 발행에 연결한다",
-        "local_component": "P02 provider runtime adapter",
+        "subject": "VehicleState provider skeleton 객체",
+        "boundary": "P02 provider runtime adapter",
         "configuration_source": "generated provider code and binding configuration",
         "failure_observation": "요청 처리와 이벤트 발행 상태 기록",
         "mapping_status": "Partial",
@@ -216,17 +209,16 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "mapped_behavior": "런타임 skeleton 객체는 provider 구현을 transport 요청과 이벤트 발행에 연결한다",
-        "excluded_behavior": "공식 skeleton lifecycle과 field 의미를 전부 제공하지 않음"
+        "observed_behavior": "런타임 skeleton 객체는 provider 구현을 transport 요청과 이벤트 발행에 연결한다",
+        "excluded_conformance": "공식 skeleton lifecycle과 field 의미를 전부 제공하지 않음"
       },
       {
         "id": "vehicle-state-executable",
         "semantic_role": "Executable",
         "node_type": "deployment-artifact",
         "phase": "deployment-time",
-        "artifact": "VehicleState executable 배치 설명",
-        "claim": "executable 배치 설명은 실행 파일과 process 설정의 입력 경계를 고정한다",
-        "local_component": "P03 executable manifest entry",
+        "subject": "VehicleState executable 배치 설명",
+        "boundary": "P03 executable manifest entry",
         "configuration_source": "immutable local execution manifest",
         "failure_observation": "실행 계획 생성 보고서",
         "mapping_status": "Partial",
@@ -244,17 +236,16 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "mapped_behavior": "executable 배치 설명은 실행 파일과 process 설정의 입력 경계를 고정한다",
-        "excluded_behavior": "공식 Execution Manifest 요소를 일부 로컬 필드로 축소함"
+        "observed_behavior": "executable 배치 설명은 실행 파일과 process 설정의 입력 경계를 고정한다",
+        "excluded_conformance": "공식 Execution Manifest 요소를 일부 로컬 필드로 축소함"
       },
       {
         "id": "vehicle-state-process",
         "semantic_role": "Process",
         "node_type": "runtime-role",
         "phase": "runtime",
-        "artifact": "실행 중인 VehicleState process",
-        "claim": "P01 supervisor는 생성된 실행 계획에 따라 process의 시작과 종료를 적용한다",
-        "local_component": "P01 process supervisor",
+        "subject": "실행 중인 VehicleState process",
+        "boundary": "P01 process supervisor",
         "configuration_source": "P03 process plan",
         "failure_observation": "pidfd, exit status와 cgroup event",
         "mapping_status": "Partial",
@@ -272,17 +263,16 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "mapped_behavior": "P01 supervisor는 생성된 실행 계획에 따라 process의 시작과 종료를 적용한다",
-        "excluded_behavior": "ara::exec API와 공식 process state 보고를 구현하지 않음"
+        "observed_behavior": "P01 supervisor는 생성된 실행 계획에 따라 process의 시작과 종료를 적용한다",
+        "excluded_conformance": "ara::exec API와 공식 process state 보고를 구현하지 않음"
       },
       {
         "id": "driving-function-state",
         "semantic_role": "Function Group State",
         "node_type": "runtime-state",
         "phase": "runtime",
-        "artifact": "Driving Function Group의 목표 상태",
-        "claim": "로컬 policy component는 이 시나리오에서 health event를 목표 상태 요청으로 바꾼다",
-        "local_component": "P03 local state policy",
+        "subject": "Driving Function Group의 목표 상태",
+        "boundary": "P03 local state policy",
         "configuration_source": "versioned state transition table",
         "failure_observation": "상태 결정 audit event",
         "mapping_status": "Partial",
@@ -300,17 +290,16 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "mapped_behavior": "로컬 policy component는 이 시나리오에서 health event를 목표 상태 요청으로 바꾼다",
-        "excluded_behavior": "Function Group 모델을 교육용 상태와 요청으로 축소함"
+        "observed_behavior": "로컬 policy component는 이 시나리오에서 health event를 목표 상태 요청으로 바꾼다",
+        "excluded_conformance": "Function Group 모델을 교육용 상태와 요청으로 축소함"
       },
       {
         "id": "deadline-supervision",
         "semantic_role": "Health Supervision",
         "node_type": "runtime-observation",
         "phase": "runtime",
-        "artifact": "VehicleState deadline supervision 설정과 결과",
-        "claim": "로컬 health monitor는 heartbeat deadline 위반을 관찰하고 policy 입력으로 보고한다",
-        "local_component": "P03 local health monitor",
+        "subject": "VehicleState deadline supervision 설정과 결과",
+        "boundary": "P03 local health monitor",
         "configuration_source": "versioned supervision policy",
         "failure_observation": "deadline supervision event log",
         "mapping_status": "Partial",
@@ -328,8 +317,8 @@
           }
         ],
         "claim_type": "observed-local-behavior",
-        "mapped_behavior": "로컬 health monitor는 heartbeat deadline 위반을 관찰하고 policy 입력으로 보고한다",
-        "excluded_behavior": "PHM API와 공식 supervision manifest를 사용하지 않음"
+        "observed_behavior": "로컬 health monitor는 heartbeat deadline 위반을 관찰하고 policy 입력으로 보고한다",
+        "excluded_conformance": "PHM API와 공식 supervision manifest를 사용하지 않음"
       }
     ],
     "edges": [
@@ -422,9 +411,12 @@
       "reviewed_citation_ids": [],
       "reviewer_key_fingerprint": "",
       "subject_commit": "",
+      "subject_path": "",
       "review_signature_path": ""
     },
-    "submitter_id": "synthetic-learner"
+    "submitter_id": "synthetic-learner",
+    "submitter_principal_id": "principal-synthetic-learner",
+    "submitter_affiliation": "synthetic-lab"
   },
   "negative_cases": [
     {
@@ -502,7 +494,7 @@
     {
       "id": "gibberish-claim",
       "operation": "replace",
-      "path": "/nodes/0/claim",
+      "path": "/nodes/0/observed_behavior",
       "value": "x",
       "expected_errors": [
         "E_NODE_FIELD"
@@ -558,7 +550,7 @@
     {
       "id": "production-overclaim",
       "operation": "replace",
-      "path": "/nodes/0/claim",
+      "path": "/nodes/0/observed_behavior",
       "value": "This node is a complete production-ready implementation of the AUTOSAR Adaptive Platform",
       "expected_errors": [
         "E_SCOPE_CLAIM"
@@ -589,7 +581,7 @@
     {
       "id": "production-grade-series-deployment",
       "operation": "replace",
-      "path": "/nodes/0/claim",
+      "path": "/nodes/0/observed_behavior",
       "value": "This component is production grade and suitable for series vehicle deployment",
       "expected_errors": [
         "E_SCOPE_CLAIM"
@@ -598,7 +590,7 @@
     {
       "id": "korean-conformance-overclaim",
       "operation": "replace",
-      "path": "/nodes/0/claim",
+      "path": "/nodes/0/observed_behavior",
       "value": "이 구성요소는 AUTOSAR 적합 구현이며 양산 적용 가능",
       "expected_errors": [
         "E_SCOPE_CLAIM"
@@ -611,6 +603,33 @@
       "value": "known-gap",
       "expected_errors": [
         "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "customer-vehicle-overclaim",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior",
+      "value": "This implementation is fit for deployment in customer vehicles.",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "korean-oem-overclaim",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior",
+      "value": "OEM 고객에게 출시 가능한 차량 소프트웨어 수준이다.",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "unstructured-claim-field",
+      "operation": "replace",
+      "path": "/nodes/0/claim",
+      "value": "검증 범위를 벗어난 자유문 주장",
+      "expected_errors": [
+        "E_NODE_FIELD"
       ]
     },
     {

@@ -149,12 +149,12 @@
 | REQ-SAFE-002 | System | Shared CPU, memory, network, storage and logging interference shall have an identified control or documented residual gap. | Interference analysis + fault test | Baselined |
 | REQ-SEC-001 | System | Trust boundaries, attacker capabilities, assets and residual risks shall be versioned with the release. | TARA review | Baselined |
 | REQ-SEC-002 | Diagnostic/update | Security-relevant authorization decisions shall identify the authenticated principal, requested action and policy version. | Audit/policy test | Baselined |
-| REQ-OBS-001 | System | Lifecycle, state, policy, fault and update transitions shall emit a structured event with reason and correlation data. | Log assertion test | Draft |
-| REQ-PERF-001 | Linux | Performance reports shall include p50, p95, p99, measured worst, sample count, CPU and RSS for a versioned workload. | Report review | Draft |
-| REQ-TOOL-001 | Critical functions | GCC/Clang analysis shall pin compiler, target, CPU, ABI, flags and linker and shall compare code size and runtime within each target. | Report replay | Draft |
-| REQ-QUAL-001 | Host/Linux | Supported code builds shall pass unit and integration tests under the pinned GCC and Clang versions. | CI | Draft |
-| REQ-QUAL-002 | Testable host code | Applicable components shall run under ASan and UBSan without findings. | CI/runtime evidence | Draft |
-| REQ-QUAL-003 | Parser/state components | Test strength shall include coverage plus mutation, model or differential evidence selected in the component test plan. | Test-plan audit | Draft |
+| REQ-OBS-001 | System | Lifecycle, state, policy, fault and update transitions shall emit a structured event with reason and correlation data. | Log assertion test | Baselined |
+| REQ-PERF-001 | Linux | Performance reports shall include p50, p95, p99, measured worst, sample count, CPU and RSS for a versioned workload. | Report review | Baselined |
+| REQ-TOOL-001 | Critical functions | GCC/Clang analysis shall pin compiler, target, CPU, ABI, flags and linker and shall compare code size and runtime within each target. | Report replay | Baselined |
+| REQ-QUAL-001 | Host/Linux | Supported code builds shall pass unit and integration tests under the pinned GCC and Clang versions. | CI | Baselined |
+| REQ-QUAL-002 | Testable host code | Applicable components shall run under ASan and UBSan without findings. | CI/runtime evidence | Baselined |
+| REQ-QUAL-003 | Parser/state components | Test strength shall include coverage plus mutation, model or differential evidence selected in the component test plan. | Test-plan audit | Baselined |
 | REQ-QUAL-004 | Release | The release shall include clean reproduction instructions and a reviewer record. | Third-party replay | Baselined |
 
 ## 변경 규칙

@@ -6,7 +6,7 @@
   "official_hash_manifest": {
     "algorithm": "SHA-512",
     "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_TR_SpecificationHashes",
-    "pin_status": "Pending independent review"
+    "pin_status": "No digest enrolled; submission validation fails closed"
   },
   "documents": [
     {
@@ -62,5 +62,5 @@
       "purpose": "supervision and recovery reporting"
     }
   ],
-  "maintenance": "공식 Specification Hashes에서 SHA-512를 확인한 뒤 별도 검토 커밋으로 pin한다. 릴리스가 바뀌면 URL, 파일명, release와 digest를 함께 갱신한다."
+  "maintenance": "공식 Specification Hashes에서 SHA-512를 확인하고 release authority가 새 review policy에 서명한다. 릴리스 변경 때 URL, 파일명, release, digest를 한 묶음으로 갱신한다."
 }

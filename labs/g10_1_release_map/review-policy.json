@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "namespace": "adaptive-vehicle-platform-lab-g10.1-release-policy-v1",
+  "authority_fingerprints": [
+    "SHA256:jybHC9K5GuTflPOELZ+llMZ66hSThNySAHxOaEmghaU",
+    "SHA256:M0pe4DkwbD2zwdlwIzZPcniSxQ1NoenTYcr7ibOi7vg"
+  ],
+  "signature_threshold": 2,
+  "issued_on": "2026-08-19",
+  "source_lock": {
+    "path": "labs/g10_1_release_map/r25-11-document-lock.json",
+    "sha256": "004c542975ab7ce66de6313c30f102b9593c173efe6141bc433d55f8c25c5db6"
+  },
+  "reviewer_registry": {
+    "path": "labs/g10_1_release_map/trusted-reviewers.json",
+    "sha256": "f2b7b135aed4bc7822f01be91976f387b78267db195d1e128882fa1f5d4ad2c3"
+  },
+  "enrollment_state": "frozen-empty",
+  "change_control": "Trust data changes require a new authority signature and an externally reviewed trust-anchor rotation."
+}

@@ -19,9 +19,9 @@
 | G8 | Diagnosis, Reproducibility | `REQ-PLAT-001`, `REQ-PLAT-002`, `REQ-PLAT-003`, `REQ-PLAT-004`, `REQ-LINUX-RT-001`, `REQ-LINUX-RT-002`, `REQ-LINUX-RT-003`; 재현 불가능한 image, descendant 잔류, VM timing 과장 |
 | G9 | Correctness, Measurement | `REQ-SI-001`, `REQ-SI-002`, `REQ-SI-003`, `REQ-SI-004`, `REQ-COM-002`, `REQ-COM-003`, `REQ-COM-004`, `REQ-COM-005`, `REQ-TIME-001`, `REQ-TIME-002`, `REQ-TIME-003`; generated boundary 우회, clock uncertainty 없는 one-way latency 주장 |
 | G10 | Design, Reliability | `REQ-EXEC-001`, `REQ-EXEC-002`, `REQ-EXEC-003`, `REQ-EXEC-004`, `REQ-STATE-001`, `REQ-STATE-002`, `REQ-HEALTH-001`, `REQ-AD-DIAG-001`, `REQ-AD-DIAG-002`, `REQ-AD-DIAG-003`, `REQ-AD-DIAG-004`, `REQ-IAM-001`, `REQ-IAM-002`, `REQ-IAM-003`, `REQ-IAM-004`; 중복 restart owner, 저장된 운행 상태 자동 적용, transport ID를 principal로 사용 |
-| G11A | Reliability, Design | `REQ-UCM-001`–`REQ-UCM-010`, `REQ-BOOT-001`–`REQ-BOOT-003`, `REQ-SEC-001`, `REQ-SEC-002`; health 전 commit, tier를 넘는 보장 표기 |
+| G11A | Reliability, Design | `REQ-UCM-001`, `REQ-UCM-002`, `REQ-UCM-003`, `REQ-UCM-004`, `REQ-UCM-005`, `REQ-UCM-006`, `REQ-UCM-007`, `REQ-UCM-008`, `REQ-UCM-009`, `REQ-UCM-010`, `REQ-BOOT-001`, `REQ-BOOT-002`, `REQ-BOOT-003`, `REQ-SEC-001`, `REQ-SEC-002`; health 전 commit, tier를 넘는 보장 표기 |
 | G11B | Design, Reliability | `REQ-SAFE-001`, `REQ-SAFE-002`, `REQ-SEC-001`, `REQ-SEC-002`, `REQ-BOOT-001`, `REQ-BOOT-002`, `REQ-BOOT-003`; 가정 없는 safety/security claim |
-| G12 | Design, Reproducibility | `REQ-ARCH-001`–`006`, `REQ-QUAL-004`; 기준선 요구 누락, 제3자 재현 실패 |
+| G12 | Design, Reproducibility | `REQ-ARCH-001`, `REQ-ARCH-002`, `REQ-ARCH-003`, `REQ-ARCH-004`, `REQ-ARCH-005`, `REQ-ARCH-006`, `REQ-QUAL-004`; 기준선 요구 누락, 제3자 재현 실패 |
 
 ## 시험 manifest
 
