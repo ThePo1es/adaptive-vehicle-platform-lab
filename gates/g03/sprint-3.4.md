@@ -40,6 +40,6 @@ compiler version 하나를 바꿔 regression 여부를 재시험합니다. 통�
 2. 작은 시간 차이는 반복 순서와 frequency scaling의 영향을 받습니다.
 3. LTO 비교에는 linker와 plugin version도 필요합니다.
 
-## 치명적 실패와 보충
+## 측정을 버리고 다시 할 때
 
-서로 다른 target 수치를 순위로 만들거나 GCC가 LLVM IR을 생성했다고 기록하면 실패입니다. 보충 과제는 한 함수, 한 target, `-O0/-O2` 네 binary만 다시 만드는 것입니다.
+서로 다른 대상의 수치를 한 순위에 넣었거나 GCC가 LLVM IR을 만들었다고 기록했다면 그 결과는 사용하지 않습니다. 함수와 대상을 하나로 고정하고 네 빌드만 다시 측정합니다.

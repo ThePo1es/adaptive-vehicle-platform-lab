@@ -14,8 +14,8 @@ G0에서 한 가지 기본 조합을 고정합니다. 선택지가 많아져 Gat
 | RTOS | Zephyr 또는 FreeRTOS 한 종류 | 선택 이유와 config |
 | Simulator | Zephyr native_sim/QEMU 또는 RTOS host port | contract test |
 | CAN bench | Cortex-M node 2대 또는 board + USB-CAN, transceiver, termination | physical bus trace |
-| Linux target | x86_64 VM/host + AArch64 board 한 대 | image hash와 boot log |
-| Linux image | Buildroot 또는 Yocto 한 경로 | clean image build, SBOM |
+| Linux target | x86_64 VM/host + AArch64 QEMU `virt`; board는 Industrial Bridge | image hash와 boot log |
+| Linux image | Core는 Buildroot, 이후 Yocto 이식 | clean image build, SBOM |
 | SOME/IP | COVESA vsomeip | two-node packet trace |
 | Debug | GDB, OpenOCD/J-Link, core dump, strace | fault report |
 | Measurement | monotonic trace, cycle counter, logic analyzer | calibration record |
@@ -35,7 +35,7 @@ G0에서 한 가지 기본 조합을 고정합니다. 선택지가 많아져 Gat
 | 1 | 8-channel 이상 logic analyzer | UART, GPIO marker, interrupt timing 관찰. 측정 한계를 기록 |
 | 1 | [Raspberry Pi 4 Model B](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/specifications/) 4GB 또는 동급 AArch64 Ethernet SBC | Buildroot image, service 배포, MCU–Linux 통합에 사용 |
 
-기본 소프트웨어 경로는 Zephyr와 Buildroot입니다. 다른 RTOS나 Yocto를 이미 쓴다면 G0 ADR에 문서 품질, 지원 상태, 재현 경로를 적고 대체할 수 있습니다. 이 문서는 장비 구매를 대신하지 않으며, G0.2에서 실제 보유·접근 상태를 확인합니다.
+기본 소프트웨어 경로는 Zephyr와 Buildroot입니다. 다른 RTOS를 쓰거나 Yocto를 core로 대체하면 G0 ADR에 문서 품질, 지원 상태, 재현 경로와 equivalence test를 적습니다. 이 문서는 장비 구매를 대신하지 않으며, G0.2에서 실제 보유·접근 상태를 확인합니다.
 
 ## G0 Hardware and Access ADR
 
@@ -66,7 +66,7 @@ G0에서 한 가지 기본 조합을 고정합니다. 선택지가 많아져 Gat
 | Ethernet | Wireshark, tcpdump, iproute2 |
 | Runtime | perf, strace, heaptrack, systemd tools |
 | Time sync | chrony/ptp4l where supported, timestamp calibration script |
-| Image | Buildroot 또는 Yocto, pinned configuration |
+| Image | Buildroot core, Yocto Industrial Bridge, pinned configuration |
 
 compiler와 도구 version은 각 release에 고정합니다. GCC와 Clang의 optimization flag 지원 범위도 version별로 기록합니다.
 
@@ -96,8 +96,8 @@ compiler와 도구 version은 각 release에 고정합니다. GCC와 Clang의 op
 ### Stage 3 — Linux platform
 
 - x86_64 host/VM에서 process·network contract 시험
-- AArch64 board image build와 service packaging
-- kernel config, Device Tree, 작은 module 또는 driver 실습
+- AArch64 QEMU image build와 service packaging; 실제 board는 별도 결과
+- kernel config와 Device Tree 읽기; 작은 module·driver는 Industrial Bridge
 - cgroup, capability, seccomp, logging, crash artifact
 
 ### Stage 4 — Two Linux nodes

@@ -14,10 +14,11 @@ Status는 `Not started`, `Challenge`, `Learning`, `Building`, `Assessment`, `Pro
 | G5 | RTOS and RTA | Not started | P00-A | — | 0 |
 | G6 | CAN and diagnostics | Not started | P00-B | — | 0 |
 | G7 | Classic concepts | Not started | P00-C | — | 0 |
-| G8 | Linux platform and BSP | Not started | P01 + Linux image | — | 0 |
-| G9 | Ethernet vehicle services | Not started | P02 + P05 | — | 0 |
-| G10 | Adaptive concepts | Not started | P03 | — | 0 |
-| G11 | Safety, security and update | Not started | P04 | — | 0 |
+| G8 | Embedded Linux platform and image | Not started | P01 + Linux image + RT evidence | — | 0 |
+| G9 | Service-oriented vehicle communication | Not started | Service Interface + P02 + P05-SIM | — | 0 |
+| G10 | Adaptive functional clusters | Not started | P03 + Diagnostics + IAM | — | 0 |
+| G11A | Adaptive security and UCM | Not started | P04-T1/T2 | — | 0 |
+| G11B | Cross-domain assurance | Not started | P04-T3/assurance | — | 0 |
 | G12 | Architecture and integration | Not started | P06 | — | 0 |
 
 ## Portfolio releases
@@ -28,12 +29,13 @@ Status는 `Not started`, `Challenge`, `Learning`, `Building`, `Assessment`, `Pro
 | P00-A v1 | G5 | Planned | — | — |
 | P00 v1 | G7 | Planned | — | — |
 | P01 v1 | G8 | Planned | — | — |
-| P02/P05 v1 | G9 | Planned | — | — |
+| P02/P05-SIM v1 | G9 | Planned | — | — |
 | Managed Linux Node v1 | G10 | Planned | — | — |
-| P04 v1 | G11 | Planned | — | — |
+| P04-T2 | G11A | Planned | — | — |
+| P04 assurance | G11B | Planned | — | — |
 | P06 v1 | G12 | Planned | — | — |
 
-## Expert Cycle
+## 장기 유지·이식
 
 | Cycle | Subsystem | Status | 외부/upstream 근거 | 장기 결과 |
 | --- | --- | --- | --- | --- |
@@ -61,11 +63,11 @@ Status는 `Not started`, `Challenge`, `Learning`, `Building`, `Assessment`, `Pro
 | --- | --- | --- | --- | --- | ---: | --- |
 |  |  |  |  |  |  |  |
 
-## Quarterly retention
+## 누적 재시험
 
-| Quarter | 표본 기술 | 결과 | 보강 Sprint | 근거 |
-| --- | --- | --- | --- | --- |
-|  |  |  |  |  |
+| 시행일 | 기술 | 선정 방식 | 결과 | 보강 Sprint | 근거 | 다음 시험일 |
+| --- | --- | --- | --- | --- | --- | --- |
+|  |  | 1·3·6·12개월 / 분기 표본 |  |  |  |  |
 
 ## 근거 목록
 

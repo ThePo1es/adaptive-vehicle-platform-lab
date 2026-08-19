@@ -29,6 +29,9 @@
 | REQ-CAN-002 | MCU/Linux adapter | A malformed, out-of-range or truncated signal shall leave the last valid application value unchanged and update the configured quality counter. | Property/fuzz test | Draft |
 | REQ-CAN-003 | MCU | A bus-off indication shall publish communication unavailable with the controller error state and follow the configured recovery limit and delay. | Physical bench + simulation | Draft |
 | REQ-CAN-004 | MCU | The selected CAN message set shall have calculated load and priority response-time bounds for the configured bit timing. | Analysis + trace comparison | Draft |
+| REQ-CAN-005 | MCU/Linux adapter | CAN FD DLC values shall map to payload lengths 0–64 exactly, and Classic/FD frame-type mismatches shall be rejected before signal decode. | Golden vectors + mixed-frame negative test | Draft |
+| REQ-CAN-006 | MCU/bench | Nominal bit rate, data bit rate, BRS and ESI behavior shall be recorded with controller and transceiver capability; unsupported combinations shall fail configuration. | Capability review + physical trace | Draft |
+| REQ-CAN-007 | MCU | CAN FD load and priority bounds shall include arbitration phase, data phase, payload length and the stated stuffing assumption. | Analysis + analyzer comparison | Draft |
 | REQ-ECU-DIAG-001 | MCU | The ECU shall support the configured read-only UDS services and return the specified NRC for unsupported or disallowed requests. | Tester interoperability | Draft |
 | REQ-ECU-DIAG-002 | MCU | ISO-TP shall enforce the configured addressing, BS, STmin, sequence and timeout rules without corrupting application state. | Timer matrix + negative corpus | Draft |
 | REQ-ECU-DIAG-003 | MCU | Diagnostic work shall remain bounded under the specified request rate and shall expose queue, timeout and rejection counters. | Load/fault test | Draft |
@@ -39,13 +42,17 @@
 
 | ID | Applies to | Requirement | Verification | Status |
 | --- | --- | --- | --- | --- |
+| REQ-SI-001 | Linux service/client | The language-neutral Service Interface shall define each method, event and field with type, unit, range, error, freshness and compatibility semantics independently of transport deployment. | Contract review + golden vectors | Draft |
+| REQ-SI-002 | Code generator | Proxy and Skeleton artifacts shall be generated deterministically from a versioned interface input and shall not contain hand-written application logic. | Clean generation + tree hash + build | Draft |
+| REQ-SI-003 | Linux service/client | Generated Proxy and Skeleton boundaries shall pass method, event, subscription-lifetime and error tests with an in-memory transport before SOME/IP binding. | Generated-code integration test | Draft |
+| REQ-SI-004 | Release | Interface changes shall have an old/new client-service compatibility matrix and shall identify whether regeneration, rebuild or major-version change is required. | Four-way compatibility test | Draft |
 | REQ-COM-001 | Linux | Vehicle State Service shall provide the configured versioned service instance on the specified interface. | Integration test + packet capture | Draft |
 | REQ-COM-002 | Linux client | The client shall restore availability and subscription within the configured recovery time after service restart. | Restart test | Draft |
 | REQ-COM-003 | Linux service | Event delivery shall use a bounded queue and expose drop, stale and unavailable counters under the configured workload. | Load test | Draft |
 | REQ-COM-004 | Linux | An incompatible major interface version shall be rejected before data exchange; minor-version behavior shall follow the compatibility matrix. | Negative integration test | Draft |
-| REQ-COM-005 | MCU/Linux | Vehicle data shall carry sequence, source timestamp, unit and quality sufficient to classify fresh, stale, lost and unavailable states. | Contract tests | Draft |
+| REQ-COM-005 | MCU/Linux | Vehicle data shall carry a payload rolling counter, source boot/session identity, source timestamp, unit and quality sufficient to classify fresh, stale, lost and unavailable states. A gateway observation counter shall not be presented as proof of upstream CAN delivery. | Contract tests | Draft |
 | REQ-GW-DIAG-001 | Linux gateway | The gateway shall route only configured DoIP diagnostic targets and read services to the mapped CAN ISO-TP endpoint. | Bench integration test | Draft |
-| REQ-GW-DIAG-002 | Linux gateway | Routing activation, alive check, diagnostic timeout and NRC translation shall follow the versioned gateway policy. | Protocol-state test | Draft |
+| REQ-GW-DIAG-002 | Linux gateway | Routing activation, alive check and diagnostic timeout shall follow the versioned gateway policy; DoIP rejection, backend transport failure and ECU-originated UDS NRC shall remain distinct results. | Protocol-state test | Draft |
 | REQ-GW-DIAG-003 | Linux gateway | A disallowed caller, target or service shall be rejected and recorded with a correlation identifier. | Policy negative test | Draft |
 
 ## Execution, state and Linux platform
@@ -53,13 +60,32 @@
 | ID | Applies to | Requirement | Verification | Status |
 | --- | --- | --- | --- | --- |
 | REQ-EXEC-001 | Linux | The manager shall validate dependencies, reject cycles and start applications in topological order. | Unit/integration test | Draft |
-| REQ-EXEC-002 | Linux | The manager shall request graceful process-group termination before the configured timeout and forced termination. | Process-tree test | Draft |
+| REQ-EXEC-002 | Linux | The manager shall request graceful termination before the configured timeout and shall use a dedicated containment unit to terminate and reap descendants that change session or process group. | cgroup/pidfd process-tree test | Draft |
 | REQ-EXEC-003 | Linux | Each restart policy shall define retry limit, backoff range and terminal action. | Virtual-time fault test | Draft |
+| REQ-EXEC-004 | Linux | Each managed process shall have exactly one lifecycle decision owner and one restart actuator; systemd, P01, P03, PHM and UCM roles shall match the versioned ownership table. | Ownership inspection + concurrent-recovery test | Draft |
 | REQ-STATE-001 | Linux/system | The state model shall define allowed transitions and block update activation in the configured operational states. | Model-based test | Draft |
+| REQ-STATE-002 | Linux/system | Boot shall begin in Startup and shall revalidate current vehicle conditions, software compatibility and process inventory before reapplying any persisted request. | Reboot/reconciliation test | Draft |
 | REQ-HEALTH-001 | Linux | A missed heartbeat or deadline shall create an observation and trigger the configured state or lifecycle action within its time bound. | Virtual-time integration test | Draft |
 | REQ-PLAT-001 | Linux | The reference image shall be reproducible from pinned configuration and shall emit image hash, package list and SBOM. | Clean image build | Draft |
 | REQ-PLAT-002 | Linux | Platform services shall run with configured capabilities, resource limits and restart policy. | Policy inspection + fault test | Draft |
 | REQ-PLAT-003 | Linux | A crash shall preserve the configured core/log artifacts and correlation data required for diagnosis. | Seeded crash test | Draft |
+| REQ-PLAT-004 | Linux | A read-only root filesystem shall define bounded writable locations for logs, cores, persistency and update staging with quota, access-control and retention policy. | Image inspection + exhaustion test | Draft |
+| REQ-LINUX-RT-001 | Linux | Scheduling policy, priority, affinity, memory-lock and privilege application shall be verified at runtime and failure shall be observable. | Scheduler configuration test | Draft |
+| REQ-LINUX-RT-002 | Linux | Priority-inversion experiments shall compare the selected mutex protocols under a fixed workload and retain scheduler traces around the worst blocking interval. | Trace replay + report review | Draft |
+| REQ-LINUX-RT-003 | Linux target | PREEMPT_RT comparison shall use the same kernel release, toolchain, target and workload with a recorded configuration delta; VM timing shall not be used as target latency evidence. | Image manifest + repeated target measurement | Draft |
+
+## Adaptive diagnostics and access policy
+
+| ID | Applies to | Requirement | Verification | Status |
+| --- | --- | --- | --- | --- |
+| REQ-AD-DIAG-001 | Linux diagnostic manager | DoIP transport, authorization, diagnostic routing, UDS semantics and application data-provider responsibilities shall be separate interfaces and trace events. | Architecture review + scenario test | Draft |
+| REQ-AD-DIAG-002 | Linux diagnostic manager | The core release shall route only configured read-only services and shall prevent disallowed requests from reaching an application or CAN backend. | Negative request corpus | Draft |
+| REQ-AD-DIAG-003 | Linux diagnostic manager | Provider unavailable, provider timeout, routing rejection and ECU-originated UDS NRC shall remain distinguishable to audit and metrics. | Fault-isolation test | Draft |
+| REQ-AD-DIAG-004 | Linux diagnostic manager | Concurrent testers, in-flight requests, payload size and provider wait time shall have versioned bounds and observable rejection counters. | Load and restart test | Draft |
+| REQ-IAM-001 | Linux security service | Authorization shall consume an authenticated principal, action, resource, context and immutable policy version; IP address, SOME/IP Client ID and DoIP logical address alone are not principals. | Spoofing negative tests | Draft |
+| REQ-IAM-002 | Linux security service | Local principal identity shall come from kernel-provided peer credentials bound to the current process instance; the optional network lane shall use an authenticated channel and explicit certificate-to-principal mapping. | Credential and stale-instance test | Draft |
+| REQ-IAM-003 | Linux security service | Policy shall be default-deny, schema-validated and atomically reloaded so each decision uses one identifiable version. | Policy corpus + concurrent reload test | Draft |
+| REQ-IAM-004 | Linux audit | Allow and deny decisions shall record principal, action, resource, rule, policy hash and correlation data without storing secret or credential material. | Audit assertion + secret scan | Draft |
 
 ## Boot and update
 
@@ -75,6 +101,9 @@
 | REQ-UCM-005 | Linux/update target | Every durable transaction state shall recover to the reference state model after interruption. | Kill-at-each-state test | Draft |
 | REQ-UCM-006 | Linux/update target | Package paths shall remain inside the staging root across traversal, symlink, hard-link and file-swap attempts. | Filesystem attack corpus | Draft |
 | REQ-UCM-007 | Linux/update target | Key identity, authorization, rotation/revocation assumption and recovery path shall be versioned and auditable. | Policy review + negative test | Draft |
+| REQ-UCM-008 | Linux/update target | Transfer resume shall verify immutable remote object identity, expected size and local durable progress; changed or ambiguous objects shall restart from a clean staging object. | Interruption/object-change matrix | Draft |
+| REQ-UCM-009 | Linux/update target | Update staging shall be isolated from active executable paths and shall preserve the committed slot under quota, disk-full and inode-exhaustion faults. | Storage-exhaustion campaign | Draft |
+| REQ-UCM-010 | Linux/update target | Processing and activation shall enforce package dependency, software compatibility and allowed Function Group State before slot selection and shall use the configured health result before commit. | State/version/health integration test | Draft |
 
 ## Time and architecture
 

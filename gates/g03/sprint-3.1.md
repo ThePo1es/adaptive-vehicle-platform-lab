@@ -33,12 +33,12 @@ prototype을 보지 않은 assembly 세 개에서 C signature 후보를 작성�
 - register만 보고 확정할 수 없는 source 속성을 명확히 표시
 - compiler 두 개에서 ABI 계약이 유지되는지 자동 assertion 또는 disassembly test로 확인
 
-## 힌트
+## 역추적 순서
 
 1. 먼저 함수 경계에서 살아 있는 값을 표시합니다.
 2. prologue의 stack 변화와 call site의 argument 준비를 함께 봅니다.
 3. debug 정보는 결론 확인에 쓰고 첫 추론에는 숨깁니다.
 
-## 치명적 실패와 보충
+## 판정을 보류하는 경우
 
-target·float ABI를 기록하지 않거나 compiler가 우연히 만든 register 배치를 ABI 규칙 전체로 일반화하면 실패입니다. 보충 과제는 정수 인자만 가진 두 함수로 줄여 call site부터 다시 추적하는 것입니다.
+대상과 float ABI가 기록되지 않았거나 한 컴파일 결과의 register 배치를 ABI 전체 규칙으로 일반화했다면 결론을 보류합니다. 정수 인자만 가진 두 함수로 줄여 호출 지점부터 다시 추적합니다.

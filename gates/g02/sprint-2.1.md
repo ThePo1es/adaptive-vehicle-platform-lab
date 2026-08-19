@@ -37,12 +37,12 @@ Result<MessageView, ViewError> view_payload(const MessageOwner& owner);
 - public API에 owner, borrower, lifetime, thread 사용 조건이 적혀 있음
 - 전이 과제에서 원래 class 이름이나 구조를 그대로 복사하지 않음
 
-## 힌트
+## 수명 점검
 
 1. 주소가 같아 보인다는 관찰은 lifetime을 연장하지 않습니다.
 2. view를 반환하기 전에 호출자가 owner를 어디에 보관하는지 그립니다.
 3. move 뒤 허용할 연산을 작게 정하면 test가 쉬워집니다.
 
-## 치명적 실패와 보충
+## 다시 시작할 지점
 
-sanitizer를 끄는 방식으로 결함을 숨기거나 dangling view가 성공 경로에 남으면 실패입니다. 보충 과제는 owner/view를 없앤 값 복사 구현을 먼저 만들고 비용과 안전성을 비교하는 것입니다.
+sanitizer를 꺼서 증상을 숨겼거나 성공 경로에 dangling view가 남았다면 값 복사 구현으로 돌아갑니다. 안전한 기준 구현을 먼저 통과시킨 뒤 owner/view 버전의 비용과 수명 조건을 비교합니다.

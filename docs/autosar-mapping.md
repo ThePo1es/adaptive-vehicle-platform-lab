@@ -26,17 +26,18 @@
 
 | Local component | Related Adaptive concept | 구현한 범위 | 의도적으로 뺀 범위 | 근거 |
 | --- | --- | --- | --- | --- |
-| `vehicle-state-service` | Communication Management / `ara::com` | service, method, event, discovery, reconnection | vsomeip API 사용, `ara::com` API·generator 미구현 | Planned |
-| `execution-manager` | Execution Management | process spawn/stop, dependency order, restart policy | 자체 manifest와 POSIX process 사용, `ara::exec` 미구현 | Planned |
-| manifest mapper | Execution/Service Interface/Service Instance/Machine Manifest concepts | selected fields, validation, deployment relation | 공식 ARXML schema와 generator/toolchain 미구현 | Planned |
+| `vehicle-state-service` | Communication Management / `ara::com` responsibilities | local IDL에서 생성한 Proxy/Skeleton, service, method, event, discovery, reconnection | vsomeip adapter 사용, `ara::com` API·ARXML generator 미구현 | Planned |
+| `execution-manager` | Execution Management | dependency order, lifecycle decision, P01 process action request | 자체 manifest와 POSIX/cgroup mechanism 사용, `ara::exec` 미구현 | Planned |
+| manifest mapper | Application Design, Execution, Service Instance, Machine 관련 manifest concepts | selected fields, validation, deployment relation | Service Interface artifact는 별도 행; 공식 ARXML schema와 toolchain 미구현 | Planned |
 | `state-manager` | State Management | Startup/Driving/Diagnostic/Update/Shutdown 결정 | Function Group 모델을 단순 enum/config로 표현 | Planned |
 | `health-monitor` | Platform Health Management | alive/deadline supervision, recovery trigger | supervision 종류와 recovery policy 일부만 구현 | Planned |
 | `persistency-service` | Persistency | version/config/journal 저장과 복구 | `ara::per` API, redundancy 정책 미구현 | Planned |
-| `diagnostic-gateway` | Diagnostics | DoIP–UDS–ISO-TP read-only routing, policy | 전체 diagnostic conversation·Classic DEM 연동 미구현 | Planned |
-| `update-manager` | Update and Configuration Management | 검증, staging, activation, health check, rollback | 공식 package/manifest 모델 대신 자체 최소 형식 | Planned |
+| `diagnostic-gateway` | DoIP transport/gateway responsibility | vehicle identification, routing activation, alive, read-only backend transport | network endpoint authentication과 전체 DoIP conformance 미구현 | Planned |
+| `diagnostic-manager` | Diagnostics | read-only service registry, provider routing, UDS result와 backend failure 분리 | 전체 diagnostic conversation·Classic DEM 연동 미구현 | Planned |
+| `update-manager` | Update and Configuration Management | package·cluster mapping, transfer resume, processing, activation, health check, rollback | 공식 package format/API 대신 자체 최소 형식, fleet campaign backend 미구현 | Planned |
 | `crypto-adapter` | Cryptography | hash/signature verification, key abstraction | `ara::crypto` API·key slot 모델 미구현 | Planned |
-| `audit-service` | Log and Trace / IAM-related auditing | 구조화 이벤트와 상태 변경 추적 | `ara::log`가 아닌 자체 logger 또는 DLT 도구 | Planned |
-| `policy-engine` | Identity and Access Management | caller/service/action allow-list | 공식 identity/credential model 미구현 | Planned |
+| `audit-service` | Log and Trace / IAM-related auditing | 구조화 이벤트와 상태 변경 추적 | 자체 logger 또는 DLT를 사용하며 `ara::log` 구현으로 표시하지 않음 | Planned |
+| `policy-engine` | Identity and Access Management | Unix peer credential 기반 principal, action/resource policy, versioned decision audit | 공식 identity/credential API와 network credential lifecycle 미구현 | Planned |
 
 ## Cross-platform path
 

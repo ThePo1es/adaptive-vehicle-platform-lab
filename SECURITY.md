@@ -6,7 +6,7 @@
 
 - 직접 작성한 코드와 설정
 - 공개 문서를 자기 말로 정리한 학습 노트
-- 민감 정보를 제거한 vcan·시뮬레이터 캡처
+- 직접 생성한 vcan·시뮬레이터 캡처
 - 재현용 합성 CAN/UDS 데이터
 - 방어 목적의 위협 모델과 실패 복구 테스트
 
@@ -16,6 +16,21 @@
 - OEM 또는 공급사의 비공개 펌웨어, DBC, ARXML, 진단 DB
 - 제3자 시스템을 대상으로 한 미승인 공격 절차와 결과
 - 안전 기능을 실제 주행 중 교란할 수 있는 실험 데이터
+
+## 합성 packet fixture
+
+공개용 `.pcap`과 `.pcapng`는 `evidence/public-fixtures/`에만 둡니다. 같은 basename의 `.metadata.yml`에는 아래 값을 넣습니다.
+
+```yaml
+synthetic: true
+contains_real_vehicle_data: false
+generator_commit: 40자리-커밋-SHA
+address_set: RFC 5737/3849 문서용 주소 또는 격리된 local 주소
+payload_description: 직접 만든 schema와 seed
+reviewed_by: GitHub-handle과 날짜
+```
+
+실차·벤치에서 얻은 capture를 비식별화해 이 경로에 넣는 방식은 허용하지 않습니다. 공개 fixture는 처음부터 합성 주소, 임의 ID, 임의 payload로 다시 생성합니다.
 
 ## 실차 연결 단계
 
@@ -29,4 +44,3 @@
 ## 취약점 발견 시
 
 연구 중 제3자 제품의 신규 취약점이 의심되면 공개 이슈에 세부 내용을 올리지 않습니다. 영향과 재현성을 확인하고 해당 공급사 또는 공식 버그바운티의 공개 정책에 따라 비공개로 보고합니다.
-

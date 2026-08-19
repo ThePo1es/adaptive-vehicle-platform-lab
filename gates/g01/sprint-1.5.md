@@ -34,12 +34,12 @@ DMA completion flag와 descriptor ownership을 가진 새 peripheral shell을 �
 - register side effect와 timeout negative test 통과
 - single-core ISR/task와 multi-core/thread contract를 분리
 
-## 힌트
+## 하드웨어 확인 사항
 
 1. Device ordering, compiler reordering, language data race는 서로 다른 문제입니다.
 2. ISR과 task가 공유하는 상태의 writer/reader를 표로 적습니다.
 3. Host mock이 실제 hardware ordering을 보장하지 않는다는 한계를 기록합니다.
 
-## 치명적 실패와 보충
+## 재시험
 
-`volatile`만으로 atomicity와 happens-before를 주장하거나 ISR에서 무한 loop를 돌면 실패입니다. 보충 과제는 single-producer/single-consumer queue contract를 state diagram으로 다시 작성하는 것입니다.
+`volatile` 하나로 원자성과 happens-before를 설명했거나 ISR에 끝나지 않는 루프가 남았다면 SPSC queue 계약을 상태도로 다시 그립니다. writer, reader, 메모리 순서를 표시한 뒤 테스트와 실제 레지스터 접근을 다시 연결합니다.

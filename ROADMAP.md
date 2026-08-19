@@ -14,14 +14,14 @@
 | G5 RTOS and real-time analysis | 168–210h | 7 | P00-A timing core |
 | G6 CAN and diagnostics | 192–240h | 8 | P00-B network extension |
 | G7 Classic Platform concepts | 144–180h | 6 | P00-C ECU stack |
-| G8 Linux platform and BSP | 168–210h | 7 | P01 + Linux image |
-| G9 Ethernet vehicle services | 192–240h | 8 | P02 + P05 vertical slice |
-| G10 Adaptive Platform concepts | 192–240h | 8 | P03 managed Linux node |
-| G11 Safety, security and update | 168–210h | 7 | P04 + assurance case |
+| G8 Embedded Linux platform and image | 226–294h | 9 | P01 + Linux image + scheduling evidence |
+| G9 Service-oriented vehicle communication | 242–310h | 10 | Service Interface + P02 + P05-SIM |
+| G10 Adaptive Platform functional clusters | 242–310h | 10 | P03 + Diagnostics + IAM policy |
+| G11 Safety, security and update | 168–228h | 7 | P04 + assurance case |
 | G12 Architecture and integration | 288–360h | 12 | P06 final platform |
-| **본 과정 합계** | **2,040–2,550h** | **85** | **13 Gate** |
+| **본 과정 합계** | **2,198–2,792h** | **91** | **13 Gate, G11은 두 단계** |
 
-표의 시간은 2주 Sprint마다 24–30시간을 배정한 합계입니다. 한 Sprint 안에서 현재 Gate 70%, 누적 복습 15%, 리뷰·정리 10%, LLVM 분석 5%를 씁니다. Major Gate 시험은 마지막 Sprint의 시간에 포함하고, 분기 누적 시험은 복습 몫을 모아 진행합니다. 휴식, 장비 대기, 외부 검토, 보강 Sprint까지 포함한 달력 일정은 주 12–15시간 기준 약 3.5–4.5년입니다. 기존 실력은 사전 통과 시험으로 인정할 수 있습니다. G0–G2의 실제 속도로 남은 일정을 다시 계산합니다.
+시간은 범위를 잡기 위한 계획치입니다. 각 Lab Pack은 구현량에 따라 다른 시간을 사용하며 active time, build·soak wall time, reviewer 대기 시간을 따로 기록합니다. Major Gate 시험은 마지막 Sprint 예산에 넣고 분기 시험은 복습 시간에서 충당합니다. G8.6, G9.6, G10.1, G11.4를 실제로 돌린 뒤 전체 일정을 다시 계산합니다.
 
 ## 의존 관계
 
@@ -34,15 +34,16 @@ flowchart TB
     G4 --> G5["G5 RTOS + RTA"]
     G5 --> G6["G6 CAN + 진단"]
     G6 --> G7["G7 Classic 개념"]
-    G3 --> G8["G8 Linux + BSP"]
-    G8 --> G9["G9 Ethernet 서비스"]
-    G9 --> G10["G10 Adaptive 개념"]
-    G7 --> G11["G11 안전·보안·업데이트"]
-    G10 --> G11
-    G11 --> G12["G12 통합"]
+    G3 --> G8["G8 Embedded Linux 플랫폼"]
+    G8 --> G9["G9 서비스 지향 차량 통신"]
+    G9 --> G10["G10 Adaptive 기능군"]
+    G10 --> G11A["G11A Adaptive 보안·UCM"]
+    G7 --> G11B["G11B 교차 도메인 보증"]
+    G11A --> G11B
+    G11B --> G12["G12 통합"]
 ```
 
-G4–G7과 G8–G10은 공통 기반 뒤에 갈라지는 두 갈래입니다. Linux/Adaptive 플랫폼 통합을 목표로 한다면 `G8 → G9 → G10 → G4 → G5 → G6 → G7` 순서를 권합니다. MCU/Classic 기반을 먼저 다지고 싶다면 반대 순서로 진행해도 됩니다. 어느 쪽을 택해도 G11에 들어가기 전 두 갈래를 모두 통과해야 합니다.
+G4–G7과 G8–G10은 공통 기반 뒤에 갈라집니다. Linux/Adaptive 플랫폼 통합을 목표로 하는 기본 순서는 `G8 → G9 → G10 → G11A → G4 → G5 → G6 → G7 → G11B → G12`입니다. 이 순서에서는 인증·권한·UCM을 Adaptive 학습 직후 다룹니다. 실제 CAN bus-off와 MCU timing이 필요한 P05-HW는 G6 이후에 닫습니다.
 
 ## 운영 규칙
 
@@ -55,7 +56,7 @@ G4–G7과 G8–G10은 공통 기반 뒤에 갈라지는 두 갈래입니다. Li
 - Gate에서 늦어지면 확장 항목을 먼저 뺍니다. 필수 통과 결과물은 유지합니다.
 - 외부 검토를 받지 못한 Gate는 `Provisional`로 기록합니다.
 
-각 Sprint의 과제와 범위 조정 순서는 [Gate Playbook](docs/gate-playbook.md)에 있습니다. G0–G3과 Linux/Adaptive 갈래의 G8–G10은 [Lab Pack](gates/README.md)이 준비되어 있습니다. G8은 G3 통과 후 시작합니다.
+각 Sprint의 과제와 범위 조정 순서는 [Gate Playbook](docs/gate-playbook.md)에 있습니다. G0–G3, G8–G10, G11A는 [Lab Pack](gates/README.md)에 명세가 있습니다. Starter, fixture hash, oracle까지 붙기 전 상태는 `Specified`이며 실행 가능하다는 뜻으로 쓰지 않습니다.
 
 ### 첫 공개 릴리스
 
@@ -251,11 +252,13 @@ G0 ADR에서 Cortex-M4/M7 또는 M33 계열 하나를 고릅니다. 다른 core�
 - bounded CAN TX/RX queue와 signal encode/decode
 - ISO-TP state machine과 read-focused UDS endpoint
 - vcan 시험과 두 physical CAN node의 packet 자료
+- CAN FD DLC·BRS·ESI와 nominal/data phase를 분리한 부하·파형 자료
 - termination·bit-rate mismatch·bus-off fault report
 
 ### Exit
 
 - CAN load와 message response time을 계산하고 실측과 비교한다.
+- Classic/FD 혼재, 잘못된 DLC, 지원하지 않는 bit-rate 조합을 자동으로 거부한다.
 - ISO-TP timeout·sequence 오류·flood corpus를 통과한다.
 - 실제 transceiver bench에서 bus-off와 복구 정책을 관찰한다.
 - 안전한 read service만 허용한 interoperability test를 수행한다.
@@ -287,11 +290,11 @@ G0 ADR에서 Cortex-M4/M7 또는 M33 계열 하나를 고릅니다. 다른 core�
 - AUTOSAR OS와 선택 RTOS의 차이를 설명한다.
 - 결과물 표기는 `Classic concept-aligned prototype`으로 유지한다.
 
-첫 포트폴리오 출구는 여기입니다. P00 v1 release와 외부 리뷰를 마치면 MCU/BSW 지원용 증거 묶음이 생깁니다.
+P00 v1 릴리스와 외부 검토까지 마치면 MCU/BSW 지원 직무에 제출할 근거 묶음이 생깁니다.
 
 ---
 
-## G8 — Linux Platform and BSP
+## G8 — Embedded Linux Platform and Image
 
 ### 배울 내용
 
@@ -299,31 +302,32 @@ G0 ADR에서 Cortex-M4/M7 또는 M33 계열 하나를 고릅니다. 다른 core�
 - thread scheduling, affinity, backpressure, shared memory, `epoll`
 - systemd, cgroup, capability, seccomp, core dump, `strace`, `perf`
 - cross sysroot, boot chain, kernel config, Device Tree
-- Buildroot 또는 Yocto image, package, SBOM, 재현 가능한 배포
+- Buildroot image, package, SBOM, 재현 가능한 배포
 
 ### 결과물: P01
 
 - Process Supervisor와 deterministic test double
-- AArch64 board/VM용 Linux image와 service package
+- AArch64 QEMU/board용 Linux image와 service package
 - process crash, hang, forked-child, resource pressure fault report
-- PREEMPT_RT 또는 scheduling policy 비교 실험
+- scheduling policy·priority inversion 실험과 실제 target의 PREEMPT_RT 비교
 
 ### Exit
 
-- process tree 전체를 정해진 시간 안에 종료·복구한다.
+- 전용 cgroup과 pidfd를 사용해 이탈한 descendant까지 정해진 시간 안에 종료·회수한다.
 - 처음 보는 hang/crash를 core dump와 syscall trace로 진단한다.
 - image를 새 환경에서 build하고 target에서 service를 부팅한다.
 - privilege와 resource policy가 자동 시험으로 확인된다.
 
-QNX는 [선택 심화](#선택-심화-gate)에서 같은 contract를 이식합니다.
+실제 board BSP bring-up과 Yocto recipe 이식, QNX port는 [선택 심화](#선택-심화-gate)에서 같은 contract로 진행합니다.
 
 ---
 
-## G9 — Ethernet Vehicle Services
+## G9 — Service-oriented Vehicle Communication
 
 ### 배울 내용
 
-- Ethernet, VLAN, multicast, TCP/UDP, socket backpressure
+- Ethernet, VLAN, multicast, TCP/UDP, socket 역압
+- Service Interface와 generated Proxy/Skeleton 책임
 - SOME/IP header와 SOME/IP-SD lifecycle, TTL, eventgroup, counter
 - DoIP routing activation, alive check, diagnostic routing
 - service version·availability·stale-data 정책
@@ -332,8 +336,8 @@ QNX는 [선택 심화](#선택-심화-gate)에서 같은 contract를 이식합�
 ### 결과물
 
 - P02 SOME/IP Vehicle State Service
-- P05 CAN–SOME/IP vertical slice
-- DoIP read path의 최소 diagnostic gateway
+- P05-SIM vCAN–SOME/IP vertical slice
+- P03-D0 read-only DoIP gateway와 transport·UDS 결과 분리
 - packet capture, latency·drop·reconnect report
 
 ### Exit
@@ -341,41 +345,50 @@ QNX는 [선택 심화](#선택-심화-gate)에서 같은 contract를 이식합�
 - 두 Linux node에서 discovery·subscription·reconnection을 재현한다.
 - 다른 implementation 또는 tester와 상호 운용 시험을 한다.
 - timestamp의 clock domain과 uncertainty를 interface contract에 적는다.
-- CAN data 하나가 SOME/IP event로 이어지는 작은 release를 낸다.
+- local IDL에서 Proxy/Skeleton을 생성하고 application 경계를 시험한다.
+- vCAN data 하나가 SOME/IP event로 이어지는 작은 release를 낸다.
 
 ---
 
-## G10 — Adaptive Platform Concept Fluency
+## G10 — Adaptive Platform Functional Clusters
 
 ### 배울 내용
 
 - Execution, State, Platform Health Management의 책임 분리
-- Communication, Persistency, Log and Trace, Diagnostics의 관계
-- Execution/Service Interface/Service Instance/Machine Manifest 구조
+- Communication, Persistency, Log and Trace, Diagnostics, IAM·Cryptography의 관계
+- Application Design, Execution, Service Instance, Machine 관련 manifest와 Service Interface artifact의 구분
 - process dependency, function group state, health supervision
 - service deployment·version·persisted state 복구
 
 ### 결과물: P03
 
 - schema-validated manifest와 dependency DAG
-- state decision, process action, health observation이 분리된 manager
+- state decision, lifecycle decision, process action, health observation이 분리된 manager
+- read-only Diagnostic Manager와 authenticated-principal policy engine
 - P01/P02를 사용하는 managed Linux vehicle node
 - 선택한 AUTOSAR release의 manifest 요소 매핑
 
 ### Exit
 
-- dependency cycle, missed heartbeat, illegal state, corrupted state를 진단한다.
+- dependency cycle, missed heartbeat, illegal state, corrupted state, 권한 정책 오류를 진단한다.
 - 비공개 설계 문제에서 EM/SM/PHM 경계를 찾아 고친다.
 - 공식 Adaptive SDK를 쓰지 않은 범위를 mapping 문서에 남긴다.
 - 외부 reviewer가 lifecycle·state·health trade-off를 검토한다.
 
-두 번째 포트폴리오 출구는 여기입니다. P01–P03 release는 Linux/플랫폼 직무에 맞춘 증거 묶음으로 정리합니다.
+여기까지 마치면 P01–P03을 Linux 차량 플랫폼 직무용 릴리스로 묶을 수 있습니다. 실제 `ara::*`, ARXML, vendor SDK 경험은 뒤의 Industrial Bridge에서 별도 증거로 남깁니다.
 
 ---
 
-## G11 — Safety, Cybersecurity and Update Engineering
+## G11 — Adaptive Security, UCM and Cross-domain Assurance
 
-### 배울 내용
+### G11A — G10 직후
+
+- authenticated principal과 versioned authorization policy
+- Software Package·Software Cluster·dependency·compatibility 계약
+- transfer resume, staging 격리, storage exhaustion
+- processing, Function Group State 연동, activation, health check, rollback
+
+### G11B — G7과 G11A 이후
 
 - item definition, HARA, safety goal, ASIL 개념, technical safety requirement
 - FMEA/FTA, safety mechanism, freedom from interference, assurance case
@@ -436,13 +449,13 @@ QNX는 [선택 심화](#선택-심화-gate)에서 같은 contract를 이식합�
 - 외부 요구 변경을 받아 영향 분석과 ADR 수정을 수행한다.
 - 영어 README, versioned release, 5–10분 기술 데모를 공개한다.
 
-세 번째 포트폴리오 출구는 전체 플랫폼 release입니다. 이 결과는 이 저장소에서 구현한 MCU–Linux 통합 역량을 보여 줍니다.
+마지막 결과물은 전체 플랫폼 릴리스입니다. MCU–Linux 경로를 직접 구현하고 고장을 추적한 기록까지 한 묶음으로 제출합니다.
 
 ---
 
 ## Major Gate와 유지 시험
 
-종합시험은 G0, G3, G5, G7, G10, G12의 마지막 Sprint 안에서 실시합니다. 나머지 Gate는 lab exit test와 전이 과제로 마칩니다. 분기 누적 시험은 필수 선수 기술 2개, 간격 반복 대기열 1개, 무작위 기술 1개를 표본으로 삼습니다. 핵심 선수 기술에서 실패하면 관련 후속 Gate를 잠시 멈추고 1주 보강합니다.
+종합시험은 G0, G3, G5, G7–G11, G12의 마지막 Sprint 안에서 실시합니다. 나머지 Gate는 lab exit test와 전이 과제로 마칩니다. 분기 누적 시험은 필수 선수 기술 2개, 간격 반복 대기열 1개, 무작위 기술 1개를 표본으로 삼습니다. 핵심 선수 기술에서 실패하면 관련 후속 Gate를 잠시 멈추고 1주 보강합니다.
 
 [ASSESSMENTS.md](ASSESSMENTS.md)에 외부 검토, 비공개 고장 과제, 재시험 규칙이 정리되어 있습니다.
 
@@ -481,18 +494,18 @@ QNX는 [선택 심화](#선택-심화-gate)에서 같은 contract를 이식합�
 - mode change와 degraded service
 - schedulability·isolation·assurance 근거
 
-## Expert Cycle
+## G12 이후 장기 유지·이식
 
-G12 뒤에는 한 subsystem을 정해 Level 5를 준비합니다. 수량보다 실제 영향, 유지 기간, 외부 반박을 반영한 품질을 봅니다.
+G12 뒤에는 하위 시스템 하나를 정해 Level 5를 준비합니다. 실제 영향, 유지 기간, 외부 반박을 반영한 기록을 봅니다.
 
-| Cycle | 집중시간 | Mission | 핵심 증거 |
+| 단계 | 집중시간 | 할 일 | 핵심 근거 |
 | --- | ---: | --- | --- |
 | E1 Maintainer | 180–240h | upstream subsystem을 한 release cycle 유지 | triage, regression, review 반영 |
 | E2 Portability | 180–260h | 새 MCU/OS/Linux target으로 이식 | 동일 contract suite, target delta |
 | E3 Research | 220–320h | 성능·신뢰성 질문을 재현 가능한 연구로 해결 | raw data, validity, regression |
 | E4 Architecture/Teaching | 180–240h | 타인 설계 리뷰와 요구 변경 주도 | 외부 defense, 교육 재현, ADR 재평가 |
 
-Level 5 endorsement에는 다음이 필요합니다.
+Level 5 검토에는 다음이 필요합니다.
 
 - 선택 subsystem에서 낯선 production-like incident를 독립적으로 해결한다.
 - 변경 사항이 최소 한 release cycle과 3–6개월 regression 관찰을 견딘다.
@@ -500,4 +513,4 @@ Level 5 endorsement에는 다음이 필요합니다.
 - 반대 의견을 반영해 설계나 주장을 수정한 기록이 있다.
 - 다른 사람이 문서나 세션을 통해 핵심 실험을 재현한다.
 
-이 endorsement는 선택한 subsystem과 검토 시점에만 적용됩니다.
+판정 범위는 선택한 하위 시스템과 검토 시점으로 제한합니다.

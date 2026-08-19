@@ -32,12 +32,12 @@ parser 한 함수의 source, LLVM IR, target assembly, 정상·경계 test를 �
 - defined input domain에서 optimization 전후 결과를 differential test
 - IR 모양만 보고 성능을 확정하지 않고 target assembly와 측정으로 확인
 
-## 힌트
+## 비교할 때 주의할 점
 
 1. source contract에 없는 input은 equivalence test 결과 해석에서 분리합니다.
 2. `-O0` IR에도 frontend가 만든 구조가 남습니다.
 3. pass 이름은 해당 LLVM version의 pipeline 출력으로 확인합니다.
 
-## 치명적 실패와 보충
+## 다시 분리할 문제
 
-GCC 출력물을 LLVM IR이라고 부르거나 UB input의 결과 차이를 compiler defect로 확정하면 실패입니다. 보충 과제는 unsigned 덧셈과 signed overflow fixture를 따로 만들어 의미 차이를 설명하는 것입니다.
+GCC 출력물을 LLVM IR로 기록했거나 UB 입력의 차이를 컴파일러 결함으로 확정했다면 unsigned 덧셈과 signed overflow 입력을 따로 만듭니다. 정의된 동작에서만 동등성을 판정한 뒤 UB 결과는 관찰로 남깁니다.

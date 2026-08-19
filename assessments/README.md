@@ -16,10 +16,11 @@
 | G5 | Measurement, Reliability | `REQ-RTOS-003`–`REQ-RTOS-006`; blocking·jitter 누락, queue·stack overflow 미탐지 |
 | G6 | Correctness, Diagnosis | `REQ-CAN-002`–`REQ-CAN-004`, `REQ-ECU-DIAG-002`–`003`; malformed 입력이 application state를 훼손 |
 | G7 | Design, Correctness | `REQ-DTC-001`–`002`; 책임 경계 오배치, corruption 뒤 잘못된 DTC 복구 |
-| G8 | Diagnosis, Reproducibility | `REQ-PLAT-001`–`003`; 재현 불가능한 image, orphan process, crash 자료 유실 |
-| G9 | Correctness, Measurement | `REQ-COM-002`–`005`, `REQ-TIME-001`–`003`; clock uncertainty 없이 one-way latency 주장 |
-| G10 | Design, Reliability | `REQ-EXEC-001`–`003`, `REQ-STATE-001`, `REQ-HEALTH-001`; cycle 허용, 무제한 restart, 불법 상태 전이 |
-| G11 | Reliability, Design | 선택 tier의 `REQ-UCM`, `REQ-BOOT`, `REQ-SAFE`, `REQ-SEC`; tier를 넘는 보장 표기 |
+| G8 | Diagnosis, Reproducibility | `REQ-PLAT-001`–`004`, `REQ-LINUX-RT-001`–`003`; 재현 불가능한 image, descendant 잔류, VM timing 과장 |
+| G9 | Correctness, Measurement | `REQ-SI-001`–`004`, `REQ-COM-002`–`005`, `REQ-TIME-001`–`003`; generated boundary 우회, clock uncertainty 없는 one-way latency 주장 |
+| G10 | Design, Reliability | `REQ-EXEC-001`–`004`, `REQ-STATE-001`–`002`, `REQ-HEALTH-001`, `REQ-AD-DIAG`, `REQ-IAM`; 중복 restart owner, 저장된 운행 상태 자동 적용, transport ID를 principal로 사용 |
+| G11A | Reliability, Design | 선택 tier의 `REQ-UCM`, `REQ-BOOT`, `REQ-SEC`; health 전 commit, tier를 넘는 보장 표기 |
+| G11B | Design, Reliability | `REQ-SAFE`, `REQ-SEC`, 선택 tier의 boot requirement; 가정 없는 safety/security claim |
 | G12 | Design, Reproducibility | `REQ-ARCH-001`–`006`, `REQ-QUAL-004`; 기준선 요구 누락, 제3자 재현 실패 |
 
 ## 시험 manifest
@@ -39,7 +40,7 @@
 | Reviewers | 이름 또는 handle, 관련 경험, 이해관계 |
 | Freeze time | ISO 8601 시각과 timezone |
 
-G11의 `Validated` 판정에는 safety와 security 검토자 두 사람이 필요합니다. G7과 G10의 AUTOSAR 매핑은 해당 플랫폼 경험 또는 선택한 공식 release 문서의 직접 검토 기록이 없으면 `Provisional`입니다.
+G11B의 `Validated` 판정에는 safety와 security 검토자 두 사람이 필요합니다. G7과 G10의 AUTOSAR 매핑은 해당 플랫폼 경험 또는 선택한 공식 release 문서의 직접 검토 기록이 없으면 `Provisional`입니다.
 
 ## 변경 절차
 

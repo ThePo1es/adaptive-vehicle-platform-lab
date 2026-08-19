@@ -2,7 +2,7 @@
 
 Status: Planned
 
-업데이트 기능을 세 단계로 쌓습니다. T1은 중단 뒤 상태 복구, T2는 package authenticity, T3는 실제 hardware trust root를 사용한 rollback protection을 다룹니다.
+차량 내부 update endpoint를 세 단계로 쌓습니다. T1은 중단 뒤 상태 복구, T2는 package 인증과 권한, T3는 실제 hardware trust root를 사용한 rollback protection을 다룹니다. Fleet campaign backend와 cellular delivery는 별도 시스템으로 남깁니다.
 
 ## Assurance tiers
 
@@ -20,8 +20,9 @@ stateDiagram-v2
     Idle --> Received
     Received --> Verified: policy and package pass
     Received --> Rejected: validation fails
-    Verified --> Staged
-    Staged --> Activated
+    Verified --> Processed
+    Processed --> ReadyToActivate
+    ReadyToActivate --> Activated
     Activated --> HealthCheck
     HealthCheck --> Committed: healthy
     HealthCheck --> RolledBack: failure or timeout
@@ -32,7 +33,7 @@ stateDiagram-v2
 
 ## Package contract
 
-Manifest에는 package ID, target, version, minimum platform version, payload path·hash·size, signing-key ID, format version을 넣습니다. Serialization 형식과 canonical encoding을 고정합니다.
+Manifest에는 package ID, Software Cluster, target, version, dependency·compatibility, minimum platform version, payload path·hash·size, signing-key ID, required Function Group State, format version을 넣습니다. Serialization 형식과 canonical encoding을 고정합니다.
 
 ## Invariants
 
@@ -42,6 +43,7 @@ Manifest에는 package ID, target, version, minimum platform version, payload pa
 - transaction metadata의 durable boundary를 state마다 정의한다.
 - interrupted transaction은 이전 version 또는 explicit recovery state로 돌아간다.
 - activation policy가 금지한 vehicle state에서는 작업을 시작하지 않는다.
+- boot는 항상 `Startup`에서 current condition과 inventory를 다시 확인한다.
 - T2는 signature와 모든 payload hash를 staging 전에 확인한다.
 - T3는 boot authenticity와 protected minimum-version state를 확인한다.
 
@@ -93,3 +95,4 @@ Process kill 결과와 실제 power-cut 결과를 별도 표에 기록합니다.
 - threat model, TARA, trust assumptions, residual risk
 - safety reviewer와 security reviewer의 별도 기록
 - UCM 개념과 local format의 mapping
+- transfer resume와 staging quota 결과, Function Group State·health 연동 trace

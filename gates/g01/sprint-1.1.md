@@ -34,13 +34,12 @@ Encoder를 작성하고 `decode(encode(x)) == x`가 유효 범위에서 성립�
 - signed shift·promotion·overflow UB 없음
 - output unchanged invariant를 property test로 확인
 
-## 힌트
+## 구현 메모
 
 1. byte를 넓은 unsigned type으로 변환한 뒤 shift합니다.
 2. signed 값의 width를 먼저 분리하고 sign extension을 정의합니다.
 3. floating output과 raw integer contract를 나눕니다.
 
-## 치명적 실패와 보충
+## 다시 볼 조건
 
-Typed pointer cast로 unaligned payload를 읽거나, 오류 뒤 일부 output이 갱신되면 실패입니다. 보충 과제는 16-bit byte-aligned decoder를 `memcpy`와 explicit assembly 두 방식으로 구현해 비교하는 것입니다.
-
+정렬되지 않은 payload를 typed pointer cast로 읽었거나 오류 뒤 출력 일부가 바뀌었다면 완료 처리를 미룹니다. 16-bit decoder 하나로 범위를 줄여 `memcpy` 방식과 바이트 조립 방식을 비교한 뒤 원래 입력 모음으로 돌아옵니다.

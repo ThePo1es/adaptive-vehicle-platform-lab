@@ -27,13 +27,12 @@ Element 32개를 가진 fixed-size object pool을 작성합니다. Double free, 
 - 실패 operation 뒤 invariant 유지
 - integer wrap과 index 범위가 sanitizer·property test를 통과
 
-## 힌트
+## 구현 전 확인
 
 1. 상태 표현 하나를 고르고 모든 operation의 pre/post condition을 적습니다.
 2. Capacity와 index type의 표현 범위를 확인합니다.
 3. Pool pointer validation은 alignment와 range를 모두 확인합니다.
 
-## 치명적 실패와 보충
+## 통과를 미루는 경우
 
-Full과 empty가 구분되지 않거나 foreign pointer가 free list를 손상시키면 실패입니다. 보충 과제는 capacity 3의 모든 짧은 operation sequence를 exhaustive test하는 것입니다.
-
+`full`과 `empty`가 같은 상태로 보이거나 외부 포인터가 free list를 손상시키면 아직 닫지 않습니다. 용량 3으로 줄여 가능한 짧은 연산열을 전부 실행하고 깨진 불변 조건부터 고칩니다.

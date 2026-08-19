@@ -31,21 +31,24 @@
 | OUT-CP-02 | G7 | diagnostic vertical slice | — | Not started |
 | OUT-CP-03 | G7 | DTC·persistent restore vertical slice | — | Not started |
 | OUT-XCUT-G7 | G7 | E2E·SecOC 적용 지점과 남은 보장 기록 | — | Not started |
-| OUT-LNX-01 | G8 | process tree lifecycle과 bounded recovery | — | Not started |
+| OUT-LNX-01 | G8 | pidfd·cgroup 기반 process containment와 bounded recovery | — | Not started |
 | OUT-LNX-02 | G8 | image·kernel·DT·service clean build | — | Not started |
 | OUT-LNX-03 | G8 | core/syscall/performance 도구를 사용한 incident 진단 | — | Not started |
+| OUT-LNX-04 | G8 | scheduling policy·priority inversion·PREEMPT_RT 비교 근거 | — | Not started |
 | OUT-XCUT-G8 | G8 | privilege·resource 제한과 우회 시험 | — | Not started |
-| OUT-NET-01 | G9 | SOME/IP/SD availability·version·reconnect packet evidence | — | Not started |
+| OUT-NET-01 | G9 | Service Interface와 generated Proxy/Skeleton contract | — | Not started |
+| OUT-NET-04 | G9 | SOME/IP/SD availability·version·reconnect packet evidence | — | Not started |
 | OUT-NET-02 | G9 | DoIP read path와 CAN–SOME/IP vertical slice | — | Not started |
 | OUT-NET-03 | G9 | clock offset·drift·uncertainty가 있는 time contract | — | Not started |
 | OUT-XCUT-G9 | G9 | network service와 diagnostic gateway 위협 시나리오 | — | Not started |
 | OUT-AP-01 | G10 | manifest dependency와 lifecycle manager | — | Not started |
 | OUT-AP-02 | G10 | state decision·process action·health observation 분리 | — | Not started |
-| OUT-AP-03 | G10 | official release와 local behavior mapping | — | Not started |
-| OUT-XCUT-G10 | G10 | identity·policy·audit 책임 매핑 | — | Not started |
-| OUT-ASSURE-01 | G11 | 교육용 HARA·FMEA와 safety evidence | — | Not started |
-| OUT-ASSURE-02 | G11 | TARA·trust boundary와 update negative corpus | — | Not started |
-| OUT-ASSURE-03 | G11 | crash-consistent/authenticated update와 rollback | — | Not started |
+| OUT-AP-03 | G10 | Diagnostics transport·router·provider 책임 분리 | — | Not started |
+| OUT-AP-04 | G10 | official release와 local behavior mapping | — | Not started |
+| OUT-XCUT-G10 | G10 | authenticated principal·policy·audit 구현과 책임 매핑 | — | Not started |
+| OUT-ASSURE-01 | G11B | 교육용 HARA·FMEA와 safety evidence | — | Not started |
+| OUT-ASSURE-02 | G11A | TARA·trust boundary와 update negative corpus | — | Not started |
+| OUT-ASSURE-03 | G11A | transfer·staging·activation·rollback evidence | — | Not started |
 | OUT-SYS-01 | G12 | cross-node data·time·state·version contract | — | Not started |
 | OUT-SYS-02 | G12 | budget과 10개 이상 fault campaign | — | Not started |
 | OUT-SYS-03 | G12 | 제3자 clean reproduction과 design defense | — | Not started |

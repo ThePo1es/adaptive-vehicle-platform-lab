@@ -1,40 +1,40 @@
-# Sprint 9.2 — SOME/IP message와 parser
+# Sprint 9.2 — Service Interface 계약
 
 ## 시간과 기준 자료
 
-24–30시간. [AUTOSAR Foundation R25-11](https://www.autosar.org/standards/foundation)에서 `SOME/IP Protocol Specification`을 받아 release와 document ID를 기록합니다. [COVESA vsomeip](https://github.com/COVESA/vsomeip)의 pinned tag도 함께 사용합니다. AUTOSAR 문서의 SOME/IP header, serialization, message type, error handling 절을 읽습니다.
+22–30시간을 잡습니다. R25-11 `Communication Management`와 `Explanation of Adaptive Platform Software Architecture`, COVESA의 [CommonAPI C++ specification](https://github.com/COVESA/capicxx-core-tools/tree/master/docx)을 읽습니다. 시작 전에 AUTOSAR PDF의 document ID, revision, Service Interface 관련 section title을 `standards-ledger.md`에 적습니다. 이 정보가 비어 있으면 과제 상태는 `Specified`에 머뭅니다.
 
-## 시작 조건과 corpus
+## 시작 조건과 선수 진단
 
-고정된 Service/Method/Event ID와 major interface version을 `interface.md`에 선언합니다. corpus에는 정상 request/response/notification 각 3개, 경계 length, 잘린 header, 잘못된 protocol version, 알 수 없는 message type, 큰 payload를 넣습니다. byte sequence와 expected parse result는 사람이 먼저 작성합니다.
+`GetSnapshot`, `VehicleSpeedChanged`, `IgnitionState`를 보고 method, 이벤트, field의 호출 방향과 실패를 도움 없이 적어 봅니다. Service Interface에는 단위·범위·오류 의미를 두고, Service/Instance ID와 IP·port 같은 배포 정보는 별도 문서로 분리합니다.
 
 ## 안내 실습
 
-SOME/IP 16-byte header를 bounds-checking parser로 읽습니다. Service ID, Method/Event ID, Length, Client ID, Session ID, Protocol Version, Interface Version, Message Type, Return Code를 network byte order에서 변환합니다. Length가 포함하는 범위를 문서 절과 test vector로 고정합니다.
+`VehicleState`의 언어 중립 계약을 작성합니다. 각 요소에 이름, 입력·출력 type, 단위, 범위, invalid 표현, 동기·비동기 여부, 오류 집합, major/minor 변경 규칙을 붙입니다. 정상 호출 세 개와 오류 호출 세 개를 transport를 쓰지 않는 golden vector로 먼저 고정합니다.
 
 ## 독립 실습
 
-Vehicle State의 `GetSnapshot` request/response와 `VehicleSpeedChanged` notification payload를 serialize/deserialize합니다. malformed input은 정확한 offset과 reason으로 거부합니다. parser는 payload allocation 전에 최대 길이를 확인하고 trailing bytes 처리 규칙을 갖습니다.
+snapshot의 원자성, 이벤트 순서, field getter·setter·notifier 조합을 결정합니다. 서비스가 unavailable일 때 호출이 실패하는 방식, stale data를 반환할 수 있는 조건, client가 재시도해도 되는 operation을 표로 남깁니다. 같은 type을 C++ struct, JSON fixture, 문서 표에서 생성하거나 일치 검사하는 단일 원천도 정합니다.
 
 ## 전이 과제
 
-vsomeip 두 process가 만든 packet을 parser corpus로 가져오고, 직접 만든 정상 message를 test peer가 읽게 합니다. 검토자는 length, interface version, message type 중 하나를 바꾼 packet을 줍니다. parser와 service가 합의한 error path를 보여 줍니다.
+검토자가 `BatteryState` 추가, `VehicleSpeed` 단위 변경, method의 필수 인자 추가 중 하나를 제시합니다. 호환 가능한 변경과 major 증가가 필요한 변경을 판정하고, old/new client·서비스 네 조합의 예상 결과를 계약 시험으로 만듭니다.
 
 ## 판정 기준
 
-- 공식 header 정의의 모든 field에 positive/negative test 존재
-- truncated input 모든 byte 위치에서 crash와 out-of-bounds 0건
-- 최대 payload와 allocation 상한이 contract에 명시됨
-- byte vector, decoded field, packet capture가 서로 일치
-- libFuzzer 또는 동등한 fuzz run을 30분 이상 수행하고 sanitizer 오류 0건
-- vsomeip 정상 traffic과 최소 한 방향 상호 운용
+- 인터페이스 의미와 배포·binding 설정이 다른 파일과 검토 단위를 가짐
+- method, 이벤트, field의 호출·갱신·오류 의미가 시험 가능한 문장으로 고정됨
+- 모든 수치에 type, 단위, 범위, invalid·stale 표현이 있음
+- major/minor 호환 표가 old/new 조합 네 개를 다룸
+- transport 없이 실행하는 golden vector가 정상·경계·오류 결과를 고정함
+- AUTOSAR와 CommonAPI 용어를 로컬 계약과 섞지 않고 mapping 상태를 표시함
+- 새 요소 전이 과제에서 바뀐 계약과 유지되는 계약을 구분함
 
 ## 힌트
 
-1. C++ struct를 wire buffer에 그대로 cast하지 않습니다.
-2. Method ID와 Event ID가 같은 16-bit field를 공유하는 방식을 확인합니다.
-3. return code의 의미는 message type과 함께 해석합니다.
+1. wire ID는 다음 Sprint 이후의 배포·binding 관심사입니다.
+2. field에는 계약에 필요한 getter, setter, notifier만 둡니다.
 
-## 치명적 실패와 보충
+## 재시험 조건
 
-host endian에 따라 결과가 바뀌거나, length 검증 전에 allocation·copy를 하거나, 자체 vector만 통과하고 packet 대조가 없으면 실패입니다. 보충 과제는 header parser만 남겨 정상 3개와 잘린 입력 17개를 다시 검증하는 것입니다.
+단위나 오류 의미가 코드 작성 뒤에 정해졌거나, IP·port 변경이 Service Interface major 변경으로 처리됐거나, 호환 표 없이 버전만 올렸다면 다시 봅니다. 보강할 때는 `GetSnapshot`과 이벤트 하나만 남기고 여섯 golden vector부터 고정합니다.

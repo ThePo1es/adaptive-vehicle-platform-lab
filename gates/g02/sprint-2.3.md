@@ -34,12 +34,12 @@ happens-before graph를 그리고 한 결함을 TSan 또는 deterministic schedu
 - shutdown이 정해진 시간 안에 끝나고 대기 thread가 남지 않음
 - relaxed ordering을 썼다면 필요한 happens-before를 별도 근거로 설명
 
-## 힌트
+## 동시성 점검
 
 1. condition variable은 상태를 저장하지 않습니다. predicate가 상태를 가집니다.
 2. atomic 변수 하나가 주변의 비원자 상태를 자동으로 보호하지 않습니다.
 3. 재현이 드물면 scheduler hook을 wait, publish, pop 직전에 둡니다.
 
-## 치명적 실패와 보충
+## 재시험 조건
 
-data race를 “실제로 잘 안 난다”는 이유로 남기거나 sleep을 늘려 test를 통과시키면 실패입니다. 보충 과제는 한 producer와 한 consumer만 남긴 model checker용 상태 전이표를 만드는 것입니다.
+드물게 발생한다는 이유로 data race를 남겼거나 `sleep`을 늘려 통과시켰다면 결과를 인정하지 않습니다. producer와 consumer를 하나씩만 둔 전이표를 만들고 scheduler hook으로 같은 경합을 반복 재현합니다.

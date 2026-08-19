@@ -57,14 +57,14 @@ git clone git@github.com:ThePo1es/adaptive-vehicle-platform-lab.git
 | `experiment` | 가설·실험·측정 |
 | `project` | 구현 작업 |
 | `mastery-gate` | Gate 승급 시험과 재시험 |
-| `expert-cycle` | G12 이후 유지보수·이식·연구·교육 증거 |
+| `long-term` | G12 이후 유지보수·이식·연구·교육 근거 |
 | `documentation` | 아키텍처·요구사항·보고서 |
 | `blocked` | 외부 조건 때문에 진행 불가 |
 | `safety-review` | 실차·벤치·민감 데이터 검토 필요 |
 
 Milestone은 `G0 — Engineering Baseline`부터 `G12 — Architecture and Integration`까지 만듭니다. 각 Study/Experiment/Project 이슈에 현재 Gate milestone을 지정하고, exit artifact가 준비되면 닫습니다.
 
-G12 통과 뒤에는 `E1 — Maintainer`부터 `E4 — Architecture/Teaching` milestone을 추가합니다. Expert Cycle은 선택 subsystem과 reviewer를 정한 뒤 시작합니다.
+G12 통과 뒤에는 `E1 — Maintainer`부터 `E4 — Architecture/Teaching` milestone을 추가합니다. 시작 전에 맡을 하위 시스템과 검토자를 정합니다.
 
 GitHub Project를 추가한다면 Board view 하나로 충분합니다.
 

@@ -39,6 +39,6 @@ P01의 process launcher 또는 P02의 transport 하나를 골라 세 대안 중 
 2. template 중복은 linker folding과 LTO 설정의 영향을 받습니다.
 3. exception을 끄면 오류 모델을 API에서 직접 설계해야 합니다.
 
-## 치명적 실패와 보충
+## 비교를 다시 해야 하는 경우
 
-서로 다른 target의 binary size를 성능 결론으로 사용하거나 C ABI 밖으로 C++ object layout과 exception을 그대로 노출하면 실패입니다. 보충 과제는 한 interface만 남기고 세 구현의 link map을 다시 읽는 것입니다.
+서로 다른 대상을 빌드한 크기로 성능 순위를 냈거나 C ABI에 C++ object layout과 예외가 노출됐다면 인터페이스 하나만 남깁니다. 동일한 도구 설정으로 세 구현을 다시 빌드해 link map부터 비교합니다.

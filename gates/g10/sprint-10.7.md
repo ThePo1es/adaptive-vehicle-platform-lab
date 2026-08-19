@@ -1,40 +1,40 @@
-# Sprint 10.7 — Managed Linux vehicle node
+# Sprint 10.7 — Adaptive Diagnostics 책임과 읽기 경로
 
 ## 시간과 기준 자료
 
-24–30시간. [P01](../../projects/01-process-supervisor/README.md), [P02](../../projects/02-vehicle-state-service/README.md), [P03](../../projects/03-execution-manager/README.md)의 release artifact와 G10.1 책임 지도를 사용합니다. 세 project version과 interface compatibility matrix를 시작 전에 동결합니다.
+26–36시간을 예상합니다. R25-11 `Diagnostics`, `Execution Management`, `Persistency` 문서와 Sprint 9.8의 DoIP 읽기 경로를 사용합니다. `standards-ledger.md`에는 문서 ID, revision, Diagnostic Manager·application·transport 책임을 확인한 section title을 기록합니다.
 
-## 시작 조건과 deployment
+## 먼저 그릴 경계
 
-Buildroot AArch64 image에 Execution Manager, Process Supervisor, Vehicle State Service, simulator, consumer를 넣습니다. manifest는 dependency, state별 process set, restart, health, resource policy를 담습니다. service version과 manifest version의 호환 규칙을 배포 표에 적습니다.
+DoIP 전송, 진단 요청 라우터, UDS 서비스 의미, 애플리케이션 데이터·DTC 제공자를 네 책임으로 나눕니다. DoIP 헤더 거부, 라우팅 권한 실패, backend timeout, ECU가 반환한 UDS NRC는 서로 다른 결과 형식으로 정의합니다. 하나의 `NRC translation` 필드에 합치지 않습니다.
 
 ## 안내 실습
 
-boot에서 manifest validation, dependency plan, process start, health status, service offer, consumer subscription까지 하나의 timeline을 만듭니다. `Startup → Driving → Diagnostic → Shutdown` transition마다 기대 process set과 service availability를 oracle JSON에 둡니다.
+로컬 Diagnostic Manager가 DID registry와 read-only 서비스 policy를 읽어 요청을 알맞은 provider로 보냅니다. provider가 unavailable이면 lifecycle 상태와 함께 명시적인 backend 결과를 반환합니다. `DiagnosticSessionControl` 기본 session과 두 개의 `ReadDataByIdentifier`만 연결하고, write·routine·download·reset은 router에서 차단합니다.
 
 ## 독립 실습
 
-service crash, heartbeat stop, dependency start failure, corrupted persisted state, incompatible service major를 차례로 넣습니다. scenario마다 detection deadline, recovery budget, target state, process set, client-visible availability를 확인합니다.
+request ID, authenticated principal placeholder, 대상, 서비스, 프로세스 instance, policy version, UDS result를 한 audit chain에 넣습니다. concurrent tester 수, in-flight request, payload, provider timeout에 상한을 둡니다. provider 재시작과 Function Group State 변경 중 들어온 요청을 queue, reject, cancel 중 어떤 규칙으로 처리할지 고정합니다.
 
 ## 전이 과제
 
-검토자가 두 fault를 겹칩니다. 예시는 service restart 중 state change, persistency corruption과 dependency failure, subscription 중 provider kill입니다. 첫 fault가 두 번째 fault의 evidence를 지우지 않게 correlation chain을 보존합니다.
+검토자가 DoIP NACK, gateway timeout, provider crash, ECU NRC 중 하나가 같은 tester 증상으로 보이게 fixture를 바꿉니다. packet, router audit, provider log를 사용해 최초 실패 위치를 찾고 회귀 시험을 추가합니다. 새 DID 하나도 등록해 application 변경 범위를 확인합니다.
 
 ## 판정 기준
 
-- clean boot와 네 state transition이 oracle process/service set과 일치
-- 다섯 단일 fault와 한 복합 fault가 bounded result로 끝남
-- EM/SM/PHM 역할에 해당하는 local component 경계가 trace에서 보임
-- health recovery 뒤 service availability·subscription 상태가 일관됨
-- incompatible deployment가 시작 전에 거부되거나 격리된 degraded state에서 해당 service를 offer하지 않음
-- 새 AArch64 VM에서 image build와 scenario suite를 재현
+- transport, authorization, routing, UDS semantics, application data 책임이 코드와 trace에서 구분됨
+- read-only allowlist 밖 요청이 provider나 CAN backend에 도달하지 않음
+- DoIP 거부·backend 실패·UDS NRC가 다른 type과 metric으로 남음
+- provider restart와 상태 변경 중에도 in-flight request 수가 상한을 지킴
+- request부터 response까지 principal·policy·프로세스 instance를 포함한 audit chain을 재구성
+- 로컬 구현과 R25-11 Diagnostics 사이의 `Mapped/Partial/Missing` 상태를 section 근거와 기록
+- 비공개 경계 고장의 최초 실패 위치를 90분 안에 찾아 자동 시험으로 고정
 
 ## 힌트
 
-1. component log의 timestamp만 맞추지 말고 공통 transition·run ID를 전달합니다.
-2. partial failure 뒤 reported state와 실제 process/service inventory를 비교합니다.
-3. integration에서 발견한 fault는 가장 낮은 소유 component에 regression test를 둡니다.
+1. tester가 본 timeout만으로 gateway와 ECU 중 어느 쪽이 실패했는지 알 수 없습니다.
+2. UDS NRC는 ECU 또는 UDS endpoint의 protocol response입니다. 로컬 parser error는 별도 결과로 기록합니다.
 
-## 치명적 실패와 보충
+## 재시험 조건
 
-reported state와 실제 process set이 다르거나, health recovery가 restart storm으로 번지거나, 새 환경 배포가 안 되면 실패입니다. 해당 component Sprint로 돌아가 수정한 뒤 integration fault 전체를 다시 실행합니다.
+logical address를 인증된 사용자처럼 취급했거나, 허용되지 않은 요청이 backend에 전달됐거나, 서로 다른 실패를 한 숫자로 기록했다면 해당 경로를 다시 만듭니다. 보강 과제는 tester 한 명, DID 하나, provider 하나로 줄여 네 책임의 로그를 맞추는 것입니다.

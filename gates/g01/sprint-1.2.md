@@ -39,7 +39,6 @@ Network byte order의 32-bit field와 3-byte field를 읽는 API를 설계합니
 2. `memcpy`가 최적화 뒤 실제 call로 남는지 assembly에서 확인합니다.
 3. Packed는 layout 문제를 해결해도 access 문제를 남길 수 있습니다.
 
-## 치명적 실패와 보충
+## 재시험 범위
 
-x86 host 성공만으로 portable 판정을 내리면 실패입니다. 보충 과제는 unaligned offset matrix를 UBSan과 Cortex-M cross assembly로 다시 분석하는 것입니다.
-
+x86 실행 결과만으로 이식성을 결론 냈다면 unaligned offset 표부터 다시 확인합니다. UBSan 결과와 Cortex-M cross assembly가 같은 접근을 어떻게 처리하는지 비교한 뒤 판정을 갱신합니다.

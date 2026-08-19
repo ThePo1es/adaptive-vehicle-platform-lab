@@ -1,40 +1,41 @@
-# Sprint 9.8 — P05 CAN–SOME/IP vertical slice
+# Sprint 9.8 — DoIP 읽기 경로
 
 ## 시간과 기준 자료
 
-24–30시간. [P05 범위](../../projects/05-can-ethernet-vertical-slice/README.md), Linux kernel의 [SocketCAN 문서](https://docs.kernel.org/networking/can.html), P02 interface와 time contract를 사용합니다. vCAN을 필수 재현 환경으로 두고 실제 CAN hardware 결과는 별도 lane에 둡니다.
+26–32시간. [ISO 13400-2:2025 공식 페이지](https://www.iso.org/standard/13400-2)를 확인하고 합법적으로 접근 가능한 원문이 있으면 edition과 읽은 절을 기록합니다. 원문 접근이 없으면 protocol conformance 판정은 `Provisional`로 남깁니다. [python-doipclient](https://github.com/jacobschaer/python-doipclient)는 pinned commit의 tester 동작을 읽고 사용합니다.
 
-## 시작 조건과 signal contract
+## 시작 조건과 안전 범위
 
-CAN frame 하나에 vehicle speed와 gear signal을 정의합니다. CAN ID, endian, start bit, length, scale, offset, range, invalid, cycle, timeout을 표로 작성합니다. SOME/IP event에는 value, unit, source sequence, source timestamp, gateway receive timestamp, quality를 담습니다.
+격리된 namespace 또는 lab ECU에서 vehicle identification, routing activation, alive check, diagnostic message의 최소 경로를 구성합니다. UDS는 `DiagnosticSessionControl`의 안전한 기본 session과 `ReadDataByIdentifier` 두 DID만 허용합니다. write, routine control, download, reset은 gateway allowlist에서 거부합니다. 이 Sprint의 network endpoint는 인증되지 않은 것으로 표시하며 logical address를 principal로 사용하지 않습니다.
 
 ## 안내 실습
 
-node A의 `vcan` producer가 frame을 보내고 gateway가 decode해 P02 event로 발행합니다. node B consumer는 service discovery 후 subscribe합니다. CAN frame, gateway structured log, SOME/IP packet, consumer state를 같은 `trace_id`와 sequence로 연결합니다.
+tester와 gateway 사이의 discovery, TCP 연결, routing activation, UDS read, alive check를 capture합니다. DoIP generic header의 version, inverse version, payload type, payload length를 bounds-checking parser로 확인하고 logical address route를 표로 만듭니다.
 
 ## 독립 실습
 
-duplicate, gap, out-of-range, invalid value, stale timeout을 주입합니다. gateway process와 SOME/IP provider를 각각 재시작하고 source freshness와 service availability가 어떻게 바뀌는지 확인합니다. physical CAN이 있으면 bus-off와 recovery를 별도 fixture로 실행합니다.
+잘린 header, 잘못된 inverse version, 과대 length, unknown logical address, activation timeout, backend UDS timeout을 corpus로 만듭니다. gateway는 connection과 route 상태를 분리해 기록하고 동시에 허용할 tester 수와 payload 상한을 적용합니다.
 
 ## 전이 과제
 
-외부 검토자가 signal scale 또는 service minor version을 바꾼 replay bundle을 줍니다. compatibility가 허용하는 변화와 거부할 변화를 contract에서 찾아 적용합니다. 검토자는 공개된 raw CAN log만으로 node B 결과를 재생합니다.
+검토자가 route 하나, timeout 하나, malformed message 하나를 선택합니다. tester 결과, gateway audit, packet capture를 시간순으로 맞춰 첫 거부 지점을 찾습니다. python-doipclient와의 성공만으로 ISO 적합성을 주장하지 않습니다.
 
 ## 판정 기준
 
-- CAN input부터 SOME/IP consumer까지 sequence·value·quality 추적 가능
-- 정상 10Hz 10분 run에서 보존식과 latency report가 재생됨
-- invalid·stale·gap이 normal value로 조용히 전달되지 않음
-- gateway/provider/consumer restart 후 bounded recovery와 중복 수를 보고
-- vCAN clean-machine replay가 통과하고 hardware 결과는 환경 정보 포함
-- version change 전이 과제와 외부 검토 기록이 release에 포함
+- 정상 activation부터 DID response까지 packet과 상태 timeline이 일치
+- malformed length 전체 corpus에서 crash·과대 allocation 0건
+- 허용되지 않은 write/reset/download 요청이 backend에 전달되지 않음
+- logical address, route, activation 상태, timeout 이유가 audit에 남음
+- DoIP rejection, backend timeout, ECU UDS NRC가 다른 결과로 기록됨
+- tester 구현의 대상 edition과 ISO 13400-2:2025 차이 가능성을 기록
+- 원문 검토 범위에 따라 `Validated`와 `Provisional` 근거를 구분
 
-## 힌트
+## 안전 범위 확인
 
-1. CAN receive timestamp와 signal의 실제 물리 측정 시점이 다를 수 있음을 contract에 적습니다.
-2. restart 뒤 sequence 초기화 규칙에는 source instance 식별자가 필요합니다.
-3. public capture에는 실제 차량의 arbitration ID와 payload를 넣지 않습니다.
+1. TCP connection 성립과 diagnostic routing 허가는 별도 단계입니다.
+2. payload length를 확인한 뒤 buffer를 할당합니다.
+3. packet에는 식별 정보가 들어갈 수 있으므로 공개 전 fixture 주소와 payload만 사용합니다.
 
-## 치명적 실패와 보충
+## 즉시 중단할 조건
 
-단위·scale이 문서와 code에서 다르거나, stale data가 정상 quality로 남거나, 외부 replay가 재현되지 않으면 Gate를 통과하지 못합니다. 실패 Sprint를 12–20시간 보강하고 새 release tag로 다시 심사합니다.
+허가받지 않은 실차 네트워크에서 시험하거나 읽기 전용 범위를 넘는 요청을 전달하면 즉시 중단합니다. 공개 tester 결과만으로 규격 적합성을 판정한 경우에도 결과를 인정하지 않습니다. namespace 안에서 activation과 DID 읽기 하나만 다시 구현합니다.

@@ -1,21 +1,22 @@
 # Gate Playbook
 
-이 문서는 ROADMAP의 각 Gate를 2주 Sprint로 풀어 쓴 실행안입니다. 한 Sprint는 주 12–15시간을 기준으로 합니다. 시작 전에 예상 시간을 다시 적고, 끝난 뒤 실제 시간을 기록합니다.
+이 문서는 ROADMAP의 각 Gate를 실행 단위로 풀어 쓴 계획입니다. Sprint 길이는 구현량에 맞춰 정하고, active time과 build·soak wall time을 나눠 기록합니다.
 
 ## Sprint 공통 형식
 
-각 Sprint 이슈에는 다음 여덟 항목을 넣습니다.
+각 Sprint 이슈에는 아래 내용을 넣습니다. 헤딩 이름과 항목 수는 과제에 맞게 바꿔도 됩니다.
 
 | 항목 | 작성 내용 |
 | --- | --- |
-| 선수 진단 | 도움 없이 풀어 볼 질문 또는 작은 코드 |
+| 선수 진단 | 도움 없이 풀어 볼 질문 또는 작은 코드, 실패 시 bridge module |
 | 기준 자료 | 문서명, release/edition/commit, 읽을 절, 접근 상태 |
 | 풀이 예제 | 따라 하며 관찰할 공식 예제 또는 작은 모델 |
 | 안내 실습 | 일부 뼈대와 test가 주어진 과제 |
 | 독립 실습 | 힌트 없이 완성할 과제 |
 | 전이 과제 | 다른 자료형·target·fault로 바꾼 과제 |
 | 판정 기준 | expected output, invariant, reference test, second implementation |
-| 근거 | commit, test, 원본 자료, 회고, 실제 소요 시간 |
+| 산출물 진화 | 재사용할 이전 결과, 이번에 추가한 난도, 높아진 oracle, 폐기할 임시 구현 |
+| 근거 | commit, fixture hash, test, 원본 자료, 회고, active/wall/reviewer 시간 |
 
 기준 자료는 [references.md](references.md)의 manifest 형식을 사용합니다. 유료 규격에 합법적으로 접근할 수 없으면 `Unverified`로 표시하고 공개 구현·공식 설명 자료로 확인한 범위만 기록합니다.
 
@@ -124,9 +125,9 @@ Deadline과 인수 예산은 Sprint 5.1에서 고정합니다. 실측이 실패�
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
-| 6.1 CAN link | arbitration, bit timing, frame | SocketCAN trace | unknown trace decode | can-utils + analyzer |
-| 6.2 physical bench | termination, transceiver, error state | two-node CAN | bit-rate mismatch/bus-off | scope + controller counters |
-| 6.3 CAN timing | load, priority, response time | message set analysis | changed message set | analytical and measured result |
+| 6.1 CAN·CAN FD link | arbitration, Classic/FD frame, DLC 0–64, nominal/data bit rate, BRS, ESI | SocketCAN Classic/FD trace | mixed-frame·unsupported-controller 입력 해석 | can-utils + analyzer |
+| 6.2 physical bench | termination, FD-capable controller·transceiver, error state | two-node CAN FD | nominal/data bit-rate mismatch, bus-off | scope + controller counters |
+| 6.3 CAN timing | Classic/FD load, stuffing bound, priority response time | message set analysis | BRS·payload·priority가 바뀐 message set | analytical and measured result |
 | 6.4 ISO-TP I | addressing, SF/FF/CF/FC | reassembly state machine | sequence and truncation faults | Linux ISO-TP differential test |
 | 6.5 ISO-TP II | BS, STmin, timers, concurrency | sender/receiver pair | timeout matrix | virtual time tests |
 | 6.6 UDS I | session, P2/P2*, S3, NRC | ReadDataByIdentifier | unfamiliar read service | tester interoperability |
@@ -150,7 +151,7 @@ Deadline과 인수 예산은 Sprint 5.1에서 고정합니다. 실측이 실패�
 
 책임 경계 매핑을 `Validated`로 판정하는 검토자는 Classic Platform 경험이 있거나, 선택한 release의 관련 공식 문서를 직접 읽고 인용 절을 확인해야 합니다. 동작 시험만 통과하고 이 검토를 받지 못하면 구현 결과는 `Validated`, AUTOSAR 매핑은 `Provisional`로 따로 기록합니다.
 
-## G8 — Linux Platform and BSP
+## G8 — Embedded Linux Platform and Image
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
@@ -161,50 +162,58 @@ Deadline과 인수 예산은 Sprint 5.1에서 고정합니다. 실측이 실패�
 | 8.5 service hardening | systemd, cgroup, capability, seccomp | packaged service | privilege/resource fault | policy tests |
 | 8.6 BSP·image | boot chain, kernel config, DT | Buildroot image | 새 target 배포 | image hash, SBOM, boot log |
 | 8.7 P01 릴리스 | target deployment | crash campaign | 새 환경 전이 | 외부 검토, 릴리스 |
+| 8.8 Linux scheduling | policy, priority, affinity, inversion | periodic worker | IRQ·mutex 조건 변경 | scheduler trace, latency report |
+| 8.9 PREEMPT_RT | 동일 kernel의 config 비교 | cyclictest·timerlat | workload·IRQ 변경 | 실제 target 반복 측정 |
 
-Core는 Buildroot image, kernel config, Device Tree, SBOM까지입니다. Kernel module과 Yocto 비교는 B1 심화로 넘깁니다.
+Core는 QEMU `virt`용 Buildroot image, kernel config, Device Tree 읽기, SBOM까지입니다. 실제 board BSP bring-up, kernel module, Yocto recipe는 Industrial Bridge에서 진행합니다.
 
-## G9 — Ethernet Vehicle Services
+## G9 — Service-oriented Vehicle Communication
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
 | 9.1 Ethernet | VLAN, multicast, TCP/UDP | packet lab | routing/interface fault | tcpdump/Wireshark |
-| 9.2 SOME/IP | header, method, event | request/response | malformed message | protocol parser tests |
-| 9.3 SD | offer/find, TTL, subscription | discovery pair | delayed start/restart | packet/state oracle |
-| 9.4 P02 service | versioned interface | state service | incompatible version | integration test |
-| 9.5 성능·복구 | backpressure, load, reconnect | 10/100Hz matrix | loss/reorder workload | raw latency/drop data |
-| 9.6 DoIP | routing activation, alive check | read path | timeout/malformed route | tester/packet 자료 |
-| 9.7 time contract | clock domain, PTP basics | offset/drift lab | no-sync latency bound | uncertainty report |
-| 9.8 P05 vertical slice | CAN signal→SOME/IP event | two-node slice | restart/bus fault | release + external replay |
+| 9.2 Service Interface | method·event·field semantics | VehicleState contract | version change | golden semantic vectors |
+| 9.3 Proxy/Skeleton | local IDL과 code generation | in-memory call | interface change | deterministic generated tree |
+| 9.4 SOME/IP binding | header, method, event | request/response | malformed message | protocol parser tests |
+| 9.5 SD | offer/find, TTL, subscription | discovery pair | delayed start/restart | packet/state oracle |
+| 9.6 P02 service | generated boundary + vsomeip adapter | state service | incompatible version | integration test |
+| 9.7 성능·복구 | 역압, load, reconnect | 10/100Hz matrix | loss/reorder workload | raw latency/drop data |
+| 9.8 DoIP | routing activation, alive check | read path | timeout/malformed route | tester/packet 자료 |
+| 9.9 time contract | clock domain, PTP basics | offset/drift lab | no-sync latency bound | uncertainty report |
+| 9.10 P05-SIM | vCAN signal→SOME/IP event | two-node slice | restart/schema fault | release + external replay |
 
 TSN scheduling과 hardware timestamp는 N1 선택 Gate로 넘깁니다.
 
-## G10 — Adaptive Platform Concept Fluency
+## G10 — Adaptive Platform Functional Clusters
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
-| 10.1 release map | architecture와 manifest 종류 | official-doc map | unfamiliar manifest review | section citations |
+| 10.1 release map | architecture, manifest taxonomy, functional clusters | official-doc map | unfamiliar artifact review | section citations |
 | 10.2 manifest | schema, immutable model | app manifest | invalid corpus | schema tests |
 | 10.3 dependency | DAG, start/stop plan | P03 planner | cycle/failure propagation | graph oracle |
 | 10.4 state | platform/function state | decision component | illegal transition | model-based tests |
 | 10.5 health | alive/deadline/logical supervision | monitor | missed heartbeat | virtual time tests |
 | 10.6 persistency·log | crash consistency, audit | state store | corrupted record | reboot tests |
-| 10.7 managed node | P01/P02/P03 integration | deployment | partial service failure | scenario suite |
-| 10.8 설계 질의 | mapping and design review | release candidate | 비공개 경계 고장 | 검토자 + 릴리스 |
+| 10.7 Diagnostics | DoIP·router·UDS·provider 경계 | read-only manager | 비슷한 오류 결과 | packet/audit/state oracle |
+| 10.8 IAM policy | authenticated principal, authorization, audit | Unix credential policy | spoof·stale policy | decision/enforcement tests |
+| 10.9 managed node | P01/P02/P03/Diagnostics/IAM 통합 | deployment | partial service failure | scenario suite |
+| 10.10 설계 질의 | mapping and design review | release candidate | 비공개 경계 고장 | 검토자 + 릴리스 |
 
 Adaptive 책임 매핑을 `Validated`로 판정하는 검토자는 Adaptive Platform 경험이 있거나, 선택한 release의 관련 공식 문서를 직접 검토해야 합니다. 그렇지 않으면 local 동작은 `Validated`, AUTOSAR 매핑은 `Provisional`로 기록합니다.
 
-## G11 — Safety, Cybersecurity and Update
+## G11 — Adaptive Security, UCM and Cross-domain Assurance
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
-| 11.1 safety framing | item, hazard, goal, ASIL 개념 | synthetic HARA | 변경된 운행 상황 | 검토 checklist |
-| 11.2 failure analysis | FMEA/FTA, mechanisms | one data path | common-cause fault | 주장–근거 검토 |
-| 11.3 cybersecurity | asset, TARA, trust boundary | update threat model | new attacker capability | independent review |
-| 11.4 transaction safety | journal, fsync, atomic metadata | crash-consistent updater | every-state kill | reference state model |
-| 11.5 authenticity | canonical form, signature, key | secure tier | parser/path/key corpus | cryptographic vectors |
-| 11.6 boot·rollback | trust root, monotonic state, recovery | T1 power-cut와 T2 가정 확인 | T3 hardware가 있으면 실제 rollback 시험 | tier별 board/storage 자료 |
-| 11.7 assurance 질의 | P04 + case | 근거 검토 | 비공개 주장 검토 | 검토자 두 명, 릴리스 |
+| 11.1 UCM scope | package·cluster·dependency와 threat model | canonical manifest | attacker·dependency 변경 | R25-11 mapping + corpus |
+| 11.2 authenticity | signature, authorization, key policy | authenticated package | signer role·target 변경 | crypto/policy vectors |
+| 11.3 transfer·staging | resume, quota, path identity | isolated staging | changed object·disk full | transfer state oracle |
+| 11.4 activation·rollback | Function Group, health, durable state | crash-consistent updater | state·version 복합 고장 | kill/power-cut matrix |
+| 11.5 safety framing | item, HARA, FMEA/FTA | one cross-domain path | changed operating scenario | claim–evidence review |
+| 11.6 trust root | verified boot, monotonic state, common cause | T3 hardware lane | rollback·recovery fault | board/storage evidence |
+| 11.7 assurance defense | P04 + safety/security case | evidence review | private claim challenge | two reviewers + release |
+
+11.1–11.4는 G10 직후 진행할 수 있습니다. 11.5–11.7은 G7과 실제 hardware evidence가 준비된 뒤 닫습니다.
 
 ## G12 — Architecture and Integration
 
@@ -227,7 +236,7 @@ G12의 작업 범위는 기존 구성요소의 계약, 통합, 복구, 측정과
 
 ## 분기 누적 시험
 
-분기 누적 시험은 해당 분기의 복습 예산에서 6–10시간을 모아 진행합니다.
+분기 누적 시험은 해당 분기의 복습 예산에서 6–10시간을 모아 진행합니다. 프로세스 생명주기, 메모리 안전, 시간·상태 계약, 인증·업데이트 경계처럼 뒤 Gate가 의존하는 항목은 최초 합격 후 1·3·6·12개월에 고정 재시험합니다. 나머지는 아래 표본 규칙으로 뽑습니다.
 
 - 현재 Gate의 필수 선수 기술 2개
 - 간격 반복 대기열에서 오래된 기술 1개
@@ -237,4 +246,4 @@ G12의 작업 범위는 기존 구성요소의 계약, 통합, 복구, 측정과
 - 오래된 ADR 하나 재검토
 - 실패한 기술만 1주 보강 일정에 추가
 
-시험 결과에는 표본을 뽑은 방식과 seed를 남깁니다. 같은 항목만 반복해서 고르는 일을 막기 위해 직전 두 분기에 나온 무작위 항목은 제외합니다.
+시험 결과에는 표본을 뽑은 방식, seed, 다음 재시험 날짜를 남깁니다. 같은 항목만 반복해서 고르는 일을 막기 위해 직전 두 분기에 나온 무작위 항목은 제외합니다.

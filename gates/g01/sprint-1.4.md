@@ -37,7 +37,6 @@ libFuzzer harness와 seed corpus를 작성합니다. Truncation, repeated magic,
 2. Error state에서 소비한 byte 수를 계약에 넣습니다.
 3. CRC test는 parser logic과 독립된 reference를 사용합니다.
 
-## 치명적 실패와 보충
+## 축소해서 다시 풀기
 
-길이 field로 out-of-bounds가 발생하거나 rejected input이 application state를 바꾸면 실패입니다. 보충 과제는 모든 4-byte input을 exhaustive하게 실행하는 축소 parser입니다.
-
+길이 필드 때문에 범위 밖 접근이 생기거나 거부된 입력이 애플리케이션 상태를 바꿨다면 4-byte parser로 줄입니다. 가능한 입력을 전부 실행해 두 문제가 사라진 뒤 원래 형식으로 확장합니다.

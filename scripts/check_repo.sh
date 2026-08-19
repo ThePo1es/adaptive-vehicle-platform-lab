@@ -15,9 +15,13 @@ required_files=(
     docs/competency-map.md
     docs/baseline.md
     docs/gate-playbook.md
+    docs/gate-entry-diagnostics.md
+    docs/curriculum-audit.md
     docs/embedded-foundations.md
+    docs/adr/README.md
     docs/architecture-engineering.md
     docs/safety-security-engineering.md
+    docs/lifecycle-ownership.md
     docs/requirements.md
     docs/traceability.md
     docs/autosar-mapping.md
@@ -47,6 +51,8 @@ required_files=(
     gates/g08/sprint-8.5.md
     gates/g08/sprint-8.6.md
     gates/g08/sprint-8.7.md
+    gates/g08/sprint-8.8.md
+    gates/g08/sprint-8.9.md
     gates/g09/sprint-9.1.md
     gates/g09/sprint-9.2.md
     gates/g09/sprint-9.3.md
@@ -55,6 +61,8 @@ required_files=(
     gates/g09/sprint-9.6.md
     gates/g09/sprint-9.7.md
     gates/g09/sprint-9.8.md
+    gates/g09/sprint-9.9.md
+    gates/g09/sprint-9.10.md
     gates/g10/sprint-10.1.md
     gates/g10/sprint-10.2.md
     gates/g10/sprint-10.3.md
@@ -63,6 +71,12 @@ required_files=(
     gates/g10/sprint-10.6.md
     gates/g10/sprint-10.7.md
     gates/g10/sprint-10.8.md
+    gates/g10/sprint-10.9.md
+    gates/g10/sprint-10.10.md
+    gates/g11/sprint-11.1.md
+    gates/g11/sprint-11.2.md
+    gates/g11/sprint-11.3.md
+    gates/g11/sprint-11.4.md
     projects/00-mcu-rtos-ecu/README.md
     projects/05-can-ethernet-vertical-slice/README.md
     projects/06-heterogeneous-vehicle-platform/README.md
@@ -75,7 +89,7 @@ for file in "${required_files[@]}"; do
     fi
 done
 
-ready_lab_files=(
+specified_lab_files=(
     gates/g00/*.md
     gates/g01/*.md
     gates/g02/*.md
@@ -83,33 +97,39 @@ ready_lab_files=(
     gates/g08/*.md
     gates/g09/*.md
     gates/g10/*.md
+    gates/g11/*.md
 )
 
-if (( ${#ready_lab_files[@]} != 39 )); then
-    echo "error: expected 39 ready lab packs, found ${#ready_lab_files[@]}" >&2
+if (( ${#specified_lab_files[@]} != 49 )); then
+    echo "error: expected 49 specified lab packs, found ${#specified_lab_files[@]}" >&2
     exit 1
 fi
 
-required_lab_sections=(
-    "안내 실습"
-    "독립 실습"
-    "전이 과제"
-    "판정 기준"
-    "힌트"
-    "치명적 실패"
-)
-
-for file in "${ready_lab_files[@]}"; do
+for file in "${specified_lab_files[@]}"; do
     if ! grep -Eq '^## .*시간|^## 시간' "$file"; then
         echo "error: lab pack has no time section: $file" >&2
         exit 1
     fi
-    for section in "${required_lab_sections[@]}"; do
-        if ! grep -Fq "## $section" "$file"; then
-            echo "error: lab pack is missing '$section': $file" >&2
-            exit 1
-        fi
-    done
+    if ! grep -Eq '^## 안내 실습' "$file"; then
+        echo "error: lab pack has no guided implementation: $file" >&2
+        exit 1
+    fi
+    if ! grep -Eq '^## 독립 실습' "$file"; then
+        echo "error: lab pack has no independent implementation: $file" >&2
+        exit 1
+    fi
+    if ! grep -Eq '^## 전이 과제' "$file"; then
+        echo "error: lab pack has no transfer task: $file" >&2
+        exit 1
+    fi
+    if ! grep -Eq '^## 판정 기준' "$file"; then
+        echo "error: lab pack has no acceptance criteria: $file" >&2
+        exit 1
+    fi
+    if ! tail -n 18 "$file" | grep -Eq '재시험|보강|보충|다시|축소|줄여|통과하지|통과를 미루|완료 처리를 미루|인정하지|사용하지|릴리스하지|중단|멈추'; then
+        echo "error: lab pack has no retrial condition: $file" >&2
+        exit 1
+    fi
 done
 
 bash -n scripts/new-study-log.sh scripts/check_repo.sh
@@ -118,11 +138,33 @@ python3 scripts/check_internal_links.py
 python3 scripts/check_traceability.py
 
 if find . -path './.git' -prune -o -type f \
-    \( -name '*.pem' -o -name '*.key' -o -name '*.p12' -o -name '*.pcap' -o -name '*.pcapng' \) \
+    \( -name '*.pem' -o -name '*.key' -o -name '*.p12' \) \
     -print -quit | grep -q .; then
-    echo "error: potentially sensitive key or capture file found" >&2
+    echo "error: potentially sensitive key file found" >&2
     exit 1
 fi
+
+while IFS= read -r capture; do
+    case "$capture" in
+        ./evidence/public-fixtures/*.pcap|./evidence/public-fixtures/*.pcapng)
+            metadata=${capture%.*}.metadata.yml
+            if [[ ! -f $metadata ]]; then
+                echo "error: public capture has no metadata sidecar: $capture" >&2
+                exit 1
+            fi
+            for marker in 'synthetic: true' 'contains_real_vehicle_data: false' 'generator_commit:'; do
+                if ! grep -Fq "$marker" "$metadata"; then
+                    echo "error: capture metadata is missing '$marker': $metadata" >&2
+                    exit 1
+                fi
+            done
+            ;;
+        *)
+            echo "error: capture outside evidence/public-fixtures: $capture" >&2
+            exit 1
+            ;;
+    esac
+done < <(find . -path './.git' -prune -o -type f \( -name '*.pcap' -o -name '*.pcapng' \) -print)
 
 if find . -path './.git' -prune -o -type f \
     \( -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' -o -name 'CMakeLists.txt' \) \

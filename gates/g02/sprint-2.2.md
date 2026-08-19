@@ -39,6 +39,6 @@ Event는 16바이트 payload, 16-bit type, 32-bit sequence를 갖습니다. Runt
 2. callback 실행 중 container를 직접 수정하면 iterator와 순회 정책이 필요합니다.
 3. code size는 compiler·linker·target이 같을 때 비교합니다.
 
-## 치명적 실패와 보충
+## 재검증 조건
 
-full 상태에서 memory overwrite가 생기거나 금지한 구간에서 allocation이 한 번이라도 발생하면 실패입니다. 보충 과제는 단일 producer/consumer로 범위를 줄여 invariant를 다시 작성하는 것입니다.
+가득 찬 상태에서 메모리를 덮어쓰거나 금지 구간에서 할당이 한 번이라도 발생하면 단일 producer/consumer로 줄입니다. 저장 공간, 인덱스, 원소 수의 불변 조건을 고정하고 다시 확장합니다.

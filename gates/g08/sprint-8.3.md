@@ -1,4 +1,4 @@
-# Sprint 8.3 — Bounded IPC와 backpressure
+# Sprint 8.3 — 용량 제한 IPC와 역압 처리
 
 ## 시간과 기준 자료
 
@@ -10,7 +10,7 @@
 
 ## 안내 실습
 
-Unix domain socket에 길이 prefix framing과 non-blocking I/O를 구현합니다. partial read/write, peer close, `EAGAIN`, malformed length를 test합니다. `epoll` loop가 한 peer의 flood 때문에 다른 peer를 굶기지 않도록 한 cycle의 처리량을 제한합니다.
+Unix domain socket에 길이 prefix framing과 non-blocking I/O를 구현합니다. partial read/write, peer close, `EAGAIN`, malformed length를 테스트합니다. `epoll` loop가 한 peer의 flood 때문에 다른 peer를 굶기지 않도록 한 cycle의 처리량을 제한합니다.
 
 ## 독립 실습
 
@@ -29,12 +29,12 @@ Unix domain socket에 길이 prefix framing과 non-blocking I/O를 구현합니�
 - shared memory record에서 torn read가 0건
 - raw CSV와 실행 명령으로 성능 표를 다시 생성
 
-## 힌트
+## 구현할 때 확인할 점
 
 1. stream socket은 message 경계를 보존하지 않습니다.
 2. shared memory의 layout version과 endian을 header에 둡니다.
 3. 평균값과 함께 p50/p95/p99, 최대값, sample count를 남깁니다.
 
-## 치명적 실패와 보충
+## 다시 줄여 볼 범위
 
-무제한 queue, busy loop, silent drop, shared memory 크기 밖 접근이 나오면 실패입니다. 보충 과제는 Unix socket 경로만 남겨 capacity 8에서 보존식을 1,000개 생성 입력으로 확인하는 것입니다.
+무제한 큐, 바쁜 대기, 기록 없는 유실, 공유 메모리 범위 밖 접근이 하나라도 남으면 Unix socket 경로만 유지합니다. 용량 8에서 입력 1,000개를 흘려 보존식을 다시 맞춘 뒤 공유 메모리 경로를 복원합니다.

@@ -4,14 +4,14 @@ Status: Planned
 
 ## 문제
 
-Adaptive-style lifecycle을 학습하기 전에, Linux 프로세스를 예측 가능하게 시작·관찰·종료·재시작하는 최소 Supervisor를 구현합니다. 프로세스 관리와 복구 정책을 섞지 않고 테스트 가능한 상태 머신으로 만드는 것이 핵심입니다.
+Linux 프로세스를 예측 가능하게 시작·관찰·종료하는 작은 실행기를 만듭니다. 재시작 여부는 P03의 lifecycle policy가 정하고 P01은 요청받은 action을 실행합니다.
 
 ## 학습 목표
 
 - `posix_spawn` 또는 `fork/exec`의 실패 경로
-- PID, process group, exit status, signal semantics
+- `pidfd`, process group, cgroup v2, exit status, signal semantics
 - graceful shutdown, timeout, forced termination
-- restart limit과 exponential backoff
+- PID 재사용과 stale timer 방어
 - 비동기 자식 종료 처리와 race condition
 - clock과 process launcher를 대체 가능한 테스트 구조
 
@@ -22,15 +22,16 @@ Adaptive-style lifecycle을 학습하기 전에, Linux 프로세스를 예측 �
 - 단일/복수 child process 실행
 - `Initializing`, `Running`, `Stopping`, `Exited`, `Failed`, `Backoff` 상태
 - SIGTERM → timeout → SIGKILL 종료 정책
-- `never`, `on-failure`, `always` 재시작 정책
-- restart limit, backoff, 구조화 로그
+- 전용 cgroup과 `pidfd` 기반 process instance handle
+- `never`, `on-failure`, `always` 정책을 실행하는 P03 adapter
+- restart attempt·backoff를 입력으로 받은 action과 구조화 로그
 - unit/integration/fault tests
 
 ### 제외
 
 - `ara::exec` API
 - AUTOSAR Manifest/ARXML parser
-- cgroup, container orchestration, systemd 대체
+- container orchestration과 systemd 대체
 - PHM 전체 supervision 모델
 
 ## 관련 요구사항
@@ -56,8 +57,10 @@ stateDiagram-v2
     Backoff --> Initializing: timer expired
     Backoff --> Failed: retry limit reached
     Stopping --> Exited: SIGTERM handled
-    Stopping --> Failed: timeout then SIGKILL
+    Stopping --> Exited: requested stop, timeout then SIGKILL
 ```
+
+requested stop, observed exit status, graceful/forced 여부는 서로 다른 field로 기록합니다. 요청된 stop에서 SIGKILL이 필요했다는 이유만으로 `on-failure` restart를 시작하지 않습니다. 전체 배치 책임은 [Linux lifecycle 소유권](../../docs/lifecycle-ownership.md)을 따릅니다.
 
 ## 마일스톤
 
@@ -77,7 +80,9 @@ stateDiagram-v2
 | child handles SIGTERM | timeout 전에 정상 종료 |
 | child ignores SIGTERM | timeout 뒤 SIGKILL, 이유 기록 |
 | repeated crash | restart limit 뒤 terminal failure |
-| supervisor interrupted | child/process group 정리 정책을 검증 |
+| child calls `setsid()` or double-forks | 전용 cgroup에서 descendant까지 종료·회수 |
+| PID is reused before a stale timer fires | 새 process에 signal을 보내지 않고 stale action 거부 |
+| supervisor interrupted | subreaper·cgroup 정리 정책을 검증 |
 
 ## 완료 증거
 
