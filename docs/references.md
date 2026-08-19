@@ -39,6 +39,21 @@ Gate 시작 이슈에서 실제로 읽을 문서와 절을 고정합니다. Vers
 
 N1570은 공개 C11 working paper입니다. C17 실습의 최종 기준은 접근 가능한 ISO/IEC 9899:2018과 compiler documentation으로 보완합니다. C++ working draft도 사용 중인 C++20 edition과 stable section name을 대조합니다.
 
+## G8–G10 Starter Source Pack
+
+Linux/Adaptive 갈래는 아래 자료에서 시작합니다. AUTOSAR 문서는 R25-11 document ID와 읽은 절을 각 Sprint의 standards ledger에 남깁니다.
+
+| Gate | Source | 확인할 내용 | 연결할 실습 |
+| --- | --- | --- | --- |
+| G8 | [POSIX.1-2024 `posix_spawn`](https://pubs.opengroup.org/onlinepubs/9799919799/functions/posix_spawn.html) | spawn attributes, error, process image | process launcher |
+| G8 | [Linux cgroup v2](https://docs.kernel.org/admin-guide/cgroup-v2.html), [seccomp filter](https://docs.kernel.org/userspace-api/seccomp_filter.html) | CPU·memory·PID control, syscall policy | service hardening |
+| G8 | [Buildroot 2026.05 manual](https://buildroot.org/downloads/manual/manual.html) | external tree, package, image, SBOM, legal-info | AArch64 image |
+| G9 | [AUTOSAR Foundation](https://www.autosar.org/standards/foundation) | R25-11 SOME/IP와 SOME/IP-SD protocol specification | parser, discovery |
+| G9 | [COVESA vsomeip](https://github.com/COVESA/vsomeip) | pinned implementation와 configuration | P02 interoperability |
+| G9 | [ISO 13400-2:2025](https://www.iso.org/standard/13400-2) | 합법적으로 접근한 원문의 routing activation·alive·message 절 | DoIP read path |
+| G9 | [`ptp4l`](https://www.linuxptp.org/documentation/ptp4l/), [`phc2sys`](https://www.linuxptp.org/documentation/phc2sys/) | clock domain, offset, drift, sync loss | time contract |
+| G10 | [AUTOSAR Adaptive Platform](https://www.autosar.org/standards/adaptive-platform/) | R25-11 architecture, manifests, EM, SM, PHM, Persistency, Log and Trace | P03와 mapping review |
+
 ## C, C++, ARM and compiler
 
 - [SEI CERT C Coding Standard](https://wiki.sei.cmu.edu/confluence/display/c/SEI+CERT+C+Coding+Standard)

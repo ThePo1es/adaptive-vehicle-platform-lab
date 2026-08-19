@@ -10,9 +10,15 @@
 | G1 | [5 Sprint](g01/) | Ready |
 | G2 | [4 Sprint](g02/) | Ready |
 | G3 | [5 Sprint](g03/) | Ready |
-| G4–G12 | [Gate Playbook](../docs/gate-playbook.md) | Curriculum backlog; 해당 Gate 진입 전 동결 필요 |
+| G4–G7 | [Gate Playbook](../docs/gate-playbook.md) | Curriculum backlog; 해당 Gate 진입 전 동결 필요 |
+| G8 | [7 Sprint](g08/) | Ready |
+| G9 | [8 Sprint](g09/) | Ready |
+| G10 | [8 Sprint](g10/) | Ready |
+| G11–G12 | [Gate Playbook](../docs/gate-playbook.md) | Curriculum backlog; 해당 Gate 진입 전 동결 필요 |
 
 `Ready`는 과제 명세와 판정 기준이 있다는 뜻입니다. Starter code와 자동 test가 생기면 파일에 commit SHA를 추가합니다. SHA가 비어 있는 과제는 문서에 제시된 빈 디렉터리 또는 inline fixture에서 시작합니다.
+
+Linux/Adaptive 갈래를 먼저 밟는 경우 G3 통과 후 G8부터 시작할 수 있습니다. G10을 마친 뒤에는 G4–G7을 통과해야 G11에 들어갑니다.
 
 ## 파일에 필요한 항목
 

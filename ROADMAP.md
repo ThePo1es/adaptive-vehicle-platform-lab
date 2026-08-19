@@ -55,7 +55,7 @@ G4–G7과 G8–G10은 공통 기반 뒤에 갈라지는 두 갈래입니다. Li
 - Gate에서 늦어지면 확장 항목을 먼저 뺍니다. 필수 통과 결과물은 유지합니다.
 - 외부 검토를 받지 못한 Gate는 `Provisional`로 기록합니다.
 
-각 Sprint의 과제와 범위 조정 순서는 [Gate Playbook](docs/gate-playbook.md)에 있습니다. G0–G3은 바로 시작할 수 있는 [Lab Pack](gates/README.md)이 준비되어 있습니다.
+각 Sprint의 과제와 범위 조정 순서는 [Gate Playbook](docs/gate-playbook.md)에 있습니다. G0–G3과 Linux/Adaptive 갈래의 G8–G10은 [Lab Pack](gates/README.md)이 준비되어 있습니다. G8은 G3 통과 후 시작합니다.
 
 ### 첫 공개 릴리스
 

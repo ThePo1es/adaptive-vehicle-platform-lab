@@ -40,6 +40,29 @@ required_files=(
     gates/g03/sprint-3.3.md
     gates/g03/sprint-3.4.md
     gates/g03/sprint-3.5.md
+    gates/g08/sprint-8.1.md
+    gates/g08/sprint-8.2.md
+    gates/g08/sprint-8.3.md
+    gates/g08/sprint-8.4.md
+    gates/g08/sprint-8.5.md
+    gates/g08/sprint-8.6.md
+    gates/g08/sprint-8.7.md
+    gates/g09/sprint-9.1.md
+    gates/g09/sprint-9.2.md
+    gates/g09/sprint-9.3.md
+    gates/g09/sprint-9.4.md
+    gates/g09/sprint-9.5.md
+    gates/g09/sprint-9.6.md
+    gates/g09/sprint-9.7.md
+    gates/g09/sprint-9.8.md
+    gates/g10/sprint-10.1.md
+    gates/g10/sprint-10.2.md
+    gates/g10/sprint-10.3.md
+    gates/g10/sprint-10.4.md
+    gates/g10/sprint-10.5.md
+    gates/g10/sprint-10.6.md
+    gates/g10/sprint-10.7.md
+    gates/g10/sprint-10.8.md
     projects/00-mcu-rtos-ecu/README.md
     projects/05-can-ethernet-vertical-slice/README.md
     projects/06-heterogeneous-vehicle-platform/README.md
@@ -50,6 +73,43 @@ for file in "${required_files[@]}"; do
         echo "error: required file is missing: $file" >&2
         exit 1
     fi
+done
+
+ready_lab_files=(
+    gates/g00/*.md
+    gates/g01/*.md
+    gates/g02/*.md
+    gates/g03/*.md
+    gates/g08/*.md
+    gates/g09/*.md
+    gates/g10/*.md
+)
+
+if (( ${#ready_lab_files[@]} != 39 )); then
+    echo "error: expected 39 ready lab packs, found ${#ready_lab_files[@]}" >&2
+    exit 1
+fi
+
+required_lab_sections=(
+    "안내 실습"
+    "독립 실습"
+    "전이 과제"
+    "판정 기준"
+    "힌트"
+    "치명적 실패"
+)
+
+for file in "${ready_lab_files[@]}"; do
+    if ! grep -Eq '^## .*시간|^## 시간' "$file"; then
+        echo "error: lab pack has no time section: $file" >&2
+        exit 1
+    fi
+    for section in "${required_lab_sections[@]}"; do
+        if ! grep -Fq "## $section" "$file"; then
+            echo "error: lab pack is missing '$section': $file" >&2
+            exit 1
+        fi
+    done
 done
 
 bash -n scripts/new-study-log.sh scripts/check_repo.sh
