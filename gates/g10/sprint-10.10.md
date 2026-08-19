@@ -26,7 +26,7 @@
 
 ## 독립 실습·심사
 
-검토자가 Service Interface/Proxy·Skeleton, SOME/IP binding, Execution Manifest, lifecycle, State Management, PHM, Persistency, Diagnostics, IAM 중 세 영역을 고릅니다. 답변마다 근거가 된 R25-11 section, 대응 코드와 시험, 구현에서 생략한 기능을 함께 제시합니다.
+구술 검토에서는 Service Interface/Proxy·Skeleton, SOME/IP binding, Execution Manifest, lifecycle, State Management, PHM, Persistency, Diagnostics, IAM 중 세 영역을 받습니다. 답변마다 근거가 된 R25-11 section, 대응 코드와 시험, 구현에서 생략한 기능을 함께 제시합니다.
 
 ## 전이 과제 — 비공개 고장
 
@@ -46,8 +46,8 @@
 
 1. 설계 답변은 class 이름보다 책임, 입력, 출력, 실패 mode 순서로 말합니다.
 2. mapping 표의 빈칸은 구현 결함일 수도 있고 범위 제외일 수도 있습니다. 근거를 붙입니다.
-3. demo 전날 새 고장를 고치며 기준을 낮추지 않습니다. 실패는 보강 계획으로 남깁니다.
+3. demo 전날 새 고장을 고치며 기준을 낮추지 않습니다. 실패는 보강 계획으로 남깁니다.
 
-## 치명적 실패와 보충
+## G10 재심사 조건
 
-공식 문서 인용 없이 AUTOSAR 적합을 주장하거나, 비공개 고장를 다른 component 탓으로 넘기거나, 제3자 재현이 실패하면 G10을 통과하지 못합니다. 16–30시간 보강 후 새 릴리스 candidate와 새 비공개 고장로 재심사합니다.
+공식 문서 인용 없이 AUTOSAR 적합을 주장하거나, 비공개 고장을 다른 component 탓으로 넘기거나, 제3자 재현이 실패하면 G10을 통과하지 못합니다. 16–30시간 보강 후 새 릴리스 candidate와 새 비공개 고장으로 재심사합니다.

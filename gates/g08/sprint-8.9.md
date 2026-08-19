@@ -18,7 +18,7 @@ idle, CPU load, memory pressure, network·storage I/O 조건에서 cyclictest와
 
 ## 전이 과제
 
-검토자가 background workload나 IRQ affinity를 바꿉니다. 기존 결론이 유지되는지 다시 계산하고, 달라졌다면 어느 조건에만 유효한 결론인지 보고서를 고칩니다. kernel config와 trace만 받아 재현하는 사람도 같은 요약값을 만들 수 있어야 합니다.
+전이 실행에서는 background workload나 IRQ affinity가 바뀝니다. 기존 결론이 유지되는지 다시 계산하고, 달라졌다면 어느 조건에만 유효한 결론인지 보고서를 고칩니다. kernel config와 trace만 받아 재현하는 사람도 같은 요약값을 만들 수 있어야 합니다.
 
 ## 판정 기준
 
@@ -37,6 +37,6 @@ idle, CPU load, memory pressure, network·storage I/O 조건에서 cyclictest와
 - 가장 나쁜 sample을 지운 경우에는 제거 규칙과 원본을 함께 남겨야 합니다.
 - hardware·firmware의 System Management 동작은 kernel trace 밖에 있을 수 있습니다.
 
-## 실패와 보강
+## PREEMPT_RT 비교 보류
 
 QEMU 수치로 대상 latency를 주장하거나, kernel·workload가 다른 결과를 PREEMPT_RT 효과로 해석하거나, 원본 trace를 버리면 이 Sprint를 닫지 않습니다. 보강 시 idle과 단일 CPU-load 조건만 남겨 비교 설계를 다시 검증합니다.

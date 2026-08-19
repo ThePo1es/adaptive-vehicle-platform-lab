@@ -18,7 +18,7 @@ StopOffer, TTL expiry, consumer restart, provider restart, subscription renewal�
 
 ## 전이 과제
 
-검토자가 provider를 지연시키거나 TTL·eventgroup·major version 하나를 바꿉니다. packet과 로컬 상태를 함께 보고 unavailable 원인을 90분 안에 찾습니다. 수정 뒤 동일 고장를 자동 재생합니다.
+봉인 fixture는 provider 지연, TTL·eventgroup·major version 변경 가운데 하나를 담습니다. packet과 로컬 상태를 함께 보고 unavailable 원인을 90분 안에 찾습니다. 수정 뒤 같은 고장을 자동 재생합니다.
 
 ## 판정 기준
 

@@ -18,7 +18,7 @@ boot에서 manifest validation, dependency plan, 프로세스 start, health stat
 
 ## 전이 과제
 
-검토자가 두 고장을 겹칩니다. 예시는 서비스 restart 중 상태 change, persistency corruption과 dependency failure, policy reload 중 diagnostic request입니다. 두 고장의 발생 원인과 복구 과정을 로그에서 따로 추적할 수 있어야 합니다.
+전이 시험은 두 고장을 겹칩니다. 예시는 서비스 restart 중 상태 change, persistency corruption과 dependency failure, policy reload 중 diagnostic request입니다. 두 고장의 발생 원인과 복구 과정을 로그에서 따로 추적할 수 있어야 합니다.
 
 ## 판정 기준
 
@@ -33,8 +33,8 @@ boot에서 manifest validation, dependency plan, 프로세스 start, health stat
 
 1. component log의 timestamp만 맞추지 말고 공통 transition·run ID를 전달합니다.
 2. 부분 실패 뒤 보고한 상태와 실제 프로세스·서비스 목록을 비교합니다.
-3. integration에서 발견한 고장는 가장 낮은 소유 component에 regression 테스트를 둡니다.
+3. integration에서 발견한 고장은 가장 낮은 소유 component에 regression 테스트를 둡니다.
 
-## 치명적 실패와 보충
+## 통합 상태 불일치
 
 reported 상태와 실제 프로세스 set이 다르거나, health recovery가 restart storm으로 번지거나, 새 환경 배포가 안 되면 실패입니다. 해당 component Sprint로 돌아가 수정한 뒤 integration 고장 전체를 다시 실행합니다.

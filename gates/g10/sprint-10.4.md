@@ -18,7 +18,7 @@ illegal transition, transition 중 새 요청, partial start failure, deadline e
 
 ## 전이 과제
 
-검토자가 `Update` 중 긴급 `Shutdown` 또는 `Driving` 진입 중 diagnostic 요청을 줍니다. rule table로 결과를 먼저 예측하고 model-based 테스트로 구현과 대조합니다. 새 상태 하나를 추가할 때 바뀌는 manifest, transition, 프로세스 set도 찾습니다.
+전이 event는 `Update` 중 긴급 `Shutdown` 또는 `Driving` 진입 중 diagnostic 요청입니다. rule table로 결과를 먼저 예측하고 model-based 테스트로 구현과 대조합니다. 새 상태 하나를 추가할 때 바뀌는 manifest, transition, 프로세스 set도 찾습니다.
 
 ## 판정 기준
 

@@ -9,34 +9,56 @@
 | Implemented | 설계, 구현, 자동 검증 위치를 모두 연결함. 시험 결과는 아직 `Not run`일 수 있음 |
 | Verified | 고정한 커밋 또는 CI 실행에서 통과했고 검토자가 결과를 확인함 |
 
+## MCU platform
+
+| ID | Applies to | Requirement | Verification | Status |
+| --- | --- | --- | --- | --- |
+| REQ-MCU-START-001 | MCU | The reset path shall enter the configured image with a valid stack and vector table, initialize every loadable data section, zero every zero-initialized section and reject a linked image that exceeds its declared memory regions. | Map/ELF assertions + reset trace | Baselined |
+| REQ-MCU-TIME-001 | MCU | The platform monotonic clock shall identify its source, rate, unit, wrap behavior and stop conditions and shall not move backward across a counter wrap. | Golden wrap vectors + calibrated edge trace | Baselined |
+| REQ-MCU-IRQ-001 | MCU | Each enabled interrupt shall have a documented priority, bounded handler, source-clear rule and bounded overflow policy for deferred work. | Priority/nesting trace + storm test | Baselined |
+| REQ-MCU-FAULT-001 | MCU | A supported processor fault shall produce a versioned integrity-checked record containing the valid stacked frame, fault status, image identity and reset context without entering an unbounded fault loop. | Controlled fault matrix + reboot decode | Baselined |
+| REQ-MCU-DRV-001 | MCU | Each interrupt or DMA driver shall define buffer ownership, completion identity, timeout, cancellation and late-completion handling so an old transfer cannot modify a new request. | State-model and phase-sweep tests | Baselined |
+| REQ-MCU-WDG-001 | MCU | The watchdog shall be serviced only after the configured health votes advance and a watchdog reset shall expose its reset reason and last valid health record on the next boot. | Vote-loss/reset matrix | Baselined |
+
 ## RTOS timing
 
 | ID | Applies to | Requirement | Verification | Status |
 | --- | --- | --- | --- | --- |
-| REQ-RTOS-001 | MCU | Each periodic task shall record scheduled release, actual release, start, finish and deadline outcome using the configured monotonic clock. | Trace schema and timing test | Draft |
-| REQ-RTOS-002 | MCU | The task set shall define period or minimum inter-arrival time, deadline, priority, blocking resource and provisional execution bound before implementation acceptance. | Task-model review | Draft |
-| REQ-RTOS-003 | MCU | Fixed-priority tasks shall have a response-time analysis that includes release jitter, blocking and configured interrupt interference. | Independent calculation + review | Draft |
-| REQ-RTOS-004 | MCU | A deadline miss or overrun shall increment an observable counter and execute the configured bounded response. | Overload fault test | Draft |
-| REQ-RTOS-005 | MCU | ISR-to-task communication shall use bounded storage with a configured full policy and no unbounded wait in interrupt context. | Queue saturation test + code review | Draft |
-| REQ-RTOS-006 | MCU | Each task shall have a stack budget, measured high-water mark, margin rationale and detectable overflow response. | Stress test + stack report | Draft |
-| REQ-FALLBACK-001 | MCU simulation | Simulated outputs shall enter the state defined by the current functional or hazard analysis after fatal fault, watchdog reset or invalid transition. | Reset/fault state test | Draft |
+| REQ-RTOS-001 | MCU | Each periodic task shall record scheduled release, actual release, start, finish and deadline outcome using the configured monotonic clock. | Trace schema and timing test | Baselined |
+| REQ-RTOS-002 | MCU | The task set shall define period or minimum inter-arrival time, deadline, priority, blocking resource and provisional execution bound before implementation acceptance. | Task-model review | Baselined |
+| REQ-RTOS-003 | MCU | Fixed-priority tasks shall have a response-time analysis that includes release jitter, blocking and configured interrupt interference. | Independent calculation + review | Baselined |
+| REQ-RTOS-004 | MCU | A deadline miss or overrun shall increment an observable counter and execute the configured bounded response. | Overload fault test | Baselined |
+| REQ-RTOS-005 | MCU | ISR-to-task communication shall use bounded storage with a configured full policy and no unbounded wait in interrupt context. | Queue saturation test + code review | Baselined |
+| REQ-RTOS-006 | MCU | Each task shall have a stack budget, measured high-water mark, margin rationale and detectable overflow response. | Stress test + stack report | Baselined |
+| REQ-FALLBACK-001 | MCU and simulator | After a fatal fault, watchdog reset or invalid transition, outputs shall enter the versioned defined-output or fallback state selected by the current functional or hazard analysis; reboot shall not apply a stale persisted operational request. | Simulator state model + physical reset/output test | Baselined |
 
 ## CAN and ECU diagnostics
 
 | ID | Applies to | Requirement | Verification | Status |
 | --- | --- | --- | --- | --- |
-| REQ-CAN-001 | MCU/Linux adapter | CAN input processing shall remain within the configured CPU and queue budget under the specified flood workload. | Load test + budget review | Draft |
-| REQ-CAN-002 | MCU/Linux adapter | A malformed, out-of-range or truncated signal shall leave the last valid application value unchanged and update the configured quality counter. | Property/fuzz test | Draft |
-| REQ-CAN-003 | MCU | A bus-off indication shall publish communication unavailable with the controller error state and follow the configured recovery limit and delay. | Physical bench + simulation | Draft |
-| REQ-CAN-004 | MCU | The selected CAN message set shall have calculated load and priority response-time bounds for the configured bit timing. | Analysis + trace comparison | Draft |
-| REQ-CAN-005 | MCU/Linux adapter | CAN FD DLC values shall map to payload lengths 0–64 exactly, and Classic/FD frame-type mismatches shall be rejected before signal decode. | Golden vectors + mixed-frame negative test | Draft |
-| REQ-CAN-006 | MCU/bench | Nominal bit rate, data bit rate, BRS and ESI behavior shall be recorded with controller and transceiver capability; unsupported combinations shall fail configuration. | Capability review + physical trace | Draft |
-| REQ-CAN-007 | MCU | CAN FD load and priority bounds shall include arbitration phase, data phase, payload length and the stated stuffing assumption. | Analysis + analyzer comparison | Draft |
-| REQ-ECU-DIAG-001 | MCU | The ECU shall support the configured read-only UDS services and return the specified NRC for unsupported or disallowed requests. | Tester interoperability | Draft |
-| REQ-ECU-DIAG-002 | MCU | ISO-TP shall enforce the configured addressing, BS, STmin, sequence and timeout rules without corrupting application state. | Timer matrix + negative corpus | Draft |
-| REQ-ECU-DIAG-003 | MCU | Diagnostic work shall remain bounded under the specified request rate and shall expose queue, timeout and rejection counters. | Load/fault test | Draft |
-| REQ-DTC-001 | MCU | A configured application fault shall update its event and DTC state with timestamp or occurrence metadata. | State-model test | Draft |
-| REQ-DTC-002 | MCU | Persisted DTC records shall recover the last committed valid version or configured default after reset or corruption. | Reboot/corruption test | Draft |
+| REQ-CAN-001 | MCU/Linux adapter | CAN input processing shall remain within the configured CPU and queue budget under the specified flood workload. | Load test + budget review | Baselined |
+| REQ-CAN-002 | MCU/Linux adapter | A malformed, out-of-range or truncated signal shall leave the last valid application value unchanged and update the configured quality counter. | Property/fuzz test | Baselined |
+| REQ-CAN-003 | MCU | A bus-off indication shall publish communication unavailable with the controller error state and follow the configured recovery limit and delay. | Physical bench + simulation | Baselined |
+| REQ-CAN-004 | MCU | The selected CAN message set shall have calculated load and priority response-time bounds for the configured bit timing. | Analysis + trace comparison | Baselined |
+| REQ-CAN-005 | MCU/Linux adapter | CAN FD DLC codes 0–15 shall map exactly to payload lengths 0–8, 12, 16, 20, 24, 32, 48 and 64 bytes; API payload length and on-wire DLC shall remain distinct, and Classic/FD frame-type mismatches shall be rejected before signal decode. | Sixteen golden DLC vectors + mixed-frame negative test | Baselined |
+| REQ-CAN-006 | MCU/bench | Nominal bit rate, data bit rate and BRS shall be checked against controller and transceiver capability; ESI evidence shall identify the transmitting node's error-active or error-passive state, and unsupported combinations shall fail configuration. | Capability review + controller/physical trace | Baselined |
+| REQ-CAN-007 | MCU | CAN FD load and priority bounds shall include arbitration phase, data phase, payload length and the stated stuffing assumption. | Analysis + analyzer comparison | Baselined |
+| REQ-ECU-DIAG-001 | MCU | The ECU shall support the configured read-only UDS services and return the specified NRC for unsupported or disallowed requests. | Tester interoperability | Baselined |
+| REQ-ECU-DIAG-002 | MCU | ISO-TP shall enforce the configured addressing, BS, STmin, sequence and timeout rules without corrupting application state. | Timer matrix + negative corpus | Baselined |
+| REQ-ECU-DIAG-003 | MCU | Diagnostic work shall remain bounded under the specified request rate and shall expose queue, timeout and rejection counters. | Load/fault test | Baselined |
+| REQ-DTC-001 | MCU | A configured application fault shall update its event and DTC state with timestamp or occurrence metadata. | State-model test | Baselined |
+| REQ-DTC-002 | MCU | Persisted DTC records shall recover the last committed valid version or configured default after reset or corruption. | Reboot/corruption test | Baselined |
+
+## Classic concept boundaries
+
+| ID | Applies to | Requirement | Verification | Status |
+| --- | --- | --- | --- | --- |
+| REQ-CP-OS-001 | MCU prototype | Static configuration shall assign each runnable, event, task, ISR, resource and typed port to one documented owner and shall generate a deterministic local adapter tree. | Configuration lint + activation trace | Baselined |
+| REQ-CP-COM-001 | MCU prototype | The configured receive and transmit paths shall keep CAN Driver, CanIf-like, PduR-like, COM-like and RTE-like responsibilities distinct and shall preserve the last valid signal on malformed, stale or E2E-invalid input. | Packet-to-port golden trace | Baselined |
+| REQ-CP-DIAG-001 | MCU prototype | The diagnostic path shall keep CanTp-like transport, PduR-like routing, DCM-like request handling and provider results distinct, including transport, policy, provider and ECU-originated errors. | Boundary fault matrix | Baselined |
+| REQ-CP-MEM-001 | MCU prototype | The DEM-like owner and NvM-like store shall publish one generation-consistent DTC snapshot and recover only the last committed valid journal record or the configured default. | Executable model + reset/corruption corpus | Baselined |
+| REQ-CP-MODE-001 | MCU prototype | Startup, rule arbitration, communication request, controller/bus-off state, network participation and watchdog supervision shall have distinct state and decision owners. | Model-based simultaneous-event tests | Baselined |
+| REQ-CP-SEC-001 | MCU prototype | E2E and SecOC-like experiments shall state their protected error or threat set, freshness and key assumptions and residual gaps; no confidentiality or production-conformance claim shall be inferred from local adapters. | Guarantee matrix + negative corpus | Baselined |
 
 ## Communication and gateway
 

@@ -27,7 +27,7 @@ P01 source, 시험 프로그램, systemd unit, Buildroot external tree, SBOM, �
 
 ## 전이 과제
 
-외부 검토자가 policy 값 하나와 fixture 순서 하나를 바꿉니다. 구현 수정 없이 설정으로 수용할 수 있는 범위와 code 변경이 필요한 경계를 설명합니다. 검토자는 README만 보고 build와 세 고장를 실행합니다.
+봉인 변경표에는 policy 값 하나와 fixture 순서 하나가 바뀌어 있습니다. 구현 수정 없이 설정으로 수용할 수 있는 범위와 code 변경이 필요한 경계를 설명합니다. 검토자는 README만 보고 build와 세 고장을 실행합니다.
 
 ## 판정 기준
 
@@ -44,6 +44,6 @@ P01 source, 시험 프로그램, systemd unit, Buildroot external tree, SBOM, �
 2. recovery time의 시작·끝 이벤트를 문서에서 먼저 정의합니다.
 3. 릴리스 note에는 실험하지 않은 architecture와 kernel을 지원 대상으로 적지 않습니다.
 
-## 치명적 실패와 보충
+## G8 판정 보류
 
 외부 재현이 안 되거나, 고장 뒤 child가 남거나, raw log 없이 요약 수치만 제출하면 Gate를 통과하지 못합니다. 실패 영역 Sprint로 돌아가 12–20시간 보강한 뒤 새 tag와 새 고장 seed로 다시 심사합니다.

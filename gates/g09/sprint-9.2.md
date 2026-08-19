@@ -18,7 +18,7 @@ snapshot의 원자성, 이벤트 순서, field getter·setter·notifier 조합�
 
 ## 전이 과제
 
-검토자가 `BatteryState` 추가, `VehicleSpeed` 단위 변경, method의 필수 인자 추가 중 하나를 제시합니다. 호환 가능한 변경과 major 증가가 필요한 변경을 판정하고, old/new client·서비스 네 조합의 예상 결과를 계약 시험으로 만듭니다.
+변경 요청서는 `BatteryState` 추가, `VehicleSpeed` 단위 변경, method의 필수 인자 추가 중 하나입니다. 호환 가능한 변경과 major 증가가 필요한 변경을 판정하고, old/new client·서비스 네 조합의 예상 결과를 계약 시험으로 만듭니다.
 
 ## 판정 기준
 
@@ -35,6 +35,6 @@ snapshot의 원자성, 이벤트 순서, field getter·setter·notifier 조합�
 1. wire ID는 다음 Sprint 이후의 배포·binding 관심사입니다.
 2. field에는 계약에 필요한 getter, setter, notifier만 둡니다.
 
-## 재시험 조건
+## Service Interface를 다시 고정할 때
 
 단위나 오류 의미가 코드 작성 뒤에 정해졌거나, IP·port 변경이 Service Interface major 변경으로 처리됐거나, 호환 표 없이 버전만 올렸다면 다시 봅니다. 보강할 때는 `GetSnapshot`과 이벤트 하나만 남기고 여섯 golden vector부터 고정합니다.

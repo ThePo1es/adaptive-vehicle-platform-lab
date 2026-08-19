@@ -18,7 +18,7 @@ Unix domain socket에 길이 prefix framing과 non-blocking I/O를 구현합니�
 
 ## 전이 과제
 
-검토자가 consumer를 멈추거나 payload length를 깨거나 peer를 재시작합니다. system이 선택한 `block`, `drop-newest`, `drop-oldest`, `disconnect` 정책대로 움직이며 drop·disconnect counter가 정확히 맞아야 합니다.
+봉인 입력은 consumer 정지, 잘못된 payload length, peer 재시작 가운데 하나입니다. system이 선택한 `block`, `drop-newest`, `drop-oldest`, `disconnect` 정책대로 움직이며 drop·disconnect counter가 정확히 맞아야 합니다.
 
 ## 판정 기준
 

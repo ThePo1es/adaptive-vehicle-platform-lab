@@ -1,0 +1,22 @@
+schema: uds-read-corpus/v1
+synthetic: true
+application_reference: ISO-14229-1-2026-ed4
+session: default
+cases:
+  - id: read-synthetic-temperature
+    request: "22 12 34"
+    provider_value: {raw_u16: 42, unit: degC, scale: 1}
+    expected_response: "62 12 34 00 2A"
+  - id: unknown-did
+    request: "22 99 99"
+    expected_response: "7F 22 31"
+    expected_nrc: requestOutOfRange
+  - id: incorrect-length
+    request: "22 12"
+    expected_response: "7F 22 13"
+    expected_nrc: incorrectMessageLengthOrInvalidFormat
+  - id: blocked-write
+    request: "2E 12 34 00 2A"
+    expected_response: "7F 2E 11"
+    expected_nrc: serviceNotSupported
+    provider_calls: 0

@@ -18,7 +18,7 @@ truncated record, bit flip, unknown version, rollback generation, disk full, per
 
 ## 전이 과제
 
-검토자가 write sequence의 임의 지점에서 100회 kill하는 campaign과 corrupt record 하나를 줍니다. reference 상태 model과 reboot 결과를 비교합니다. log만 받아 상태 transition과 recovery action을 재구성하는 과제도 수행합니다.
+봉인 campaign은 write sequence의 임의 지점에서 100회 kill하며 corrupt record 하나를 포함합니다. reference 상태 model과 reboot 결과를 비교합니다. log만 받아 상태 transition과 recovery action을 재구성하는 과제도 수행합니다.
 
 ## 판정 기준
 

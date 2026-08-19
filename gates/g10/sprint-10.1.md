@@ -16,13 +16,15 @@ G9에서 구현한 P02와 P03 구성요소를 펼쳐 놓고 다음 흐름을 다
 
 functional cluster마다 맡는 결정, 실행, 관찰, 데이터 경계를 한 문장으로 씁니다. `ara::com` proxy/skeleton 호출과 P02 vsomeip 호출을 sequence diagram 두 장으로 만들고 서비스 contract, generated code, binding configuration, runtime discovery가 만나는 지점을 표시합니다.
 
+[G10.1 책임 지도 검사기](../../labs/g10_1_release_map/README.md)를 먼저 실행합니다. 공개 입력에는 통과 지도 하나와 단계 순서, 산출 시점, 생명주기 책임자, 적합성 과장, 집계 오류를 각각 하나씩 넣은 음성 사례가 있습니다. 검사기는 표의 구조와 내부 일관성을 보고, 인용 절의 의미는 원문 검토에 남깁니다.
+
 ## 독립 실습
 
 R25-11에서 확인한 Application Design, Execution, Service Instance, Machine 관련 manifest와 Service Interface artifact를 서로 다른 행에 정리합니다. 정확한 taxonomy와 산출 시점은 원문 section으로 확인합니다. P03의 YAML field가 어느 요소에 가까운지, 대응 없음, 의미 축소, 여러 요소 합침 중 하나로 판정합니다.
 
 ## 전이 과제
 
-검토자가 생소한 manifest element 또는 functional cluster 하나를 고릅니다. 90분 안에 upstream/downstream 책임, runtime actor, configuration source, 실패 관찰 위치를 찾아 기존 지도에 넣습니다.
+처음 보는 manifest element 또는 functional cluster 하나를 받습니다. 90분 안에 upstream/downstream 책임, runtime actor, configuration source, 실패 관찰 위치를 찾아 기존 지도에 넣습니다.
 
 ## 판정 기준
 

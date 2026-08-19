@@ -27,7 +27,7 @@ P01 저장소에 `supervisor`, `child_fixture`, `lifecycle_test` 세 대상을 �
 
 ## 전이 과제
 
-검토자가 `grandchild가 SIGTERM을 무시함`, `setsid 뒤 double-fork`, `stop 요청과 자연 종료가 겹침`, `PID 재사용 뒤 stale timer` 중 하나를 고릅니다. 90분 안에 종료 이유, action 대상, 최종 reap 결과를 설명하고 자동 테스트를 추가합니다.
+봉인 고장 카드는 `grandchild가 SIGTERM을 무시함`, `setsid 뒤 double-fork`, `stop 요청과 자연 종료가 겹침`, `PID 재사용 뒤 stale timer` 중 하나입니다. 90분 안에 종료 이유, action 대상, 최종 reap 결과를 설명하고 자동 테스트를 추가합니다.
 
 ## 판정 기준
 
@@ -44,6 +44,6 @@ P01 저장소에 `supervisor`, `child_fixture`, `lifecycle_test` 세 대상을 �
 2. `waitpid`가 돌려준 PID와 status를 먼저 보관한 뒤 상태 머신에 전달합니다.
 3. `/proc/<pid>/task/<pid>/children`과 `ps`는 조사 도구로 쓰고 합격 판정은 cgroup empty 상태와 reaped 이벤트로 확인합니다.
 
-## 치명적 실패와 보충
+## PID 오인과 descendant 누락
 
 descendant가 남거나, stale timer가 재사용된 PID에 action을 보내거나, `ECHILD`를 성공으로 뭉개면 다시 구현합니다. 보강 범위는 child 하나와 double-fork fixture 하나이며 spawn·TERM·cgroup kill·reap 순서를 50회 확인합니다.

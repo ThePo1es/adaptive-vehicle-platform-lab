@@ -1,28 +1,40 @@
 # Traceability Matrix
 
-현재 요구사항은 모두 `Draft`이며 구현 링크가 없습니다. `Baselined` PR에서 설계 배정과 검증 계획을 연결하고, `Implemented` PR에서 구현 링크를 채웁니다. `Verified`에는 전체 commit SHA 또는 CI 실행과 검토자를 기록합니다.
+G4–G7의 31개 요구사항은 실행 계약과 검증 계획을 연결해 `Baselined`로 올렸습니다. 나머지 요구사항은 `Draft`입니다. 구현 링크는 실제 code가 생긴 PR에서 채우고, `Verified`에는 전체 commit SHA 또는 CI 실행과 검토자를 기록합니다.
 
 | Requirement | Design / ADR | Implementation | Verification | Result | Reviewer |
 | --- | --- | --- | --- | --- | --- |
-| REQ-RTOS-001 | Planned | Planned | Planned | Not run | — |
-| REQ-RTOS-002 | Planned | Planned | Planned | Not run | — |
-| REQ-RTOS-003 | Planned | Planned | Planned | Not run | — |
-| REQ-RTOS-004 | Planned | Planned | Planned | Not run | — |
-| REQ-RTOS-005 | Planned | Planned | Planned | Not run | — |
-| REQ-RTOS-006 | Planned | Planned | Planned | Not run | — |
-| REQ-FALLBACK-001 | Planned | Planned | Planned | Not run | — |
-| REQ-CAN-001 | Planned | Planned | Planned | Not run | — |
-| REQ-CAN-002 | Planned | Planned | Planned | Not run | — |
-| REQ-CAN-003 | Planned | Planned | Planned | Not run | — |
-| REQ-CAN-004 | Planned | Planned | Planned | Not run | — |
-| REQ-CAN-005 | Planned | Planned | Planned | Not run | — |
-| REQ-CAN-006 | Planned | Planned | Planned | Not run | — |
-| REQ-CAN-007 | Planned | Planned | Planned | Not run | — |
-| REQ-ECU-DIAG-001 | Planned | Planned | Planned | Not run | — |
-| REQ-ECU-DIAG-002 | Planned | Planned | Planned | Not run | — |
-| REQ-ECU-DIAG-003 | Planned | Planned | Planned | Not run | — |
-| REQ-DTC-001 | Planned | Planned | Planned | Not run | — |
-| REQ-DTC-002 | Planned | Planned | Planned | Not run | — |
+| REQ-MCU-START-001 | [G4 contract](../gates/g04/contract.md) | Planned | [Sprint 4.1](../gates/g04/sprint-4.1.md) | Not run | — |
+| REQ-MCU-TIME-001 | [G4 contract](../gates/g04/contract.md) | Planned | [Sprint 4.2](../gates/g04/sprint-4.2.md) | Not run | — |
+| REQ-MCU-IRQ-001 | [G4 contract](../gates/g04/contract.md) | Planned | [Sprint 4.3](../gates/g04/sprint-4.3.md) | Not run | — |
+| REQ-MCU-FAULT-001 | [G4 contract](../gates/g04/contract.md) | Planned | [Sprint 4.4](../gates/g04/sprint-4.4.md) | Not run | — |
+| REQ-MCU-DRV-001 | [G4 contract](../gates/g04/contract.md) | Planned | [Sprint 4.5](../gates/g04/sprint-4.5.md) | Not run | — |
+| REQ-MCU-WDG-001 | [G4 contract](../gates/g04/contract.md) | Planned | [Sprint 4.6](../gates/g04/sprint-4.6.md) | Not run | — |
+| REQ-RTOS-001 | [G5 contract](../gates/g05/contract.md) | Planned | [Sprint 5.5](../gates/g05/sprint-5.5.md) | Not run | — |
+| REQ-RTOS-002 | [G5 contract](../gates/g05/contract.md) | Planned | [Sprint 5.1](../gates/g05/sprint-5.1.md) | Not run | — |
+| REQ-RTOS-003 | [G5 contract](../gates/g05/contract.md) | Planned | [Sprint 5.2](../gates/g05/sprint-5.2.md) | Not run | — |
+| REQ-RTOS-004 | [G5 contract](../gates/g05/contract.md) | Planned | [Sprint 5.4](../gates/g05/sprint-5.4.md) | Not run | — |
+| REQ-RTOS-005 | [G5 contract](../gates/g05/contract.md) | Planned | [Sprint 5.4](../gates/g05/sprint-5.4.md) | Not run | — |
+| REQ-RTOS-006 | [G5 contract](../gates/g05/contract.md) | Planned | [Sprint 5.6](../gates/g05/sprint-5.6.md) | Not run | — |
+| REQ-FALLBACK-001 | [G4 contract](../gates/g04/contract.md) / [G5 contract](../gates/g05/contract.md) | Planned | [Sprint 4.6](../gates/g04/sprint-4.6.md) / [Sprint 5.4](../gates/g05/sprint-5.4.md) | Not run | — |
+| REQ-CAN-001 | [G6 contract](../gates/g06/contract.md) | Planned | [Sprint 6.7](../gates/g06/sprint-6.7.md) | Not run | — |
+| REQ-CAN-002 | [G6 contract](../gates/g06/contract.md) | Planned | [Sprint 6.1](../gates/g06/sprint-6.1.md) | Not run | — |
+| REQ-CAN-003 | [G6 bench contract](../gates/g06/bench-contract.md) | Planned | [Sprint 6.2](../gates/g06/sprint-6.2.md) | Not run | — |
+| REQ-CAN-004 | [G6 contract](../gates/g06/contract.md) | Planned | [Sprint 6.3](../gates/g06/sprint-6.3.md) | Not run | — |
+| REQ-CAN-005 | [G6 contract](../gates/g06/contract.md) | Planned | [Sprint 6.1](../gates/g06/sprint-6.1.md) | Not run | — |
+| REQ-CAN-006 | [G6 bench contract](../gates/g06/bench-contract.md) | Planned | [Sprint 6.2](../gates/g06/sprint-6.2.md) | Not run | — |
+| REQ-CAN-007 | [G6 contract](../gates/g06/contract.md) | Planned | [Sprint 6.3](../gates/g06/sprint-6.3.md) | Not run | — |
+| REQ-ECU-DIAG-001 | [G6 contract](../gates/g06/contract.md) | Planned | [Sprint 6.6](../gates/g06/sprint-6.6.md) | Not run | — |
+| REQ-ECU-DIAG-002 | [G6 contract](../gates/g06/contract.md) | Planned | [Sprint 6.5](../gates/g06/sprint-6.5.md) | Not run | — |
+| REQ-ECU-DIAG-003 | [G6 contract](../gates/g06/contract.md) | Planned | [Sprint 6.7](../gates/g06/sprint-6.7.md) | Not run | — |
+| REQ-DTC-001 | [G7 contract](../gates/g07/contract.md) | Planned | [Sprint 7.4](../gates/g07/sprint-7.4.md) | Not run | — |
+| REQ-DTC-002 | [G7 contract](../gates/g07/contract.md) | Planned | [Sprint 7.4](../gates/g07/sprint-7.4.md) | Not run | — |
+| REQ-CP-OS-001 | [G7 contract](../gates/g07/contract.md) | Planned | [Sprint 7.1](../gates/g07/sprint-7.1.md) | Not run | — |
+| REQ-CP-COM-001 | [G7 contract](../gates/g07/contract.md) | Planned | [Sprint 7.2](../gates/g07/sprint-7.2.md) | Not run | — |
+| REQ-CP-DIAG-001 | [G7 contract](../gates/g07/contract.md) | Planned | [Sprint 7.3](../gates/g07/sprint-7.3.md) | Not run | — |
+| REQ-CP-MEM-001 | [G7 contract](../gates/g07/contract.md) | Planned | [Sprint 7.4](../gates/g07/sprint-7.4.md) | Not run | — |
+| REQ-CP-MODE-001 | [G7 contract](../gates/g07/contract.md) | Planned | [Sprint 7.5](../gates/g07/sprint-7.5.md) | Not run | — |
+| REQ-CP-SEC-001 | [G7 R25-11 ledger](../gates/g07/source-ledger.md) | Planned | [Sprint 7.5](../gates/g07/sprint-7.5.md) | Not run | — |
 | REQ-SI-001 | Planned | Planned | Planned | Not run | — |
 | REQ-SI-002 | Planned | Planned | Planned | Not run | — |
 | REQ-SI-003 | Planned | Planned | Planned | Not run | — |

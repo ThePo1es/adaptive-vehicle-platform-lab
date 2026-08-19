@@ -37,6 +37,6 @@ default-deny 정책, atomic policy reload, schema/version 검사, stale decision
 - audit 저장소가 가득 찼을 때 allow를 계속할지 중단할지 action별로 정해야 합니다.
 - mTLS 확장을 하지 않았다면 network caller는 계속 `unauthenticated endpoint`로 표시합니다.
 
-## 실패 시 줄일 범위
+## principal 경계를 다시 확인할 때
 
 IP·logical address를 principal로 사용했거나, deny 결정을 기록하지 않았거나, policy reload가 실행 중인 결정을 소급해 바꾸면 재시험합니다. Unix socket client 두 개와 action 하나만 남겨 credential→decision→enforcement→audit 순서를 다시 확인합니다.

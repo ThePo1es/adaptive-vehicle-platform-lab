@@ -1,0 +1,24 @@
+schema: isotp-rx-corpus/v1
+synthetic: true
+transport_reference: ISO-15765-2-2024-ed4
+addressing: normal_11_bit
+can_payload_bytes: 8
+rx_can_id: 0x7e8
+tx_flow_control_can_id: 0x7e0
+cases:
+  - id: sf-seven-bytes
+    frames: ["07 01 02 03 04 05 06 07"]
+    expect: {result: complete, payload: "01 02 03 04 05 06 07"}
+  - id: ff-cf-ten-bytes
+    frames: ["10 0A 01 02 03 04 05 06", "21 07 08 09 0A 00 00 00"]
+    expect: {result: complete, payload: "01 02 03 04 05 06 07 08 09 0A", flow_control_prefix: "30"}
+  - id: wrong-sequence
+    frames: ["10 0A 01 02 03 04 05 06", "22 07 08 09 0A 00 00 00"]
+    expect: {result: sequence_error, application_value_unchanged: true}
+  - id: truncated-first-frame
+    frames: ["10"]
+    expect: {result: malformed_length, application_value_unchanged: true}
+  - id: declared-length-over-capacity
+    receiver_capacity: 1024
+    frames: ["1F FF 01 02 03 04 05 06"]
+    expect: {result: capacity_exceeded, allocation_attempts: 0, application_value_unchanged: true}

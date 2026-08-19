@@ -185,7 +185,7 @@ G3는 ISA·ABI·binary·compiler 분석에 집중합니다. Cortex-M fault handl
 
 ### 기본 target
 
-G0 ADR에서 Cortex-M4/M7 또는 M33 계열 하나를 고릅니다. 다른 core의 fault, cache, MPU, TrustZone 차이는 capability matrix에 기록합니다.
+[ADR-0001](docs/adr/0001-mcu-rtos-baseline.md)의 NUCLEO-G474RE/STM32G474RE Cortex-M4F를 기본 대상으로 사용합니다. 다른 core로 옮길 때 fault, cache, MPU, TrustZone 차이를 capability matrix와 새 ADR에 기록합니다.
 
 ### 배울 내용
 
@@ -262,6 +262,7 @@ G0 ADR에서 Cortex-M4/M7 또는 M33 계열 하나를 고릅니다. 다른 core�
 - ISO-TP timeout·sequence 오류·flood corpus를 통과한다.
 - 실제 transceiver bench에서 bus-off와 복구 정책을 관찰한다.
 - 안전한 read service만 허용한 interoperability test를 수행한다.
+- oscilloscope와 differential probe가 없으면 software/controller 항목만 닫고 Gate 상태를 `Provisional`로 유지한다.
 
 ---
 

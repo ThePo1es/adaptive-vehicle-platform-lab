@@ -1,0 +1,25 @@
+schema: classic-concept-config/v1
+synthetic: true
+release_mapping: AUTOSAR-Classic-R25-11
+tasks:
+  - {name: CanRxTask, priority: 3, activation: can_rx_event}
+runnables:
+  - {name: UpdateVehicleSpeed, event: speed_rx, task: CanRxTask, reentrant: false}
+ports:
+  - {name: VehicleSpeed, type: uint16, unit: km_per_h, min: 0, max: 300, freshness_ms: 100}
+can_frames:
+  - id: 0x123
+    format: classic
+    payload_bytes: 8
+    pdu: VehicleStatePdu
+pdus:
+  - name: VehicleStatePdu
+    route: {canif: CanIf0, pdur: Route0, com: VehicleStateCom, rte_port: VehicleSpeed}
+signals:
+  - {name: VehicleSpeedRaw, pdu: VehicleStatePdu, start_bit: 0, bit_length: 16, byte_order: little_endian, scale: 0.01}
+diagnostics:
+  - {request_sid: 0x22, did: 0x1234, route: SyntheticTemperatureProvider, access: read_only}
+expected_generated_files:
+  - generated/runnable_table.hpp
+  - generated/com_routes.hpp
+  - generated/diagnostic_routes.hpp

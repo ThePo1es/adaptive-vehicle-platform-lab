@@ -12,10 +12,10 @@
 | G1 | Correctness, Independence | `REQ-QUAL-002`, `REQ-QUAL-003`; bounds 밖 read/write, 오류 뒤 output 훼손 |
 | G2 | Correctness, Design | `REQ-QUAL-001`, `REQ-QUAL-002`; dangling owner/view, data race, 금지된 동적 할당 |
 | G3 | Diagnosis, Measurement | `REQ-TOOL-001`; GCC를 LLVM IR 근거로 설명, target·ABI가 다른 수치 비교 |
-| G4 | Diagnosis, Reliability | `REQ-FALLBACK-001`, `REQ-OBS-001`; fault 원인 유실, 무한 ISR, 정의하지 않은 reset 상태 |
+| G4 | Diagnosis, Reliability | `REQ-MCU-START-001`–`REQ-MCU-WDG-001`, `REQ-OBS-001`; fault 원인 유실, 무한 ISR, 정의하지 않은 reset 상태 |
 | G5 | Measurement, Reliability | `REQ-RTOS-003`–`REQ-RTOS-006`; blocking·jitter 누락, queue·stack overflow 미탐지 |
 | G6 | Correctness, Diagnosis | `REQ-CAN-002`–`REQ-CAN-004`, `REQ-ECU-DIAG-002`–`003`; malformed 입력이 application state를 훼손 |
-| G7 | Design, Correctness | `REQ-DTC-001`–`002`; 책임 경계 오배치, corruption 뒤 잘못된 DTC 복구 |
+| G7 | Design, Correctness | `REQ-DTC-001`–`002`, `REQ-CP-OS-001`–`REQ-CP-SEC-001`; 책임 경계 오배치, corruption 뒤 잘못된 DTC 복구 |
 | G8 | Diagnosis, Reproducibility | `REQ-PLAT-001`–`004`, `REQ-LINUX-RT-001`–`003`; 재현 불가능한 image, descendant 잔류, VM timing 과장 |
 | G9 | Correctness, Measurement | `REQ-SI-001`–`004`, `REQ-COM-002`–`005`, `REQ-TIME-001`–`003`; generated boundary 우회, clock uncertainty 없는 one-way latency 주장 |
 | G10 | Design, Reliability | `REQ-EXEC-001`–`004`, `REQ-STATE-001`–`002`, `REQ-HEALTH-001`, `REQ-AD-DIAG`, `REQ-IAM`; 중복 restart owner, 저장된 운행 상태 자동 적용, transport ID를 principal로 사용 |

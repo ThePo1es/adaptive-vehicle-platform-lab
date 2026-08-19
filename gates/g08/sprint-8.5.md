@@ -18,7 +18,7 @@ seccomp default-deny allowlist를 적용합니다. denylist는 비교 실험으�
 
 ## 전이 과제
 
-검토자가 writable path, capability, syscall, resource limit 중 하나를 더 줄입니다. 실패한 기능을 찾아 최소 권한으로 복원하고 policy diff와 근거를 제출합니다.
+추가 policy patch는 writable path, capability, syscall, resource limit 중 하나를 더 줄입니다. 실패한 기능을 찾아 최소 권한으로 복원하고 policy diff와 근거를 제출합니다.
 
 ## 판정 기준
 
@@ -36,6 +36,6 @@ seccomp default-deny allowlist를 적용합니다. denylist는 비교 실험으�
 2. seccomp profile은 architecture와 libc 차이를 테스트 matrix에 넣습니다.
 3. resource limit의 단위와 burst 허용 방식을 실험 기록에 적습니다.
 
-## 재시험 조건
+## hardening 재검토선
 
-기능 테스트가 깨졌는데도 hardening을 완료 처리했거나 무제한 fork·메모리 입력을 호스트에서 실행했거나 근거 없는 capability가 남았다면 전용 VM으로 돌아갑니다. P01 기능 하나와 정책 테스트 세 개만 통과시킨 뒤 정책을 넓힙니다.
+기능 테스트가 깨졌는데도 hardening을 완료 처리했거나 무제한 fork·메모리 입력을 호스트에서 실행했거나 근거 없는 capability가 남았다면 전용 VM으로 돌아갑니다. P01 기능 하나와 정책 테스트 세 개를 다시 통과시킨 뒤 정책을 넓힙니다.

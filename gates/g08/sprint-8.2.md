@@ -35,6 +35,6 @@ Sprint 8.1 launcher를 `ProcessLauncher` port 뒤에 둡니다. `Clock`, `TimerQ
 2. backoff 계산은 overflow와 상한 적용 순서를 테스트합니다.
 3. 상태 전환 함수가 프로세스를 직접 실행하면 순수 모델 검사가 어려워집니다.
 
-## 치명적 실패와 보충
+## 재시작 판단을 되돌릴 때
 
 wall clock 변경이 restart 판단에 들어가거나, 한 child의 고장이 다른 application의 budget을 소비하거나, stop 뒤 재기동 경합이 남으면 재시험합니다. 단일 application 상태 머신으로 줄여 생성 sequence 200개를 다시 통과시킵니다.

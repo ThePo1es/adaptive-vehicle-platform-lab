@@ -1,0 +1,38 @@
+{
+  "schema": "g07-mode-security/v1",
+  "synthetic": true,
+  "mode_model": {
+    "states": ["startup", "full_communication", "no_communication", "shutdown"],
+    "terminal_states": ["shutdown"],
+    "event_priority": ["shutdown_request", "watchdog_missed", "bus_off", "silent_request", "bus_recovered", "full_request", "startup_complete"],
+    "rules": {
+      "shutdown_request": {"next_state": "shutdown", "reason": "shutdown_requested"},
+      "watchdog_missed": {"next_state": "shutdown", "reason": "watchdog_missed"},
+      "bus_off": {"next_state": "no_communication", "reason": "bus_off"},
+      "silent_request": {"next_state": "no_communication", "reason": "silent_requested"},
+      "bus_recovered": {"next_state": "full_communication", "reason": "bus_recovered"},
+      "full_request": {"next_state": "full_communication", "reason": "full_requested"},
+      "startup_complete": {"next_state": "full_communication", "reason": "startup_complete"}
+    }
+  },
+  "mode_cases": [
+    {"id": "M01", "initial_state": "full_communication", "events": ["bus_off", "shutdown_request"], "expected_state": "shutdown", "expected_reason": "shutdown_requested"},
+    {"id": "M02", "initial_state": "full_communication", "events": ["shutdown_request", "bus_off"], "expected_state": "shutdown", "expected_reason": "shutdown_requested"},
+    {"id": "M03", "initial_state": "full_communication", "events": ["full_request", "bus_off"], "expected_state": "no_communication", "expected_reason": "bus_off"},
+    {"id": "M04", "initial_state": "no_communication", "events": ["bus_recovered", "watchdog_missed"], "expected_state": "shutdown", "expected_reason": "watchdog_missed"},
+    {"id": "M05", "initial_state": "startup", "events": ["startup_complete"], "expected_state": "full_communication", "expected_reason": "startup_complete"},
+    {"id": "M06", "initial_state": "full_communication", "events": ["silent_request"], "expected_state": "no_communication", "expected_reason": "silent_requested"},
+    {"id": "M07", "initial_state": "shutdown", "events": ["full_request"], "expected_state": "shutdown", "expected_reason": "already_shutdown"}
+  ],
+  "freshness_policy": {
+    "allowed_key_ids": ["lab-key-01"],
+    "accept_when": "tag_valid and key_allowed and incoming_counter > highest_accepted_counter",
+    "reject_effect": {"application_update": false, "quality": "auth_failed", "preserve_last_value": true}
+  },
+  "freshness_cases": [
+    {"id": "S01", "key_id": "lab-key-01", "tag_valid": true, "highest_accepted_counter": 7, "incoming_counter": 8, "expected_accept": true, "expected_application_update": true, "expected_quality": "valid", "expected_highest_counter": 8},
+    {"id": "S02", "key_id": "lab-key-01", "tag_valid": true, "highest_accepted_counter": 7, "incoming_counter": 7, "expected_accept": false, "expected_application_update": false, "expected_quality": "auth_failed", "expected_highest_counter": 7},
+    {"id": "S03", "key_id": "lab-key-01", "tag_valid": false, "highest_accepted_counter": 7, "incoming_counter": 8, "expected_accept": false, "expected_application_update": false, "expected_quality": "auth_failed", "expected_highest_counter": 7},
+    {"id": "S04", "key_id": "unknown-key", "tag_valid": true, "highest_accepted_counter": 7, "incoming_counter": 8, "expected_accept": false, "expected_application_update": false, "expected_quality": "auth_failed", "expected_highest_counter": 7}
+  ]
+}

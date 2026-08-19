@@ -18,7 +18,7 @@ generator가 `IVehicleStateProxy`, `IVehicleStateSkeleton`, data type, error typ
 
 ## 전이 과제
 
-검토자가 method 하나를 추가하거나 이벤트 payload를 호환되지 않게 바꿉니다. IDL diff, 생성 diff, compile failure 또는 compatibility 판정, 수정할 application code를 차례로 보여 줍니다. 이어서 CommonAPI 산출물에서 같은 책임을 맡는 class와 callback을 찾아 비교표에 추가합니다.
+전이 IDL에는 method 하나가 추가되거나 이벤트 payload가 호환되지 않게 바뀌어 있습니다. IDL diff, 생성 diff, compile failure 또는 compatibility 판정, 수정할 application code를 차례로 보여 줍니다. 이어서 CommonAPI 산출물에서 같은 책임을 맡는 class와 callback을 찾아 비교표에 추가합니다.
 
 ## 판정 기준
 
@@ -37,6 +37,6 @@ generator가 `IVehicleStateProxy`, `IVehicleStateSkeleton`, data type, error typ
 3. callback 수명과 unsubscribe 경합을 generated API 계약에 포함합니다.
 4. transport 주소나 SOME/IP ID가 로컬 IDL에 들어오면 경계가 무너진 것입니다.
 
-## 치명적 실패와 보충
+## 생성 경계 위반
 
 Proxy/Skeleton을 손으로 작성해 놓고 생성했다고 표시하거나, 생성 파일에 업무 로직을 넣거나, CommonAPI를 AUTOSAR `ara::com` 구현으로 소개하면 통과할 수 없습니다. 보강 범위는 method 하나와 이벤트 하나이며, 생성→compile→loopback 테스트를 깨끗한 디렉터리에서 다시 실행합니다.

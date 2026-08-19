@@ -18,7 +18,7 @@ request ID, authenticated principal placeholder, 대상, 서비스, 프로세스
 
 ## 전이 과제
 
-검토자가 DoIP NACK, gateway timeout, provider crash, ECU NRC 중 하나가 같은 tester 증상으로 보이게 fixture를 바꿉니다. packet, router audit, provider log를 사용해 최초 실패 위치를 찾고 회귀 시험을 추가합니다. 새 DID 하나도 등록해 application 변경 범위를 확인합니다.
+봉인 fixture에서는 DoIP NACK, gateway timeout, provider crash, ECU NRC 중 하나가 같은 tester 증상으로 보입니다. packet, router audit, provider log를 사용해 최초 실패 위치를 찾고 회귀 시험을 추가합니다. 새 DID 하나도 등록해 application 변경 범위를 확인합니다.
 
 ## 판정 기준
 
@@ -35,6 +35,6 @@ request ID, authenticated principal placeholder, 대상, 서비스, 프로세스
 1. tester가 본 timeout만으로 gateway와 ECU 중 어느 쪽이 실패했는지 알 수 없습니다.
 2. UDS NRC는 ECU 또는 UDS endpoint의 protocol response입니다. 로컬 parser error는 별도 결과로 기록합니다.
 
-## 재시험 조건
+## 진단 오류 분리 재확인
 
 logical address를 인증된 사용자처럼 취급했거나, 허용되지 않은 요청이 backend에 전달됐거나, 서로 다른 실패를 한 숫자로 기록했다면 해당 경로를 다시 만듭니다. 보강 과제는 tester 한 명, DID 하나, provider 하나로 줄여 네 책임의 로그를 맞추는 것입니다.

@@ -18,7 +18,7 @@ periodic worker의 예정 릴리스, 실제 wake-up, start, finish를 monotonic 
 
 ## 전이 과제
 
-검토자가 affinity, IRQ load, mutex protocol, cgroup CPU limit 중 하나를 바꿉니다. 평균이 비슷해도 tail latency가 달라진 원인을 trace에서 찾고, 요구를 만족시키는 최소 설정 변경을 제시합니다.
+새 workload는 affinity, IRQ load, mutex protocol, cgroup CPU limit 중 하나가 다릅니다. 평균이 비슷해도 tail latency가 달라진 원인을 trace에서 찾고, 요구를 만족시키는 최소 설정 변경을 제시합니다.
 
 ## 판정 기준
 
@@ -36,6 +36,6 @@ periodic worker의 예정 릴리스, 실제 wake-up, start, finish를 monotonic 
 2. `mlockall` 성공 뒤에도 미리 접근하지 않은 stack page가 남을 수 있습니다.
 3. 평균보다 최악 구간의 scheduler trace를 먼저 확인합니다.
 
-## 재시험 조건
+## 실시간 설정을 다시 측정할 때
 
 policy 적용 실패를 성공으로 기록하거나, `SCHED_FIFO` task가 무한 실행될 수 있거나, VM 수치를 대상의 실시간 성능으로 제시하면 다시 측정합니다. 보강 범위는 worker 두 개와 mutex 하나로 줄입니다.

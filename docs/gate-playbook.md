@@ -125,7 +125,7 @@ Deadline과 인수 예산은 Sprint 5.1에서 고정합니다. 실측이 실패�
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
-| 6.1 CAN·CAN FD link | arbitration, Classic/FD frame, DLC 0–64, nominal/data bit rate, BRS, ESI | SocketCAN Classic/FD trace | mixed-frame·unsupported-controller 입력 해석 | can-utils + analyzer |
+| 6.1 CAN·CAN FD link | arbitration, Classic/FD frame, DLC code 0–15와 payload length, nominal/data bit rate, BRS, ESI | SocketCAN Classic/FD trace | mixed-frame·unsupported-controller 입력 해석 | can-utils + analyzer |
 | 6.2 physical bench | termination, FD-capable controller·transceiver, error state | two-node CAN FD | nominal/data bit-rate mismatch, bus-off | scope + controller counters |
 | 6.3 CAN timing | Classic/FD load, stuffing bound, priority response time | message set analysis | BRS·payload·priority가 바뀐 message set | analytical and measured result |
 | 6.4 ISO-TP I | addressing, SF/FF/CF/FC | reassembly state machine | sequence and truncation faults | Linux ISO-TP differential test |
@@ -144,7 +144,7 @@ Deadline과 인수 예산은 Sprint 5.1에서 고정합니다. 실측이 실패�
 | 7.2 COM path | CanIf, PduR, COM, RTE | RX vertical slice | TX/on-change path | packet-to-application trace |
 | 7.3 진단 path | CanTp, DCM | UDS routing | timeout/NRC fault | protocol oracle |
 | 7.4 fault storage | DEM, NvM | DTC journal | corruption/reboot | golden state model |
-| 7.5 mode·network | EcuM, BswM, WdgM, ComM/CanSM | startup/mode machine | bus-off startup interaction | model-based tests |
+| 7.5 mode·network·보안 배치 | EcuM, BswM, Wdg/WdgIf/WdgM, ComM/CanSM/CanNm, SecOC/CSM/CryptoIf | startup/mode machine | bus-off·freshness·watchdog 상호작용 | model-based tests |
 | 7.6 P00-C defense | configuration generation, mapping | three vertical slices | unfamiliar responsibility fault | external review, v1 release |
 
 공식 AUTOSAR release를 고정하고 읽은 절을 기록합니다. ARXML·generator 경험은 접근 가능한 교육 stack이 있을 때 별도 evidence로 추가합니다.

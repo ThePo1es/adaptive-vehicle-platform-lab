@@ -22,7 +22,7 @@ YAML duplicate key, merge key, alias expansion, deep nesting, oversized document
 
 ## 전이 과제
 
-검토자가 유효해 보이지만 의미가 충돌하는 manifest 세 개를 줍니다. runtime을 시작하기 전에 모두 거부하고 rule을 추가합니다. 하나의 새 optional field도 backward compatibility 절차에 맞춰 도입합니다.
+봉인 묶음에는 형식은 유효하지만 의미가 충돌하는 manifest 세 개가 들어 있습니다. runtime을 시작하기 전에 모두 거부하고 rule을 추가합니다. 하나의 새 optional field도 backward compatibility 절차에 맞춰 도입합니다.
 
 ## 판정 기준
 

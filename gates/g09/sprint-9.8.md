@@ -18,7 +18,7 @@ tester와 gateway 사이의 discovery, TCP 연결, routing activation, UDS read,
 
 ## 전이 과제
 
-검토자가 route 하나, timeout 하나, malformed message 하나를 선택합니다. tester 결과, gateway audit, packet capture를 시간순으로 맞춰 첫 거부 지점을 찾습니다. python-doipclient와의 성공만으로 ISO 적합성을 주장하지 않습니다.
+봉인 묶음에는 잘못된 route, timeout, malformed message 가운데 하나가 있습니다. tester 결과, gateway audit, packet capture를 시간순으로 맞춰 첫 거부 지점을 찾습니다. python-doipclient와의 성공만으로 ISO 적합성을 주장하지 않습니다.
 
 ## 판정 기준
 

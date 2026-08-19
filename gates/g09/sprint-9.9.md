@@ -18,7 +18,7 @@
 
 ## 전이 과제
 
-검토자가 sync daemon을 멈추거나 delay asymmetry를 넣습니다. consumer가 latency를 계속 표시할지, quality를 낮출지, sample을 제외할지 contract대로 판정합니다. clock uncertainty 상한을 만족하지 못하면 end-to-end one-way latency 대신 RTT 또는 같은 clock 구간 지연을 보고합니다.
+전이 시험에서는 sync daemon이 멈추거나 delay asymmetry가 생깁니다. consumer가 latency를 계속 표시할지, quality를 낮출지, sample을 제외할지 contract대로 판정합니다. clock uncertainty 상한을 만족하지 못하면 end-to-end one-way latency 대신 RTT 또는 같은 clock 구간 지연을 보고합니다.
 
 ## 판정 기준
 

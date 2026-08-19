@@ -17,7 +17,7 @@ P00은 세 번 release합니다. 각 release는 해당 Gate에서 배운 내용�
 - 요구사항에서 도출한 periodic·sporadic task set
 - synthetic sensor와 defined output state
 - bounded ISR-to-task queue
-- watchdog와 deterministic fallback policy
+- watchdog과 deterministic fallback policy
 - monotonic timing recorder와 stack/queue counters
 
 ### Timing contract
@@ -56,9 +56,9 @@ P00은 세 번 release합니다. 각 release는 해당 Gate에서 배운 내용�
 | Scenario | Evidence |
 | --- | --- |
 | arbitration/load change | calculated and measured response time |
-| Classic/FD mixed traffic | DLC 0–64, frame type, BRS·ESI 판정과 거부 기록 |
-| nominal/data bit-rate change | controller·transceiver capability와 두 구간의 scope trace |
-| termination or bit-rate mismatch | scope/controller error evidence |
+| Classic/FD mixed traffic | DLC code 0–15와 payload length 0–64의 정확한 대응, frame type, BRS·ESI 판정 기록 |
+| nominal/data bit-rate change | controller·transceiver capability, controller counter, 가능한 경우 differential scope trace |
+| termination or bit-rate mismatch | controller error evidence; 적합한 scope·differential probe가 없으면 analog 판정은 `Unverified` |
 | bus-off | error state, unavailable state, recovery trace |
 | ISO-TP sequence/timer fault | packet trace and state assertion |
 | UDS malformed/unauthorized request | NRC/reject and unchanged application state |
@@ -71,6 +71,7 @@ P00은 세 번 release합니다. 각 release는 해당 Gate에서 배운 내용�
 - Linux ISO-TP 또는 별도 tester와 상호 운용
 - 실제 bus-off fault와 복구 정책
 - 진단 write·download가 비활성화된 access policy
+- `Validated` 판정에는 교정한 oscilloscope·differential probe의 정상·fault waveform이 필요하며, 장비가 없으면 `Provisional`로 종료
 
 ## P00-C — Classic Concept Stack
 
@@ -114,9 +115,10 @@ flowchart TB
 
 ## Requirements
 
+- G4 runtime: `REQ-MCU-START-001`–`REQ-MCU-WDG-001`
 - P00-A: `REQ-RTOS-001`–`REQ-RTOS-006`, `REQ-FALLBACK-001`
 - P00-B: `REQ-CAN-001`–`REQ-CAN-007`, `REQ-ECU-DIAG-001`–`REQ-ECU-DIAG-003`
-- P00-C: `REQ-DTC-001`–`REQ-DTC-002`
+- P00-C: `REQ-DTC-001`–`REQ-DTC-002`, `REQ-CP-OS-001`–`REQ-CP-SEC-001`
 
 ## 결과물 이름과 적용 범위
 

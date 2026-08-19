@@ -18,13 +18,13 @@ sender 10/100/1,000Hz, payload 32/512/1,400 byte 조합을 실행합니다. sock
 
 ## 전이 과제
 
-검토자가 route, VLAN membership, multicast join interface, MTU 중 하나를 깨뜨립니다. packet이 사라진 첫 경계를 namespace별 capture와 `ip -details` 출력으로 찾고 복구 테스트를 추가합니다.
+봉인 namespace에는 route, VLAN membership, multicast join interface, MTU 가운데 하나가 잘못 설정돼 있습니다. packet이 사라진 첫 경계를 namespace별 capture와 `ip -details` 출력으로 찾고 복구 테스트를 추가합니다.
 
 ## 판정 기준
 
 - topology를 빈 host/VM에서 한 명령으로 생성하고 완전히 정리
 - VLAN tag, multicast destination, TCP sequence/ack를 capture에서 설명
-- route 고장와 application 고장를 서로 다른 관찰 근거로 구분
+- route 고장과 application 고장을 서로 다른 관찰 근거로 구분
 - 송신, wire 관찰, 수신, application 처리 count의 차이를 계산
 - overload에서도 queue와 memory가 정한 상한을 지킴
 - capture filter와 해석 절차를 README에 기록

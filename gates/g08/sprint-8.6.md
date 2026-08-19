@@ -20,7 +20,7 @@ Buildroot가 만든 package manifest, license 자료, CycloneDX SBOM을 보관�
 
 ## 전이 과제
 
-빈 build directory와 새 container/VM에서 릴리스 tag만 받아 이미지를 다시 만듭니다. 검토자가 RAM 크기, console, network interface 중 하나를 바꾼 대상을 줍니다. 필요한 config와 DT 차이를 찾아 부팅 근거를 제출합니다.
+빈 build directory와 새 container/VM에서 릴리스 tag만 받아 이미지를 다시 만듭니다. 전이 대상은 RAM 크기, console, network interface 중 하나가 바뀐 보드입니다. 필요한 config와 DT 차이를 찾아 부팅 근거를 제출합니다.
 
 ## 판정 기준
 

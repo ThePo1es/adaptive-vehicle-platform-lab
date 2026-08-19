@@ -36,6 +36,6 @@ duplicate, gap, out-of-range, invalid value, stale timeout, source restart를 �
 2. restart 뒤 sequence 초기화 규칙에는 source instance 식별자가 필요합니다.
 3. public capture에는 실제 차량의 arbitration ID와 payload를 넣지 않습니다.
 
-## 치명적 실패와 보충
+## P02 재현 보류
 
 단위·scale이 문서와 code에서 다르거나, stale data가 정상 quality로 남거나, 외부 replay가 재현되지 않으면 Gate를 통과하지 못합니다. 실패 Sprint를 12–20시간 보강하고 새 릴리스 tag로 다시 심사합니다.

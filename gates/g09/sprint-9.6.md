@@ -18,7 +18,7 @@ generated Proxy와 Skeleton 뒤에 vsomeip adapter를 붙여 두 프로세스에
 
 ## 전이 과제
 
-검토자가 old consumer, unknown method, out-of-range 상태, sequence wrap 중 하나를 투입합니다. wire 결과, 서비스 log, consumer-visible 결과를 한 표에 정리하고 contract 테스트를 추가합니다.
+봉인 입력으로 old consumer, unknown method, out-of-range 상태, sequence wrap 중 하나가 들어옵니다. wire 결과, 서비스 log, consumer-visible 결과를 한 표에 정리하고 contract 테스트를 추가합니다.
 
 ## 판정 기준
 

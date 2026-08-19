@@ -6,7 +6,7 @@
 
 ## 시작 조건과 실험 행렬
 
-10Hz/100Hz, UDP/TCP, payload 32/512/1,400 byte, normal/slow consumer 조합을 최소 행렬로 사용합니다. 추가 고장는 loss 0/1/5%, delay 0/10/50ms, reorder 0/1%, provider restart입니다. run마다 warm-up, 측정 시간, seed, sample count를 적습니다.
+10Hz/100Hz, UDP/TCP, payload 32/512/1,400 byte, normal/slow consumer 조합을 최소 행렬로 사용합니다. 추가 고장은 loss 0/1/5%, delay 0/10/50ms, reorder 0/1%, provider restart입니다. run마다 warm-up, 측정 시간, seed, sample count를 적습니다.
 
 ## 안내 실습
 
@@ -18,7 +18,7 @@
 
 ## 전이 과제
 
-검토자가 workload와 queue capacity를 바꿉니다. 시작 전에 기대하는 병목과 합격 상한을 써 두고 실행 뒤 차이를 설명합니다. tuning은 원본 run을 보존한 다음 별도 commit에서 합니다.
+전이 workload는 queue capacity와 부하 중 하나가 다릅니다. 시작 전에 기대하는 병목과 합격 상한을 써 두고 실행 뒤 차이를 설명합니다. tuning은 원본 run을 보존한 다음 별도 commit에서 합니다.
 
 ## 판정 기준
 
