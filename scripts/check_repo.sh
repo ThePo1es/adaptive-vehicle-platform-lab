@@ -6,6 +6,7 @@ repo_root=$(cd -- "$script_dir/.." && pwd)
 cd "$repo_root"
 
 required_files=(
+    .python-version
     README.md
     ROADMAP.md
     ASSESSMENTS.md
@@ -121,14 +122,19 @@ required_files=(
     fixtures/g07/mode-security-permutations-v1.json
     fixtures/g10/release-map-cases-v1.json
     labs/g10_1_release_map/README.md
+    labs/g10_1_release_map/r25-11-document-lock.json
     labs/g10_1_release_map/validator.py
     labs/g10_1_release_map/run_harness.py
     labs/g10_1_release_map/starter/release-map.json
     labs/g10_1_release_map/tests/test_release_map.py
+    evidence/runnable/g10.1/README.md
+    evidence/runnable/g10.1/harness.stdout
+    evidence/runnable/g10.1/run-manifest.json
     projects/00-mcu-rtos-ecu/README.md
     projects/05-can-ethernet-vertical-slice/README.md
     projects/06-heterogeneous-vehicle-platform/README.md
     scripts/check_fixture_semantics.py
+    scripts/check_runnable_evidence.py
 )
 
 for file in "${required_files[@]}"; do
@@ -138,7 +144,7 @@ for file in "${required_files[@]}"; do
     fi
 done
 
-specified_lab_files=(
+documented_lab_files=(
     gates/g00/sprint-*.md
     gates/g01/sprint-*.md
     gates/g02/sprint-*.md
@@ -153,12 +159,12 @@ specified_lab_files=(
     gates/g11/sprint-*.md
 )
 
-if (( ${#specified_lab_files[@]} != 76 )); then
-    echo "error: expected 76 specified lab packs, found ${#specified_lab_files[@]}" >&2
+if (( ${#documented_lab_files[@]} != 76 )); then
+    echo "error: expected 76 documented lab packs, found ${#documented_lab_files[@]}" >&2
     exit 1
 fi
 
-for file in "${specified_lab_files[@]}"; do
+for file in "${documented_lab_files[@]}"; do
     if ! grep -Eq '^## .*시간|^## 시간' "$file"; then
         echo "error: lab pack has no time section: $file" >&2
         exit 1
@@ -186,12 +192,16 @@ for file in "${specified_lab_files[@]}"; do
 done
 
 bash -n scripts/new-study-log.sh scripts/check_repo.sh
-python3 -c 'import ast, pathlib; [ast.parse(pathlib.Path(path).read_text(encoding="utf-8")) for path in ("scripts/check_internal_links.py", "scripts/check_traceability.py", "scripts/check_fixture_semantics.py", "labs/g10_1_release_map/validator.py", "labs/g10_1_release_map/run_harness.py", "labs/g10_1_release_map/tests/test_release_map.py")]'
+python3 -c 'import ast, pathlib; [ast.parse(pathlib.Path(path).read_text(encoding="utf-8")) for path in ("scripts/check_internal_links.py", "scripts/check_traceability.py", "scripts/check_fixture_semantics.py", "scripts/check_runnable_evidence.py", "labs/g10_1_release_map/validator.py", "labs/g10_1_release_map/run_harness.py", "labs/g10_1_release_map/tests/test_release_map.py")]'
 python3 scripts/check_internal_links.py
 python3 scripts/check_traceability.py
 python3 scripts/check_fixture_semantics.py
 python3 labs/g10_1_release_map/run_harness.py
-python3 -m unittest discover -s labs/g10_1_release_map/tests -p 'test_*.py'
+python3 -m unittest discover -s labs/g10_1_release_map/tests -p 'test_*.py' >/dev/null 2>&1
+echo "G10.1 unit tests: OK (5 tests)"
+if [[ ${SKIP_RUNNABLE_EVIDENCE:-0} != 1 ]]; then
+    python3 scripts/check_runnable_evidence.py
+fi
 
 if find . -path './.git' -prune -o -type f \
     \( -name '*.pem' -o -name '*.key' -o -name '*.p12' \) \

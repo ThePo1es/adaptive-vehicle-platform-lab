@@ -16,11 +16,11 @@
 | G7 | [6 Sprint](g07/) | Specified |
 | G8 | [9 Sprint](g08/) | Specified |
 | G9 | [10 Sprint](g09/) | Specified |
-| G10 | [10 Sprint](g10/) | Specified |
+| G10 | [10 Sprint](g10/) | 9 Specified; [10.1](g10/sprint-10.1.md) Runnable |
 | G11A | [4 Sprint](g11/) | Specified |
 | G11B·G12 | [Gate Playbook](../docs/gate-playbook.md) | Outline; 15 Sprint 작성 필요 |
 
-현재 91개 중 76개가 `Specified`, 15개가 `Outline`입니다. 이 수치는 문서 작성 진도이며 학습 효과를 뜻하지 않습니다.
+현재 91개 중 75개가 `Specified`, 1개가 `Runnable`, 15개가 `Outline`입니다. 이 수치는 준비 상태이며 학습 완료 수가 아닙니다. G10.1의 starter와 실행 기록은 [run manifest](../evidence/runnable/g10.1/run-manifest.json)에 있습니다.
 
 | 상태 | 필요한 근거 |
 | --- | --- |

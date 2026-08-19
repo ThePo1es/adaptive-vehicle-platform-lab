@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from validator import pass_line, validate
+from validator import MAPPING_STATUSES, pass_line, validate_harness
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -28,10 +28,26 @@ def replace_at_pointer(document: dict[str, Any], pointer: str, value: Any) -> No
         target[leaf] = value
 
 
+def apply_operation(document: dict[str, Any], case: dict[str, Any]) -> None:
+    operation = case["operation"]
+    if operation == "replace":
+        replace_at_pointer(document, case["path"], case["value"])
+        return
+    if operation == "set-all-mapping-status":
+        for node in document["nodes"]:
+            node["mapping_status"] = case["value"]
+        document["summary"] = {
+            status: len(document["nodes"]) if status == case["value"] else 0
+            for status in MAPPING_STATUSES
+        }
+        return
+    raise AssertionError(f"unknown fixture operation: {operation}")
+
+
 def run() -> list[str]:
     case_set = json.loads(CASES.read_text(encoding="utf-8"))
     base = case_set["guided_submission"]
-    findings = validate(base, "harness")
+    findings = validate_harness(base)
     if findings:
         joined = ",".join(finding.code for finding in findings)
         raise AssertionError(f"guided case failed: {joined}")
@@ -39,8 +55,8 @@ def run() -> list[str]:
     lines = [pass_line(base)]
     for case in case_set["negative_cases"]:
         mutated = copy.deepcopy(base)
-        replace_at_pointer(mutated, case["mutation"]["path"], case["mutation"]["value"])
-        observed = sorted({finding.code for finding in validate(mutated, "harness")})
+        apply_operation(mutated, case)
+        observed = sorted({finding.code for finding in validate_harness(mutated)})
         expected = sorted(case["expected_errors"])
         if observed != expected:
             raise AssertionError(f"{case['id']}: expected {expected}, observed {observed}")

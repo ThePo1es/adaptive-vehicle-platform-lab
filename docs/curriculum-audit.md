@@ -5,7 +5,7 @@
 - G8–G11A의 Adaptive·보안 경로 명세: **조건부 통과**
 - 91개 Sprint 전체를 바로 실행할 수 있는 완성 과정: **통과 전**
 
-76개 Lab Pack은 과제와 판정 조건을 적은 `Specified` 상태입니다. starter commit, 검증한 fixture, 실행 명령, expected output이 붙은 `Runnable` 과제는 아직 없습니다. G11B·G12의 15개 Sprint는 `Outline`입니다.
+75개 Lab Pack은 `Specified`, G10.1은 `Runnable` 상태입니다. G10.1에는 starter commit, 공개 입력과 코드의 SHA-256, 실행 명령, 고정 stdout, 기계 active/wall time이 붙었습니다. 원문 검토와 학습 수행은 시작하지 않았습니다. G11B·G12의 15개 Sprint는 `Outline`입니다.
 
 ## 이전 감사 항목 대조
 
@@ -35,13 +35,13 @@
 | 모든 Sprint가 같은 시간·종결문을 쓰는 문제 | 해결 | G8–G11 시간 범위 분화, 반복 종결 공식 제거 |
 | 실제 Adaptive stack 경험 | 일부 해결 | CommonAPI 필수 비교와 Industrial Bridge 경로 추가; 실제 SDK/CAPI 과제는 접근성에 따라 미작성 |
 | 외부 검토자 병목 | 일부 해결 | 자동 oracle·upstream 결함을 일반 Sprint에 사용하고 재현·도메인 검토 역할 분리 |
-| 전체 91 Sprint 실행 가능성 | 미해결 | 15개 Outline과 0개 Runnable |
-| 시간 추정의 실측 보정 | 미해결 | G8.6, G9.6, G10.1, G11.4 pilot 기록 없음 |
+| 전체 91 Sprint 실행 가능성 | 일부 해결 | 15개 Outline, G10.1 한 개 Runnable |
+| 시간 추정의 실측 보정 | 미해결 | G10.1 기계 재현은 기록됨; 학습 시간과 G8.6·G9.6·G11.4 pilot 기록 없음 |
 
 ## 공개 전에 반드시 남은 일
 
 1. G11B·G12의 15개 Lab Pack을 작성한다.
-2. G8.6, G9.6, G10.1, G11.4를 실제로 실행해 fixture hash, expected output, active/wall time을 고정한다.
+2. G8.6, G9.6, G11.4를 실제로 실행하고 G10.1의 학습 시간을 재서 시간 추정을 보정한다.
 3. 실행이 검증된 과제만 `Runnable`로 올리고, 봉인 문제까지 검토한 과제만 `Assessment-ready`로 올린다.
 4. G10 뒤 Industrial Bridge를 실행 가능한 과제로 만들고 CommonAPI·Yocto·DLT 결과를 남긴다. 공식 SDK나 CAPI에 접근하면 같은 계약 시험을 이식한다.
 5. G0–G2 실제 시간과 네 pilot 결과로 전체 예상 시간을 다시 계산한다.
@@ -54,7 +54,8 @@
 
 - 내부 Markdown 링크 정상
 - 요구사항 98개와 traceability 98개 일치; G4–G7 관련 31개 `Baselined`
-- Specified Lab Pack 76개 확인
-- 합성 입력 8개와 RTA·DLC·journal·mode/security oracle 재계산 통과
+- Specified Lab Pack 75개와 Runnable Lab Pack 1개 확인
+- G5–G7 합성 입력 8개의 RTA·DLC·journal·mode/security oracle 재계산 통과
+- G10.1 공개 입력의 양성 1개·단일 결함 음성 5개 재실행과 starter/fixture/output hash 확인
 - 자동 검사에서 잡히는 동일 문장 반복 0건
 - `bash -n`과 `git diff --check` 통과

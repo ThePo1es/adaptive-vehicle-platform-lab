@@ -2,7 +2,7 @@
 
 이 디렉터리의 입력은 실제 차량에서 추출하지 않은 합성 자료입니다. 각 파일은 생성 목적, 단위, 우선순위 규칙과 기대 결과를 파일 안에 적습니다. Lab Pack을 `Runnable`로 올릴 때는 파일 SHA-256과 생성·검토 commit을 release manifest에 기록합니다.
 
-현재 fixture는 문서 검토용 v1입니다. 아직 구현체와 대조 실행하지 않았으므로 `Specified` 근거이며 `Verified` 근거로 사용할 수 없습니다.
+G5–G7의 8개 입력은 문서 검토용 v1입니다. G10 책임 지도 입력은 공개 검사기와 대조 실행해 `Runnable` 근거로 묶었습니다. 어느 입력도 학습 결과의 `Verified` 근거로 사용하지 않습니다.
 
 | 파일 | 고정한 내용 |
 | --- | --- |
@@ -16,4 +16,4 @@
 | `g07/mode-security-permutations-v1.json` | 동시 mode event 우선순위와 합성 freshness 입력 |
 | `g10/release-map-cases-v1.json` | 책임 지도 검사기의 양성 1개와 단일 결함 음성 5개 |
 
-`scripts/check_fixture_semantics.py`는 계산 가능한 기대값과 필수 필드를 독립 계산합니다. 이 검사는 구현 시험을 대신하지 않습니다.
+`scripts/check_fixture_semantics.py`는 G5–G7의 계산 가능한 기대값과 필수 필드를 독립 계산합니다. G10 입력은 `labs/g10_1_release_map/run_harness.py`가 단일 결함별 오류 코드를 확인합니다.

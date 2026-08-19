@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "release": "R25-11",
+  "landing_page": "https://www.autosar.org/standards/adaptive-platform/",
+  "documents": [
+    {"document_id": "AUTOSAR_AP_TPS_ManifestSpecification", "purpose": "manifest taxonomy and deployment artifacts"},
+    {"document_id": "AUTOSAR_AP_SWS_CommunicationManagement", "purpose": "service communication and generated/runtime roles"},
+    {"document_id": "AUTOSAR_AP_SWS_ExecutionManagement", "purpose": "executable, process and lifecycle execution"},
+    {"document_id": "AUTOSAR_AP_SWS_StateManagement", "purpose": "Function Group State policy and requests"},
+    {"document_id": "AUTOSAR_AP_SWS_PlatformHealthManagement", "purpose": "supervision and recovery reporting"}
+  ],
+  "maintenance": "Compare these IDs with the document front matter whenever the AUTOSAR release baseline changes."
+}
