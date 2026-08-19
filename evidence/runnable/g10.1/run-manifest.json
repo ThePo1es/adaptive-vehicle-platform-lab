@@ -3,7 +3,7 @@
   "lab_id": "G10.1",
   "status": "Runnable",
   "verification_scope": "public validator harness and repository integrity checks",
-  "starter_commit": "1dfdf95770be0e77ee591a537c8998c545e1dd83",
+  "starter_commit": "dcc461286bf29e4e5def8567d5ca2658f0fbbf3d",
   "snapshot": {
     "method": "git archive",
     "network_required": false,

@@ -3,7 +3,7 @@
   "lab_id": "G10.1",
   "status": "Runnable",
   "verification_scope": "role-edge graph, source lock, review binding, negative cases, and repository integrity",
-  "starter_commit": "89004ceb7bcfde7309299a30cbb429480e8db401",
+  "starter_commit": "1feb7840ea6368c5495d61cedf502fcdc3cccf75",
   "snapshot": {
     "method": "git archive",
     "network_required": false,

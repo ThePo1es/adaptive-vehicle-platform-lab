@@ -3,7 +3,7 @@
   "lab_id": "G10.1",
   "status": "Runnable",
   "verification_scope": "책임 관계 그래프, 2-of-2 서명 신뢰 정책, 커밋에 묶인 근거, 구조화 주장 범위, 저장소 무결성",
-  "starter_commit": "f7ff8a2b7b19bc4696cf870382b4318758fe0acc",
+  "starter_commit": "2ea3aa3b29482516925131c870f79ab9523bd7e0",
   "snapshot": {
     "method": "git archive",
     "network_required": false,

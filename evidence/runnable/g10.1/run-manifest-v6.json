@@ -3,7 +3,7 @@
   "lab_id": "G10.1",
   "status": "Runnable",
   "verification_scope": "폐쇄형 역할 주장, 보조 위험 문구 검사, 2-of-2 서명 신뢰 정책, 커밋에 묶인 근거, 독립 의미 검토 경계",
-  "starter_commit": "d97b5edd3b6e752cd74fb28dd9fd1cc0b5e09373",
+  "starter_commit": "b6719ab067f5947835725e02af76666e4fc78f1c",
   "snapshot": {
     "method": "git archive",
     "network_required": false,

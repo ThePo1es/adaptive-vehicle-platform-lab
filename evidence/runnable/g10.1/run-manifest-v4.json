@@ -3,7 +3,7 @@
   "lab_id": "G10.1",
   "status": "Runnable",
   "verification_scope": "역할 관계 그래프, 공식 원문 digest, 분리 서명 검토, 과대 주장과 저장소 무결성",
-  "starter_commit": "f860ddbfe69da8a8bd3cbc70a98578312cf64f0d",
+  "starter_commit": "848f2006aede1b725fae55a18ef6ec4c4ae46e5f",
   "snapshot": {
     "method": "git archive",
     "network_required": false,

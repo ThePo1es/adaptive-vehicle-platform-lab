@@ -1,6 +1,6 @@
 # G10.1 실행 증거
 
-현재 기록은 [run-manifest-v6.json](run-manifest-v6.json)입니다. 시작 커밋 `d97b5edd3b6e752cd74fb28dd9fd1cc0b5e09373`을 `git archive`로 꺼내 공개 양성 사례 1개와 음성 사례 26개를 실행했습니다. 입력, 검사기, 시작 파일, 원문 고정 정보, 검토자 등록부, 권한 정책과 서명 두 개, 단위 시험, 기준 출력은 SHA-256으로 묶여 있습니다. 이전 기록은 회귀 확인용으로 함께 보관합니다.
+현재 기록은 [run-manifest-v6.json](run-manifest-v6.json)입니다. 시작 커밋 `b6719ab067f5947835725e02af76666e4fc78f1c`을 `git archive`로 꺼내 공개 양성 사례 1개와 음성 사례 26개를 실행했습니다. 입력, 검사기, 시작 파일, 원문 고정 정보, 검토자 등록부, 권한 정책과 서명 두 개, 단위 시험, 기준 출력은 SHA-256으로 묶여 있습니다. 이전 기록은 회귀 확인용으로 함께 보관합니다.
 
 ```bash
 python3 scripts/check_runnable_evidence.py

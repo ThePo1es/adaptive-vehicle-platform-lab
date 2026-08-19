@@ -61,20 +61,20 @@ cp labs/g10_1_release_map/starter/release-map.json study/g10.1/release-map.json
 python3 labs/g10_1_release_map/validator.py study/g10.1/release-map.json
 ```
 
-첫 실행에는 `E_SUBMITTER`, `E_SOURCE_ACCESS`, `E_SOURCE_PATH`, `E_SOURCE_TRUST`, `E_CITATION_LOCATOR`, `E_MAPPING_INCOMPLETE`가 나옵니다. 제출자 ID, 공식 digest, 원문 절, 로컬 근거를 채우면서 항목별로 해소합니다.
+첫 실행에는 `E_SUBMITTER`, `E_SOURCE_ACCESS`, `E_SOURCE_PATH`, `E_SOURCE_TRUST`, `E_CITATION_LOCATOR`, `E_MAPPING_INCOMPLETE`가 나옵니다. 제출자 ID, 공식 해시, 원문 절, 로컬 근거를 채우면서 항목별로 해소합니다.
 
 1. AUTOSAR Adaptive Platform 공식 페이지에서 R25-11 문서를 내려받아 `sources/autosar-r25-11/`에 둔다. 이 PDF는 `.gitignore`에 들어 있다.
 2. AUTOSAR의 `Adaptive Platform Specification Hashes`에서 각 PDF의 SHA-512를 확인한다. [R25-11 문서 고정 정보](r25-11-document-lock.json)를 갱신하고 아래 신뢰 루트 절차로 정책 묶음에 서명한다.
 3. `source_ledger`에 revision, 로컬 PDF 경로, 절 제목, 절 번호 또는 requirement ID, 실제 파일 SHA-256, 확인 날짜를 적는다.
 4. 안정적으로 식별할 `submitter_id`를 넣고 P02/P03 파일의 SHA-256을 관련 node의 `local_evidence`에 연결한다.
-5. 각 node의 `subject`, `boundary`, `excluded_conformance`를 채운다. `observed_behavior`는 역할별 `subject / action / object / readiness` 값 가운데 하나를 고른다. node에 자유문 필드를 더하면 검사가 멈춘다.
+5. 각 node의 `subject`, `boundary`, `excluded_conformance`를 채운다. `observed_behavior`는 역할별 `subject / action / object / readiness` 값 가운데 하나를 고른다. 정의되지 않은 임의 필드를 추가하면 검사가 멈춘다.
 6. generated Proxy/Skeleton 코드와 런타임 Proxy/Skeleton 객체를 별도 node로 유지한다. `edges`는 role·relation·방향이 동결된 11개 필수 관계를 모두 담는다.
 7. 생명주기 시나리오마다 trigger reporter, policy decision owner, transition executor, recovery reporter를 원문 citation과 함께 정한다.
 8. `Mapped / Partial / Missing / Out of scope`를 고르고 `summary`를 다시 계산한다.
 
 공식 SHA-512와 내부 일관성이 맞으면 `STRUCTURE_PASS profile=submission`이 출력됩니다. `REVIEWED_PASS`에는 제출자와 다른 검토자의 서명이 더 필요합니다. 먼저 검토 대기 제출물과 로컬 근거를 커밋합니다. 검토 명세서의 `subject_commit`과 `subject_path`는 그 파일을 가리켜야 합니다. 검사기는 해당 커밋에서 제출물, 로컬 근거, 문서 고정 정보, 검토자 등록부를 다시 읽습니다.
 
-`STRUCTURE_PASS`는 폐쇄형 주장 값, 그래프 관계, 파일 해시와 알려진 위험 문구 신호까지 확인하며 `semantic_claim=Unreviewed`를 함께 냅니다. 문구 검사는 보조 필터입니다. 주장 의미와 배포 적합성은 독립 검토자가 읽고 `REVIEWED_PASS`로 확정합니다. 검토 명세서에는 검토자 키 지문, node·citation·local evidence hash, source ledger, 정책 파일 세 개의 해시, 의미 검토 결과, 제한사항 확인, 승인 결정을 담습니다. 검토자 서명은 `adaptive-vehicle-platform-lab-g10.1` namespace의 OpenSSH SSHSIG를 사용합니다. [검토자 등록부](trusted-reviewers.json)는 principal·소속·검토 범위를 함께 보관합니다.
+`STRUCTURE_PASS`는 정해진 주장 값, 그래프 관계, 파일 해시, 사전에 등록된 위험 문구를 검사하고 `semantic_claim=Unreviewed`를 출력합니다. 위험 문구 검사는 보조 장치입니다. 주장 의미와 배포 적합성 판단은 독립 검토자가 맡으며, 승인된 결과에만 `REVIEWED_PASS`가 붙습니다. 검토 명세서에는 검토자 키 지문, node·citation·local evidence hash, source ledger, 정책 파일 세 개의 해시, 의미 검토 결과, 제한사항 확인, 승인 결정을 담습니다. 검토자 서명은 `adaptive-vehicle-platform-lab-g10.1` namespace의 OpenSSH SSHSIG를 사용합니다. [검토자 등록부](trusted-reviewers.json)는 principal·소속·검토 범위를 함께 보관합니다.
 
 ## 신뢰 루트 설정
 
@@ -99,7 +99,7 @@ python3 labs/g10_1_release_map/validator.py study/g10.1/release-map.json
 - 선택한 SOME/IP·DDS·local-loopback binding과 배치 node 연결
 - 시나리오별 report·policy decision·transition execution·recovery report 책임
 - 로컬 구현 표기: `concept-aligned local prototype`, `conformance_claim: false`, `educational-prototype`, node별 claim type·포함·제외 동작
-- 역할별 `subject / action / object / readiness` 폐쇄 값과 보조 위험 문구 검사; 의미 승인은 독립 검토 명세서에 기록
+- 역할별 `subject / action / object / readiness` 허용 값과 보조 위험 문구 검사; 의미 판단은 독립 검토 명세서에 기록
 - 동결한 R25-11 URL·파일명·revision, 역할별 필수 document, 직접 읽은 절, 공식 SHA-512, PDF와 로컬 파일 hash
 - 여러 역할에 같은 README 하나를 재사용하는 근거 축소 감지
 - 매핑 상태 집계의 재계산
