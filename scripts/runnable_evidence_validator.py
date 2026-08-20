@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import re
@@ -72,6 +73,26 @@ PINNED_G1_ARGV_PREFIX = [
     "-m",
 ]
 PINNED_G1_MODULE = "labs.g01_safe_c.run_harness"
+
+
+def pinned_uv_version(value: str) -> bool:
+    return re.fullmatch(r"uv 0\.12\.3(?: \(.+\))?", value) is not None
+
+
+def replay_environment(manifest: dict[str, Any], base: dict[str, str]) -> dict[str, str]:
+    environment = base.copy()
+    lab_id = str(manifest.get("lab_id", ""))
+    if manifest.get("schema_version") != 2 or not lab_id.startswith("G1."):
+        return environment
+    spec = importlib.util.find_spec("ziglang")
+    if spec is None or spec.submodule_search_locations is None:
+        fail("historical G1 replay requires ziglang==0.15.2 in the verifier environment")
+    package_root = Path(next(iter(spec.submodule_search_locations)))
+    compiler = package_root / ("zig.exe" if os.name == "nt" else "zig")
+    if not compiler.is_file():
+        fail("historical G1 replay could not locate the pinned Zig compiler")
+    environment["CC"] = str(compiler)
+    return environment
 
 
 def verify_command_shape(
@@ -148,7 +169,7 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
             capture_output=True,
             text=True,
         )
-        if uv_version.returncode != 0 or uv_version.stdout.strip() != "uv 0.12.3":
+        if uv_version.returncode != 0 or not pinned_uv_version(uv_version.stdout.strip()):
             fail(f"uv version mismatch: {uv_version.stdout.strip()}")
 
 
@@ -271,7 +292,7 @@ def verify_manifest(path: Path, active: bool, indexed_lab_id: str | None = None)
         snapshot = Path(temp_dir)
         archive_starter(starter, snapshot)
         verify_runtime(snapshot, manifest)
-        env = os.environ.copy()
+        env = replay_environment(manifest, os.environ.copy())
         env.update(command_environment)
         replay = subprocess.run(
             translated_replay_argv(argv),

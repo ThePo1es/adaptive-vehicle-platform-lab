@@ -10,6 +10,7 @@ from scripts.runnable_evidence_support import (
 from scripts.runnable_evidence_validator import (
     PINNED_G1_ARGV_PREFIX,
     PINNED_G1_MODULE,
+    pinned_uv_version,
     verify_command_shape,
 )
 
@@ -59,6 +60,12 @@ def test_schema_three_command_pins_uv_python_and_zig() -> None:
         [*PINNED_G1_ARGV_PREFIX, PINNED_G1_MODULE],
         {"LAB_ID": "G1.1"},
     )
+
+
+def test_uv_version_accepts_official_build_metadata() -> None:
+    assert pinned_uv_version("uv 0.12.3")
+    assert pinned_uv_version("uv 0.12.3 (507230998 2026-08-07 x86_64-pc-windows-msvc)")
+    assert not pinned_uv_version("uv 0.12.4")
 
 
 def test_text_evidence_has_platform_independent_newlines() -> None:
