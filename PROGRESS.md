@@ -26,6 +26,7 @@ Status는 `Not started`, `Challenge`, `Learning`, `Building`, `Assessment`, `Pro
 | Release | Target Gate | Status | Tag / demo | External replay |
 | --- | --- | --- | --- | --- |
 | Safe C Components v1 | G1 | Planned | — | — |
+| Embedded C++ Runtime v1 | G2 | Planned | — | — |
 | Compiler Analysis Pack v1 | G3 | Planned | — | — |
 | P00-A v1 | G5 | Planned | — | — |
 | P00 v1 | G7 | Planned | — | — |

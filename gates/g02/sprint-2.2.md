@@ -1,6 +1,12 @@
-# 2-2 힙 없이 동작하는 이벤트 처리기 만들기
+# 실습 2-2 — 힙 없이 동작하는 이벤트 처리기 만들기
 
-> 관리 코드: G2.2 · 준비 상태: `Specified`
+> - 준비 상태: `Runnable`
+> - 시작 커밋: `c95edd7450d6c4fbcdaf82ac8557ee601ae7dcc8`
+> - 공개 입력 SHA-256: `7e6c1467e982446785c75c762fd305a0346c1fbbb0064a7a6f41d8790f4e2c85`
+> - 재시험 입력 SHA-256: `6ce572b57669c4aa7171afcb460f360e3a7c91b5e723c02eb673c8d62175cead`
+> - 실행 기록: [G2.2 실행 명세 v1](../../evidence/runnable/g2.2/run-manifest-v1.json)
+
+> 소속 챕터: [임베디드 C++로 안전한 실행 기반 만들기](README.md) · 관리 코드: G2.2
 
 ## 시간과 기준 자료
 

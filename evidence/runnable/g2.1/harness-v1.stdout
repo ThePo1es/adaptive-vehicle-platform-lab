@@ -1,0 +1,6 @@
+TOOLCHAIN python=3.12.13 compiler=zig-c++ version=0.15.2 target_contract=native-x86_64-hosted-c++20
+PASS lab=G2.1 cases=A optimization=0
+PASS lab=G2.1 cases=A optimization=2
+PASS lab=G2.1 mutant=101 killed
+PASS lab=G2.1 mutant=102 killed
+G2 harness: PASS
