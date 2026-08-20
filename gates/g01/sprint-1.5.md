@@ -1,10 +1,10 @@
 # 실습 1-5 — 레지스터·인터럽트·동시성 경계 다루기
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `d7a23caff2d5c151b2782ee547aa66b113d97a3f`
+> - 시작 커밋: `9021c85c18482908cd26e3af606d62d276fec511`
 > - 공개 입력 SHA-256: `56613bc106d6998d1b4179720d352a5ff25ae5cc224a84dca544d8cdd563a8e9`
 > - 재시험 입력 SHA-256: `a19b85ceeeade26927df066aee5358463d9d30e6263bf9b5d7ce62cb2d9f0314`
-> - 실행 기록: [G1.5 실행 명세 v3](../../evidence/runnable/g1.5/run-manifest-v3.json)
+> - 실행 기록: [G1.5 실행 명세 v4](../../evidence/runnable/g1.5/run-manifest-v4.json)
 
 > 소속 챕터: [안전한 C로 데이터와 메모리 다루기](README.md) · 관리 코드: G1.5
 

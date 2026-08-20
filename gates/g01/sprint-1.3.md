@@ -1,10 +1,10 @@
 # 실습 1-3 — 고정 용량 큐와 메모리 풀 만들기
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `d7a23caff2d5c151b2782ee547aa66b113d97a3f`
+> - 시작 커밋: `9021c85c18482908cd26e3af606d62d276fec511`
 > - 공개 입력 SHA-256: `966b9ef4e5c93dfbaa6cb4131a55f96fbe37eb3c935d6f15a79dec5e37f801f1`
 > - 재시험 입력 SHA-256: `78966c8b2059f11c583dbb61fff90e02e1fa6634fefe5a79b99d966ec4944a06`
-> - 실행 기록: [G1.3 실행 명세 v3](../../evidence/runnable/g1.3/run-manifest-v3.json)
+> - 실행 기록: [G1.3 실행 명세 v4](../../evidence/runnable/g1.3/run-manifest-v4.json)
 
 > 소속 챕터: [안전한 C로 데이터와 메모리 다루기](README.md) · 관리 코드: G1.3
 
