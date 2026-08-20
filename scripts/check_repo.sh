@@ -5,9 +5,9 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 repo_root=$(cd -- "$script_dir/.." && pwd)
 cd "$repo_root"
 
-python_cmd=python3
+python_cmd=python
 if ! "$python_cmd" -c 'import sys; raise SystemExit(sys.version_info[:2] != (3, 12))' >/dev/null 2>&1; then
-    python_cmd=python
+    python_cmd=python3
 fi
 if ! "$python_cmd" -c 'import sys; raise SystemExit(sys.version_info[:2] != (3, 12))' >/dev/null 2>&1; then
     echo "error: Python 3.12 is required" >&2
