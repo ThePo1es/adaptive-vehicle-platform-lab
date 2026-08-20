@@ -32,7 +32,10 @@ jobs:
       - name: Validate curriculum structure, links and traceability
         shell: bash
         run: |
-          python3() { python "$@"; }
-          export -f python3
+          replay_bin="$(cygpath -u "$RUNNER_TEMP")/replay-bin"
+          mkdir -p "$replay_bin"
+          printf '%s\n' '#!/usr/bin/env bash' 'exec python "$@"' > "$replay_bin/python3"
+          chmod +x "$replay_bin/python3"
+          export PATH="$replay_bin:$PATH"
           uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
             bash scripts/check_repo.sh
