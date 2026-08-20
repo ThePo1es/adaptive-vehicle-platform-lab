@@ -16,7 +16,7 @@ MCU ECU와 Linux 차량 컴퓨터를 직접 만들면서 C/C++, ARM, RTOS, 차�
 | 프로젝트 `P` | 여러 챕터의 결과를 합치는 포트폴리오 프로젝트 | `P00`은 MCU/RTOS ECU 프로젝트 |
 | 고장 시나리오 `F` | 최종 통합 시험에서 주입하는 고장 번호 | `F01`은 MCU 태스크 실행 시간 초과 |
 
-`G1`과 `F01`은 서로 이어지는 번호가 아닙니다. `G01_LAB_ID`는 실행할 실습을 고르는 환경 변수이고, `G1.ENTRY`는 1장 진입 확인, `G1.1`은 실습 1-1을 뜻합니다. 경로·요구사항·시험 기록에서는 기존 코드를 유지하지만, 화면에서는 항상 설명하는 이름을 먼저 표시합니다. 전체 코드 표기는 [커리큘럼 코드 안내](docs/curriculum-codes.md)에서 한 번에 확인할 수 있습니다.
+`G1`과 `F01`은 서로 이어지는 번호가 아닙니다. `G01_LAB_ID`는 실행할 실습을 고르는 환경 변수이고, `G1.ENTRY`는 1장 진입 확인, `G1.1`은 실습 1-1을 뜻합니다. `G1.RETEST`는 1장 전체를 두 번째 공개 입력으로 다시 검사하는 코드입니다. 경로·요구사항·시험 기록에서는 기존 코드를 유지하지만, 화면에서는 항상 설명하는 이름을 먼저 표시합니다. 전체 코드 표기는 [커리큘럼 코드 안내](docs/curriculum-codes.md)에서 한 번에 확인할 수 있습니다.
 
 처음 시작한다면 [0장: 개발 환경과 검증 기준 준비하기](gates/g00/sprint-0.1.md)를 진행한 뒤 [1장: 안전한 C로 데이터와 메모리 다루기](gates/g01/README.md)로 이동합니다.
 
@@ -26,7 +26,7 @@ MCU ECU와 Linux 차량 컴퓨터를 직접 만들면서 C/C++, ARM, RTOS, 차�
 
 - C/C++의 수명, 메모리 표현, UB, 동시성 계약을 코드와 테스트로 다룬다.
 - Cortex-M의 부팅·예외·인터럽트와 AArch64/Linux의 ABI·메모리·프로세스 모델을 분석한다.
-- RTOS task set을 모델링하고 response-time analysis와 실측 결과를 함께 검토한다.
+- RTOS 태스크 집합을 모델링하고 응답 시간 분석과 실측 결과를 함께 검토한다.
 - CAN/CAN FD, ISO-TP, UDS, SOME/IP, DoIP 경로를 구현하고 패킷과 상태 전이로 진단한다.
 - Classic과 Adaptive Platform의 책임 경계를 공개 사양에 맞춰 설명한다.
 - Linux 프로세스, 서비스, 이미지, 배포, 관측 체계를 운영한다.
@@ -34,7 +34,7 @@ MCU ECU와 Linux 차량 컴퓨터를 직접 만들면서 C/C++, ARM, RTOS, 차�
 - 요구사항, 아키텍처, 예산, 코드, 시험, 결과를 한 흐름으로 추적한다.
 - 차량 코드의 LLVM IR, ARM/AArch64 기계어, 크기와 실행 시간을 비교한다.
 
-직무 방향은 **Linux/Adaptive 플랫폼 통합**을 주축으로 삼고, **MCU/Classic 구현**을 두 번째 축으로 둡니다. LLVM·ABI·코드 생성 분석은 각 Gate의 핵심 함수를 대상으로 이어 갑니다. 마지막에는 하위 시스템 하나를 골라 외부 리뷰, 이식, 장애 대응, 3–6개월 유지 기록으로 숙련도를 확인합니다.
+직무 방향은 **Linux/Adaptive 플랫폼 통합**을 주축으로 삼고, **MCU/Classic 구현**을 두 번째 축으로 둡니다. LLVM·ABI·코드 생성 분석은 각 학습 단계의 핵심 함수를 대상으로 이어 갑니다. 마지막에는 하위 시스템 하나를 골라 외부 검토, 이식, 장애 대응, 3–6개월 유지 기록으로 숙련도를 확인합니다.
 
 ## 과정 구조
 
@@ -44,9 +44,9 @@ MCU ECU와 Linux 차량 컴퓨터를 직접 만들면서 C/C++, ARM, RTOS, 차�
 
 | 구간 | 학습 단계 | 핵심 결과 |
 | --- | --- | --- |
-| 기반 | G0–G3 | 재현 환경, Systems C/C++, ARM ABI, LLVM 분석 |
-| MCU | G4–G7 | 보드 bring-up, RTOS, CAN/진단, Classic 개념 stack |
-| Linux | G8–G10 | Linux 이미지·프로세스, Service Interface·SOME/IP·DoIP, Adaptive runtime |
+| 기반 | G0–G3 | 재현 환경, 시스템 C/C++, ARM ABI, LLVM 분석 |
+| MCU | G4–G7 | 보드 기동, RTOS, CAN/진단, Classic 개념 구조 |
+| Linux | G8–G10 | Linux 이미지·프로세스, 서비스 인터페이스·SOME/IP·DoIP, Adaptive 실행 환경 |
 | 보증·통합 | G11A–G12 | Adaptive 보안·UCM, 교차 도메인 보증, MCU–Linux 최종 통합 |
 
 상세 순서는 [ROADMAP.md](ROADMAP.md), 단계별 실행안은 [학습 단계 실행 안내](docs/gate-playbook.md), 91개 과제 명세는 [학습 단계별 실습 안내서](gates/README.md), 시험 방식은 [ASSESSMENTS.md](ASSESSMENTS.md)에서 확인합니다.
@@ -76,7 +76,7 @@ MCU ECU와 Linux 차량 컴퓨터를 직접 만들면서 C/C++, ARM, RTOS, 차�
 | 13 | MCU–Linux 안전·보안 근거 검토하기 | G11B | 안전·보안 논증과 하드웨어 신뢰 검증 |
 | 14 | MCU–Linux 차량 플랫폼 최종 통합하기 | G12 | P06 이기종 차량 플랫폼 |
 
-G12 이후에는 선택한 하위 시스템을 다른 target에 이식하고, 성능·신뢰성 문제를 추적하며, 설계 리뷰와 유지보수 기록을 쌓습니다.
+G12 이후에는 선택한 하위 시스템을 다른 대상 환경에 이식하고, 성능·신뢰성 문제를 추적하며, 설계 검토와 유지보수 기록을 쌓습니다.
 
 ## 최종 시스템
 
@@ -118,22 +118,22 @@ flowchart TB
 
 | ID | 프로젝트 | 학습 단계 | 핵심 증거 |
 | --- | --- | --- | --- |
-| P00 | [MCU/RTOS ECU Node](projects/00-mcu-rtos-ecu/README.md) | G5–G7 | RTA, timing trace, CAN/UDS, DTC, watchdog |
-| P01 | [Process Supervisor](projects/01-process-supervisor/README.md) | G8 | 생명주기, pidfd·cgroup 격리, 복구 상한 |
-| P02 | [Vehicle State Service](projects/02-vehicle-state-service/README.md) | G9 | discovery, versioning, reconnection, packet trace |
-| P03 | [Execution Manager](projects/03-execution-manager/README.md) | G9–G10 | DoIP read path, manifest, dependency, state, health, IAM |
-| P04 | [Update Assurance Lab](projects/04-secure-update-manager/README.md) | G11 | crash consistency, authenticity, rollback |
-| P05 | [CAN–SOME/IP Vertical Slice](projects/05-can-ethernet-vertical-slice/README.md) | G9/G6/G12 | G9의 vCAN 경로와 G6 이후 실제 CAN 경로 |
-| P06 | [Heterogeneous Vehicle Platform](projects/06-heterogeneous-vehicle-platform/README.md) | G12 | 두 노드의 timing·state·version·recovery 계약 |
+| P00 | [MCU/RTOS ECU 노드](projects/00-mcu-rtos-ecu/README.md) | G5–G7 | 응답 시간 분석, 시간 추적, CAN/UDS, DTC, 감시 타이머 |
+| P01 | [프로세스 감독기](projects/01-process-supervisor/README.md) | G8 | 생명주기, pidfd·cgroup 격리, 복구 상한 |
+| P02 | [차량 상태 서비스](projects/02-vehicle-state-service/README.md) | G9 | 탐색, 버전 관리, 재연결, 패킷 추적 |
+| P03 | [실행 관리자](projects/03-execution-manager/README.md) | G9–G10 | DoIP 읽기 경로, 명세, 의존성, 상태, 건전성, IAM |
+| P04 | [업데이트 보증 실습](projects/04-secure-update-manager/README.md) | G11 | 충돌 일관성, 진위 확인, 되돌리기 |
+| P05 | [CAN–SOME/IP 수직 통합](projects/05-can-ethernet-vertical-slice/README.md) | G9/G6/G12 | G9의 vCAN 경로와 G6 이후 실제 CAN 경로 |
+| P06 | [이기종 차량 플랫폼](projects/06-heterogeneous-vehicle-platform/README.md) | G12 | 두 노드의 시간·상태·버전·복구 계약 |
 
-프로젝트는 8–16주마다 실행 가능한 릴리스를 만듭니다. 첫 공개 후보는 G1 component library, G2 runtime layer, G4 board runtime, G6 ISO-TP alpha입니다. 작은 범위를 먼저 끝내고 확장 작업은 필수 근거를 확보한 뒤 넣습니다.
+프로젝트는 8–16주마다 실행 가능한 판을 만듭니다. 첫 공개 후보는 G1 구성 요소 라이브러리, G2 실행 계층, G4 보드 실행 환경, G6 ISO-TP 초기판입니다. 작은 범위를 먼저 끝내고 확장 작업은 필수 근거를 확보한 뒤 넣습니다.
 
 ## 매주 하는 일
 
 1. 설계를 바꿀 만한 질문을 하나 고른다.
-2. 공식 문서와 upstream source에서 근거를 찾는다.
+2. 공식 문서와 원본 소스에서 근거를 찾는다.
 3. 작은 구현과 자동 시험을 만든다.
-4. malformed input, timeout, overload, restart 중 하나를 주입한다.
+4. 잘못된 입력, 시간 제한 초과, 과부하, 재시작 중 하나를 주입한다.
 5. 원본 측정 자료와 해석을 따로 기록한다.
 6. 도움 없이 설명하거나 새로운 과제로 다시 구현한다.
 7. PR에 재현 명령과 남은 위험을 적는다.
@@ -150,7 +150,7 @@ bash scripts/check_repo.sh
 git switch -c study/g00-baseline
 ```
 
-첫 주에는 [baseline dossier](docs/baseline.md)를 작성하고, [개발 환경](docs/development-environment.md)에서 보드·RTOS·toolchain의 기본 조합을 정합니다. 기존 경험으로 Gate를 건너뛰려면 [challenge-out 절차](ASSESSMENTS.md#challenge-out)를 사용합니다.
+첫 주에는 [기준 역량 기록](docs/baseline.md)을 작성하고, [개발 환경](docs/development-environment.md)에서 보드·RTOS·도구 모음의 기본 조합을 정합니다. 기존 경험으로 학습 단계를 건너뛰려면 [사전 통과 절차](ASSESSMENTS.md#challenge-out)를 사용합니다.
 
 ## 핵심 문서
 
@@ -167,6 +167,6 @@ git switch -c study/g00-baseline
 
 ## 주장 범위와 안전
 
-이 저장소의 Classic/Adaptive 구현은 공개 사양을 공부하기 위한 개념 prototype입니다. API·ARXML 호환이나 규격 적합성을 주장하지 않습니다. 안전·보안 산출물도 교육용이며 인증 근거로 사용할 수 없습니다. 측정된 최악 시간은 분석으로 검증된 WCET 상한과 구분합니다.
+이 저장소의 Classic/Adaptive 구현은 공개 사양을 공부하기 위한 개념 시제품입니다. API·ARXML 호환이나 규격 적합성을 주장하지 않습니다. 안전·보안 산출물도 교육용이며 인증 근거로 사용할 수 없습니다. 측정된 최악 시간은 분석으로 검증된 WCET 상한과 구분합니다.
 
 실차 시험은 정차·수신 전용으로 시작합니다. 진단 쓰기, actuator 제어, 다운로드는 소유하거나 명시적으로 허가받은 벤치 장비에서만 수행합니다. VIN, 키, 인증서, 위치 정보, OEM 비공개 펌웨어·DBC·ARXML은 저장소에 올리지 않습니다. 세부 운영 규칙은 [SECURITY.md](SECURITY.md)에 있습니다.

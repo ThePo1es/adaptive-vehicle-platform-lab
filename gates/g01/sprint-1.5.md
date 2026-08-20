@@ -21,7 +21,7 @@ RX_DATA bits0..7
 IRQ_ACK write-one-to-clear bit0
 ```
 
-Register별 offset·폭·RO/RW/W1C·reserved mask·부작용은 [G1 계약](contract.md#가짜-레지스터)에 고정합니다. Host fixture는 read/write 순서·폭·값과 side effect를 기록하며 입력은 [sprint-1.5-v1.h](../../fixtures/g01/sprint-1.5-v1.h)를 사용합니다.
+레지스터별 오프셋·폭·RO/RW/W1C·예약 비트 마스크·부작용은 [G1 계약](contract.md#가짜-레지스터)에 고정합니다. 호스트 입력은 읽기/쓰기 순서·폭·값과 부작용을 기록하며 [sprint-1.5-v1.h](../../fixtures/g01/sprint-1.5-v1.h)를 사용합니다.
 
 ```bash
 G01_LAB_ID=G1.5 uv run --offline --python 3.12.13 \
@@ -30,7 +30,7 @@ G01_LAB_ID=G1.5 uv run --offline --python 3.12.13 \
 
 ## 안내 실습
 
-Register access, bit update, modulo tick polling timeout, write-one-to-clear API를 만듭니다. W1C register는 literal write만 허용하고 read-modify-write가 섞이면 검사가 실패하게 합니다.
+레지스터 접근, 비트 갱신, 순환 시간 계수 기반의 폴링 제한 시간, write-one-to-clear API를 만듭니다. W1C 레지스터에는 상수값 쓰기만 허용하고 읽기-수정-쓰기가 섞이면 검사가 실패하게 합니다.
 
 ## 독립 실습
 
@@ -42,17 +42,17 @@ DMA 완료 표시와 디스크립터 소유권을 가진 새 주변장치 골격
 
 ## 판정 기준
 
-- `volatile`의 역할과 동기화 한계를 source·assembly로 설명
-- ISR에 allocation·unbounded wait·parser 없음
+- `volatile`의 역할과 동기화 한계를 소스·어셈블리로 설명
+- ISR에 동적 할당·끝없는 대기·파서 없음
 - 레지스터 부작용과 시간 제한 오류 시험 통과
-- single-core ISR/task, C thread, multi-core, DMA 계약을 분리
+- 단일 코어 ISR/태스크, C 스레드, 다중 코어, DMA 계약을 분리
 - W1C 읽기-수정-쓰기, release 제거, acquire 제거, 시간 계수 되감기 오류를 각각 검출
 
 ## 하드웨어 확인 사항
 
 1. 장치 메모리 순서, 컴파일러 재배치, 언어 수준 데이터 경합은 서로 다른 문제입니다.
-2. ISR과 task가 공유하는 상태의 writer/reader를 표로 적습니다.
-3. Host mock이 실제 hardware ordering을 보장하지 않는다는 한계를 기록합니다.
+2. ISR과 태스크가 공유하는 상태의 작성자와 읽는 쪽을 표로 적습니다.
+3. 호스트 모의 장치가 실제 하드웨어 순서를 보장하지 않는다는 한계를 기록합니다.
 
 ## 재시험
 

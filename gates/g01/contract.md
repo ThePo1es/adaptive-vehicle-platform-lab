@@ -1,4 +1,4 @@
-# G1 공통 계약: Safe C Components v1
+# G1 공통 계약: 안전한 C 구성 요소 v1
 
 이 문서는 “안전한 C로 데이터와 메모리 다루기(G1)”의 다섯 실습이 공유하는 실행 전제, API 경계, 고정 입력, 치명적 실패와 산출물 계보를 고정합니다.
 
@@ -22,9 +22,9 @@
 
 - 실제 레지스터 폭·정렬·접근 부작용
 - `UNALIGN_TRP` 설정과 메모리 영역별 비정렬 접근 결과
-- ISR 호출 규약과 interrupt masking
-- ISR에서 사용하는 원자 연산의 lock-free 명령열
-- Device memory ordering, Arm barrier, DMA cache 일관성
+- ISR 호출 규약과 인터럽트 차단
+- ISR에서 사용하는 원자 연산의 잠금 없는 명령열
+- 장치 메모리 순서, Arm 장벽, DMA 캐시 일관성
 
 호스트 가짜 장치 통과를 실제 MCU 동작이나 AUTOSAR 적합성으로 표현하지 않습니다.
 
@@ -46,16 +46,16 @@
 
 | 위치 | 의미 | 유효 범위 |
 | --- | --- | --- |
-| 0–1 | little-endian unsigned speed, 단위 0.01 km/h | raw 0–65535 |
-| 2–3 | little-endian signed two's-complement temperature, 단위 0.1 °C | raw -400–2150 |
-| 4 low nibble | rolling counter | 0–15 |
-| 4 high nibble, 5–7 | reserved | 모두 0 |
+| 0–1 | 리틀 엔디언 부호 없는 속도, 단위 0.01 km/h | 원시값 0–65535 |
+| 2–3 | 리틀 엔디언 부호 있는 2의 보수 온도, 단위 0.1 °C | 원시값 -400–2150 |
+| 4 하위 니블 | 순환 계수 | 0–15 |
+| 4 상위 니블, 5–7 | 예약 영역 | 모두 0 |
 
-signed 값은 signed shift나 범위 밖 signed cast로 만들지 않습니다. 먼저 unsigned raw를 만든 뒤 `raw >= 0x8000`이면 수학적으로 `raw - 0x10000`을 계산합니다. round trip은 부동소수점 표시값이 아니라 raw 정수에 적용합니다. 표시값을 비교할 때만 절대 오차 `0.005 km/h`, `0.05 °C`를 사용합니다.
+부호 있는 값은 부호 있는 시프트나 범위 밖 강제 변환으로 만들지 않습니다. 먼저 원시 부호 없는 값을 만든 뒤 `raw >= 0x8000`이면 수학적으로 `raw - 0x10000`을 계산합니다. 왕복 검사는 부동소수점 표시값이 아니라 원시 정수에 적용합니다. 표시값을 비교할 때만 절대 오차 `0.005 km/h`, `0.05 °C`를 사용합니다.
 
 ## 실습 1-2: 세 접근법의 정답 분류
 
-| 접근법 | C17 의미 | endian 결과 |
+| 접근법 | C17 의미 | 바이트 순서 결과 |
 | --- | --- | --- |
 | `uint16_t *` 변환 뒤 역참조 | 정렬·유효 형식 위반 가능 | 호스트 바이트 순서에 의존 |
 | `memcpy`로 지역 `uint16_t`에 복사 | 길이가 맞으면 정렬·별칭에는 안전 | 호스트 바이트 순서에 의존 |
@@ -79,7 +79,7 @@ signed 값은 signed shift나 범위 밖 signed cast로 만들지 않습니다. 
 - CRC-8/ATM: polynomial `0x07`, init `0x00`, refin/refout false, xorout `0x00`
 - 표준 확인 벡터: ASCII `123456789` → `0xF4`
 - 반환값: `complete`, `need-more`, `rejected`와 `consumed` 길이
-- full-buffer parser는 정확히 한 frame만 받고 trailing byte를 거부
+- 전체 버퍼 파서는 정확히 한 프레임만 받고 뒤따르는 바이트를 거부
 - 바이트 단위 파서는 오류 바이트까지 소비하고, 그 바이트가 시작 표식이면 새 프레임의 시작으로 재사용
 - `need-more`와 `rejected`는 응용 출력값을 바꾸지 않음
 - 거부 뒤 첫 정상 프레임은 이전 데이터와 무관하게 정상 해석
@@ -90,23 +90,23 @@ signed 값은 signed shift나 범위 밖 signed cast로 만들지 않습니다. 
 
 ### 가짜 레지스터
 
-| 이름 | offset | 폭 | 접근 | reset | reserved mask | 부작용 |
+| 이름 | 오프셋 | 폭 | 접근 | 초기값 | 예약 비트 마스크 | 부작용 |
 | --- | ---: | ---: | --- | ---: | ---: | --- |
 | STATUS | 0x00 | 32비트 | RO | 0 | `~0x3` | 없음 |
-| CONTROL | 0x04 | 32비트 | RW | 0 | `~0x3` | 단일 task writer |
+| CONTROL | 0x04 | 32비트 | RW | 0 | `~0x3` | 단일 태스크 작성 |
 | RX_DATA | 0x08 | 32비트 | RO | 0 | `~0xFF` | 읽으면 값 유지 |
-| IRQ_ACK | 0x0C | 32비트 | W1C | 0 | `~0x1` | bit 0 literal write로 STATUS.RX_READY 해제 |
+| IRQ_ACK | 0x0C | 32비트 | W1C | 0 | `~0x1` | 비트 0에 상수값을 써서 STATUS.RX_READY 해제 |
 
-W1C에는 read-modify-write를 사용하지 않습니다. host oracle은 접근 순서·폭·값·횟수를 검사합니다. timeout은 32비트 단조 증가 tick의 modulo subtraction으로 계산하며 무한 polling을 금지합니다.
+W1C에는 읽기-수정-쓰기를 사용하지 않습니다. 호스트 판정기는 접근 순서·폭·값·횟수를 검사합니다. 시간 제한은 32비트 단조 증가 시간 계수의 순환 뺄셈으로 계산하며 무한 폴링을 금지합니다.
 
 ### 네 실행 모델을 분리함
 
 | 모델 | 공개 실습에서 확인 | 추가 근거 |
 | --- | --- | --- |
-| 단일 코어 ISR→태스크 | ISR 생산자, 태스크 소비자, release 공개/acquire 읽기 | 대상 어셈블리, lock-free 확인 |
-| C thread↔thread | C17 atomic과 happens-before | ThreadSanitizer 보강 |
-| multi-core | 공개 host 실습 범위 밖 | cache coherence·architecture 문서 |
-| DMA↔CPU | 공개 host 실습 범위 밖 | device barrier·cache maintenance·descriptor ownership |
+| 단일 코어 ISR→태스크 | ISR 생산자, 태스크 소비자, release 공개/acquire 읽기 | 대상 어셈블리, 잠금 없는 명령 확인 |
+| C 스레드↔스레드 | C17 원자 연산과 선행 관계 | ThreadSanitizer 보강 |
+| 다중 코어 | 공개 호스트 실습 범위 밖 | 캐시 일관성·아키텍처 문서 |
+| DMA↔CPU | 공개 호스트 실습 범위 밖 | 장치 장벽·캐시 유지·디스크립터 소유권 |
 
 생산자는 데이터를 먼저 쓰고 release로 인덱스를 공개합니다. 소비자는 acquire로 인덱스를 읽은 뒤 데이터를 읽습니다. 공개 호스트 검사는 `G01_TESTING`에서 실제 호출에 전달한 `memory_order`를 기록해 release와 acquire를 각각 제거한 단일 결함을 잡습니다. 이는 실제 대상의 순서 보장이 아닙니다. 큐 인덱스 원자 연산이 대상 환경에서 항상 lock-free인지 `ATOMIC_*_LOCK_FREE == 2` 또는 어셈블리로 증명하지 못하면 ISR 경로에 사용할 수 없습니다. `volatile`은 접근을 관찰 가능하게 만드는 구현 수단일 뿐 원자성, 스레드 간 선후 관계, 장치 메모리 순서를 보장하지 않습니다.
 
@@ -114,11 +114,11 @@ W1C에는 read-modify-write를 사용하지 않습니다. host oracle은 접근 
 
 | 실습 | 공개 입력 | 독립 판정 |
 | --- | --- | --- |
-| 1-1 | `fixtures/g01/sprint-1.1-v1.h` | raw 수학식과 known-answer vectors |
+| 1-1 | `fixtures/g01/sprint-1.1-v1.h` | 원시값 수학식과 정답 벡터 |
 | 1-2 | `fixtures/g01/sprint-1.2-v1.h` | C17 분류표와 호스트 바이트 순서 확인 |
 | 1-3 | `fixtures/g01/sprint-1.3-v1.h` | 작은 기준 모델과 고정 의사 난수 씨앗 |
 | 1-4 | `fixtures/g01/sprint-1.4-v1.h` | 독립 CRC·전체 버퍼 파서 판정기 |
-| 1-5 | `fixtures/g01/sprint-1.5-v1.h` | register event log와 상태 모델 |
+| 1-5 | `fixtures/g01/sprint-1.5-v1.h` | 레지스터 사건 기록과 상태 모델 |
 
 공개 입력 A는 학습과 회귀 검사에 사용합니다. 재시험 입력 B는 `fixtures/g01/retest-1.1-v1.h`부터 `retest-1.5-v1.h`까지이며 다른 값·난수 씨앗·레지스터 사건 순서를 사용합니다. `G01_LAB_ID=G1.RETEST`로 다섯 입력 B를 한 번에 실행합니다. 종합 평가는 저장소 밖에서 봉인한 평가 명세의 SHA-256만 기록합니다.
 
@@ -126,14 +126,14 @@ W1C에는 read-modify-write를 사용하지 않습니다. host oracle은 접근 
 
 다음 중 하나라도 있으면 합계와 관계없이 통과하지 못합니다.
 
-- 범위 밖 접근, use-after-free, data race 또는 다른 undefined behavior
+- 범위 밖 접근, 해제 뒤 사용, 데이터 경합 또는 다른 미정의 동작
 - 거부된 입력이나 실패한 연산이 응용 출력·데이터·소유권 상태를 변경. 단, 명시된 진단 계수의 포화 증가는 허용
-- foreign pointer 비교처럼 판정 코드 자체가 undefined behavior에 의존
+- 다른 객체를 가리키는 포인터 비교처럼 판정 코드 자체가 미정의 동작에 의존
 - `memcpy`가 통신 바이트 순서까지 해결한다고 설명
-- full/empty 정책 또는 parser consumed 규칙이 문서와 다름
-- W1C register에 read-modify-write 사용
-- `volatile`만으로 원자성·thread synchronization·device ordering을 주장
-- host 결과를 Cortex-M·DMA·AUTOSAR 적합성 근거로 과장
+- 가득 참·비어 있음 정책 또는 파서의 소비 길이 규칙이 문서와 다름
+- W1C 레지스터에 읽기-수정-쓰기 사용
+- `volatile`만으로 원자성·스레드 동기화·장치 순서를 주장
+- 호스트 결과를 Cortex-M·DMA·AUTOSAR 적합성 근거로 과장
 
 ## 시간 기록
 

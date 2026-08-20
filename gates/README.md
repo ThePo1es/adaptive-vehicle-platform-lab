@@ -38,14 +38,14 @@
 
 ## 파일에 필요한 항목
 
-- 기준 자료의 release·document ID·section title 또는 requirement ID
-- 시작 파일과 입력 corpus
+- 기준 자료의 판본·문서 ID·절 제목 또는 요구사항 ID
+- 시작 파일과 시험 입력 모음
 - 안내 실습, 독립 실습, 전이 과제
-- expected output, invariant, 허용 오차
+- 기대 출력, 불변 조건, 허용 오차
 - 필요한 경우에만 단계별 힌트
 - 재시험 조건과 채점 기준
-- Core, Gate evidence, Stretch별 active time과 build·soak wall time
+- 핵심·단계 통과 증거·확장별 활동 시간과 빌드·지속 시험 경과 시간
 
-Gate 공통 계약: [G4](g04/contract.md), [G5](g05/contract.md), [G6](g06/contract.md)·[physical bench](g06/bench-contract.md), [G7](g07/contract.md)·[R25-11 ledger](g07/source-ledger.md), [G11B](g11/assurance-contract.md), [G12](g12/contract.md).
+학습 단계 공통 계약: [G4](g04/contract.md), [G5](g05/contract.md), [G6](g06/contract.md)·[실물 벤치](g06/bench-contract.md), [G7](g07/contract.md)·[R25-11 근거 대장](g07/source-ledger.md), [G11B](g11/assurance-contract.md), [G12](g12/contract.md).
 
-평가용 비공개 고장은 이 디렉터리에 저장하지 않습니다. 시험 때 사용하는 manifest의 hash와 검증 날짜만 [mastery review](../docs/templates/mastery-review.md)에 기록합니다.
+평가용 비공개 고장은 이 디렉터리에 저장하지 않습니다. 시험 때 사용하는 실행 명세의 해시와 검증 날짜만 [숙련도 검토 기록](../docs/templates/mastery-review.md)에 적습니다.
