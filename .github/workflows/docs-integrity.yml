@@ -29,13 +29,30 @@ jobs:
           uv run --python 3.12.13 --with ziglang==0.15.2
           python -c "import ziglang; print(ziglang.__file__)"
 
-      - name: Validate curriculum structure, links and traceability
+      - name: Prepare the historical Python entry point
         shell: bash
         run: |
           replay_bin="$(cygpath -u "$RUNNER_TEMP")/replay-bin"
           mkdir -p "$replay_bin"
           printf '%s\n' '#!/usr/bin/env bash' 'exec python "$@"' > "$replay_bin/python3"
           chmod +x "$replay_bin/python3"
-          export PATH="$replay_bin:$PATH"
+          cygpath -w "$replay_bin" >> "$GITHUB_PATH"
+
+      - name: Verify the historical replay bootstrap
+        shell: bash
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          SKIP_RUNNABLE_EVIDENCE: "1"
+        run: |
+          replay_root="$(cygpath -u "$RUNNER_TEMP")/historical-replay"
+          mkdir -p "$replay_root"
+          git archive d7a23caff2d5c151b2782ee547aa66b113d97a3f | tar -xf - -C "$replay_root"
+          cd "$replay_root"
+          uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
+            bash scripts/check_repo.sh
+
+      - name: Validate curriculum structure, links and traceability
+        shell: bash
+        run: |
           uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
             bash scripts/check_repo.sh
