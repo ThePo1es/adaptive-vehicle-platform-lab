@@ -30,6 +30,9 @@ jobs:
           python -c "import ziglang; print(ziglang.__file__)"
 
       - name: Validate curriculum structure, links and traceability
-        run: >-
-          uv run --offline --python 3.12.13 --with ziglang==0.15.2
-          bash scripts/check_repo.sh
+        shell: bash
+        run: |
+          python3() { python "$@"; }
+          export -f python3
+          uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
+            bash scripts/check_repo.sh
