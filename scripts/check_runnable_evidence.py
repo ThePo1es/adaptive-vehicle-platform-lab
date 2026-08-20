@@ -28,9 +28,17 @@ def main() -> int:
         if not manifests:
             fail("no Runnable manifests found")
         verified: list[str] = []
+        repository_checks: set[tuple[str, str, str]] = set()
         for path in manifests:
             relative = str(path.relative_to(REPO_ROOT))
-            verified.append(verify_manifest(path, relative in active, active.get(relative)))
+            verified.append(
+                verify_manifest(
+                    path,
+                    relative in active,
+                    active.get(relative),
+                    repository_checks,
+                )
+            )
         discovered = {str(path.relative_to(REPO_ROOT)) for path in manifests}
         missing_active = set(active) - discovered
         if missing_active:

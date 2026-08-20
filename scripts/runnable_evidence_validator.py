@@ -124,7 +124,24 @@ def verify_sprint_lock(
         fail("Sprint header does not match active starter and fixture hash")
 
 
-def verify_manifest(path: Path, active: bool, indexed_lab_id: str | None = None) -> str:
+def repository_check_identity(manifest: dict[str, Any]) -> tuple[str, str, str]:
+    check = manifest.get("repository_check")
+    if not isinstance(check, dict):
+        fail("active manifest needs repository_check evidence")
+    starter = manifest.get("starter_commit")
+    stdout_hash = check.get("stdout_sha256")
+    stderr_hash = check.get("stderr_sha256")
+    if not all(isinstance(value, str) for value in (starter, stdout_hash, stderr_hash)):
+        fail("repository_check identity is incomplete")
+    return str(starter), str(stdout_hash), str(stderr_hash)
+
+
+def verify_manifest(
+    path: Path,
+    active: bool,
+    indexed_lab_id: str | None = None,
+    repository_checks: set[tuple[str, str, str]] | None = None,
+) -> str:
     manifest = json.loads(path.read_text(encoding="utf-8"))
     schema_version = manifest.get("schema_version")
     if schema_version not in {2, 3, 4} or manifest.get("status") != "Runnable":
@@ -184,7 +201,11 @@ def verify_manifest(path: Path, active: bool, indexed_lab_id: str | None = None)
         )
         verify_output(replay, command, recorded_stdout)
         if active:
-            verify_repository_check(manifest, snapshot)
+            identity = repository_check_identity(manifest)
+            if repository_checks is None or identity not in repository_checks:
+                verify_repository_check(manifest, snapshot)
+                if repository_checks is not None:
+                    repository_checks.add(identity)
 
     timing = manifest.get("timing")
     if not isinstance(timing, dict) or not isinstance(timing.get("harness"), dict):

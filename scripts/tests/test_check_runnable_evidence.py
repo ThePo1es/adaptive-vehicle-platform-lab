@@ -17,7 +17,10 @@ from scripts.runnable_evidence_support import (
     canonical_output,
     required_roles,
 )
-from scripts.runnable_evidence_validator import verify_command_shape
+from scripts.runnable_evidence_validator import (
+    repository_check_identity,
+    verify_command_shape,
+)
 
 
 def test_inactive_manifest_requires_only_base_artifacts() -> None:
@@ -118,3 +121,23 @@ def test_windows_repository_check_rejects_missing_git_bash() -> None:
 
 def test_posix_repository_check_keeps_recorded_command() -> None:
     assert repository_check_argv("posix", {}) == ["bash", "scripts/check_repo.sh"]
+
+
+def test_repository_check_identity_deduplicates_only_identical_replays() -> None:
+    manifest = {
+        "starter_commit": "a" * 40,
+        "repository_check": {
+            "stdout_sha256": "b" * 64,
+            "stderr_sha256": "c" * 64,
+        },
+    }
+    identity = repository_check_identity(manifest)
+    changed = {
+        **manifest,
+        "repository_check": {
+            **manifest["repository_check"],
+            "stdout_sha256": "d" * 64,
+        },
+    }
+    assert identity == ("a" * 40, "b" * 64, "c" * 64)
+    assert repository_check_identity(changed) != identity
