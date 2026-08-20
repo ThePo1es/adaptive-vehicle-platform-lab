@@ -53,5 +53,6 @@ def test_resolve_source_root_rejects_path_outside_repository(tmp_path: Path) -> 
 
 def test_compiler_prefix_adds_cc_when_compiler_is_zig() -> None:
     runner = run_harness
-    prefix = runner.compiler_prefix(Path("C:/tools/zig.exe"))
-    assert prefix == ("C:\\tools\\zig.exe", "cc")
+    compiler = Path("C:/tools/zig.exe")
+    prefix = runner.compiler_prefix(compiler)
+    assert prefix == (str(compiler), "cc")
