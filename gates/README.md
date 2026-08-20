@@ -21,7 +21,7 @@
 | G11B | MCU–Linux 안전·보안 근거 검토하기 | [3개 실습](g11/) | Specified |
 | G12 | MCU–Linux 차량 플랫폼 최종 통합하기 | [12개 실습](g12/) | Specified |
 
-현재 91개 중 85개가 `Specified`, G1의 5개 실습과 G10.1이 `Runnable`입니다. 상태 기준은 아래 표를 따르고, 실제 학습 진도는 [PROGRESS.md](../PROGRESS.md)에 기록합니다. G1의 시작점과 증거 링크는 [G1 챕터 안내](g01/README.md)에, G10.1의 실행 기록은 [실행 명세 v7](../evidence/runnable/g10.1/run-manifest-v7.json)에 있습니다.
+현재 91개 중 85개가 `Specified`, G1의 5개 실습과 G10.1이 `Runnable`입니다. 상태 기준은 아래 표를 따르고, 실제 학습 진도는 [PROGRESS.md](../PROGRESS.md)에 기록합니다. G1의 시작점과 증거 링크는 [G1 챕터 안내](g01/README.md)에, G10.1의 실행 기록은 [실행 명세 v8](../evidence/runnable/g10.1/run-manifest-v8.json)에 있습니다.
 
 | 상태 | 필요한 근거 |
 | --- | --- |

@@ -1,0 +1,164 @@
+{
+  "schema_version": 3,
+  "lab_id": "G1.5",
+  "status": "Runnable",
+  "verification_scope": "가짜 MMIO 부작용·W1C·wrap timeout과 ISR 생산자/task 소비자 release-acquire 경계",
+  "starter_commit": "4183399dc32bc69177a1cd0d18f81ac3b2877138",
+  "snapshot": {
+    "method": "git archive",
+    "network_required": false,
+    "working_tree_files_used": false
+  },
+  "artifacts": [
+    {
+      "role": "fixture",
+      "path": "fixtures/g01/sprint-1.5-v1.h",
+      "sha256": "56613bc106d6998d1b4179720d352a5ff25ae5cc224a84dca544d8cdd563a8e9"
+    },
+    {
+      "role": "validator",
+      "path": "labs/g01_safe_c/tests/test_driver.c",
+      "sha256": "01ebc08fa2ed1d1edda0fbad7f33f14bf2a3e64775e56793de47dcc6e9c0889f"
+    },
+    {
+      "role": "oracle",
+      "path": "labs/g01_safe_c/reference/driver.c",
+      "sha256": "1847348f7ee5183f308f809f52a38ceaf4b1578408fd3936b47513df2c025529"
+    },
+    {
+      "role": "starter",
+      "path": "labs/g01_safe_c/starter/driver.c",
+      "sha256": "23f867a95770bc5f88cc36976a8ad69cb385a8788269f6944016de2fb84567c3"
+    },
+    {
+      "role": "oracle-dependency",
+      "path": "labs/g01_safe_c/reference/storage.c",
+      "sha256": "07358170bc60cbe74e2719a6f73e755f7d7e09853ec9674da6e631bdfe489472"
+    },
+    {
+      "role": "starter-dependency",
+      "path": "labs/g01_safe_c/starter/storage.c",
+      "sha256": "256470491d0d85d6be43ab2f6ed605330afa7fa547f38d2dc41840acd9ff8d66"
+    },
+    {
+      "role": "runner",
+      "path": "labs/g01_safe_c/run_harness.py",
+      "sha256": "9fa771edbfff8c6d1f89294c70170a5c8c686a89e633ec6c354e57b2f5edf634"
+    },
+    {
+      "role": "interface",
+      "path": "labs/g01_safe_c/include/g01_lab.h",
+      "sha256": "09d8e9e28e415672fc6b21fd50f9ed5a5785cd54de96a8e2bd12c23bef5a94a2"
+    },
+    {
+      "role": "validator-support",
+      "path": "labs/g01_safe_c/tests/test_support.h",
+      "sha256": "49f63bcc15a3471e4857caa508d9c51402a64b531cf1fb03e30bcb58e134fae1"
+    },
+    {
+      "role": "unit-tests",
+      "path": "labs/g01_safe_c/tests/test_run_harness.py",
+      "sha256": "61106c1411e8a30489665c94bc031c49a0de8bb4cc12b31e36c68c05e852acb5"
+    },
+    {
+      "role": "test-config",
+      "path": "pytest.ini",
+      "sha256": "a71a64881aa52495c7ee1d1aa12372c357dd409354099c4cefb204dd5948baf4"
+    },
+    {
+      "role": "evidence-checker",
+      "path": "scripts/check_runnable_evidence.py",
+      "sha256": "8952ef45a94832840a06caa4280208f599b717f0a09c31aa43122899fd424593"
+    },
+    {
+      "role": "evidence-support",
+      "path": "scripts/runnable_evidence_support.py",
+      "sha256": "91dd4dc01d61bfaeb301178de16790e4ed5e12caa43488980fc30f55030a5bcc"
+    },
+    {
+      "role": "evidence-validator",
+      "path": "scripts/runnable_evidence_validator.py",
+      "sha256": "30b6a6eacbeb47c7888dfe7073b4768b33d51a8810b6f868b88716b6102b00c6"
+    },
+    {
+      "role": "retest-fixture",
+      "path": "fixtures/g01/retest-1.5-v1.h",
+      "sha256": "a19b85ceeeade26927df066aee5358463d9d30e6263bf9b5d7ce62cb2d9f0314"
+    },
+    {
+      "role": "toolchain-resolver",
+      "path": "labs/g01_safe_c/harness_toolchain.py",
+      "sha256": "5f193c11a77aaf8b9a6e370234cac389aaf658abcfbcd0b20867f6e3645df395"
+    }
+  ],
+  "command": {
+    "argv": [
+      "uv",
+      "run",
+      "--offline",
+      "--python",
+      "3.12.13",
+      "--with",
+      "ziglang==0.15.2",
+      "python",
+      "-m",
+      "labs.g01_safe_c.run_harness"
+    ],
+    "environment": {
+      "G01_LAB_ID": "G1.5",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g1.5/harness-v2.stdout",
+    "stdout_sha256": "be394259bafd0fc5e8450b986a6b9110a2acad6590071b56eaabc27a3f9de1b0",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "uv": "0.12.3",
+    "c_compiler": "zig",
+    "c_compiler_version": "0.15.2",
+    "c_runtime": "Zig 0.15.2 bundled libc",
+    "target_contract": "native x86_64 hosted C17",
+    "recorded_target": "x86_64-unknown-windows-gnu",
+    "replay_targets": [
+      "x86_64-unknown-windows-gnu",
+      "x86_64-linux-gnu"
+    ],
+    "kernel": "Windows 11 x86_64; LF-canonical text replay"
+  },
+  "timing": {
+    "definition": "active time is child user+system; wall time uses monotonic elapsed time",
+    "harness": {
+      "active_seconds": 9.094,
+      "wall_seconds": 7.472
+    },
+    "repository_check": {
+      "active_seconds": 98.484,
+      "wall_seconds": 115.309
+    }
+  },
+  "repository_check": {
+    "argv": [
+      "bash",
+      "scripts/check_repo.sh"
+    ],
+    "environment": {
+      "SKIP_RUNNABLE_EVIDENCE": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/repository-check-4183399.stdout",
+    "stdout_sha256": "65b986685caf7360dfbc0780955f782c474adc44d832c3047693a2c732b3072a",
+    "stderr_path": "evidence/runnable/repository-check-4183399.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "learner_time_calibration": {
+    "status": "Not run",
+    "estimate_active_hours": "30-42",
+    "note": "첫 학습자 실행에서 안내·독립·전이 과제의 활동 시간과 막힌 지점을 따로 기록한다."
+  },
+  "recorded_at": "2026-08-20T07:42:34.712104Z"
+}

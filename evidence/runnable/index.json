@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "active": {
-    "G1.1": "evidence/runnable/g1.1/run-manifest-v1.json",
-    "G1.2": "evidence/runnable/g1.2/run-manifest-v1.json",
-    "G1.3": "evidence/runnable/g1.3/run-manifest-v1.json",
-    "G1.4": "evidence/runnable/g1.4/run-manifest-v1.json",
-    "G1.5": "evidence/runnable/g1.5/run-manifest-v1.json",
-    "G10.1": "evidence/runnable/g10.1/run-manifest-v7.json"
+    "G1.1": "evidence/runnable/g1.1/run-manifest-v2.json",
+    "G1.2": "evidence/runnable/g1.2/run-manifest-v2.json",
+    "G1.3": "evidence/runnable/g1.3/run-manifest-v2.json",
+    "G1.4": "evidence/runnable/g1.4/run-manifest-v2.json",
+    "G1.5": "evidence/runnable/g1.5/run-manifest-v2.json",
+    "G10.1": "evidence/runnable/g10.1/run-manifest-v8.json"
   }
 }
