@@ -50,7 +50,7 @@
 
 ---
 
-## G0 — Engineering Baseline
+## 개발 환경과 검증 기준 준비하기 (G0)
 
 | Sprint | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- |
@@ -59,7 +59,7 @@
 
 MVP는 C/C++ skeleton, CI, baseline dossier입니다. Board 구매와 상용 문서 접근은 ADR에 `Available / Planned / Blocked`로 기록합니다.
 
-## G1 — Systems C
+## 안전한 C로 데이터와 메모리 다루기 (G1)
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
@@ -71,7 +71,7 @@ MVP는 C/C++ skeleton, CI, baseline dossier입니다. Board 구매와 상용 문
 
 MVP는 decoder, bounded storage, parser와 자동 corpus입니다. ISO-TP/UDS 의미론은 G6에서 배웁니다.
 
-## G2 — Embedded C++
+## 임베디드 C++ 자원 수명과 소유권 다루기 (G2)
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
@@ -82,7 +82,7 @@ MVP는 decoder, bounded storage, parser와 자동 corpus입니다. ISO-TP/UDS �
 
 MVP는 P01과 P02에 필요한 runtime layer까지만 만듭니다.
 
-## G3 — ARM ABI and LLVM
+## ARM 실행 구조와 컴파일 결과 읽기 (G3)
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
@@ -94,7 +94,7 @@ MVP는 P01과 P02에 필요한 runtime layer까지만 만듭니다.
 
 성능 수치는 target별 budget 안에서 비교합니다. Cortex-M은 cycle, AArch64는 해당 환경의 latency와 counter를 사용합니다.
 
-## G4 — Bare-metal Cortex-M
+## Cortex-M 보드 부팅과 인터럽트 구현하기 (G4)
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
@@ -107,7 +107,7 @@ MVP는 P01과 P02에 필요한 runtime layer까지만 만듭니다.
 
 MVP는 실제 보드에서 부팅·timer·interrupt·fault·watchdog가 작동하는 image입니다.
 
-## G5 — RTOS and Real-Time Analysis
+## RTOS 태스크와 실시간성 검증하기 (G5)
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
@@ -121,7 +121,7 @@ MVP는 실제 보드에서 부팅·timer·interrupt·fault·watchdog가 작동�
 
 Deadline과 인수 예산은 Sprint 5.1에서 고정합니다. 실측이 실패하면 구현·모델·요구 중 무엇을 바꿀지 ADR로 결정합니다.
 
-## G6 — CAN, ISO-TP and UDS
+## CAN 통신과 차량 진단 구현하기 (G6)
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
@@ -136,7 +136,7 @@ Deadline과 인수 예산은 Sprint 5.1에서 고정합니다. 실측이 실패�
 
 진단 쓰기와 다운로드는 선택 과제로 둡니다. 허가된 벤치와 위협 모델을 준비한 뒤 진행합니다.
 
-## G7 — Classic Platform Concept Fluency
+## AUTOSAR Classic 구조로 ECU 기능 묶기 (G7)
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
@@ -151,7 +151,7 @@ Deadline과 인수 예산은 Sprint 5.1에서 고정합니다. 실측이 실패�
 
 책임 경계 매핑을 `Validated`로 판정하는 검토자는 Classic Platform 경험이 있거나, 선택한 release의 관련 공식 문서를 직접 읽고 인용 절을 확인해야 합니다. 동작 시험만 통과하고 이 검토를 받지 못하면 구현 결과는 `Validated`, AUTOSAR 매핑은 `Provisional`로 따로 기록합니다.
 
-## G8 — Embedded Linux Platform and Image
+## 임베디드 Linux 이미지와 프로세스 운영하기 (G8)
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
@@ -167,7 +167,7 @@ Deadline과 인수 예산은 Sprint 5.1에서 고정합니다. 실측이 실패�
 
 Core는 QEMU `virt`용 Buildroot image, kernel config, Device Tree 읽기, SBOM까지입니다. 실제 board BSP bring-up, kernel module, Yocto recipe는 Industrial Bridge에서 진행합니다.
 
-## G9 — Service-oriented Vehicle Communication
+## 서비스 인터페이스와 SOME/IP 통신 구현하기 (G9)
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
@@ -184,7 +184,7 @@ Core는 QEMU `virt`용 Buildroot image, kernel config, Device Tree 읽기, SBOM�
 
 TSN scheduling과 hardware timestamp는 N1 선택 Gate로 넘깁니다.
 
-## G10 — Adaptive Platform Functional Clusters
+## AUTOSAR Adaptive 실행·상태·진단·권한 이해하기 (G10)
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
@@ -201,7 +201,7 @@ TSN scheduling과 hardware timestamp는 N1 선택 Gate로 넘깁니다.
 
 Adaptive 책임 매핑을 `Validated`로 판정하는 검토자는 Adaptive Platform 경험이 있거나, 선택한 release의 관련 공식 문서를 직접 검토해야 합니다. 그렇지 않으면 local 동작은 `Validated`, AUTOSAR 매핑은 `Provisional`로 기록합니다.
 
-## G11 — Adaptive Security, UCM and Cross-domain Assurance
+## 안전한 업데이트와 교차 도메인 보증 (G11)
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |
@@ -215,7 +215,7 @@ Adaptive 책임 매핑을 `Validated`로 판정하는 검토자는 Adaptive Plat
 
 11.1–11.4는 G10 직후 진행할 수 있습니다. 11.5–11.7은 G7과 실제 hardware evidence가 준비된 뒤 닫습니다.
 
-## G12 — Architecture and Integration
+## MCU–Linux 차량 플랫폼 최종 통합하기 (G12)
 
 | Sprint | 주제 | 안내 실습 | 독립·전이 과제 | 판정 기준 / 종료 근거 |
 | --- | --- | --- | --- | --- |

@@ -5,13 +5,26 @@ script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 repo_root=$(cd -- "$script_dir/.." && pwd)
 cd "$repo_root"
 
+python_cmd=python3
+if ! "$python_cmd" -c 'import sys; raise SystemExit(sys.version_info[:2] != (3, 12))' >/dev/null 2>&1; then
+    python_cmd=python
+fi
+if ! "$python_cmd" -c 'import sys; raise SystemExit(sys.version_info[:2] != (3, 12))' >/dev/null 2>&1; then
+    echo "error: Python 3.12 is required" >&2
+    exit 1
+fi
+
 required_files=(
     .python-version
+    pytest.ini
+    LICENSE.md
     README.md
     ROADMAP.md
     ASSESSMENTS.md
     PROGRESS.md
     SECURITY.md
+    THIRD_PARTY_NOTICES.md
+    .github/workflows/code-build.yml
     compiler-analysis/README.md
     docs/competency-map.md
     docs/baseline.md
@@ -36,6 +49,8 @@ required_files=(
     gates/g01/sprint-1.3.md
     gates/g01/sprint-1.4.md
     gates/g01/sprint-1.5.md
+    gates/g01/README.md
+    gates/g01/contract.md
     gates/g02/sprint-2.1.md
     gates/g02/sprint-2.2.md
     gates/g02/sprint-2.3.md
@@ -129,6 +144,11 @@ required_files=(
     gates/g12/sprint-12.12.md
     gates/g12/contract.md
     fixtures/README.md
+    fixtures/g01/sprint-1.1-v1.h
+    fixtures/g01/sprint-1.2-v1.h
+    fixtures/g01/sprint-1.3-v1.h
+    fixtures/g01/sprint-1.4-v1.h
+    fixtures/g01/sprint-1.5-v1.h
     fixtures/g05/task-set-v1.yml
     fixtures/g06/can-fd-dlc-v1.csv
     fixtures/g06/can-rta-three-message-v1.json
@@ -151,6 +171,18 @@ required_files=(
     labs/g10_1_release_map/run_harness.py
     labs/g10_1_release_map/starter/release-map.json
     labs/g10_1_release_map/tests/test_release_map.py
+    labs/g01_safe_c/README.md
+    labs/g01_safe_c/include/g01_lab.h
+    labs/g01_safe_c/reference/codec.c
+    labs/g01_safe_c/reference/storage.c
+    labs/g01_safe_c/reference/parser.c
+    labs/g01_safe_c/reference/driver.c
+    labs/g01_safe_c/starter/codec.c
+    labs/g01_safe_c/starter/storage.c
+    labs/g01_safe_c/starter/parser.c
+    labs/g01_safe_c/starter/driver.c
+    labs/g01_safe_c/tests/test_run_harness.py
+    labs/g01_safe_c/run_harness.py
     sources/autosar-r25-11/README.md
     evidence/runnable/g10.1/README.md
     evidence/runnable/g10.1/harness.stdout
@@ -183,6 +215,9 @@ required_files=(
     projects/06-heterogeneous-vehicle-platform/README.md
     scripts/check_fixture_semantics.py
     scripts/check_runnable_evidence.py
+    scripts/runnable_evidence_support.py
+    scripts/runnable_evidence_validator.py
+    scripts/tests/test_check_runnable_evidence.py
 )
 
 for file in "${required_files[@]}"; do
@@ -241,12 +276,13 @@ for file in "${documented_lab_files[@]}"; do
 done
 
 bash -n scripts/new-study-log.sh scripts/check_repo.sh
-python3 -c 'import ast, pathlib; [ast.parse(pathlib.Path(path).read_text(encoding="utf-8")) for path in ("scripts/check_internal_links.py", "scripts/check_traceability.py", "scripts/check_fixture_semantics.py", "scripts/check_runnable_evidence.py", "labs/g10_1_release_map/validator.py", "labs/g10_1_release_map/run_harness.py", "labs/g10_1_release_map/tests/test_release_map.py")]'
-python3 scripts/check_internal_links.py
-python3 scripts/check_traceability.py
-python3 scripts/check_fixture_semantics.py
-python3 labs/g10_1_release_map/run_harness.py
-unit_output=$(python3 -m unittest discover -s labs/g10_1_release_map/tests -p 'test_*.py' 2>&1)
+"$python_cmd" -c 'import ast, pathlib; [ast.parse(pathlib.Path(path).read_text(encoding="utf-8")) for path in ("scripts/check_internal_links.py", "scripts/check_traceability.py", "scripts/check_fixture_semantics.py", "scripts/check_runnable_evidence.py", "scripts/runnable_evidence_support.py", "scripts/runnable_evidence_validator.py", "scripts/tests/test_check_runnable_evidence.py", "labs/g01_safe_c/run_harness.py", "labs/g01_safe_c/tests/test_run_harness.py", "labs/g10_1_release_map/validator.py", "labs/g10_1_release_map/run_harness.py", "labs/g10_1_release_map/tests/test_release_map.py")]'
+"$python_cmd" scripts/check_internal_links.py
+"$python_cmd" scripts/check_traceability.py
+"$python_cmd" scripts/check_fixture_semantics.py
+"$python_cmd" labs/g01_safe_c/run_harness.py
+"$python_cmd" labs/g10_1_release_map/run_harness.py
+unit_output=$("$python_cmd" -m unittest discover -s labs/g10_1_release_map/tests -p 'test_*.py' 2>&1)
 if ! grep -Fq 'Ran 14 tests' <<<"$unit_output" || ! grep -Fxq 'OK' <<<"$unit_output"; then
     printf '%s\n' "$unit_output" >&2
     echo "error: G10.1 unit-test count or result changed" >&2
@@ -254,7 +290,7 @@ if ! grep -Fq 'Ran 14 tests' <<<"$unit_output" || ! grep -Fxq 'OK' <<<"$unit_out
 fi
 echo "G10.1 unit tests: OK (14 tests)"
 if [[ ${SKIP_RUNNABLE_EVIDENCE:-0} != 1 ]]; then
-    python3 scripts/check_runnable_evidence.py
+    "$python_cmd" -m scripts.check_runnable_evidence
 fi
 
 if find . -path './.git' -prune -o -type f \

@@ -6,25 +6,26 @@ Status는 `Not started`, `Challenge`, `Learning`, `Building`, `Assessment`, `Pro
 
 | Gate | Focus | Status | 필수 결과물 | 평가 / 검토자 | 실제 시간 |
 | --- | --- | --- | --- | --- | ---: |
-| G0 | Engineering baseline | Learning | [Baseline dossier](docs/baseline.md) | — | 0 |
-| G1 | Systems C | Not started | Low-level library | — | 0 |
-| G2 | Embedded C++ | Not started | Runtime layer | — | 0 |
-| G3 | ARM ABI and LLVM | Not started | Compiler analysis pack | — | 0 |
-| G4 | Bare-metal Cortex-M | Not started | Bootable MCU runtime | — | 0 |
-| G5 | RTOS and RTA | Not started | P00-A | — | 0 |
-| G6 | CAN and diagnostics | Not started | P00-B | — | 0 |
-| G7 | Classic concepts | Not started | P00-C | — | 0 |
-| G8 | Embedded Linux platform and image | Not started | P01 + Linux image + RT evidence | — | 0 |
-| G9 | Service-oriented vehicle communication | Not started | Service Interface + P02 + P05-SIM | — | 0 |
-| G10 | Adaptive functional clusters | Not started | P03 + Diagnostics + IAM | — | 0 |
-| G11A | Adaptive security and UCM | Not started | P04-T1/T2 | — | 0 |
-| G11B | Cross-domain assurance | Not started | P04-T3/assurance | — | 0 |
-| G12 | Architecture and integration | Not started | P06 | — | 0 |
+| G0 | 개발 환경과 검증 기준 준비하기 | Learning | [Baseline dossier](docs/baseline.md) | — | 0 |
+| G1 | [안전한 C로 데이터와 메모리 다루기](gates/g01/README.md) | Not started | 안전 C 컴포넌트 묶음 | — | 0 |
+| G2 | 임베디드 C++ 자원 수명과 소유권 다루기 | Not started | Runtime layer | — | 0 |
+| G3 | ARM 실행 구조와 컴파일 결과 읽기 | Not started | Compiler analysis pack | — | 0 |
+| G4 | Cortex-M 보드 부팅과 인터럽트 구현하기 | Not started | Bootable MCU runtime | — | 0 |
+| G5 | RTOS 태스크와 실시간성 검증하기 | Not started | P00-A | — | 0 |
+| G6 | CAN 통신과 차량 진단 구현하기 | Not started | P00-B | — | 0 |
+| G7 | AUTOSAR Classic 구조로 ECU 기능 묶기 | Not started | P00-C | — | 0 |
+| G8 | 임베디드 Linux 이미지와 프로세스 운영하기 | Not started | P01 + Linux image + RT evidence | — | 0 |
+| G9 | 서비스 인터페이스와 SOME/IP 통신 구현하기 | Not started | Service Interface + P02 + P05-SIM | — | 0 |
+| G10 | AUTOSAR Adaptive 실행·상태·진단·권한 이해하기 | Not started | P03 + Diagnostics + IAM | — | 0 |
+| G11A | 안전한 업데이트와 UCM 구현하기 | Not started | P04-T1/T2 | — | 0 |
+| G11B | MCU–Linux 안전·보안 근거 검토하기 | Not started | P04-T3/assurance | — | 0 |
+| G12 | MCU–Linux 차량 플랫폼 최종 통합하기 | Not started | P06 | — | 0 |
 
 ## Portfolio releases
 
 | Release | Target Gate | Status | Tag / demo | External replay |
 | --- | --- | --- | --- | --- |
+| Safe C Components v1 | G1 | Planned | — | — |
 | Compiler Analysis Pack v1 | G3 | Planned | — | — |
 | P00-A v1 | G5 | Planned | — | — |
 | P00 v1 | G7 | Planned | — | — |

@@ -1,9 +1,14 @@
 # Traceability Matrix
 
-요구사항 98개는 설계 배정과 검증 계획을 연결해 `Baselined`로 올렸습니다. 구현 링크는 실제 코드가 생긴 PR에서 채우고, `Verified`에는 전체 커밋 SHA 또는 CI 실행과 검토자를 기록합니다.
+요구사항 103개는 설계 배정과 검증 계획을 연결해 `Baselined`로 올렸습니다. 구현 링크는 실제 코드가 생긴 PR에서 채우고, `Verified`에는 전체 커밋 SHA 또는 CI 실행과 검토자를 기록합니다.
 
 | Requirement | Design / ADR | Implementation | Verification | Result | Reviewer |
 | --- | --- | --- | --- | --- | --- |
+| REQ-C-SER-001 | [G1 contract](../gates/g01/contract.md) | Planned | [실습 1-1](../gates/g01/sprint-1.1.md) | Not run | — |
+| REQ-C-MEM-001 | [G1 contract](../gates/g01/contract.md) | Planned | [실습 1-2](../gates/g01/sprint-1.2.md) | Not run | — |
+| REQ-C-STOR-001 | [G1 contract](../gates/g01/contract.md) | Planned | [실습 1-3](../gates/g01/sprint-1.3.md) | Not run | — |
+| REQ-C-PARSE-001 | [G1 contract](../gates/g01/contract.md) | Planned | [실습 1-4](../gates/g01/sprint-1.4.md) | Not run | — |
+| REQ-C-ISR-001 | [G1 contract](../gates/g01/contract.md) | Planned | [실습 1-5](../gates/g01/sprint-1.5.md) | Not run | — |
 | REQ-MCU-START-001 | [G4 contract](../gates/g04/contract.md) | Planned | [Sprint 4.1](../gates/g04/sprint-4.1.md) | Not run | — |
 | REQ-MCU-TIME-001 | [G4 contract](../gates/g04/contract.md) | Planned | [Sprint 4.2](../gates/g04/sprint-4.2.md) | Not run | — |
 | REQ-MCU-IRQ-001 | [G4 contract](../gates/g04/contract.md) | Planned | [Sprint 4.3](../gates/g04/sprint-4.3.md) | Not run | — |

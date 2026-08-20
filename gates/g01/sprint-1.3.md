@@ -1,12 +1,18 @@
-# Sprint 1.3 — Bounded Storage
+# 실습 1-3 — 고정 용량 큐와 메모리 풀 만들기
+
+> 소속 챕터: [안전한 C로 데이터와 메모리 다루기](README.md) · 관리 코드: G1.3
 
 ## 시간과 자료
 
-24–30시간. N1570 6.2.4, 6.5.6, 7.22를 읽고, 선택한 coding rule에서 array bounds와 integer wrap 관련 항목을 찾습니다.
+26–34시간입니다. 수명·배열 규칙 3–4시간, queue 상태 설계 5–6시간, pool과 handle 6–8시간, model·mutant 시험 6–8시간, 전이·기록 6–8시간으로 나눕니다. N1570 6.2.4, 6.5.6, 6.5.8, 7.22를 읽고 선택한 coding rule에서 배열 범위와 integer wrap 항목을 찾습니다.
 
 ## 시작 계약
 
-Capacity는 compile time에 정하고 dynamic allocation을 사용하지 않습니다. Ring buffer는 `reject-new`와 `overwrite-oldest` 정책을 별도 instance로 지원합니다.
+저장 배열의 최대 크기는 compile time에 정하고 동적 할당을 사용하지 않습니다. 논리 용량은 1 이상이며 0은 compile-fail 입력으로 거부합니다. Ring buffer는 `reject-new`와 `overwrite-oldest` 정책을 별도 instance로 지원합니다. 공개 연산열과 seed는 [sprint-1.3-v1.h](../../fixtures/g01/sprint-1.3-v1.h)에 고정합니다.
+
+```bash
+G01_LAB_ID=G1.3 python3 labs/g01_safe_c/run_harness.py
+```
 
 ## 안내 실습
 
@@ -14,25 +20,26 @@ head, tail, count 중 어떤 상태를 저장할지 ADR로 결정합니다. Empt
 
 ## 독립 실습
 
-Element 32개를 가진 fixed-size object pool을 작성합니다. Double free, foreign pointer, exhaustion을 탐지하고 counter를 제공합니다.
+원소 32개를 가진 고정 크기 object pool을 작성합니다. Raw pointer의 범위 비교나 뺄셈 대신 `index + generation` handle을 사용해 double free, 오래된 handle, exhaustion을 탐지하고 counter를 제공합니다.
 
 ## 전이 과제
 
-90분 동안 DMA descriptor queue를 구현합니다. Producer와 consumer ownership, publish/consume 시점, full policy를 설명합니다.
+90분 동안 DMA descriptor queue를 구현합니다. Producer와 consumer 소유권, publish/consume 시점, 가득 참 정책을 설명합니다. DMA visibility와 cache maintenance는 C thread 동기화와 분리해 미해결 가정으로 남깁니다.
 
 ## 판정 기준
 
-- capacity 0/1/2/power-of-two/non-power-of-two test
-- 100만 operation model test에서 reference deque와 결과 일치
+- capacity 0 compile-fail, 논리 용량 1/2/power-of-two/non-power-of-two 실행 시험
+- 고정 seed의 100만 operation model test에서 reference deque와 결과 일치
 - 실패 operation 뒤 invariant 유지
 - integer wrap과 index 범위가 sanitizer·property test를 통과
+- stale generation, double free, 범위 밖 handle이 pool 상태를 바꾸지 않음
 
 ## 구현 전 확인
 
 1. 상태 표현 하나를 고르고 모든 operation의 pre/post condition을 적습니다.
 2. Capacity와 index type의 표현 범위를 확인합니다.
-3. Pool pointer validation은 alignment와 range를 모두 확인합니다.
+3. Pool 소유권은 raw pointer 관계 비교가 아니라 typed slot equality 또는 generation handle로 확인합니다.
 
 ## 통과를 미루는 경우
 
-`full`과 `empty`가 같은 상태로 보이거나 외부 포인터가 free list를 손상시키면 아직 닫지 않습니다. 용량 3으로 줄여 가능한 짧은 연산열을 전부 실행하고 깨진 불변 조건부터 고칩니다.
+`full`과 `empty`가 같은 상태로 보이거나 잘못된 handle이 free list를 손상시키면 아직 닫지 않습니다. 용량 3으로 줄여 가능한 짧은 연산열을 전부 실행하고 깨진 불변 조건부터 고친 뒤 다른 seed로 재시험합니다.

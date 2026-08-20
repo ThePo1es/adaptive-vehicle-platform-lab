@@ -1,30 +1,36 @@
-# Sprint 1.2 — 객체 표현, 정렬, aliasing
+# 실습 1-2 — 메모리 배치와 정렬 오류 이해하기
+
+> 소속 챕터: [안전한 C로 데이터와 메모리 다루기](README.md) · 관리 코드: G1.2
 
 ## 시간과 자료
 
-24–30시간. N1570 6.2.6.1, 6.2.8, 6.5, 6.5.2.3, 6.7.2.1, 6.7.3, 7.24.2.1을 읽습니다.
+18–22시간입니다. 규칙과 compiler 문서 4시간, 구조체 배치 실험 4시간, 세 접근법 비교 5시간, Cortex-M assembly 확인 3시간, 전이·기록 2–6시간으로 계획합니다. N1570 6.2.6.1, 6.2.8, 6.5, 6.5.2.3, 6.5.6, 6.5.8, 6.7.2.1, 6.7.3, 7.24.2.1을 읽습니다.
 
-## Fixture
+## 입력과 정답 분류
 
-다음 세 구현을 같은 corpus로 비교합니다.
+고정 입력은 [sprint-1.2-v1.h](../../fixtures/g01/sprint-1.2-v1.h)를 사용합니다. 다음 세 구현을 같은 입력 모음으로 비교합니다.
 
 1. `uint16_t *` cast 뒤 dereference
 2. `memcpy`로 local integer에 복사
 3. byte shift와 OR
 
-입력 주소 offset은 0–7, payload length는 0–8, compiler는 GCC/Clang, profile은 `-O0/-O2`입니다.
+입력 주소 offset은 0–7, payload 길이는 0–8, compiler는 GCC/Clang, profile은 `-O0/-O2`입니다. 정답은 [G1 계약의 분류표](contract.md#실습-1-2-세-접근법의-정답-분류)를 따릅니다. `memcpy`는 정렬·별칭 위험을 없애도 native endian 의존은 남습니다.
+
+```bash
+G01_LAB_ID=G1.2 python3 labs/g01_safe_c/run_harness.py
+```
 
 ## 안내 실습
 
-`sizeof`, `_Alignof`, `offsetof`로 세 structure의 padding map을 출력합니다. Packed structure의 codegen과 target fault risk를 기록합니다.
+`sizeof`, `_Alignof`, `offsetof`로 세 구조체의 padding 지도를 출력합니다. padding byte가 값 비교에 적합하지 않은 이유를 실험하고, packed 구조체의 compiler 확장·생성 명령·target fault 위험을 분리해 기록합니다.
 
 ## 독립 실습
 
-host에서 통과하지만 Cortex-M target에서 정렬 fault 가능성이 있는 parser를 찾고 portable implementation으로 고칩니다.
+host에서 통과하지만 Cortex-M에서 정렬 fault 가능성이 있는 파서를 찾고 이식 가능한 구현으로 고칩니다. Cortex-M4F, compiler·flags, `UNALIGN_TRP`, 메모리 영역을 결과에 고정합니다.
 
 ## 전이 과제
 
-Network byte order의 32-bit field와 3-byte field를 읽는 API를 설계합니다. Input lifetime과 output representation을 문서화합니다.
+network byte order의 32비트 field와 3바이트 field를 읽는 API를 설계합니다. 입력 수명과 출력 표현을 문서화하고, 정렬이 다른 새 입력 B로 90분 안에 다시 구현합니다.
 
 ## 판정 기준
 
@@ -32,13 +38,14 @@ Network byte order의 32-bit field와 3-byte field를 읽는 API를 설계합니
 - sanitizer가 잡는 경우와 놓치는 경우 기록
 - compiler assembly와 target instruction alignment 요구 연결
 - public API에 alignment와 lifetime 계약 표시
+- `memcpy`, byte assembly, packed access의 endian 결과를 서로 바꾸지 않음
 
 ## 힌트
 
-1. Character type access와 effective type 규칙을 분리해서 읽습니다.
+1. character type access와 effective type 규칙을 분리해서 읽습니다.
 2. `memcpy`가 최적화 뒤 실제 call로 남는지 assembly에서 확인합니다.
 3. Packed는 layout 문제를 해결해도 access 문제를 남길 수 있습니다.
 
 ## 재시험 범위
 
-x86 실행 결과만으로 이식성을 결론 냈다면 unaligned offset 표부터 다시 확인합니다. UBSan 결과와 Cortex-M cross assembly가 같은 접근을 어떻게 처리하는지 비교한 뒤 판정을 갱신합니다.
+x86 실행 결과만으로 이식성을 결론 냈다면 비정렬 offset 표부터 다시 확인합니다. UBSan 결과와 Cortex-M cross assembly가 같은 접근을 어떻게 처리하는지 비교한 뒤 다른 byte pattern으로 재시험합니다.

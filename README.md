@@ -4,6 +4,21 @@ MCU ECU와 Linux 차량 컴퓨터를 직접 만들면서 C/C++, ARM, RTOS, 차�
 
 현재 저장소에는 커리큘럼과 평가 체계가 들어 있습니다. 구현 프로젝트는 모두 `Planned` 상태이며, 코드와 측정 결과는 Gate를 진행하면서 채웁니다.
 
+## 번호부터 읽는 법
+
+이 저장소는 사람이 읽는 이름과 자동 추적용 코드를 함께 씁니다. **이름이 학습 내용이고, 코드는 문서와 증거를 연결하는 관리 번호**입니다.
+
+| 표기 | 뜻 | 예시 |
+| --- | --- | --- |
+| 학습 단계 `G` | 큰 학습 챕터의 관리 코드 | `G1`은 “안전한 C로 데이터와 메모리 다루기” |
+| 실습 `1-1` | 한 챕터 안의 개별 과제 | `실습 1-1`은 정수와 바이트 변환 |
+| 프로젝트 `P` | 여러 챕터의 결과를 합치는 포트폴리오 프로젝트 | `P00`은 MCU/RTOS ECU 프로젝트 |
+| 고장 시나리오 `F` | 최종 통합 시험에서 주입하는 고장 번호 | `F01`은 MCU 태스크 실행 시간 초과 |
+
+`G1`과 `F01`은 서로 이어지는 번호가 아닙니다. 경로·요구사항·시험 기록에서는 기존 코드를 유지하지만, 화면에서는 항상 설명하는 이름을 먼저 표시합니다. 전체 코드 표기는 [커리큘럼 코드 안내](docs/curriculum-codes.md)에서 한 번에 확인할 수 있습니다.
+
+처음 시작한다면 [0장: 개발 환경과 검증 기준 준비하기](gates/g00/sprint-0.1.md)를 진행한 뒤 [1장: 안전한 C로 데이터와 메모리 다루기](gates/g01/README.md)로 이동합니다.
+
 ## 목표
 
 이 과정을 마치면 다음 작업을 독립적으로 수행할 수 있어야 합니다.
@@ -39,24 +54,26 @@ MCU ECU와 Linux 차량 컴퓨터를 직접 만들면서 C/C++, ARM, RTOS, 차�
 
 현재 완성도와 남은 차단 항목은 [2026-08-19 커리큘럼 감사](docs/curriculum-audit.md)에 공개합니다.
 
-## Gate 지도
+## 챕터 지도
 
-| Gate | Focus | 대표 결과물 |
-| --- | --- | --- |
-| G0 | Engineering baseline | 고정된 toolchain, CI, hardware/access ADR |
-| G1 | Systems C | parser·queue·pool library와 fuzz corpus |
-| G2 | Embedded C++ | ownership-safe runtime layer |
-| G3 | ARM ABI and LLVM | Cortex-M/AArch64 compiler analysis suite |
-| G4 | Bare-metal Cortex-M | bootable image, timer/interrupt, crash record |
-| G5 | RTOS and real-time analysis | P00-A 실시간 핵심 모듈 |
-| G6 | CAN and diagnostics | P00-B CAN/ISO-TP/UDS extension |
-| G7 | Classic Platform concepts | P00-C communication·diagnostic·DTC stack |
-| G8 | Embedded Linux platform and image | P01 Process Supervisor와 재현 가능한 이미지 |
-| G9 | Service-oriented vehicle communication | Service Interface, Proxy/Skeleton, P02, P05-SIM |
-| G10 | Adaptive Platform functional clusters | P03, Diagnostics, IAM 정책을 포함한 managed Linux node |
-| G11A | Adaptive security and UCM | 인증·package 처리·activation·rollback |
-| G11B | Cross-domain assurance | safety/security argument와 hardware trust 검증 |
-| G12 | System architecture and integration | P06 Heterogeneous MCU–Linux Vehicle Platform |
+표의 순서가 권장 학습 순서입니다. 관리 코드의 숫자는 문서를 연결하는 식별자일 뿐, 진행 순서를 뜻하지 않습니다.
+
+| 순서 | 챕터 이름 | 관리 코드 | 대표 결과물 |
+| ---: | --- | --- | --- |
+| 0 | 개발 환경과 검증 기준 준비하기 | G0 | 고정된 도구 모음, CI, 장비·접근 조건 ADR |
+| 1 | [안전한 C로 데이터와 메모리 다루기](gates/g01/README.md) | G1 | 디코더·큐·풀·파서와 입력 모음 |
+| 2 | 임베디드 C++ 자원 수명과 소유권 다루기 | G2 | 소유권이 명확한 실행 기반 |
+| 3 | ARM 실행 구조와 컴파일 결과 읽기 | G3 | Cortex-M/AArch64 컴파일 분석 묶음 |
+| 4 | 임베디드 Linux 이미지와 프로세스 운영하기 | G8 | P01 프로세스 감독기와 재현 가능한 이미지 |
+| 5 | 서비스 인터페이스와 SOME/IP 통신 구현하기 | G9 | Proxy/Skeleton, P02, P05-SIM |
+| 6 | AUTOSAR Adaptive 실행·상태·진단·권한 이해하기 | G10 | P03 관리형 Linux 노드 |
+| 7 | 안전한 업데이트와 UCM 구현하기 | G11A | 인증, 패키지 처리, 활성화, 롤백 |
+| 8 | Cortex-M 보드 부팅과 인터럽트 구현하기 | G4 | 부팅 이미지, 타이머·인터럽트, 고장 기록 |
+| 9 | RTOS 태스크와 실시간성 검증하기 | G5 | P00-A 실시간 핵심 모듈 |
+| 10 | CAN 통신과 차량 진단 구현하기 | G6 | P00-B CAN·ISO-TP·UDS 확장 |
+| 11 | AUTOSAR Classic 구조로 ECU 기능 묶기 | G7 | P00-C 통신·진단·DTC 스택 |
+| 12 | MCU–Linux 안전·보안 근거 검토하기 | G11B | 안전·보안 논증과 하드웨어 신뢰 검증 |
+| 13 | MCU–Linux 차량 플랫폼 최종 통합하기 | G12 | P06 이기종 차량 플랫폼 |
 
 G12 이후에는 선택한 하위 시스템을 다른 target에 이식하고, 성능·신뢰성 문제를 추적하며, 설계 리뷰와 유지보수 기록을 쌓습니다.
 

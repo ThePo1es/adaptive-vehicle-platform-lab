@@ -4,22 +4,22 @@
 
 ## 준비 상태
 
-| Gate | Lab pack | 상태 |
-| --- | --- | --- |
-| G0 | [2 Sprint](g00/) | Specified |
-| G1 | [5 Sprint](g01/) | Specified |
-| G2 | [4 Sprint](g02/) | Specified |
-| G3 | [5 Sprint](g03/) | Specified |
-| G4 | [6 Sprint](g04/) | Specified |
-| G5 | [7 Sprint](g05/) | Specified |
-| G6 | [8 Sprint](g06/) | Specified |
-| G7 | [6 Sprint](g07/) | Specified |
-| G8 | [9 Sprint](g08/) | Specified |
-| G9 | [10 Sprint](g09/) | Specified |
-| G10 | [10 Sprint](g10/) | 9 Specified; [10.1](g10/sprint-10.1.md) Runnable |
-| G11A | [4 Sprint](g11/) | Specified |
-| G11B | [3 Sprint](g11/) | Specified |
-| G12 | [12 Sprint](g12/) | Specified |
+| 관리 코드 | 챕터 | 실습 안내서 | 상태 |
+| --- | --- | --- | --- |
+| G0 | 개발 환경과 검증 기준 준비하기 | [2개 실습](g00/) | Specified |
+| G1 | 안전한 C로 데이터와 메모리 다루기 | [챕터 안내와 5개 실습](g01/README.md) | Specified |
+| G2 | 임베디드 C++ 자원 수명과 소유권 다루기 | [4개 실습](g02/) | Specified |
+| G3 | ARM 실행 구조와 컴파일 결과 읽기 | [5개 실습](g03/) | Specified |
+| G4 | Cortex-M 보드 부팅과 인터럽트 구현하기 | [6개 실습](g04/) | Specified |
+| G5 | RTOS 태스크와 실시간성 검증하기 | [7개 실습](g05/) | Specified |
+| G6 | CAN 통신과 차량 진단 구현하기 | [8개 실습](g06/) | Specified |
+| G7 | AUTOSAR Classic 구조로 ECU 기능 묶기 | [6개 실습](g07/) | Specified |
+| G8 | 임베디드 Linux 이미지와 프로세스 운영하기 | [9개 실습](g08/) | Specified |
+| G9 | 서비스 인터페이스와 SOME/IP 통신 구현하기 | [10개 실습](g09/) | Specified |
+| G10 | AUTOSAR Adaptive 실행·상태·진단·권한 이해하기 | [10개 실습](g10/) | 9 Specified; [10.1](g10/sprint-10.1.md) Runnable |
+| G11A | 안전한 업데이트와 UCM 구현하기 | [4개 실습](g11/) | Specified |
+| G11B | MCU–Linux 안전·보안 근거 검토하기 | [3개 실습](g11/) | Specified |
+| G12 | MCU–Linux 차량 플랫폼 최종 통합하기 | [12개 실습](g12/) | Specified |
 
 현재 91개 중 90개가 `Specified`, G10.1이 `Runnable`입니다. 상태 기준은 아래 표를 따르고, 실제 학습 진도는 [PROGRESS.md](../PROGRESS.md)에 기록합니다. G10.1의 시작 파일과 실행 기록은 [실행 명세 v6](../evidence/runnable/g10.1/run-manifest-v6.json)에 있습니다.
 

@@ -9,6 +9,16 @@
 | Implemented | 설계, 구현, 자동 검증 위치를 모두 연결함. 시험 결과는 아직 `Not run`일 수 있음 |
 | Verified | 고정한 커밋 또는 CI 실행에서 통과했고 검토자가 결과를 확인함 |
 
+## Safe C components
+
+| ID | Applies to | Requirement | Verification | Status |
+| --- | --- | --- | --- | --- |
+| REQ-C-SER-001 | G1 host library | The wire codec shall decode and encode the versioned 8-bit-octet layout without signed shift, out-of-range signed conversion or output modification after a rejected input. | Golden/boundary vectors + sanitizer + required mutants | Baselined |
+| REQ-C-MEM-001 | G1 host/MCU analysis | Each binary access shall classify its alignment, effective-type, lifetime and endian assumptions; host results shall not be presented as proof of target portability. | Classification fixture + compiler/target assembly review | Baselined |
+| REQ-C-STOR-001 | G1 bounded storage | Queue and pool operations shall preserve their versioned invariants after full, empty, stale-handle and rejected operations without dynamic allocation or foreign-pointer relational comparison. | Reference-model operation traces + sanitizer | Baselined |
+| REQ-C-PARSE-001 | G1 parser | The framed parser shall enforce the versioned length, CRC, consumed-byte and resynchronization contract and shall leave application output unchanged on need-more or rejection. | Differential parser + deterministic corpus + required mutants | Baselined |
+| REQ-C-ISR-001 | G1 host/MCU boundary | The driver boundary shall separate register access, single-core ISR/task publication, C-thread synchronization, multi-core ordering and DMA visibility, and shall use bounded interrupt work with a versioned full policy. | Host event oracle + target lock-free/assembly review | Baselined |
+
 ## MCU platform
 
 | ID | Applies to | Requirement | Verification | Status |

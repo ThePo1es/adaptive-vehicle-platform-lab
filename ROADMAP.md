@@ -6,19 +6,19 @@
 
 | Gate | 집중시간 | 예상 2주 Sprint | 결과물 |
 | --- | ---: | ---: | --- |
-| G0 Engineering baseline | 48–60h | 2 | toolchain·CI·장비 ADR |
-| G1 Systems C | 120–150h | 5 | low-level component library |
-| G2 Embedded C++ | 96–120h | 4 | ownership-safe runtime |
-| G3 ARM ABI and LLVM | 120–150h | 5 | compiler analysis suite |
-| G4 Bare-metal Cortex-M | 144–180h | 6 | bootable MCU runtime |
-| G5 RTOS and real-time analysis | 168–210h | 7 | P00-A timing core |
-| G6 CAN and diagnostics | 192–240h | 8 | P00-B network extension |
-| G7 Classic Platform concepts | 144–180h | 6 | P00-C ECU stack |
-| G8 Embedded Linux platform and image | 226–294h | 9 | P01 + Linux image + scheduling evidence |
-| G9 Service-oriented vehicle communication | 242–310h | 10 | Service Interface + P02 + P05-SIM |
-| G10 Adaptive Platform functional clusters | 242–310h | 10 | P03 + Diagnostics + IAM policy |
-| G11 Safety, security and update | 168–228h | 7 | P04 + assurance case |
-| G12 Architecture and integration | 288–360h | 12 | P06 final platform |
+| G0 개발 환경과 검증 기준 준비하기 | 48–60h | 2 | 도구 모음·CI·장비 ADR |
+| G1 안전한 C로 데이터와 메모리 다루기 | 124–166h | 5 | 저수준 안전 C 컴포넌트 묶음 |
+| G2 임베디드 C++ 자원 수명과 소유권 다루기 | 96–120h | 4 | 소유권이 명확한 실행 기반 |
+| G3 ARM 실행 구조와 컴파일 결과 읽기 | 120–150h | 5 | 컴파일 분석 묶음 |
+| G4 Cortex-M 보드 부팅과 인터럽트 구현하기 | 144–180h | 6 | 부팅 가능한 MCU 실행 기반 |
+| G5 RTOS 태스크와 실시간성 검증하기 | 168–210h | 7 | P00-A 시간 분석 핵심 |
+| G6 CAN 통신과 차량 진단 구현하기 | 192–240h | 8 | P00-B 네트워크 확장 |
+| G7 AUTOSAR Classic 구조로 ECU 기능 묶기 | 144–180h | 6 | P00-C ECU 스택 |
+| G8 임베디드 Linux 이미지와 프로세스 운영하기 | 226–294h | 9 | P01 + Linux 이미지 + 스케줄링 근거 |
+| G9 서비스 인터페이스와 SOME/IP 통신 구현하기 | 242–310h | 10 | Service Interface + P02 + P05-SIM |
+| G10 AUTOSAR Adaptive 실행·상태·진단·권한 이해하기 | 242–310h | 10 | P03 + Diagnostics + IAM 정책 |
+| G11 안전한 업데이트와 교차 도메인 보증 | 168–228h | 7 | P04 + 보증 논증 |
+| G12 MCU–Linux 차량 플랫폼 최종 통합하기 | 288–360h | 12 | P06 최종 플랫폼 |
 | **본 과정 합계** | **2,198–2,792h** | **91** | **13 Gate, G11은 두 단계** |
 
 시간은 범위를 잡기 위한 계획치입니다. 각 Lab Pack은 구현량에 따라 다른 시간을 사용하며 active time, build·soak wall time, reviewer 대기 시간을 따로 기록합니다. Major Gate 시험은 마지막 Sprint 예산에 넣고 분기 시험은 복습 시간에서 충당합니다. G8.6, G9.6, G10.1, G11.4를 실제로 돌린 뒤 전체 일정을 다시 계산합니다.
@@ -71,7 +71,7 @@ G4–G7과 G8–G10은 공통 기반 뒤에 갈라집니다. Linux/Adaptive 플�
 
 ---
 
-## G0 — Engineering Baseline
+## 개발 환경과 검증 기준 준비하기 (G0)
 
 ### 선수 조건
 
@@ -101,7 +101,9 @@ G4–G7과 G8–G10은 공통 기반 뒤에 갈라집니다. Linux/Adaptive 플�
 
 ---
 
-## G1 — Systems C
+## 안전한 C로 데이터와 메모리 다루기 (G1)
+
+> 관리 코드: G1 · 권장 학습 순서: 1번째 · [챕터 시작 안내](gates/g01/README.md)
 
 ### 배울 내용
 
@@ -128,7 +130,7 @@ G4–G7과 G8–G10은 공통 기반 뒤에 갈라집니다. Linux/Adaptive 플�
 
 ---
 
-## G2 — Embedded C++
+## 임베디드 C++ 자원 수명과 소유권 다루기 (G2)
 
 ### 배울 내용
 
@@ -153,7 +155,7 @@ G4–G7과 G8–G10은 공통 기반 뒤에 갈라집니다. Linux/Adaptive 플�
 
 ---
 
-## G3 — ARM ABI and LLVM
+## ARM 실행 구조와 컴파일 결과 읽기 (G3)
 
 G3는 ISA·ABI·binary·compiler 분석에 집중합니다. Cortex-M fault handler와 peripheral bring-up은 G4에서 다룹니다.
 
@@ -181,7 +183,7 @@ G3는 ISA·ABI·binary·compiler 분석에 집중합니다. Cortex-M fault handl
 
 ---
 
-## G4 — Bare-metal Cortex-M
+## Cortex-M 보드 부팅과 인터럽트 구현하기 (G4)
 
 ### 기본 target
 
@@ -211,7 +213,7 @@ G3는 ISA·ABI·binary·compiler 분석에 집중합니다. Cortex-M fault handl
 
 ---
 
-## G5 — RTOS and Real-Time Analysis
+## RTOS 태스크와 실시간성 검증하기 (G5)
 
 ### 배울 내용
 
@@ -237,7 +239,7 @@ G3는 ISA·ABI·binary·compiler 분석에 집중합니다. Cortex-M fault handl
 
 ---
 
-## G6 — CAN, ISO-TP and UDS
+## CAN 통신과 차량 진단 구현하기 (G6)
 
 ### 배울 내용
 
@@ -266,7 +268,7 @@ G3는 ISA·ABI·binary·compiler 분석에 집중합니다. Cortex-M fault handl
 
 ---
 
-## G7 — Classic Platform Concept Fluency
+## AUTOSAR Classic 구조로 ECU 기능 묶기 (G7)
 
 ### 배울 내용
 
@@ -295,7 +297,7 @@ P00 v1 릴리스와 외부 검토까지 마치면 MCU/BSW 지원 직무에 제�
 
 ---
 
-## G8 — Embedded Linux Platform and Image
+## 임베디드 Linux 이미지와 프로세스 운영하기 (G8)
 
 ### 배울 내용
 
@@ -323,7 +325,7 @@ P00 v1 릴리스와 외부 검토까지 마치면 MCU/BSW 지원 직무에 제�
 
 ---
 
-## G9 — Service-oriented Vehicle Communication
+## 서비스 인터페이스와 SOME/IP 통신 구현하기 (G9)
 
 ### 배울 내용
 
@@ -351,7 +353,7 @@ P00 v1 릴리스와 외부 검토까지 마치면 MCU/BSW 지원 직무에 제�
 
 ---
 
-## G10 — Adaptive Platform Functional Clusters
+## AUTOSAR Adaptive 실행·상태·진단·권한 이해하기 (G10)
 
 ### 배울 내용
 
@@ -380,7 +382,7 @@ P00 v1 릴리스와 외부 검토까지 마치면 MCU/BSW 지원 직무에 제�
 
 ---
 
-## G11 — Adaptive Security, UCM and Cross-domain Assurance
+## 안전한 업데이트와 교차 도메인 보증 (G11)
 
 ### G11A — G10 직후
 
@@ -418,7 +420,7 @@ P00 v1 릴리스와 외부 검토까지 마치면 MCU/BSW 지원 직무에 제�
 
 ---
 
-## G12 — System Architecture and Integration
+## MCU–Linux 차량 플랫폼 최종 통합하기 (G12)
 
 ### 결과물: P06 Heterogeneous MCU–Linux Vehicle Platform
 

@@ -6,6 +6,11 @@ G5–G7 입력은 개별 실습의 계산 기준이고, G10 책임 지도 입력
 
 | 파일 | 고정한 내용 |
 | --- | --- |
+| `g01/sprint-1.1-v1.h` | 8바이트 신호 codec 정상·경계·거부 벡터 |
+| `g01/sprint-1.2-v1.h` | 정렬 offset별 byte pattern과 little-endian 정답 |
+| `g01/sprint-1.3-v1.h` | 제한된 저장소 model test 횟수와 고정 seed |
+| `g01/sprint-1.4-v1.h` | CRC·truncation·trailing·recovery frame 모음 |
+| `g01/sprint-1.5-v1.h` | MMIO·ISR 수신 event 값 |
 | `g05/task-set-v1.yml` | release model, priority, jitter, blocking 자원, stack 예산, RTA 기대값 |
 | `g06/can-fd-dlc-v1.csv` | CAN FD DLC 0–15와 payload length |
 | `g06/can-rta-three-message-v1.json` | Classical CAN 세 message의 frame-time·fixed-priority RTA 손 계산 |
