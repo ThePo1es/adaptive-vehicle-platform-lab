@@ -125,6 +125,10 @@ def resolve_compiler() -> tuple[Path, ToolchainIdentity]:
     for compiler in _candidates():
         try:
             identity = _identity(compiler)
+            if not identity.target.startswith("x86_64"):
+                raise ToolchainError(
+                    f"native x86_64 hosted target is required, found {identity.target}"
+                )
             _probe(compiler)
             return compiler, identity
         except (OSError, ToolchainError) as error:

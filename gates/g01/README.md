@@ -35,7 +35,7 @@ uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
   python -m labs.g01_safe_c.run_harness
 ```
 
-PowerShell에서는 먼저 `$env:G01_LAB_ID = "G1.ENTRY"`를 실행한 뒤 `uv run ...` 부분을 실행합니다. 검사기는 Zig 버전과 대상 삼중항을 출력하고, C 표준 헤더를 포함한 짧은 컴파일 확인에 실패한 도구는 거부합니다.
+PowerShell에서는 먼저 `$env:G01_LAB_ID = "G1.ENTRY"`를 실행한 뒤 `uv run ...` 부분을 실행합니다. 검사기는 Zig 버전과 `native-x86_64-hosted` 대상 계약을 출력하고, 실행 명세에는 실제 대상 삼중항을 따로 기록합니다. C 표준 헤더를 포함한 짧은 컴파일 확인에 실패한 도구는 거부합니다.
 
 공개 진입 진단은 도구와 입력 계약을 확인할 뿐, 합격을 대신하지 않습니다. 60–90분 동안 [진입 진단 과제](../../docs/gate-entry-diagnostics.md)를 직접 푼 뒤 같은 검사기를 자신의 소스에 연결합니다. 필수 조건을 놓쳤다면 [B-C 보강 모듈](../../docs/gate-entry-diagnostics.md#b-c--바이트와-c-실행-모델-8시간)을 먼저 수행합니다.
 

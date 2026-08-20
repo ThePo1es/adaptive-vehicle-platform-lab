@@ -235,7 +235,7 @@ def main() -> int:
         sprints, retest = parse_selection(lab_id)
         print(
             f"TOOLCHAIN python={platform.python_version()} compiler={identity.kind} "
-            f"version={identity.version} target={identity.target}"
+            f"version={identity.version} target_contract=native-x86_64-hosted"
         )
         for sprint in sprints:
             run_sprint(
