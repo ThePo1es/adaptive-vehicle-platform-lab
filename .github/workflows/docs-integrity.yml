@@ -33,59 +33,23 @@ jobs:
         shell: bash
         run: |
           replay_bin="$(cygpath -u "$RUNNER_TEMP")/replay-bin"
-          git_bash_bin="$(dirname "$(command -v bash)")"
+          git_bash_exe="$(command -v bash)"
+          git_bash_bin="$(dirname "$git_bash_exe")"
           mkdir -p "$replay_bin"
           printf '%s\n' '#!/usr/bin/bash' 'exec python "$@"' > "$replay_bin/python3"
-          printf '%s\n' 'hash -p /usr/bin/bash bash' > "$replay_bin/bash-env"
           chmod +x "$replay_bin/python3"
           cygpath -w "$replay_bin" >> "$GITHUB_PATH"
           cygpath -w "$git_bash_bin" >> "$GITHUB_PATH"
-          printf 'BASH_ENV=%s\n' "$replay_bin/bash-env" >> "$GITHUB_ENV"
+          printf 'GIT_BASH_EXE=%s\n' "$(cygpath -w "$git_bash_exe")" >> "$GITHUB_ENV"
 
       - name: Verify the nested Windows replay tools
         shell: bash
         run: |
           uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
-            python -c "import shutil; bash = shutil.which('bash'); print(bash); assert bash and 'git' in bash.casefold()"
-          test "$(hash -t bash)" = /usr/bin/bash
-
-      - name: Verify the historical replay bootstrap
-        shell: bash
-        env:
-          PYTHONDONTWRITEBYTECODE: "1"
-          SKIP_RUNNABLE_EVIDENCE: "1"
-        run: |
-          replay_root="$(cygpath -u "$RUNNER_TEMP")/historical-replay"
-          mkdir -p "$replay_root"
-          git archive d7a23caff2d5c151b2782ee547aa66b113d97a3f | tar -xf - -C "$replay_root"
-          cd "$replay_root"
-          uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
-            bash scripts/check_repo.sh
+            python -c "import os, pathlib; bash = pathlib.Path(os.environ['GIT_BASH_EXE']); print(bash); assert bash.is_file()"
 
       - name: Validate curriculum structure, links and traceability
         shell: bash
         run: |
-          SKIP_RUNNABLE_EVIDENCE=1 uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
+          uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
             bash scripts/check_repo.sh
-          uv run --offline --python 3.12.13 --with ziglang==0.15.2 python - <<'PY'
-          import subprocess
-          import sys
-
-          import scripts.check_runnable_evidence as checker
-          import scripts.runnable_evidence_validator as validator
-
-          original_run = subprocess.run
-
-          def traced_run(*args, **kwargs):
-              result = original_run(*args, **kwargs)
-              command = args[0] if args else kwargs.get("args")
-              if command == ["bash", "scripts/check_repo.sh"] and result.returncode != 0:
-                  stdout = result.stdout.decode("utf-8", errors="replace")
-                  stderr = result.stderr.decode("utf-8", errors="replace")
-                  print(f"repository_check stdout:\n{stdout}", file=sys.stderr)
-                  print(f"repository_check stderr:\n{stderr}", file=sys.stderr)
-              return result
-
-          validator.subprocess.run = traced_run
-          raise SystemExit(checker.main())
-          PY

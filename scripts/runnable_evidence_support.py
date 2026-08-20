@@ -17,7 +17,12 @@ FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 LAB_ID = re.compile(r"^G\d+\.\d+$")
 REQUIRED_ROLES = {"fixture", "validator", "runner", "starter"}
-REPLAY_ROLES = {"evidence-checker", "evidence-support", "evidence-validator"}
+REPLAY_ROLES = {
+    "evidence-checker",
+    "evidence-replay",
+    "evidence-support",
+    "evidence-validator",
+}
 G1_ACTIVE_REQUIRED_ROLES = REQUIRED_ROLES | REPLAY_ROLES | {
     "retest-fixture",
     "toolchain-resolver",

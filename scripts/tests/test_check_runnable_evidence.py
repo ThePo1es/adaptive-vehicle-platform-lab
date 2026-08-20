@@ -1,18 +1,21 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
+from scripts.runnable_evidence_replay import (
+    PINNED_G1_ARGV_PREFIX,
+    PINNED_G1_MODULE,
+    pinned_uv_version,
+    repository_check_argv,
+)
 from scripts.runnable_evidence_support import (
     REQUIRED_ROLES,
     canonical_output,
     required_roles,
 )
-from scripts.runnable_evidence_validator import (
-    PINNED_G1_ARGV_PREFIX,
-    PINNED_G1_MODULE,
-    pinned_uv_version,
-    verify_command_shape,
-)
+from scripts.runnable_evidence_validator import verify_command_shape
 
 
 def test_inactive_manifest_requires_only_base_artifacts() -> None:
@@ -70,3 +73,22 @@ def test_uv_version_accepts_official_build_metadata() -> None:
 
 def test_text_evidence_has_platform_independent_newlines() -> None:
     assert canonical_output(b"first\r\nsecond\r\n") == b"first\nsecond\n"
+
+
+def test_windows_repository_check_uses_explicit_git_bash(tmp_path: Path) -> None:
+    bash = tmp_path / "bash.exe"
+    bash.touch()
+    assert repository_check_argv("nt", {"GIT_BASH_EXE": str(bash)}) == [
+        str(bash),
+        "-c",
+        "hash -p /usr/bin/bash bash; source scripts/check_repo.sh",
+    ]
+
+
+def test_windows_repository_check_rejects_missing_git_bash() -> None:
+    with pytest.raises(ValueError, match="GIT_BASH_EXE"):
+        _ = repository_check_argv("nt", {})
+
+
+def test_posix_repository_check_keeps_recorded_command() -> None:
+    assert repository_check_argv("posix", {}) == ["bash", "scripts/check_repo.sh"]
