@@ -1,0 +1,136 @@
+{
+  "schema_version": 2,
+  "lab_id": "G1.5",
+  "status": "Runnable",
+  "verification_scope": "가짜 MMIO 부작용·W1C·wrap timeout과 ISR 생산자/task 소비자 release-acquire 경계",
+  "starter_commit": "e048adcb655db789e9a6c10382f55afc9f68bbba",
+  "snapshot": {
+    "method": "git archive",
+    "network_required": false,
+    "working_tree_files_used": false
+  },
+  "artifacts": [
+    {
+      "role": "fixture",
+      "path": "fixtures/g01/sprint-1.5-v1.h",
+      "sha256": "56613bc106d6998d1b4179720d352a5ff25ae5cc224a84dca544d8cdd563a8e9"
+    },
+    {
+      "role": "validator",
+      "path": "labs/g01_safe_c/tests/test_driver.c",
+      "sha256": "febc83d3a63302030dcadc691c4becfdd49a827ffe9a148a92ba81c4844ba76c"
+    },
+    {
+      "role": "oracle",
+      "path": "labs/g01_safe_c/reference/driver.c",
+      "sha256": "5dd4d6f3e2472b622f184119f26744fc4a9764e85360f2e62adcccf17dd9d650"
+    },
+    {
+      "role": "starter",
+      "path": "labs/g01_safe_c/starter/driver.c",
+      "sha256": "23f867a95770bc5f88cc36976a8ad69cb385a8788269f6944016de2fb84567c3"
+    },
+    {
+      "role": "oracle-dependency",
+      "path": "labs/g01_safe_c/reference/storage.c",
+      "sha256": "437fc509c1a8d30bc6d80efbe34c0fbd7149aa5b3ac51811e886181537285be5"
+    },
+    {
+      "role": "starter-dependency",
+      "path": "labs/g01_safe_c/starter/storage.c",
+      "sha256": "9098ddced9852e4d5f05f2153f2f7f36cc16ff76475736c5d23de576001da8a5"
+    },
+    {
+      "role": "runner",
+      "path": "labs/g01_safe_c/run_harness.py",
+      "sha256": "3f489bef223bbfd1c50f398af80b7255d9a37ecaf8eeec4fc67abffeef97efd5"
+    },
+    {
+      "role": "interface",
+      "path": "labs/g01_safe_c/include/g01_lab.h",
+      "sha256": "bca4b28647094e7c512192bcd1ca92e81017496b50f3e06f5bb8fe70f55ca558"
+    },
+    {
+      "role": "validator-support",
+      "path": "labs/g01_safe_c/tests/test_support.h",
+      "sha256": "49f63bcc15a3471e4857caa508d9c51402a64b531cf1fb03e30bcb58e134fae1"
+    },
+    {
+      "role": "unit-tests",
+      "path": "labs/g01_safe_c/tests/test_run_harness.py",
+      "sha256": "bfc464c9d2a9d1ccddf13ea8e0f9538bac4db77074835f8fd0c6cfb0bbb25ea4"
+    },
+    {
+      "role": "test-config",
+      "path": "pytest.ini",
+      "sha256": "a71a64881aa52495c7ee1d1aa12372c357dd409354099c4cefb204dd5948baf4"
+    },
+    {
+      "role": "evidence-checker",
+      "path": "scripts/check_runnable_evidence.py",
+      "sha256": "8952ef45a94832840a06caa4280208f599b717f0a09c31aa43122899fd424593"
+    },
+    {
+      "role": "evidence-support",
+      "path": "scripts/runnable_evidence_support.py",
+      "sha256": "91739df04bebaead375666f5dc065a919f7c0dd8bfdaded143a7c2104d66d19a"
+    },
+    {
+      "role": "evidence-validator",
+      "path": "scripts/runnable_evidence_validator.py",
+      "sha256": "a7aad8465f8f26ee0a802ddcaa7629d873fccd2b5c4052794310a5ea3b377243"
+    }
+  ],
+  "command": {
+    "argv": [
+      "python3",
+      "labs/g01_safe_c/run_harness.py"
+    ],
+    "environment": {
+      "G01_LAB_ID": "G1.5",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g1.5/harness.stdout",
+    "stdout_sha256": "ad365b4d22b0c24df50b6a061f95b5a4cea35baec3a8414e976bbadd52cb8e91",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "kernel": "Windows 11 x86_64; LF-canonical text replay"
+  },
+  "timing": {
+    "definition": "활성 시간은 프로세스 user+system, 경과 시간은 Bash TIMEFORMAT 측정값",
+    "harness": {
+      "active_seconds": 0.061,
+      "wall_seconds": 2.764
+    },
+    "repository_check": {
+      "active_seconds": 0.062,
+      "wall_seconds": 39.447
+    }
+  },
+  "repository_check": {
+    "argv": [
+      "bash",
+      "scripts/check_repo.sh"
+    ],
+    "environment": {
+      "SKIP_RUNNABLE_EVIDENCE": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/repository-check-e048adc.stdout",
+    "stdout_sha256": "d218a3a2caac935d7a00aa81bb9e3d3208e0766cc454e9faa6345425557c141a",
+    "stderr_path": "evidence/runnable/repository-check-e048adc.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "learner_time_calibration": {
+    "status": "Not run",
+    "estimate_active_hours": "30-42",
+    "note": "첫 학습자 실행에서 안내·독립·전이 과제의 활동 시간과 막힌 지점을 따로 기록한다."
+  },
+  "recorded_at": "2026-08-20T04:13:02Z"
+}

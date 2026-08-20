@@ -5,7 +5,7 @@
 - G8–G12의 Adaptive·MCU·보증·통합 경로 명세: **통과**
 - 91개 Sprint 전체를 바로 실행할 수 있는 완성 과정: **통과 전**
 
-90개 Lab Pack은 `Specified`, G10.1은 `Runnable` 상태입니다. G10.1에는 시작 커밋, 공개 입력과 코드의 SHA-256, 실행 명령, 기준 출력, CPU 사용 시간과 실제 경과 시간이 붙었습니다. 첫 학습 실행에서 원문 검토, 독립 과제, 실제 학습 시간을 기록합니다. G11B·G12도 시간·입력·실습·전이 과제·판정 기준까지 작성됐습니다.
+85개 실습 안내서는 `Specified`, G1.1–G1.5와 G10.1은 `Runnable` 상태입니다. 여섯 실습에는 시작 커밋, 공개 입력과 코드의 SHA-256, 실행 명령, 기준 출력, CPU 사용 시간과 실제 경과 시간이 붙었습니다. G1은 C17 reference·starter·독립 검사와 필수 mutant를 함께 잠갔습니다. 첫 학습자 실행의 독립 과제·재시험·실제 학습 시간은 아직 기록하지 않았습니다.
 
 ## 이전 감사 항목 대조
 
@@ -35,7 +35,7 @@
 | 모든 Sprint가 같은 시간·종결문을 쓰는 문제 | 해결 | G8–G11 시간 범위 분화, 반복 종결 공식 제거 |
 | 실제 Adaptive stack 경험 | 일부 해결 | CommonAPI 필수 비교와 Industrial Bridge 경로 추가; 실제 SDK/CAPI 과제는 접근성에 따라 미작성 |
 | 외부 검토자 병목 | 일부 해결 | 자동 oracle·upstream 결함을 일반 Sprint에 사용하고 재현·도메인 검토 역할 분리 |
-| 전체 91 Sprint 과제 명세 | 해결 | 90개 Specified, G10.1 한 개 Runnable |
+| 전체 91 Sprint 과제 명세 | 해결 | 85개 Specified, G1 5개와 G10.1 Runnable |
 | 시간 추정의 실측 보정 | 미해결 | G10.1 기계 재현은 기록됨; 학습 시간과 G8.6·G9.6·G11.4 pilot 기록 없음 |
 
 ## 공개 전에 반드시 남은 일
@@ -53,7 +53,8 @@
 
 - 내부 Markdown 링크 정상
 - 요구사항 98개와 traceability 98개 일치; 설계·검증 계획을 연결한 98개 `Baselined`
-- Specified Lab Pack 90개와 Runnable Lab Pack 1개 확인
+- Specified 실습 안내서 85개와 Runnable 실습 안내서 6개 확인
+- G1 공개 입력 5개, reference·starter·검사기 해시, 정상 사례와 필수 mutant 14개, 0용량 compile-fail 재실행
 - G5–G7·G11·G12 합성 입력 10개의 RTA·DLC·journal·mode/security·변경 영향·통합 oracle 재계산 통과
 - G10.1 공개 입력의 양성 1개·음성 26개 재실행, 정해진 주장 값과 서명된 신뢰 정책 확인, 시작 파일·시험 입력·출력 해시 확인
 - 자동 검사에서 잡히는 동일 문장 반복 0건

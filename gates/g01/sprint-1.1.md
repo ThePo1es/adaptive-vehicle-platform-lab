@@ -1,5 +1,10 @@
 # 실습 1-1 — 정수와 바이트를 안전하게 변환하기
 
+> - 준비 상태: `Runnable`
+> - 시작 커밋: `e048adcb655db789e9a6c10382f55afc9f68bbba`
+> - 공개 입력 SHA-256: `1f7561ecf2b45aeee79f6fdbaed571ccf54548f9727fe676dffb6eb0180563fa`
+> - 실행 기록: [G1.1 실행 명세 v1](../../evidence/runnable/g1.1/run-manifest-v1.json)
+
 > 소속 챕터: [안전한 C로 데이터와 메모리 다루기](README.md) · 관리 코드: G1.1
 
 ## 시간과 자료

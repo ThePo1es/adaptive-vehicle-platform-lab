@@ -1,0 +1,126 @@
+{
+  "schema_version": 2,
+  "lab_id": "G1.4",
+  "status": "Runnable",
+  "verification_scope": "CRC known vector·consumed 길이·need-more·거부 뒤 재동기화 파서 계약",
+  "starter_commit": "e048adcb655db789e9a6c10382f55afc9f68bbba",
+  "snapshot": {
+    "method": "git archive",
+    "network_required": false,
+    "working_tree_files_used": false
+  },
+  "artifacts": [
+    {
+      "role": "fixture",
+      "path": "fixtures/g01/sprint-1.4-v1.h",
+      "sha256": "4a854226b4d82abf04ceca2d3fb4fbdc744b2f1433b6fae4686fa62f3ed5f350"
+    },
+    {
+      "role": "validator",
+      "path": "labs/g01_safe_c/tests/test_parser.c",
+      "sha256": "7cbc113cd30cf07492d2666ead907281cfdef13f968cf08c8708cd971e828189"
+    },
+    {
+      "role": "oracle",
+      "path": "labs/g01_safe_c/reference/parser.c",
+      "sha256": "144c8be289bab8cb8606b3768bc2f78e1d818a4620ff70041598e265ebdd35ae"
+    },
+    {
+      "role": "starter",
+      "path": "labs/g01_safe_c/starter/parser.c",
+      "sha256": "31a9c8b3fa27473f7d70c4ba97b908e3ea3c94922bbfe8072993890dec0c1949"
+    },
+    {
+      "role": "runner",
+      "path": "labs/g01_safe_c/run_harness.py",
+      "sha256": "3f489bef223bbfd1c50f398af80b7255d9a37ecaf8eeec4fc67abffeef97efd5"
+    },
+    {
+      "role": "interface",
+      "path": "labs/g01_safe_c/include/g01_lab.h",
+      "sha256": "bca4b28647094e7c512192bcd1ca92e81017496b50f3e06f5bb8fe70f55ca558"
+    },
+    {
+      "role": "validator-support",
+      "path": "labs/g01_safe_c/tests/test_support.h",
+      "sha256": "49f63bcc15a3471e4857caa508d9c51402a64b531cf1fb03e30bcb58e134fae1"
+    },
+    {
+      "role": "unit-tests",
+      "path": "labs/g01_safe_c/tests/test_run_harness.py",
+      "sha256": "bfc464c9d2a9d1ccddf13ea8e0f9538bac4db77074835f8fd0c6cfb0bbb25ea4"
+    },
+    {
+      "role": "test-config",
+      "path": "pytest.ini",
+      "sha256": "a71a64881aa52495c7ee1d1aa12372c357dd409354099c4cefb204dd5948baf4"
+    },
+    {
+      "role": "evidence-checker",
+      "path": "scripts/check_runnable_evidence.py",
+      "sha256": "8952ef45a94832840a06caa4280208f599b717f0a09c31aa43122899fd424593"
+    },
+    {
+      "role": "evidence-support",
+      "path": "scripts/runnable_evidence_support.py",
+      "sha256": "91739df04bebaead375666f5dc065a919f7c0dd8bfdaded143a7c2104d66d19a"
+    },
+    {
+      "role": "evidence-validator",
+      "path": "scripts/runnable_evidence_validator.py",
+      "sha256": "a7aad8465f8f26ee0a802ddcaa7629d873fccd2b5c4052794310a5ea3b377243"
+    }
+  ],
+  "command": {
+    "argv": [
+      "python3",
+      "labs/g01_safe_c/run_harness.py"
+    ],
+    "environment": {
+      "G01_LAB_ID": "G1.4",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g1.4/harness.stdout",
+    "stdout_sha256": "5f8d513633bf4796f1283030381d571590923bad45e16d2bcacfd2f23c2be12e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "kernel": "Windows 11 x86_64; LF-canonical text replay"
+  },
+  "timing": {
+    "definition": "활성 시간은 프로세스 user+system, 경과 시간은 Bash TIMEFORMAT 측정값",
+    "harness": {
+      "active_seconds": 0.061,
+      "wall_seconds": 3.243
+    },
+    "repository_check": {
+      "active_seconds": 0.062,
+      "wall_seconds": 39.447
+    }
+  },
+  "repository_check": {
+    "argv": [
+      "bash",
+      "scripts/check_repo.sh"
+    ],
+    "environment": {
+      "SKIP_RUNNABLE_EVIDENCE": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/repository-check-e048adc.stdout",
+    "stdout_sha256": "d218a3a2caac935d7a00aa81bb9e3d3208e0766cc454e9faa6345425557c141a",
+    "stderr_path": "evidence/runnable/repository-check-e048adc.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "learner_time_calibration": {
+    "status": "Not run",
+    "estimate_active_hours": "32-44",
+    "note": "첫 학습자 실행에서 안내·독립·전이 과제의 활동 시간과 막힌 지점을 따로 기록한다."
+  },
+  "recorded_at": "2026-08-20T04:13:02Z"
+}
