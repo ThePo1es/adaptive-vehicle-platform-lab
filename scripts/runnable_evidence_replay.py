@@ -29,6 +29,20 @@ PINNED_G1_ARGV_PREFIX = [
     "-m",
 ]
 PINNED_G1_MODULE = "labs.g01_safe_c.run_harness"
+PINNED_G2_ARGV_PREFIX = [
+    "uv",
+    "run",
+    "--offline",
+    "--python",
+    "3.12.13",
+    "--with",
+    "ziglang==0.15.2",
+    "--with",
+    "pyelftools==0.32",
+    "python",
+    "-m",
+]
+PINNED_G2_MODULE = "labs.g02_embedded_cpp.run_harness"
 WINDOWS_REPOSITORY_CHECK = "hash -p /usr/bin/bash bash; source scripts/check_repo.sh"
 
 
@@ -72,11 +86,12 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
     if not isinstance(expected, str):
         fail("manifest environment needs an exact Python version")
     schema_version = manifest["schema_version"]
-    version_command = (
-        [sys.executable, "--version"]
-        if schema_version == 2
-        else [*PINNED_G1_ARGV_PREFIX[:-1], "--version"]
-    )
+    if schema_version == 2:
+        version_command = [sys.executable, "--version"]
+    elif schema_version == 3:
+        version_command = [*PINNED_G1_ARGV_PREFIX[:-1], "--version"]
+    else:
+        version_command = [*PINNED_G2_ARGV_PREFIX[:-1], "--version"]
     version = subprocess.run(
         version_command,
         cwd=snapshot,
@@ -100,6 +115,23 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
             environment.get(key) != value for key, value in required.items()
         ):
             fail("schema 3 environment does not seal the G1 toolchain contract")
+    elif schema_version == 4:
+        environment = manifest.get("environment")
+        required = {
+            "uv": "0.12.3",
+            "cpp_compiler": "zig-c++",
+            "cpp_compiler_version": "0.15.2",
+            "c_compiler": "zig-cc",
+            "c_compiler_version": "0.15.2",
+            "elf_reader": "pyelftools 0.32",
+            "target_contract": "native x86_64 hosted C++20",
+            "abi_targets": "thumb-freestanding-eabi,aarch64-freestanding-none",
+        }
+        if not isinstance(environment, dict) or any(
+            environment.get(key) != value for key, value in required.items()
+        ):
+            fail("schema 4 environment does not seal the G2 C++ and ELF contract")
+    if schema_version in {3, 4}:
         uv_version = subprocess.run(
             ["uv", "--version"],
             cwd=snapshot,

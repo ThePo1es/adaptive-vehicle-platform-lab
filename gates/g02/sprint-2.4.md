@@ -1,44 +1,53 @@
-# Sprint 2.4 — ABI와 설계 선택
+# 2-4 가상 함수·템플릿·C 경계를 비교해 선택하기
+
+> 관리 코드: G2.4 · 준비 상태: `Specified`
 
 ## 시간과 기준 자료
 
-24–30시간. C++ working draft의 [`[class.virtual]`](https://eel.is/c++draft/class.virtual), [`[except]`](https://eel.is/c++draft/except), [`[temp]`](https://eel.is/c++draft/temp)와 [Arm ABI repository](https://github.com/ARM-software/abi-aa)를 읽습니다. ABI 문서는 사용한 release tag와 파일명을 적습니다.
+26–34시간을 예상합니다. C++ draft의 [`[class.virtual]`](https://eel.is/c++draft/class.virtual), [`[temp]`](https://eel.is/c++draft/temp), [`[except]`](https://eel.is/c++draft/except)와 [Arm ABI 저장소](https://github.com/ARM-software/abi-aa)를 읽습니다. 사용한 ABI 문서 tag와 파일명을 기록합니다.
 
-## 비교 대상
+| 활동 | 예상 시간 |
+| --- | ---: |
+| 세 가지 다형성 구현과 C ABI 읽기 | 6–8시간 |
+| 같은 동작을 확인하는 검사와 C17 헤더 | 8–10시간 |
+| 두 대상 ELF 비교와 ADR | 8–10시간 |
+| 전이 과제와 검토 | 4–6시간 |
 
-Clock, Transport, Launcher 세 interface를 아래 방식으로 각각 작은 예제로 만듭니다.
+## 시작 파일과 결과물
 
-1. virtual interface
-2. template/static polymorphism
-3. function pointer 또는 수동 type erasure
+- 시작 구현: `labs/g02_embedded_cpp/starter/abi.cpp`
+- C++ API: `labs/g02_embedded_cpp/include/g02_abi.hpp`
+- C17 API: `labs/g02_embedded_cpp/include/g02_abi_c.h`
+- ELF 분석용 예제: `labs/g02_embedded_cpp/freestanding/`
 
-동일한 정상·timeout·cleanup test를 세 구현에 적용합니다.
+가상 함수, 템플릿·정적 호출, 함수 테이블로 같은 기능을 각각 구현합니다. 세 구현은 정상 처리, 시간 초과, 정리 함수 호출에서 같은 결과를 내야 합니다. C API에서는 내부 구조를 숨기는 불투명 핸들을 사용하고, 성공 여부와 실제 데이터를 서로 다른 반환 경로로 나눕니다.
 
 ## 안내 실습
 
-host와 선택한 ARM target에서 symbol, vtable, relocation, text size를 확인합니다. boundary를 넘는 API는 `extern "C"` facade와 명시적 ownership 규칙으로 감쌉니다.
+세 구현에 같은 입력과 판정 조건을 적용합니다. 전송 계층에서 받은 음수 데이터가 음수 오류 코드와 같은 반환값을 쓰면 어떻게 충돌하는지 먼저 재현합니다. 그다음 콜백 반환값에는 성공 여부만 담고, 실제 데이터는 출력 포인터에 쓰도록 고칩니다. C 헤더는 실제 C17 컴파일러로 빌드해 C++ 객체 배치 구조나 예외가 밖으로 새지 않는지 확인합니다.
+
+O2 최적화에서는 컴파일러가 가상 함수 호출 대상을 미리 알아내 가상 함수 테이블을 없앨 수 있습니다. ELF 분석용 예제에만 컴파일러가 실제 타입을 확정하지 못하게 하는 장치를 넣어 가상 함수 테이블을 남깁니다. 이 장치를 제품 코드의 최적화 방법으로 사용하지 않습니다.
 
 ## 독립 실습
 
-P01의 process launcher 또는 P02의 transport 하나를 골라 세 대안 중 하나를 선택합니다. 빌드 시간, binary size, test seam, lifetime, 오류 전달을 근거로 ADR을 씁니다.
+독립 실행 대상 두 개에서 세 오브젝트 파일을 같은 Zig와 빌드 옵션으로 만듭니다. 각 파일의 `.text`, 심벌, 재배치 정보를 읽고 가상 함수 구현의 가상 함수 테이블과 C API 진입점 심벌을 찾습니다. 고정한 Zig는 링커 map 파일을 만들지 않으므로 ELF 보고서를 기준으로 삼습니다. 다른 링커의 map 파일을 추가할 때는 빌드 대상, 옵션, 버전을 별도 열에 적습니다.
+
+세 방법 가운데 하나를 실행 기반의 `Clock`, `Transport`, `Launcher` 경계에 적용하는 ADR을 씁니다. 빌드 시간, 바이너리 구조, 자원 수명, 검사 대역을 연결하기 쉬운지, 오류 전달 방식, C 사용 여부를 근거로 선택합니다.
 
 ## 전이 과제
 
-다른 compiler와 build profile에서 exception·RTTI on/off 조합을 확인합니다. 지원하지 않는 flag는 억지로 쓰지 않고 compiler help와 build log를 근거로 제외합니다.
+처음 보는 파일 서술자나 프로세스 핸들 래퍼에 같은 비교표를 적용합니다. 생성 실패, 시간 초과, 정리 함수, 두 번 해제, null 해제의 책임 주체를 60분 안에 정리하고 C와 C++에서 호출하는 흐름을 각각 그립니다.
 
 ## 판정 기준
 
-- 같은 target·optimization에서 map과 size를 비교
-- public ABI의 layout, allocation, ownership, exception 전파 규칙이 명시됨
-- 선택하지 않은 두 대안의 장점과 실제 비용을 수치 또는 test로 기록
-- 처음 보는 interface에 같은 판단 기준을 적용하는 45분 구두 검토 통과
-
-## 힌트
-
-1. source 줄 수보다 호출 경계와 생성된 symbol을 먼저 봅니다.
-2. template 중복은 linker folding과 LTO 설정의 영향을 받습니다.
-3. exception을 끄면 오류 모델을 API에서 직접 설계해야 합니다.
+- 정상 처리·시간 초과에서 세 구현의 상태값·체크섬·정리 함수 호출 횟수 일치
+- `g02_abi_c.h`가 C17에서 모든 경고를 오류로 처리해도 빌드됨
+- 음수 데이터와 오류 상태가 서로 다른 채널을 사용
+- 객체 생성·해제 책임과 사용자 데이터의 수명을 명시
+- 두 대상에서 C API 진입점 심벌, 가상 함수 테이블, 재배치 정보 확인
+- 결함 401·402·403과 공개 A·B 통과
+- 오브젝트 파일 분석을 실제 ARM 실행이나 성능 측정으로 표현하지 않음
 
 ## 비교를 다시 해야 하는 경우
 
-서로 다른 대상을 빌드한 크기로 성능 순위를 냈거나 C ABI에 C++ object layout과 예외가 노출됐다면 인터페이스 하나만 남깁니다. 동일한 도구 설정으로 세 구현을 다시 빌드해 link map부터 비교합니다.
+컴파일러·빌드 대상·최적화 옵션이 다른 결과를 놓고 크기 순위를 매겼거나 C 헤더에 C++ 타입이 들어갔다면 비교를 다시 해야 합니다. 세 방법을 `now()` 호출 하나만 남도록 줄이고, C17 빌드부터 통과시키세요. 그다음 같은 오브젝트 파일 생성 명령, 같은 동작 검사, ADR 순서로 다시 확장합니다.

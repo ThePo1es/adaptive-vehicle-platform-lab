@@ -1,44 +1,49 @@
-# Sprint 2.2 — 제한된 Runtime
+# 2-2 힙 없이 동작하는 이벤트 처리기 만들기
+
+> 관리 코드: G2.2 · 준비 상태: `Specified`
 
 ## 시간과 기준 자료
 
-24–30시간. C++ working draft의 [`[container.requirements]`](https://eel.is/c++draft/container.requirements), [`[span]`](https://eel.is/c++draft/span), [`[optional]`](https://eel.is/c++draft/optional), [`[variant]`](https://eel.is/c++draft/variant)를 읽습니다. 선택한 compiler의 linker map과 size 도구 문서도 manifest에 고정합니다.
+28–36시간을 예상합니다. C++ 표준 초안의 [`[array]`](https://eel.is/c++draft/array), [`[span]`](https://eel.is/c++draft/span), [`[optional]`](https://eel.is/c++draft/optional)과 컴파일러의 예외·RTTI 옵션을 읽습니다.
 
-## 입력 계약
+| 활동 | 예상 시간 |
+| --- | ---: |
+| 고정 용량 불변 조건과 오류 모델 | 6–8시간 |
+| 큐와 콜백 목록 사본 만들기 | 10–12시간 |
+| 큐가 가득 찼을 때의 두 정책과 메모리 할당 측정 | 8–10시간 |
+| 전이 과제와 크기 기록 | 4–6시간 |
 
-Event는 16바이트 payload, 16-bit type, 32-bit sequence를 갖습니다. Runtime은 시작할 때 저장 공간을 준비한 뒤 다음 계약을 지킵니다.
+## 시작 파일과 결과물
 
-- capacity 32
-- full policy는 `RejectNewest` 또는 `DropOldest` 중 하나를 설정에서 선택
-- event dispatch 중 heap allocation 0회
-- callback 8개까지 등록
-- 오류는 exception 없이 호출자에게 전달
+- 시작 구현: `labs/g02_embedded_cpp/starter/runtime.cpp`
+- 공개·재시험 입력: `fixtures/g02/sprint-2.2-v1.hpp`, `retest-2.2-v1.hpp`
+- 공개 API: `labs/g02_embedded_cpp/include/g02_runtime.hpp`
+
+이벤트 32개와 콜백 8개가 들어갈 메모리를 객체를 만들 때 모두 준비합니다. 그 뒤에는 정상 처리, 큐가 가득 찬 경우, 콜백 안에서 다시 이벤트를 넣는 경우에도 C++ 힙을 쓰지 않는 이벤트 처리기를 만듭니다.
 
 ## 안내 실습
 
-고정 용량 event queue와 callback table을 만듭니다. 전역 `operator new` 계수기 또는 allocator hook으로 초기화 뒤 allocation을 감시합니다.
+먼저 `head`, `tail`, `count`가 가질 수 있는 상태를 표로 만듭니다. 큐 용량을 3으로 줄여 손으로 값을 넣고 빼면서, 큐가 가득 찼을 때 `RejectNewest`와 `DropOldest`가 어떤 이벤트를 남기고 진단 계수를 어떻게 바꾸는지 확인합니다. 이벤트 처리를 시작할 때 콜백 목록을 8칸짜리 사본으로 만들어 사용합니다. 처리 도중 발생한 콜백 제거·추가·재진입은 다음 처리부터 반영합니다.
+
+전역 `new/new[]` 호출 횟수는 이벤트 처리기 생성과 콜백 등록이 모두 끝난 뒤부터 셉니다. 측정하지 않은 라이브러리나 운영체제 내부에서도 메모리 할당이 전혀 없다고 표현하면 안 됩니다.
 
 ## 독립 실습
 
-두 full policy를 같은 test suite로 검증합니다. callback이 event를 다시 넣는 경우, callback 제거, sequence wrap 근처를 포함합니다. Release map에서 text/data/bss와 template instantiation을 기록합니다.
+이벤트 용량 32와 콜백 용량 8을 유지한 채 `runtime.cpp`를 구현합니다. 콜백 핸들의 세대 번호가 최댓값에 닿은 칸은 더 이상 사용하지 않아, 오래된 핸들이 번호 순환 뒤 다시 유효해지는 일을 막습니다. 거부·삭제 진단 계수는 최댓값에서 멈춥니다. 공개 입력 A를 통과한 뒤에는 순서 번호와 이벤트 종류를 바꾼 입력 B로 다시 실행합니다.
 
 ## 전이 과제
 
-같은 계약으로 고정 크기 timer wheel 또는 message router를 만듭니다. 새 구현은 event queue source를 복사하지 않고 공통 policy만 재사용합니다.
+같은 정책을 적용한 고정 크기 타이머 휠이나 메시지 라우터를 만듭니다. 큐 코드를 통째로 복사하지 말고, 용량이 가득 찼을 때의 처리 방식, 콜백 목록 사본, 최댓값에서 멈추는 진단 계수라는 세 규칙만 적용합니다. 공개 함수마다 반복문이 최악의 경우 몇 번 도는지 표로 정리합니다.
 
 ## 판정 기준
 
-- 초기화 뒤 정상·full·reentrant 경로의 allocation count가 0
-- capacity를 넘는 상태가 없고 선택한 full policy의 counter가 정확함
-- 모든 public operation이 bounded loop 또는 명시한 상한을 가짐
-- GCC·Clang Release 결과의 text/data/bss를 같은 target과 flags 범위에서 기록
+- 이벤트 32개와 콜백 8개의 최대 용량을 한 번도 넘지 않음
+- 큐가 가득 찼을 때 두 정책이 버리는 값과 진단 계수가 정확함
+- 콜백 제거·추가·재진입이 콜백 목록 사본 규칙과 일치
+- 생성 뒤 검사 구간에서 전역 `new/new[]` 0회
+- 예외·RTTI를 끈 O0·O2 빌드, 입력 A·B, 결함 201·202·203 통과
+- 진단 계수와 콜백 세대 번호의 최댓값 처리 확인
 
-## 힌트
+## 보강 후 재검증
 
-1. 저장 공간, 현재 개수, head/tail invariant부터 적습니다.
-2. callback 실행 중 container를 직접 수정하면 iterator와 순회 정책이 필요합니다.
-3. code size는 compiler·linker·target이 같을 때 비교합니다.
-
-## 재검증 조건
-
-가득 찬 상태에서 메모리를 덮어쓰거나 금지 구간에서 할당이 한 번이라도 발생하면 단일 producer/consumer로 줄입니다. 저장 공간, 인덱스, 원소 수의 불변 조건을 고정하고 다시 확장합니다.
+큐가 가득 찼을 때 남겨야 할 값을 덮어쓰거나 콜백이 현재 처리 순서를 바꾼다면, 이벤트 용량을 3개, 콜백을 2개로 줄입니다. 가능한 상태를 손으로 모두 적은 뒤, 먼저 메모리 할당 횟수를 재지 않고 기능만 확인합니다. 기능이 맞으면 할당 횟수 검사도 켜고 원래 용량으로 되돌립니다.

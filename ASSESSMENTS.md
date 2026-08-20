@@ -227,7 +227,7 @@ Fault bank에는 다음 필드를 둡니다.
 | --- | ---: | --- | --- | --- | --- |
 | G0 | 90분 | 깨끗한 환경에서 기준선과 결함 하나 재현 | 새 checkout의 전체 검사와 동결된 결함 정답 | build 불가, 원인 오판 | OS·toolchain·결함을 모두 변경 |
 | G1 | 180분 | 직렬화·파서, 제한된 저장소, MMIO·ISR 경계의 세 과제 | [G1 종합 평가 계약](assessments/g01-safe-c.md)의 독립 oracle과 target 근거 | UB, 오류 뒤 데이터 훼손, `volatile`·host 결과 과장 | layout·seed·register sequence·실행 모델 변경 |
-| G2 | 90분 | 처음 보는 ownership bug가 든 pipeline 수리 | sanitizer와 수명 계약 대조 | dangling owner/view, data race | owner graph와 취소 시점 변경 |
+| G2 | 180분 | 데이터 수명, 종료 경합, C ABI의 세 과제 | [G2 종합 평가](assessments/g02-embedded-cpp.md)의 봉인 입력과 독립 판정 | 수명이 끝난 데이터 뷰, 남은 스레드, C 경계 오류 | 소유 관계·용량·콜백·데이터 부호·빌드 대상 변경 |
 | G3 | 90분 | 새 함수의 source·IR·assembly·ABI 연결 | ABI 문서와 assembly assertion | GCC 결과를 LLVM IR로 설명, target 혼합 | 함수·ABI·compiler 변경 |
 | G4 | 90분 | 다른 interrupt 또는 fault를 register dump로 진단 | reference manual과 crash record decoder | 원인 유실, 무한 ISR, 잘못된 reset 상태 | vector·fault class·최적화 변경 |
 | G5 | 120분 | 바뀐 task set의 분석과 overload 진단 | 별도 RTA 계산기와 scheduler trace | blocking·jitter 누락, overflow 미탐지 | period·priority·resource 공유 변경 |

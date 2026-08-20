@@ -7,6 +7,8 @@ import pytest
 from scripts.runnable_evidence_replay import (
     PINNED_G1_ARGV_PREFIX,
     PINNED_G1_MODULE,
+    PINNED_G2_ARGV_PREFIX,
+    PINNED_G2_MODULE,
     pinned_uv_version,
     repository_check_argv,
 )
@@ -25,6 +27,16 @@ def test_inactive_manifest_requires_only_base_artifacts() -> None:
 def test_active_g1_manifest_requires_replay_artifacts() -> None:
     roles = required_roles("G1.1", True)
     assert {"evidence-checker", "unit-tests"} < roles
+
+
+def test_active_g2_manifest_requires_cpp_replay_artifacts() -> None:
+    roles = required_roles("G2.1", True)
+    assert {"contract", "interface", "portfolio-build", "retest-fixture"} < roles
+
+
+def test_active_g2_abi_manifest_requires_c_and_elf_artifacts() -> None:
+    roles = required_roles("G2.4", True)
+    assert {"abi-corpus", "c-abi-header", "c-abi-validator", "elf-inspector"} < roles
 
 
 def test_active_g10_manifest_keeps_review_artifacts() -> None:
@@ -62,6 +74,20 @@ def test_schema_three_command_pins_uv_python_and_zig() -> None:
     assert verify_command_shape(command, artifacts, 3) == (
         [*PINNED_G1_ARGV_PREFIX, PINNED_G1_MODULE],
         {"LAB_ID": "G1.1"},
+    )
+
+
+def test_schema_four_command_pins_cpp_and_elf_toolchains() -> None:
+    command = {
+        "argv": [*PINNED_G2_ARGV_PREFIX, PINNED_G2_MODULE],
+        "environment": {"G02_LAB_ID": "G2.1"},
+        "expected_exit": 0,
+        "observed_exit": 0,
+    }
+    artifacts = {"runner": {"path": "labs/g02_embedded_cpp/run_harness.py"}}
+    assert verify_command_shape(command, artifacts, 4) == (
+        [*PINNED_G2_ARGV_PREFIX, PINNED_G2_MODULE],
+        {"G02_LAB_ID": "G2.1"},
     )
 
 

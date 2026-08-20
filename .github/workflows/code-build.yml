@@ -57,3 +57,53 @@ jobs:
             ctest --test-dir build/g01-release --output-on-failure
           uv run --offline --python 3.12.13 --with cmake==3.31.6 --with ninja==1.11.1.4 \
             cmake --install build/g01-release --prefix build/g01-install
+
+  g2-embedded-cpp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: 0.12.3
+
+      - name: Provision the pinned Python, test, C++ and ELF toolchains
+        run: >-
+          uv run --python 3.12.13 --with pytest==9.1.1 --with ziglang==0.15.2
+          --with pyelftools==0.32
+          python -c "import elftools, pytest, ziglang; print(pytest.__version__, elftools.__version__, ziglang.__file__)"
+
+      - name: Run the G2 Python harness tests without network access
+        run: >-
+          uv run --offline --python 3.12.13 --with pytest==9.1.1 --with ziglang==0.15.2
+          --with pyelftools==0.32
+          pytest -q labs/g02_embedded_cpp/tests
+
+      - name: Build and run every G2 Embedded C++ lab
+        env:
+          G02_LAB_ID: G2.ALL
+        run: >-
+          uv run --offline --python 3.12.13 --with ziglang==0.15.2 --with pyelftools==0.32
+          python -m labs.g02_embedded_cpp.run_harness
+
+      - name: Run the independent G2 retest input set
+        env:
+          G02_LAB_ID: G2.RETEST
+        run: >-
+          uv run --offline --python 3.12.13 --with ziglang==0.15.2 --with pyelftools==0.32
+          python -m labs.g02_embedded_cpp.run_harness
+
+      - name: Build, test and install the G2 portfolio release
+        run: |
+          uv run --python 3.12.13 --with cmake==3.31.6 --with ninja==1.11.1.4 \
+            cmake -S portfolio/g02-embedded-cpp-runtime-v1 -B build/g02-release -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release
+          uv run --offline --python 3.12.13 --with cmake==3.31.6 --with ninja==1.11.1.4 \
+            cmake --build build/g02-release
+          uv run --offline --python 3.12.13 --with cmake==3.31.6 --with ninja==1.11.1.4 \
+            ctest --test-dir build/g02-release --output-on-failure
+          uv run --offline --python 3.12.13 --with cmake==3.31.6 --with ninja==1.11.1.4 \
+            cmake --install build/g02-release --prefix build/g02-install

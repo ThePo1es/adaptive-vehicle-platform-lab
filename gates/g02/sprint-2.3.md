@@ -1,45 +1,53 @@
-# Sprint 2.3 — 동시성
+# 2-3 멈추지 않고 종료되는 작업 큐 만들기
+
+> 관리 코드: G2.3 · 준비 상태: `Specified`
 
 ## 시간과 기준 자료
 
-24–30시간. C++ working draft의 [`[intro.races]`](https://eel.is/c++draft/intro.races), [`[atomics.order]`](https://eel.is/c++draft/atomics.order), [`[thread.mutex]`](https://eel.is/c++draft/thread.mutex), [`[thread.condition]`](https://eel.is/c++draft/thread.condition)를 읽습니다. TSan을 쓸 수 있는 host에서는 [Clang ThreadSanitizer](https://clang.llvm.org/docs/ThreadSanitizer.html) 설정을 고정합니다.
+30–40시간을 잡습니다. C++ draft의 [`[intro.races]`](https://eel.is/c++draft/intro.races), [`[thread.mutex]`](https://eel.is/c++draft/thread.mutex), [`[thread.condition]`](https://eel.is/c++draft/thread.condition)과 [ThreadSanitizer 안내](https://clang.llvm.org/docs/ThreadSanitizer.html)를 읽습니다.
 
-## 시작 fixture
+| 활동 | 예상 시간 |
+| --- | ---: |
+| happens-before와 대기 조건 | 8–10시간 |
+| 가득 찬 큐·예상치 못한 깨움·종료 처리 | 10–14시간 |
+| 생산자 2·소비자 1 독립 검사 | 8–10시간 |
+| 전이 진단과 기록 | 4–6시간 |
 
-두 producer와 한 consumer가 bounded queue를 공유합니다. Seed patch에는 다음 중 두 결함이 들어 있습니다.
+## 시작 파일과 결과물
 
-- condition variable predicate 없이 wait
-- publish 전에 ready flag 갱신
-- shutdown flag의 data race
-- queue full에서 lost wakeup
+- 시작 구현: `labs/g02_embedded_cpp/starter/queue.cpp`
+- 공개·재시험 입력: `fixtures/g02/sprint-2.3-v1.hpp`, `retest-2.3-v1.hpp`
+- 공개 API: `labs/g02_embedded_cpp/include/g02_queue.hpp`
 
-검토자는 seed와 결함 조합을 시험 전까지 공개하지 않습니다.
+mutex 하나로 `head`, `tail`, `count`, `closed`를 함께 보호합니다. `close()`를 호출하면 큐가 가득 차 기다리던 생산자와 큐가 비어 기다리던 소비자를 모두 깨우는 용량 8의 큐를 만듭니다.
 
 ## 안내 실습
 
-happens-before graph를 그리고 한 결함을 TSan 또는 deterministic scheduler로 재현합니다. lock, atomic, condition variable이 보호하는 상태를 표로 나눕니다.
+1. 비어 있음, 일부만 차 있음, 가득 참, 닫혔지만 값이 남음, 닫히고 비어 있음의 다섯 상태를 그립니다.
+2. condition variable의 알림이 아니라 대기 조건이 실제 상태를 나타낸다는 사실을 예상치 못한 깨움으로 확인합니다.
+3. 큐가 가득 차 생산자가 실제 대기에 들어간 순간을 관찰용 훅으로 잡은 뒤 `close()`를 호출합니다.
+4. 닫힌 뒤에는 새 값만 거부하고, 이미 들어온 값은 모두 꺼낼 수 있음을 검사로 남깁니다.
+5. `sleep` 없이 모든 스레드가 끝날 때까지 `join`합니다.
 
 ## 독립 실습
 
-정상, spurious wakeup, queue full, shutdown 중 producer 진입을 반복하는 test를 만듭니다. 고정 seed 100개와 CI에서 재생 가능한 실패 seed를 보관합니다.
+두 생산자가 서로 다른 값 묶음을 넣고 소비자 한 명이 전부 꺼내는 검사를 고정 입력 100개로 실행합니다. 실패하면 사용한 입력 번호, 처음 누락되거나 중복된 값, 당시 큐 상태를 남깁니다. 이 검사만으로 가능한 모든 스레드 실행 순서를 확인했다고 표현하면 안 됩니다.
+
+개발 PC에 별도의 Clang TSan이 있다면 추가 보고서를 만들 수 있습니다. 다만 고정 Zig 검사에서 반드시 통과해야 하는 항목은 매번 같은 순서로 재현하는 깨움 두 건과 고정 입력 100개의 값 보존 검사입니다.
 
 ## 전이 과제
 
-처음 보는 logger 또는 telemetry pipeline의 race를 90분 안에 진단합니다. 첫 20분에는 코드를 바꾸지 않고 가설, 공유 상태, 관찰 계획을 적습니다.
+처음 보는 로거 또는 원격 측정 처리 흐름에서 종료 도중 생산자가 새 값을 넣는 문제를 찾습니다. 처음 20분에는 코드를 고치지 말고 공유 상태, 상태를 보호하는 수단, 대기 조건, 종료를 결정하는 주체를 적습니다. 90분 안에 문제를 가장 작게 재현하고 고친 뒤 모든 스레드가 끝났다는 근거를 제출합니다.
 
 ## 판정 기준
 
-- 주입한 결함의 실행 순서와 root cause를 설명
-- TSan finding 0 또는 deterministic schedule 전체 통과
-- shutdown이 정해진 시간 안에 끝나고 대기 thread가 남지 않음
-- relaxed ordering을 썼다면 필요한 happens-before를 별도 근거로 설명
-
-## 동시성 점검
-
-1. condition variable은 상태를 저장하지 않습니다. predicate가 상태를 가집니다.
-2. atomic 변수 하나가 주변의 비원자 상태를 자동으로 보호하지 않습니다.
-3. 재현이 드물면 scheduler hook을 wait, publish, pop 직전에 둡니다.
+- 모든 큐 상태를 같은 mutex를 잡은 상태에서 읽고 씀
+- 예상치 못한 알림 뒤에도 `count`가 8을 넘지 않음
+- `close()`가 생산자·소비자를 모두 깨우고 이미 들어온 값을 보존
+- 고정 입력 100개에서 누락·중복 없이 모든 스레드 종료
+- 실제 시간을 기다리는 `sleep` 없이 결함 301 검출, 결함 302는 15초 제한 안에 시간 초과로 검출
+- lock-free, hard real-time, 전체 interleaving 검증을 주장하지 않음
 
 ## 재시험 조건
 
-드물게 발생한다는 이유로 data race를 남겼거나 `sleep`을 늘려 통과시켰다면 결과를 인정하지 않습니다. producer와 consumer를 하나씩만 둔 전이표를 만들고 scheduler hook으로 같은 경합을 반복 재현합니다.
+대기 시간을 늘려 우연히 통과시키거나, 드물게 발생한다는 이유로 끝나지 않은 스레드를 무시하면 결과를 인정하지 않습니다. 생산자 1개, 소비자 1개, 용량 1로 줄인 뒤 `BeforeWait`와 `AfterWake` 순서를 고정해 같은 경합을 매번 재현하세요. 이 상태에서 고친 다음 생산자 2개로 다시 늘립니다.

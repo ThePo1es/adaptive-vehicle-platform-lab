@@ -26,8 +26,8 @@ jobs:
 
       - name: Provision the pinned replay toolchain
         run: >-
-          uv run --python 3.12.13 --with ziglang==0.15.2
-          python -c "import ziglang; print(ziglang.__file__)"
+          uv run --python 3.12.13 --with ziglang==0.15.2 --with pyelftools==0.32
+          python -c "import elftools, ziglang; print(elftools.__version__, ziglang.__file__)"
 
       - name: Prepare the historical Python entry point
         shell: bash
@@ -45,11 +45,11 @@ jobs:
       - name: Verify the nested Windows replay tools
         shell: bash
         run: |
-          uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
+          uv run --offline --python 3.12.13 --with ziglang==0.15.2 --with pyelftools==0.32 \
             python -c "import os, pathlib; bash = pathlib.Path(os.environ['GIT_BASH_EXE']); print(bash); assert bash.is_file()"
 
       - name: Validate curriculum structure, links and traceability
         shell: bash
         run: |
-          uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
+          uv run --offline --python 3.12.13 --with ziglang==0.15.2 --with pyelftools==0.32 \
             bash scripts/check_repo.sh

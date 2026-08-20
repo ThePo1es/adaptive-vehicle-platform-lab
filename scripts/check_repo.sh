@@ -41,6 +41,7 @@ required_files=(
     docs/autosar-mapping.md
     docs/templates/mastery-review.md
     assessments/README.md
+    assessments/g02-embedded-cpp.md
     gates/README.md
     gates/g00/sprint-0.1.md
     gates/g00/sprint-0.2.md
@@ -55,6 +56,8 @@ required_files=(
     gates/g02/sprint-2.2.md
     gates/g02/sprint-2.3.md
     gates/g02/sprint-2.4.md
+    gates/g02/README.md
+    gates/g02/contract.md
     gates/g03/sprint-3.1.md
     gates/g03/sprint-3.2.md
     gates/g03/sprint-3.3.md
@@ -154,6 +157,14 @@ required_files=(
     fixtures/g01/retest-1.3-v1.h
     fixtures/g01/retest-1.4-v1.h
     fixtures/g01/retest-1.5-v1.h
+    fixtures/g02/sprint-2.1-v1.hpp
+    fixtures/g02/sprint-2.2-v1.hpp
+    fixtures/g02/sprint-2.3-v1.hpp
+    fixtures/g02/sprint-2.4-v1.hpp
+    fixtures/g02/retest-2.1-v1.hpp
+    fixtures/g02/retest-2.2-v1.hpp
+    fixtures/g02/retest-2.3-v1.hpp
+    fixtures/g02/retest-2.4-v1.hpp
     fixtures/g05/task-set-v1.yml
     fixtures/g06/can-fd-dlc-v1.csv
     fixtures/g06/can-rta-three-message-v1.json
@@ -191,9 +202,42 @@ required_files=(
     labs/g01_safe_c/tests/test_run_harness.py
     labs/g01_safe_c/harness_toolchain.py
     labs/g01_safe_c/run_harness.py
+    labs/g02_embedded_cpp/README.md
+    labs/g02_embedded_cpp/__init__.py
+    labs/g02_embedded_cpp/elf_contract.py
+    labs/g02_embedded_cpp/harness_toolchain.py
+    labs/g02_embedded_cpp/run_harness.py
+    labs/g02_embedded_cpp/include/g02_abi.hpp
+    labs/g02_embedded_cpp/include/g02_abi_c.h
+    labs/g02_embedded_cpp/include/g02_lifetime.hpp
+    labs/g02_embedded_cpp/include/g02_queue.hpp
+    labs/g02_embedded_cpp/include/g02_runtime.hpp
+    labs/g02_embedded_cpp/reference/abi.cpp
+    labs/g02_embedded_cpp/reference/lifetime.cpp
+    labs/g02_embedded_cpp/reference/queue.cpp
+    labs/g02_embedded_cpp/reference/runtime.cpp
+    labs/g02_embedded_cpp/starter/abi.cpp
+    labs/g02_embedded_cpp/starter/lifetime.cpp
+    labs/g02_embedded_cpp/starter/queue.cpp
+    labs/g02_embedded_cpp/starter/runtime.cpp
+    labs/g02_embedded_cpp/tests/test_abi.cpp
+    labs/g02_embedded_cpp/tests/test_c_abi_header.c
+    labs/g02_embedded_cpp/tests/test_lifetime.cpp
+    labs/g02_embedded_cpp/tests/test_queue.cpp
+    labs/g02_embedded_cpp/tests/test_run_harness.py
+    labs/g02_embedded_cpp/tests/test_runtime.cpp
+    labs/g02_embedded_cpp/tests/test_support.hpp
+    labs/g02_embedded_cpp/freestanding/manual.cpp
+    labs/g02_embedded_cpp/freestanding/static.cpp
+    labs/g02_embedded_cpp/freestanding/virtual.cpp
     portfolio/g01-safe-c-components-v1/CMakeLists.txt
     portfolio/g01-safe-c-components-v1/README.md
     portfolio/g01-safe-c-components-v1/demo.c
+    portfolio/g02-embedded-cpp-runtime-v1/ADR-template.md
+    portfolio/g02-embedded-cpp-runtime-v1/CMakeLists.txt
+    portfolio/g02-embedded-cpp-runtime-v1/README.md
+    portfolio/g02-embedded-cpp-runtime-v1/demo.cpp
+    portfolio/g02-embedded-cpp-runtime-v1/demo_c.c
     sources/autosar-r25-11/README.md
     evidence/runnable/g10.1/README.md
     evidence/runnable/g10.1/harness.stdout
@@ -288,12 +332,14 @@ for file in "${documented_lab_files[@]}"; do
 done
 
 bash -n scripts/new-study-log.sh scripts/check_repo.sh
-"$python_cmd" -c 'import ast, pathlib; [ast.parse(pathlib.Path(path).read_text(encoding="utf-8")) for path in ("scripts/check_internal_links.py", "scripts/check_traceability.py", "scripts/check_fixture_semantics.py", "scripts/check_runnable_evidence.py", "scripts/runnable_evidence_replay.py", "scripts/runnable_evidence_support.py", "scripts/runnable_evidence_validator.py", "scripts/tests/test_check_runnable_evidence.py", "labs/g01_safe_c/harness_toolchain.py", "labs/g01_safe_c/run_harness.py", "labs/g01_safe_c/tests/test_run_harness.py", "labs/g10_1_release_map/validator.py", "labs/g10_1_release_map/run_harness.py", "labs/g10_1_release_map/tests/test_release_map.py")]'
+"$python_cmd" -c 'import ast, pathlib; [ast.parse(pathlib.Path(path).read_text(encoding="utf-8")) for path in ("scripts/check_internal_links.py", "scripts/check_traceability.py", "scripts/check_fixture_semantics.py", "scripts/check_runnable_evidence.py", "scripts/runnable_evidence_replay.py", "scripts/runnable_evidence_support.py", "scripts/runnable_evidence_validator.py", "scripts/tests/test_check_runnable_evidence.py", "labs/g01_safe_c/harness_toolchain.py", "labs/g01_safe_c/run_harness.py", "labs/g01_safe_c/tests/test_run_harness.py", "labs/g02_embedded_cpp/elf_contract.py", "labs/g02_embedded_cpp/harness_toolchain.py", "labs/g02_embedded_cpp/run_harness.py", "labs/g02_embedded_cpp/tests/test_run_harness.py", "labs/g10_1_release_map/validator.py", "labs/g10_1_release_map/run_harness.py", "labs/g10_1_release_map/tests/test_release_map.py")]'
 "$python_cmd" scripts/check_internal_links.py
 "$python_cmd" scripts/check_traceability.py
 "$python_cmd" scripts/check_fixture_semantics.py
 "$python_cmd" -m labs.g01_safe_c.run_harness
 G01_LAB_ID=G1.RETEST "$python_cmd" -m labs.g01_safe_c.run_harness
+"$python_cmd" -m labs.g02_embedded_cpp.run_harness
+G02_LAB_ID=G2.RETEST "$python_cmd" -m labs.g02_embedded_cpp.run_harness
 "$python_cmd" labs/g10_1_release_map/run_harness.py
 unit_output=$("$python_cmd" -m unittest discover -s labs/g10_1_release_map/tests -p 'test_*.py' 2>&1)
 if ! grep -Fq 'Ran 14 tests' <<<"$unit_output" || ! grep -Fxq 'OK' <<<"$unit_output"; then

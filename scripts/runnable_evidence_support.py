@@ -28,6 +28,20 @@ G1_ACTIVE_REQUIRED_ROLES = REQUIRED_ROLES | REPLAY_ROLES | {
     "toolchain-resolver",
     "unit-tests",
 }
+G2_ACTIVE_REQUIRED_ROLES = REQUIRED_ROLES | REPLAY_ROLES | {
+    "contract",
+    "interface",
+    "portfolio-build",
+    "retest-fixture",
+    "toolchain-resolver",
+    "unit-tests",
+}
+G2_ABI_REQUIRED_ROLES = {
+    "abi-corpus",
+    "c-abi-header",
+    "c-abi-validator",
+    "elf-inspector",
+}
 G10_ACTIVE_REQUIRED_ROLES = REQUIRED_ROLES | REPLAY_ROLES | {
     "review-fixture",
     "review-policy",
@@ -48,6 +62,11 @@ def required_roles(lab_id: str, active: bool) -> set[str]:
         return REQUIRED_ROLES
     if lab_id.startswith("G1."):
         return G1_ACTIVE_REQUIRED_ROLES
+    if lab_id.startswith("G2."):
+        roles = G2_ACTIVE_REQUIRED_ROLES.copy()
+        if lab_id == "G2.4":
+            roles.update(G2_ABI_REQUIRED_ROLES)
+        return roles
     if lab_id == "G10.1":
         return G10_ACTIVE_REQUIRED_ROLES
     fail(f"no active artifact policy is configured for {lab_id}")

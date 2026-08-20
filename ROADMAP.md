@@ -8,7 +8,7 @@
 | --- | ---: | ---: | --- |
 | G0 개발 환경과 검증 기준 준비하기 | 48–60h | 2 | 도구 모음·CI·장비 ADR |
 | G1 안전한 C로 데이터와 메모리 다루기 | 124–166h | 5 | 저수준 안전 C 컴포넌트 묶음 |
-| G2 임베디드 C++ 자원 수명과 소유권 다루기 | 96–120h | 4 | 소유권이 명확한 실행 기반 |
+| G2 임베디드 C++로 안전한 실행 기반 만들기 | 108–142h | 4 | 안전한 데이터 수명·고정 용량 이벤트 처리·종료 가능한 큐·C ABI |
 | G3 ARM 실행 구조와 컴파일 결과 읽기 | 120–150h | 5 | 컴파일 분석 묶음 |
 | G4 Cortex-M 보드 부팅과 인터럽트 구현하기 | 144–180h | 6 | 부팅 가능한 MCU 실행 기반 |
 | G5 RTOS 태스크와 실시간성 검증하기 | 168–210h | 7 | P00-A 시간 분석 핵심 |
@@ -63,7 +63,7 @@ G4–G7과 G8–G10은 공통 기반 뒤에 갈라집니다. Linux/Adaptive 플�
 | 시점 | 릴리스 | 공개할 내용 |
 | --- | --- | --- |
 | G1 종료 | C component library | decoder, bounded storage, parser, corpus, 재현 명령 |
-| G2 종료 | C++ runtime layer | lifetime contract, fixed-capacity runtime, race test |
+| G2 종료 | C++ 실행 기반 v1 | 수명이 보장된 데이터 뷰, 고정 용량 이벤트 처리기, 종료 가능한 큐, C17 공개 API, ELF 보고서 |
 | G4 종료 | board runtime | startup, timer, fault record, watchdog, board log |
 | G6 종료 | ISO-TP alpha | CAN timing, ISO-TP/UDS read path, 상호 운용 trace |
 | G12.5 | walking skeleton | 두 node의 시작과 최소 data path |
@@ -130,7 +130,7 @@ G4–G7과 G8–G10은 공통 기반 뒤에 갈라집니다. Linux/Adaptive 플�
 
 ---
 
-## 임베디드 C++ 자원 수명과 소유권 다루기 (G2)
+## 임베디드 C++로 안전한 실행 기반 만들기 (G2)
 
 ### 배울 내용
 

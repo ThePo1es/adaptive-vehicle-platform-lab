@@ -11,6 +11,8 @@ from typing import Any
 from scripts.runnable_evidence_replay import (
     PINNED_G1_ARGV_PREFIX,
     PINNED_G1_MODULE,
+    PINNED_G2_ARGV_PREFIX,
+    PINNED_G2_MODULE,
     replay_environment,
     verify_output,
     verify_repository_check,
@@ -78,11 +80,14 @@ def verify_command_shape(
     argv = [item for item in argv_value if isinstance(item, str)]
     if schema_version == 3 and runner != "labs/g01_safe_c/run_harness.py":
         fail("schema 3 runner artifact path is not the G1 module")
-    expected = (
-        ["python3", runner]
-        if schema_version == 2
-        else [*PINNED_G1_ARGV_PREFIX, PINNED_G1_MODULE]
-    )
+    if schema_version == 4 and runner != "labs/g02_embedded_cpp/run_harness.py":
+        fail("schema 4 runner artifact path is not the G2 module")
+    if schema_version == 2:
+        expected = ["python3", runner]
+    elif schema_version == 3:
+        expected = [*PINNED_G1_ARGV_PREFIX, PINNED_G1_MODULE]
+    else:
+        expected = [*PINNED_G2_ARGV_PREFIX, PINNED_G2_MODULE]
     if argv != expected:
         fail(f"Runnable command does not match schema {schema_version}'s pinned runner command")
     environment_value = command.get("environment")
@@ -122,10 +127,12 @@ def verify_sprint_lock(
 def verify_manifest(path: Path, active: bool, indexed_lab_id: str | None = None) -> str:
     manifest = json.loads(path.read_text(encoding="utf-8"))
     schema_version = manifest.get("schema_version")
-    if schema_version not in {2, 3} or manifest.get("status") != "Runnable":
+    if schema_version not in {2, 3, 4} or manifest.get("status") != "Runnable":
         fail(f"invalid manifest header: {path.relative_to(REPO_ROOT)}")
     if active and str(manifest.get("lab_id", "")).startswith("G1.") and schema_version != 3:
         fail("active G1 evidence must use the hermetic schema 3 toolchain contract")
+    if active and str(manifest.get("lab_id", "")).startswith("G2.") and schema_version != 4:
+        fail("active G2 evidence must use the hermetic schema 4 toolchain contract")
     if active and manifest.get("lab_id") != indexed_lab_id:
         fail(f"active index lab ID {indexed_lab_id} does not match manifest lab ID {manifest.get('lab_id')}")
     starter = manifest.get("starter_commit")
