@@ -65,5 +65,40 @@ jobs:
       - name: Validate curriculum structure, links and traceability
         shell: bash
         run: |
-          uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
+          SKIP_RUNNABLE_EVIDENCE=1 uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
             bash scripts/check_repo.sh
+          uv run --offline --python 3.12.13 --with ziglang==0.15.2 python - <<'PY'
+          import os
+          import shutil
+          import subprocess
+          import sys
+
+          import scripts.check_runnable_evidence as checker
+          import scripts.runnable_evidence_validator as validator
+
+          original_run = subprocess.run
+          original_verify = checker.verify_manifest
+
+          def traced_run(*args, **kwargs):
+              command = args[0] if args else kwargs.get("args")
+              if command == ["bash", "scripts/check_repo.sh"]:
+                  environment = kwargs.get("env") or os.environ
+                  print(f"parent bash={shutil.which('bash')}", file=sys.stderr)
+                  print(f"child bash={shutil.which('bash', path=environment.get('PATH'))}", file=sys.stderr)
+                  print(f"BASH_ENV={environment.get('BASH_ENV')}", file=sys.stderr)
+              result = original_run(*args, **kwargs)
+              if command == ["bash", "scripts/check_repo.sh"] and result.returncode != 0:
+                  stdout = result.stdout.decode("utf-8", errors="replace")
+                  stderr = result.stderr.decode("utf-8", errors="replace")
+                  print(f"repository_check stdout:\n{stdout}", file=sys.stderr)
+                  print(f"repository_check stderr:\n{stderr}", file=sys.stderr)
+              return result
+
+          def traced_verify(path, active, indexed_lab_id=None):
+              print(f"verifying {path}", flush=True)
+              return original_verify(path, active, indexed_lab_id)
+
+          validator.subprocess.run = traced_run
+          checker.verify_manifest = traced_verify
+          raise SystemExit(checker.main())
+          PY
