@@ -4,15 +4,17 @@
 
 ## 지원 범위
 
-### 호스트 기준 환경
+### 고정된 호스트 기준 환경
 
-- C17 hosted implementation
+- `uv` 0.12.3, Python 3.12.13
+- `ziglang` 0.15.2가 제공하는 Zig 0.15.2와 내장 C 표준 라이브러리
+- 호스트 C17 구현
 - `CHAR_BIT == 8`, `UINT8_MAX == 255`, `UINT16_MAX == 65535`
 - `uint8_t`, `uint16_t`, `uint32_t`가 존재
-- Clang 18 이상, `-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Werror`
+- `-O0`과 `-O2` 각각에서 경고를 오류로 처리
 - AddressSanitizer와 UndefinedBehaviorSanitizer를 켠 공개 검사
 
-위 조건은 컴파일 시 `_Static_assert`로 확인합니다. 조건을 만족하지 않는 구현은 잘못된 결과를 내는 대신 지원하지 않는 대상으로 분류합니다.
+검사기는 컴파일러 이름·버전·대상 삼중항을 출력하고 C 표준 헤더를 포함하는 사전 컴파일을 수행합니다. 위 정수 조건은 `_Static_assert`로 확인합니다. 조건을 만족하지 않는 구현은 잘못된 결과를 내는 대신 지원하지 않는 대상으로 분류합니다. Clang 18 이상은 같은 사전 컴파일을 통과할 때 수동 교차 확인에 쓸 수 있지만, `Runnable` 증거는 고정된 Zig 환경만 사용합니다.
 
 ### Cortex-M 전이 환경
 
@@ -30,17 +32,17 @@
 
 | 실습 | 입력 | 공개 API 결과 | 다음 실습에서 쓰는 것 |
 | --- | --- | --- | --- |
-| 1-1 | 8바이트 신호 벡터 | raw 신호 decode/encode | 1-4의 payload 의미 확인 |
-| 1-2 | offset·길이·바이트 패턴 | 접근법별 C17 분류와 안전한 읽기 | 모든 wire access |
-| 1-3 | 동결된 연산열·seed | queue·pool 상태와 counter | 1-5의 ISR→task 전달 |
-| 1-4 | frame corpus·CRC 정답 | status·consumed·output | 1-5 task parser |
-| 1-5 | register event sequence | access log·queue·timeout·counter | G4 target driver 전이 |
+| 1-1 | 8바이트 신호 벡터 | 원시 신호 변환 | 1-4의 데이터 의미 확인 |
+| 1-2 | 위치·길이·바이트 패턴 | 접근법별 C17 분류와 안전한 읽기 | 모든 통신 바이트 접근 |
+| 1-3 | 동결된 연산열·난수 씨앗 | 큐·풀 상태와 진단 계수 | 1-5의 ISR→태스크 전달 |
+| 1-4 | 프레임 입력 모음·CRC 정답 | 판정·소비 길이·출력 | 1-5 태스크의 파서 |
+| 1-5 | 레지스터 사건 순서 | 접근 기록·큐·시간 제한·진단 계수 | G4 실제 드라이버 전이 |
 
 최종 공개 API는 `labs/g01_safe_c/include/g01_lab.h`에 고정합니다. 학습자 구현은 API를 바꾸지 않고 `study/g01/src`에 둡니다.
 
-## 실습 1-1: wire 정수 계약
+## 실습 1-1: 통신 바이트 정수 계약
 
-8바이트 payload의 한 byte는 8비트 octet입니다.
+8바이트 데이터의 한 바이트는 8비트 옥텟입니다.
 
 | 위치 | 의미 | 유효 범위 |
 | --- | --- | --- |
@@ -55,34 +57,34 @@ signed 값은 signed shift나 범위 밖 signed cast로 만들지 않습니다. 
 
 | 접근법 | C17 의미 | endian 결과 |
 | --- | --- | --- |
-| `uint16_t *` cast 뒤 역참조 | 정렬·effective type 위반 가능 | native endian 의존 |
-| `memcpy`로 local `uint16_t`에 복사 | 길이가 맞으면 정렬·별칭에는 안전 | native endian 의존 |
-| unsigned byte shift와 OR | 8비트 byte 전제에서 정의됨 | wire endian을 명시 가능 |
+| `uint16_t *` 변환 뒤 역참조 | 정렬·유효 형식 위반 가능 | 호스트 바이트 순서에 의존 |
+| `memcpy`로 지역 `uint16_t`에 복사 | 길이가 맞으면 정렬·별칭에는 안전 | 호스트 바이트 순서에 의존 |
+| 부호 없는 바이트의 이동과 OR | 8비트 바이트 전제에서 정의됨 | 통신 바이트 순서를 명시 가능 |
 
-`memcpy`는 wire endian을 자동으로 해결하지 않습니다. packed structure는 compiler extension과 target 접근 정책을 별도로 기록합니다. padding을 포함한 structure 전체 `memcmp`를 값의 동일성 판정으로 사용하지 않습니다.
+`memcpy`는 통신 바이트 순서를 자동으로 해결하지 않습니다. 채움 없는 구조체는 컴파일러 확장과 대상 환경의 접근 정책을 별도로 기록합니다. 빈 공간을 포함한 구조체 전체 `memcmp`를 값의 동일성 판정으로 사용하지 않습니다. 두 공개 읽기 함수는 길이와 출력 주소를 받아, 길이가 2보다 작거나 주소가 없으면 출력을 바꾸지 않고 실패합니다.
 
 ## 실습 1-3: 제한된 저장소 계약
 
-Core queue의 논리 용량은 1 이상입니다. 용량 0은 `_Static_assert`가 거부해야 하는 compile-fail 입력입니다. `reject-new` 정책은 실패 뒤 상태를 보존하고, `overwrite-oldest` 정책은 가장 오래된 원소 하나만 버리며 counter를 증가시킵니다.
+핵심 큐의 논리 용량은 1 이상입니다. 용량 0은 `_Static_assert`가 컴파일 단계에서 거부합니다. `reject-new` 정책은 실패 뒤 데이터 구조를 보존하고, `overwrite-oldest` 정책은 가장 오래된 원소 하나만 버립니다. 두 정책의 `dropped` 진단 계수는 `UINT32_MAX`에서 포화해 되감기지 않습니다.
 
-Pool은 raw foreign pointer의 범위 비교나 뺄셈으로 소유권을 판정하지 않습니다. 공개 구현은 `index + generation` handle을 사용합니다. 해제는 유효한 live handle에만 성공하고, double free·오래된 generation·범위 밖 index는 pool 상태를 바꾸지 않습니다.
+32칸 메모리 풀은 외부 포인터의 관계 비교나 뺄셈으로 소유권을 판정하지 않습니다. 공개 구현은 `index + generation` 핸들과 `get/set` 함수를 사용하므로 해제 뒤 보관한 원시 포인터가 없습니다. 해제는 살아 있는 핸들에만 성공합니다. 세대값이 `UINT32_MAX`인 칸은 마지막 해제 뒤 영구 은퇴시켜 오래된 핸들이 다시 유효해지는 ABA를 막습니다. 이중 해제·오래된 세대값·범위 밖 인덱스는 데이터와 소유권 상태를 바꾸지 않고, `rejected_releases` 진단 계수만 포화 증가합니다.
 
 ## 실습 1-4: 프레임 파서 계약
 
 ```text
-[0xA5 magic][0x01 version][length 0..16][payload][CRC-8/ATM]
+[0xA5 시작 표식][0x01 버전][길이 0..16][데이터][CRC-8/ATM]
 ```
 
-- CRC 범위: magic부터 payload 마지막 byte까지
+- CRC 범위: 시작 표식부터 데이터 마지막 바이트까지
 - CRC-8/ATM: polynomial `0x07`, init `0x00`, refin/refout false, xorout `0x00`
 - 표준 확인 벡터: ASCII `123456789` → `0xF4`
 - 반환값: `complete`, `need-more`, `rejected`와 `consumed` 길이
 - full-buffer parser는 정확히 한 frame만 받고 trailing byte를 거부
-- byte parser는 오류 byte까지 소비하고, 그 byte가 magic이면 새 frame의 시작으로 재사용
-- `need-more`와 `rejected`는 application output을 바꾸지 않음
-- 거부 뒤 첫 정상 frame은 이전 payload와 무관하게 정상 해석
+- 바이트 단위 파서는 오류 바이트까지 소비하고, 그 바이트가 시작 표식이면 새 프레임의 시작으로 재사용
+- `need-more`와 `rejected`는 응용 출력값을 바꾸지 않음
+- 거부 뒤 첫 정상 프레임은 이전 데이터와 무관하게 정상 해석
 
-공개 corpus는 길이 0–20의 모든 truncation, 잘못된 길이·CRC·version, 반복 magic, trailing byte를 포함합니다. 결정적 fuzz는 고정 seed와 최대 입력 64바이트, 100,000회로 실행하며 실행 사이에 parser 상태를 초기화합니다. 시간 기반 fuzz 기록은 별도 보강 근거로 남깁니다.
+공개 입력 모음은 최대 프레임의 길이 0–19 잘림과 20바이트 완성본, 잘못된 길이·CRC·버전, 반복 시작 표식, 뒤따르는 바이트를 포함합니다. 결정적 무작위 검사는 고정 씨앗과 최대 입력 64바이트, 100,000회로 실행하며 실행 사이에 파서 상태를 초기화합니다. 시간 기반 퍼징 기록은 별도 보강 근거로 남깁니다.
 
 ## 실습 1-5: MMIO·ISR·동시성 계약
 
@@ -101,33 +103,33 @@ W1C에는 read-modify-write를 사용하지 않습니다. host oracle은 접근 
 
 | 모델 | 공개 실습에서 확인 | 추가 근거 |
 | --- | --- | --- |
-| 단일 core ISR→task | ISR producer, task consumer, release publish/acquire consume | target assembly, lock-free 확인 |
+| 단일 코어 ISR→태스크 | ISR 생산자, 태스크 소비자, release 공개/acquire 읽기 | 대상 어셈블리, lock-free 확인 |
 | C thread↔thread | C17 atomic과 happens-before | ThreadSanitizer 보강 |
 | multi-core | 공개 host 실습 범위 밖 | cache coherence·architecture 문서 |
 | DMA↔CPU | 공개 host 실습 범위 밖 | device barrier·cache maintenance·descriptor ownership |
 
-payload는 producer가 먼저 쓰고 release로 index를 공개합니다. consumer는 acquire로 index를 읽은 뒤 payload를 읽습니다. queue index에 쓰는 atomic이 target에서 항상 lock-free인지 `ATOMIC_*_LOCK_FREE == 2` 또는 assembly로 증명하지 못하면 ISR 경로에 사용할 수 없습니다. `volatile`은 접근을 관찰 가능하게 만드는 구현 수단일 뿐 원자성, happens-before, Device ordering을 보장하지 않습니다.
+생산자는 데이터를 먼저 쓰고 release로 인덱스를 공개합니다. 소비자는 acquire로 인덱스를 읽은 뒤 데이터를 읽습니다. 공개 호스트 검사는 `G01_TESTING`에서 실제 호출에 전달한 `memory_order`를 기록해 release와 acquire를 각각 제거한 단일 결함을 잡습니다. 이는 실제 대상의 순서 보장이 아닙니다. 큐 인덱스 원자 연산이 대상 환경에서 항상 lock-free인지 `ATOMIC_*_LOCK_FREE == 2` 또는 어셈블리로 증명하지 못하면 ISR 경로에 사용할 수 없습니다. `volatile`은 접근을 관찰 가능하게 만드는 구현 수단일 뿐 원자성, 스레드 간 선후 관계, 장치 메모리 순서를 보장하지 않습니다.
 
 ## 고정 입력과 독립 판정
 
 | 실습 | 공개 입력 | 독립 판정 |
 | --- | --- | --- |
 | 1-1 | `fixtures/g01/sprint-1.1-v1.h` | raw 수학식과 known-answer vectors |
-| 1-2 | `fixtures/g01/sprint-1.2-v1.h` | C17 분류표와 native-endian probe |
-| 1-3 | `fixtures/g01/sprint-1.3-v1.h` | 작은 reference model과 고정 PRNG seed |
-| 1-4 | `fixtures/g01/sprint-1.4-v1.h` | 독립 CRC·full-parser oracle |
+| 1-2 | `fixtures/g01/sprint-1.2-v1.h` | C17 분류표와 호스트 바이트 순서 확인 |
+| 1-3 | `fixtures/g01/sprint-1.3-v1.h` | 작은 기준 모델과 고정 의사 난수 씨앗 |
+| 1-4 | `fixtures/g01/sprint-1.4-v1.h` | 독립 CRC·전체 버퍼 파서 판정기 |
 | 1-5 | `fixtures/g01/sprint-1.5-v1.h` | register event log와 상태 모델 |
 
-공개 입력 A는 학습과 회귀 검사에 사용합니다. 재시험 입력 B는 같은 schema와 다른 seed·layout·정책을 사용합니다. 종합 평가는 저장소 밖에서 봉인한 manifest의 SHA-256만 기록합니다.
+공개 입력 A는 학습과 회귀 검사에 사용합니다. 재시험 입력 B는 `fixtures/g01/retest-1.1-v1.h`부터 `retest-1.5-v1.h`까지이며 다른 값·난수 씨앗·레지스터 사건 순서를 사용합니다. `G01_LAB_ID=G1.RETEST`로 다섯 입력 B를 한 번에 실행합니다. 종합 평가는 저장소 밖에서 봉인한 평가 명세의 SHA-256만 기록합니다.
 
 ## 치명적 실패
 
 다음 중 하나라도 있으면 합계와 관계없이 통과하지 못합니다.
 
 - 범위 밖 접근, use-after-free, data race 또는 다른 undefined behavior
-- 거부된 입력이나 실패한 operation이 application output·저장소 상태를 변경
+- 거부된 입력이나 실패한 연산이 응용 출력·데이터·소유권 상태를 변경. 단, 명시된 진단 계수의 포화 증가는 허용
 - foreign pointer 비교처럼 판정 코드 자체가 undefined behavior에 의존
-- `memcpy`가 wire endian까지 해결한다고 설명
+- `memcpy`가 통신 바이트 순서까지 해결한다고 설명
 - full/empty 정책 또는 parser consumed 규칙이 문서와 다름
 - W1C register에 read-modify-write 사용
 - `volatile`만으로 원자성·thread synchronization·device ordering을 주장

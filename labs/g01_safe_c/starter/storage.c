@@ -35,10 +35,18 @@ bool g01_pool_release(G01Pool *pool, G01PoolHandle handle) {
     return false;
 }
 
-uint32_t *g01_pool_value(G01Pool *pool, G01PoolHandle handle) {
+bool g01_pool_set(G01Pool *pool, G01PoolHandle handle, uint32_t value) {
     (void)pool;
     (void)handle;
-    return NULL;
+    (void)value;
+    return false;
+}
+
+bool g01_pool_get(const G01Pool *pool, G01PoolHandle handle, uint32_t *value) {
+    (void)pool;
+    (void)handle;
+    (void)value;
+    return false;
 }
 
 void g01_spsc_init(G01SpscQueue *queue) {

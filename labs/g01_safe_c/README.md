@@ -1,14 +1,15 @@
 # G1 공개 검사기
 
-이 디렉터리는 “안전한 C로 데이터와 메모리 다루기(G1)”의 시작 코드와 공개 검사를 제공합니다. 검사기는 C17 기준 구현을 먼저 실행해 fixture와 판정 자체가 작동하는지 확인합니다.
+이 디렉터리는 “안전한 C로 데이터와 메모리 다루기(G1)”의 시작 코드와 공개 검사를 제공합니다. 검사기는 C17 기준 구현에 단일 결함을 심어 고정 입력과 판정 자체가 작동하는지 먼저 확인합니다.
 
 ## 기준 구현 확인
 
 ```bash
-G01_LAB_ID=G1.ALL python3 labs/g01_safe_c/run_harness.py
+G01_LAB_ID=G1.ALL uv run --offline --python 3.12.13 \
+  --with ziglang==0.15.2 python -m labs.g01_safe_c.run_harness
 ```
 
-성공하면 다섯 실습과 필수 mutant가 모두 `PASS`로 출력됩니다. `G1.1`부터 `G1.5` 중 하나만 지정할 수도 있습니다.
+성공하면 다섯 실습의 `-O0/-O2` 검사와 필수 결함 주입이 모두 `PASS`로 출력됩니다. `G1.1`부터 `G1.5` 중 하나만 지정할 수도 있습니다. `G1.RETEST`를 지정하면 다른 값과 난수 씨앗을 쓰는 공개 입력 B를 실행합니다.
 
 ## 내 구현 확인
 
@@ -18,19 +19,20 @@ cp labs/g01_safe_c/starter/*.c study/g01/src/
 
 G01_SUBMISSION_ROOT=study/g01/src \
 G01_LAB_ID=G1.1 \
-python3 labs/g01_safe_c/run_harness.py
+uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
+  python -m labs.g01_safe_c.run_harness
 ```
 
-시작 코드는 의도적으로 공개 검사를 통과하지 않습니다. 실습을 진행하며 해당 함수만 구현합니다. `G1.5`는 이전 실습의 `storage.c`에 SPSC queue 구현이 있어야 합니다.
+시작 코드는 의도적으로 공개 검사를 통과하지 않습니다. 실습을 진행하며 해당 함수만 구현합니다. `G1.5`는 이전 실습의 `storage.c`에 SPSC 큐 구현이 있어야 합니다.
 
 ## 검사 범위
 
 | 실습 | 공개 검사가 보는 것 | 별도 검증이 필요한 것 |
 | --- | --- | --- |
-| G1.1 | 신호 벡터, 길이, reserved bit, 출력 불변 | 새 bit layout 전이 과제 |
-| G1.2 | offset 0–7의 safe read와 native endian 비교 | Cortex-M 정렬 fault·assembly |
-| G1.3 | 100만 operation model, full 정책, generation handle | DMA ownership |
-| G1.4 | CRC, 고정 corpus, stream 복구, 결정적 입력 10만 개 | 장시간 libFuzzer/AFL++ |
-| G1.5 | register access log, W1C, timeout wrap, SPSC 값 전달 | target lock-free·barrier·DMA cache |
+| G1.1 | 신호 벡터, 길이, 예약 비트, 출력 불변, 속성 왕복 | 새 비트 배치 전이 과제 |
+| G1.2 | 위치 0–7, 길이 0–8의 안전한 읽기와 호스트 바이트 순서 | Cortex-M 정렬 고장·어셈블리 |
+| G1.3 | 100만 연산 모델, 용량 1·2·3·4·8, 32칸 풀, 세대값 고갈 | DMA 소유권 |
+| G1.4 | CRC, 모든 최대 프레임 접두부, 시작 표식 재사용, 결정적 입력 10만 개 | 장시간 libFuzzer/AFL++ |
+| G1.5 | 레지스터 접근 기록·폭, W1C, 시간 계수 되감기, SPSC 가득 참 | 실제 대상의 lock-free·장벽·DMA 캐시 |
 
 공개 검사는 봉인된 종합 평가가 아닙니다. 실제 target에서 확인하지 않은 성질과 학습자가 직접 수행하지 않은 결과를 완료로 표시하지 않습니다.

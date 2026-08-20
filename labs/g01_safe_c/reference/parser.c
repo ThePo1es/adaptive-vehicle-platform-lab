@@ -112,6 +112,14 @@ G01ParseResult g01_stream_consume(G01StreamParser *parser, uint8_t byte) {
 #if G01_MUTANT == 42
     result.consumed++;
 #endif
+#if G01_MUTANT == 44
     g01_stream_init(parser);
+#else
+    if (result.status == G01_PARSE_REJECTED) {
+        g01_stream_restart(parser, byte);
+    } else {
+        g01_stream_init(parser);
+    }
+#endif
     return result;
 }

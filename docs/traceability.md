@@ -4,11 +4,11 @@
 
 | Requirement | Design / ADR | Implementation | Verification | Result | Reviewer |
 | --- | --- | --- | --- | --- | --- |
-| REQ-C-SER-001 | [G1 contract](../gates/g01/contract.md) | Planned | [실습 1-1](../gates/g01/sprint-1.1.md) | Not run | — |
-| REQ-C-MEM-001 | [G1 contract](../gates/g01/contract.md) | Planned | [실습 1-2](../gates/g01/sprint-1.2.md) | Not run | — |
-| REQ-C-STOR-001 | [G1 contract](../gates/g01/contract.md) | Planned | [실습 1-3](../gates/g01/sprint-1.3.md) | Not run | — |
-| REQ-C-PARSE-001 | [G1 contract](../gates/g01/contract.md) | Planned | [실습 1-4](../gates/g01/sprint-1.4.md) | Not run | — |
-| REQ-C-ISR-001 | [G1 contract](../gates/g01/contract.md) | Planned | [실습 1-5](../gates/g01/sprint-1.5.md) | Not run | — |
+| REQ-C-SER-001 | [G1 contract](../gates/g01/contract.md) | [codec](../labs/g01_safe_c/reference/codec.c) | [실습 1-1](../gates/g01/sprint-1.1.md) | 기준 구현 자동 통과; 학습자 미실행 | 실행 명세에서 추적 |
+| REQ-C-MEM-001 | [G1 contract](../gates/g01/contract.md) | [길이 기반 읽기 API](../labs/g01_safe_c/include/g01_lab.h) | [실습 1-2](../gates/g01/sprint-1.2.md) | 기준 구현 자동 통과; 실제 MCU 미실행 | 실행 명세에서 추적 |
+| REQ-C-STOR-001 | [G1 contract](../gates/g01/contract.md) | [고정 저장소](../labs/g01_safe_c/reference/storage.c) | [실습 1-3](../gates/g01/sprint-1.3.md) | 기준 구현 자동 통과; 학습자 미실행 | 실행 명세에서 추적 |
+| REQ-C-PARSE-001 | [G1 contract](../gates/g01/contract.md) | [프레임 파서](../labs/g01_safe_c/reference/parser.c) | [실습 1-4](../gates/g01/sprint-1.4.md) | 기준 구현 자동 통과; 학습자 미실행 | 실행 명세에서 추적 |
+| REQ-C-ISR-001 | [G1 contract](../gates/g01/contract.md) | [드라이버 경계](../labs/g01_safe_c/reference/driver.c) | [실습 1-5](../gates/g01/sprint-1.5.md) | 호스트 기준 구현 통과; 실제 MCU 미실행 | 실행 명세에서 추적 |
 | REQ-MCU-START-001 | [G4 contract](../gates/g04/contract.md) | Planned | [Sprint 4.1](../gates/g04/sprint-4.1.md) | Not run | — |
 | REQ-MCU-TIME-001 | [G4 contract](../gates/g04/contract.md) | Planned | [Sprint 4.2](../gates/g04/sprint-4.2.md) | Not run | — |
 | REQ-MCU-IRQ-001 | [G4 contract](../gates/g04/contract.md) | Planned | [Sprint 4.3](../gates/g04/sprint-4.3.md) | Not run | — |

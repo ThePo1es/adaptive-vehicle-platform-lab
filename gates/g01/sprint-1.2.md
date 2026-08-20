@@ -9,29 +9,30 @@
 
 ## 시간과 자료
 
-18–22시간입니다. 규칙과 compiler 문서 4시간, 구조체 배치 실험 4시간, 세 접근법 비교 5시간, Cortex-M assembly 확인 3시간, 전이·기록 2–6시간으로 계획합니다. N1570 6.2.6.1, 6.2.8, 6.5, 6.5.2.3, 6.5.6, 6.5.8, 6.7.2.1, 6.7.3, 7.24.2.1을 읽습니다.
+18–22시간입니다. 규칙과 컴파일러 문서 4시간, 구조체 배치 실험 4시간, 세 접근법 비교 5시간, Cortex-M 어셈블리 확인 3시간, 전이·기록 2–6시간으로 계획합니다. N1570 6.2.6.1, 6.2.8, 6.5, 6.5.2.3, 6.5.6, 6.5.8, 6.7.2.1, 6.7.3, 7.24.2.1을 읽습니다.
 
 ## 입력과 정답 분류
 
 고정 입력은 [sprint-1.2-v1.h](../../fixtures/g01/sprint-1.2-v1.h)를 사용합니다. 다음 세 구현을 같은 입력 모음으로 비교합니다.
 
 1. `uint16_t *` cast 뒤 dereference
-2. `memcpy`로 local integer에 복사
-3. byte shift와 OR
+2. `memcpy`로 지역 정수에 복사
+3. 바이트 이동과 OR
 
-입력 주소 offset은 0–7, payload 길이는 0–8, compiler는 GCC/Clang, profile은 `-O0/-O2`입니다. 정답은 [G1 계약의 분류표](contract.md#실습-1-2-세-접근법의-정답-분류)를 따릅니다. `memcpy`는 정렬·별칭 위험을 없애도 native endian 의존은 남습니다.
+입력 주소 위치는 0–7, 데이터 길이는 0–8이며 고정된 Zig 컴파일러의 `-O0/-O2`에서 모두 실행합니다. 위험한 포인터 변환은 실행하지 않고 C17 규칙표로 분류합니다. 두 공개 읽기 API는 길이 2 미만에서 출력 불변을 자동 확인합니다. 정답은 [G1 계약의 분류표](contract.md#실습-1-2-세-접근법의-정답-분류)를 따릅니다. `memcpy`는 정렬·별칭 위험을 없애도 호스트 바이트 순서 의존은 남습니다.
 
 ```bash
-G01_LAB_ID=G1.2 python3 labs/g01_safe_c/run_harness.py
+G01_LAB_ID=G1.2 uv run --offline --python 3.12.13 \
+  --with ziglang==0.15.2 python -m labs.g01_safe_c.run_harness
 ```
 
 ## 안내 실습
 
-`sizeof`, `_Alignof`, `offsetof`로 세 구조체의 padding 지도를 출력합니다. padding byte가 값 비교에 적합하지 않은 이유를 실험하고, packed 구조체의 compiler 확장·생성 명령·target fault 위험을 분리해 기록합니다.
+`sizeof`, `_Alignof`, `offsetof`로 세 구조체의 빈 공간 지도를 출력합니다. 빈 공간 바이트가 값 비교에 적합하지 않은 이유를 실험하고, 채움 없는 구조체의 컴파일러 확장·생성 명령·대상 환경 고장 위험을 분리해 기록합니다.
 
 ## 독립 실습
 
-host에서 통과하지만 Cortex-M에서 정렬 fault 가능성이 있는 파서를 찾고 이식 가능한 구현으로 고칩니다. Cortex-M4F, compiler·flags, `UNALIGN_TRP`, 메모리 영역을 결과에 고정합니다.
+호스트에서 통과하지만 Cortex-M에서 정렬 고장 가능성이 있는 파서를 찾고 이식 가능한 구현으로 고칩니다. Cortex-M4F, 컴파일러·옵션, `UNALIGN_TRP`, 메모리 영역을 결과에 고정합니다.
 
 ## 전이 과제
 
@@ -39,11 +40,11 @@ network byte order의 32비트 field와 3바이트 field를 읽는 API를 설계
 
 ## 판정 기준
 
-- implementation별 defined/undefined/implementation-defined 분류
+- 구현별 정의됨/정의되지 않음/구현 정의 분류
 - sanitizer가 잡는 경우와 놓치는 경우 기록
-- compiler assembly와 target instruction alignment 요구 연결
+- 컴파일러 어셈블리와 대상 명령의 정렬 요구 연결
 - public API에 alignment와 lifetime 계약 표시
-- `memcpy`, byte assembly, packed access의 endian 결과를 서로 바꾸지 않음
+- `memcpy`, 바이트 조립, 채움 없는 접근의 바이트 순서 결과를 서로 바꾸지 않음
 
 ## 힌트
 

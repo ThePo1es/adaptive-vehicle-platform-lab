@@ -16,14 +16,14 @@
 | 정수 변환·표현 규칙 읽기 | 3–4시간 |
 | 안내 디코더 구현 | 4–5시간 |
 | 인코더와 속성 시험 | 4–5시간 |
-| 경계·오류·mutant 검사 | 3–4시간 |
+| 경계·오류·결함 주입 검사 | 3–4시간 |
 | 전이 과제와 기록 | 4–6시간 |
 
-[WG14 N1570](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf) 3.4, 5.2.4.2.1, 6.2.5, 6.2.6, 6.3.1, 6.5.7, 7.20.1을 읽습니다. 공개 초안과 C17의 차이는 접근 가능한 ISO/IEC 9899:2018 및 사용한 compiler 문서에서 확인해 절 번호를 기록합니다.
+[WG14 N1570](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf) 3.4, 5.2.4.2.1, 6.2.5, 6.2.6, 6.3.1, 6.5.7, 7.20.1을 읽습니다. 공개 초안과 C17의 차이는 접근 가능한 ISO/IEC 9899:2018 및 사용한 컴파일러 문서에서 확인해 절 번호를 기록합니다.
 
 ## 입력 계약
 
-고정 입력은 [sprint-1.1-v1.h](../../fixtures/g01/sprint-1.1-v1.h), 공통 전제는 [G1 계약](contract.md#실습-1-1-wire-정수-계약)을 사용합니다. `CHAR_BIT == 8`과 exact-width unsigned type 지원을 컴파일할 때 확인합니다.
+고정 입력은 [sprint-1.1-v1.h](../../fixtures/g01/sprint-1.1-v1.h), 공통 전제는 [G1 계약](contract.md#실습-1-1-통신-바이트-정수-계약)을 사용합니다. `CHAR_BIT == 8`과 정확한 폭의 부호 없는 정수 형식 지원을 컴파일할 때 확인합니다.
 
 8바이트 payload를 사용합니다.
 
@@ -35,7 +35,8 @@
 기준 벡터 `10 27 D7 00 03 00 00 00`은 속도 100.00 km/h, 온도 21.5 °C, counter 3입니다. signed 경계 `0x0000`, `0x7FFF`, `0x8000`, `0xFFFF`와 application 범위 -40.0–215.0 °C를 따로 검사합니다.
 
 ```bash
-G01_LAB_ID=G1.1 python3 labs/g01_safe_c/run_harness.py
+G01_LAB_ID=G1.1 uv run --offline --python 3.12.13 \
+  --with ziglang==0.15.2 python -m labs.g01_safe_c.run_harness
 ```
 
 ## 안내 실습
@@ -52,8 +53,8 @@ G01_LAB_ID=G1.1 python3 labs/g01_safe_c/run_harness.py
 
 ## 판정 기준
 
-- golden vector와 min/max vector 통과
-- length 0–7, null, reserved bit, out-of-range input 거부
+- 기준 벡터와 최솟값·최댓값 벡터 통과
+- 길이 0–7, 널 포인터, 예약 비트, 범위 밖 입력 거부
 - signed shift·promotion·overflow UB 없음
 - 오류 뒤 출력 불변을 속성 시험으로 확인
 - 필수 mutant인 길이 선검사 제거, reserved mask 반전, signed 경계 `>=` 오류, byte order 반전을 모두 검출

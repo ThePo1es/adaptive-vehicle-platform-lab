@@ -9,7 +9,7 @@
 
 ## 시간과 자료
 
-30–42시간입니다. C17 volatile·atomic 5–6시간, register fake 5–7시간, ISR→task queue 7–9시간, assembly·target 검토 5–7시간, DMA 전이와 기록 8–13시간으로 나눕니다. N1570 5.1.2.3, 6.7.3, 7.17, Armv7-M Architecture Reference Manual의 memory model, CMSIS barrier intrinsic, 선택한 compiler의 ISR 확장 문서를 읽고 판본·절을 기록합니다.
+30–42시간입니다. C17 `volatile`·원자 연산 5–6시간, 가짜 레지스터 5–7시간, ISR→태스크 큐 7–9시간, 어셈블리·대상 환경 검토 5–7시간, DMA 전이와 기록 8–13시간으로 나눕니다. N1570 5.1.2.3, 6.7.3, 7.17, Armv7-M Architecture Reference Manual의 메모리 모델, CMSIS 장벽 내장 함수, 선택한 컴파일러의 ISR 확장 문서를 읽고 판본·절을 기록합니다.
 
 ## 레지스터 모델
 
@@ -23,7 +23,8 @@ IRQ_ACK write-one-to-clear bit0
 Register별 offset·폭·RO/RW/W1C·reserved mask·부작용은 [G1 계약](contract.md#가짜-레지스터)에 고정합니다. Host fixture는 read/write 순서·폭·값과 side effect를 기록하며 입력은 [sprint-1.5-v1.h](../../fixtures/g01/sprint-1.5-v1.h)를 사용합니다.
 
 ```bash
-G01_LAB_ID=G1.5 python3 labs/g01_safe_c/run_harness.py
+G01_LAB_ID=G1.5 uv run --offline --python 3.12.13 \
+  --with ziglang==0.15.2 python -m labs.g01_safe_c.run_harness
 ```
 
 ## 안내 실습
@@ -32,26 +33,26 @@ Register access, bit update, modulo tick polling timeout, write-one-to-clear API
 
 ## 독립 실습
 
-ISR을 단일 producer, task를 단일 consumer로 고정합니다. Producer는 non-atomic payload를 먼저 쓴 뒤 release로 index를 공개하고 consumer는 acquire 뒤 payload를 읽습니다. Queue full 정책과 counter를 검사하고, target에서 index atomic이 lock-free인지 macro와 assembly로 확인합니다.
+ISR을 단일 생산자, 태스크를 단일 소비자로 고정합니다. 생산자는 비원자 데이터를 먼저 쓴 뒤 release로 인덱스를 공개하고 소비자는 acquire 뒤 데이터를 읽습니다. 큐가 가득 찬 경우와 포화 진단 계수를 검사합니다. 호스트 시험에서는 실제 호출에 전달된 `memory_order`를 기록해 release와 acquire 제거를 각각 검출하고, 실제 대상에서는 인덱스 원자 연산이 lock-free인지 매크로와 어셈블리로 따로 확인합니다.
 
 ## 전이 과제
 
-DMA completion flag와 descriptor 소유권을 가진 새 peripheral shell을 설계합니다. C thread synchronization, compiler fence, CPU memory barrier, Device ordering, cache maintenance의 필요 조건을 각각 나눕니다. Host 검사로 DMA visibility를 증명했다고 쓰지 않습니다.
+DMA 완료 표시와 디스크립터 소유권을 가진 새 주변장치 골격을 설계합니다. C 스레드 동기화, 컴파일러 펜스, CPU 메모리 장벽, 장치 메모리 순서, 캐시 유지 작업의 필요 조건을 각각 나눕니다. 호스트 검사로 DMA 가시성을 증명했다고 쓰지 않습니다.
 
 ## 판정 기준
 
 - `volatile`의 역할과 동기화 한계를 source·assembly로 설명
 - ISR에 allocation·unbounded wait·parser 없음
-- register side effect와 timeout negative test 통과
+- 레지스터 부작용과 시간 제한 오류 시험 통과
 - single-core ISR/task, C thread, multi-core, DMA 계약을 분리
-- W1C read-modify-write mutant, release/acquire 제거 mutant, timeout wrap 오류를 모두 검출
+- W1C 읽기-수정-쓰기, release 제거, acquire 제거, 시간 계수 되감기 오류를 각각 검출
 
 ## 하드웨어 확인 사항
 
-1. Device ordering, compiler reordering, language data race는 서로 다른 문제입니다.
+1. 장치 메모리 순서, 컴파일러 재배치, 언어 수준 데이터 경합은 서로 다른 문제입니다.
 2. ISR과 task가 공유하는 상태의 writer/reader를 표로 적습니다.
 3. Host mock이 실제 hardware ordering을 보장하지 않는다는 한계를 기록합니다.
 
 ## 재시험
 
-`volatile` 하나로 원자성과 happens-before를 설명했거나 ISR에 끝나지 않는 loop가 남았다면 SPSC queue 계약을 상태도로 다시 그립니다. Writer, reader, memory order를 표시한 뒤 다른 register sequence와 target assembly로 재시험합니다.
+`volatile` 하나로 원자성과 선후 관계를 설명했거나 ISR에 끝나지 않는 반복문이 남았다면 SPSC 큐 계약을 상태도로 다시 그립니다. 작성자, 읽는 쪽, 메모리 순서를 표시한 뒤 다른 레지스터 사건 순서와 대상 어셈블리로 재시험합니다.

@@ -19,10 +19,10 @@ typedef struct {
 
 bool g01_decode_signals(const uint8_t *payload, size_t length, G01Signals *output);
 bool g01_encode_signals(const G01Signals *signals, uint8_t *payload, size_t length);
-uint16_t g01_read_le16(const uint8_t *bytes);
-uint16_t g01_read_native16(const uint8_t *bytes);
+bool g01_read_le16(const uint8_t *bytes, size_t length, uint16_t *output);
+bool g01_read_native16(const uint8_t *bytes, size_t length, uint16_t *output);
 
-enum { G01_QUEUE_STORAGE = 8, G01_POOL_SLOTS = 4, G01_MAX_PAYLOAD = 16 };
+enum { G01_QUEUE_STORAGE = 8, G01_POOL_SLOTS = 32, G01_MAX_PAYLOAD = 16 };
 
 typedef enum {
     G01_REJECT_NEW,
@@ -50,20 +50,22 @@ bool g01_queue_pop(G01Queue *queue, uint8_t *value);
 
 typedef struct {
     uint8_t index;
-    uint16_t generation;
+    uint32_t generation;
 } G01PoolHandle;
 
 typedef struct {
     uint32_t values[G01_POOL_SLOTS];
-    uint16_t generations[G01_POOL_SLOTS];
+    uint32_t generations[G01_POOL_SLOTS];
     bool used[G01_POOL_SLOTS];
+    bool retired[G01_POOL_SLOTS];
     uint32_t rejected_releases;
 } G01Pool;
 
 void g01_pool_init(G01Pool *pool);
 bool g01_pool_allocate(G01Pool *pool, G01PoolHandle *handle);
 bool g01_pool_release(G01Pool *pool, G01PoolHandle handle);
-uint32_t *g01_pool_value(G01Pool *pool, G01PoolHandle handle);
+bool g01_pool_set(G01Pool *pool, G01PoolHandle handle, uint32_t value);
+bool g01_pool_get(const G01Pool *pool, G01PoolHandle handle, uint32_t *value);
 
 typedef enum {
     G01_PARSE_COMPLETE,
@@ -94,6 +96,10 @@ typedef struct {
     _Atomic size_t head;
     _Atomic size_t tail;
     _Atomic uint32_t dropped;
+#if G01_TESTING
+    memory_order last_publish_order;
+    memory_order last_consume_order;
+#endif
 } G01SpscQueue;
 
 void g01_spsc_init(G01SpscQueue *queue);
@@ -109,6 +115,7 @@ typedef struct {
     G01MmioDirection direction;
     uint32_t offset;
     uint32_t value;
+    uint8_t width_bits;
 } G01MmioAccess;
 
 enum {

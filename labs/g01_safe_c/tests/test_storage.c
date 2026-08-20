@@ -1,5 +1,9 @@
 #include "g01_lab.h"
+#if G01_RETEST
+#include "retest-1.3-v1.h"
+#else
 #include "sprint-1.3-v1.h"
+#endif
 #include "test_support.h"
 
 typedef struct {
@@ -43,17 +47,19 @@ static bool model_pop(QueueModel *model, uint8_t *value) {
     return true;
 }
 
-static int check_queue(G01FullPolicy policy) {
+static int check_queue(G01FullPolicy policy, size_t capacity) {
     G01Queue queue = {0};
     QueueModel model = {0};
     G01_CHECK(!g01_queue_init(&queue, 0U, policy));
-    G01_CHECK(g01_queue_init(&queue, 3U, policy));
+    G01_CHECK(g01_queue_init(&queue, capacity, policy));
     uint32_t random = G01_STORAGE_SEED;
     for (size_t operation = 0U; operation < G01_STORAGE_MODEL_OPERATIONS; operation++) {
         random = next_random(random);
         if ((random & 1U) == 0U) {
             const uint8_t value = (uint8_t)(random >> 24U);
-            G01_CHECK(g01_queue_push(&queue, value) == model_push(&model, 3U, policy, value));
+            G01_CHECK(
+                g01_queue_push(&queue, value) == model_push(&model, capacity, policy, value)
+            );
         } else {
             uint8_t actual = 0xAAU;
             uint8_t expected = 0xAAU;
@@ -64,6 +70,13 @@ static int check_queue(G01FullPolicy policy) {
         G01_CHECK(queue.dropped == model.dropped);
         G01_CHECK(queue.count <= queue.capacity);
     }
+    while (queue.count < queue.capacity) {
+        G01_CHECK(g01_queue_push(&queue, 0x5AU));
+    }
+    queue.dropped = UINT32_MAX;
+    const bool pushed = g01_queue_push(&queue, 0xA5U);
+    G01_CHECK((policy == G01_OVERWRITE_OLDEST) || !pushed);
+    G01_CHECK(queue.dropped == UINT32_MAX);
     return 0;
 }
 
@@ -73,26 +86,59 @@ static int check_pool(void) {
     G01PoolHandle handles[G01_POOL_SLOTS];
     for (size_t index = 0U; index < G01_POOL_SLOTS; index++) {
         G01_CHECK(g01_pool_allocate(&pool, &handles[index]));
-        uint32_t *value = g01_pool_value(&pool, handles[index]);
-        G01_CHECK(value != NULL);
-        *value = (uint32_t)(index + 1U);
+        G01_CHECK(g01_pool_set(&pool, handles[index], (uint32_t)(index + 1U)));
+        uint32_t value = 0U;
+        G01_CHECK(g01_pool_get(&pool, handles[index], &value));
+        G01_CHECK(value == (uint32_t)(index + 1U));
     }
     G01PoolHandle exhausted = {0};
     G01_CHECK(!g01_pool_allocate(&pool, &exhausted));
     const G01PoolHandle stale = handles[0];
     G01_CHECK(g01_pool_release(&pool, handles[0]));
     G01_CHECK(!g01_pool_release(&pool, stale));
+    G01_CHECK(!g01_pool_set(&pool, stale, 99U));
+    uint32_t stale_value = 0xA55AA55AU;
+    G01_CHECK(!g01_pool_get(&pool, stale, &stale_value));
+    G01_CHECK(stale_value == 0xA55AA55AU);
     G01_CHECK(g01_pool_allocate(&pool, &handles[0]));
     G01_CHECK(handles[0].generation != stale.generation);
     G01_CHECK(!g01_pool_release(&pool, stale));
     const G01PoolHandle foreign = {.index = 99U, .generation = 1U};
     G01_CHECK(!g01_pool_release(&pool, foreign));
+    pool.rejected_releases = UINT32_MAX;
+    G01_CHECK(!g01_pool_release(&pool, foreign));
+    G01_CHECK(pool.rejected_releases == UINT32_MAX);
+    return 0;
+}
+
+static int check_generation_exhaustion(void) {
+    G01Pool pool;
+    g01_pool_init(&pool);
+    pool.generations[0] = UINT32_MAX;
+    G01PoolHandle final_handle = {0};
+    G01_CHECK(g01_pool_allocate(&pool, &final_handle));
+    G01_CHECK(final_handle.index == 0U);
+    G01_CHECK(final_handle.generation == UINT32_MAX);
+    G01_CHECK(g01_pool_release(&pool, final_handle));
+    G01_CHECK(pool.retired[0]);
+    G01_CHECK(!g01_pool_set(&pool, final_handle, 1U));
+    for (size_t index = 1U; index < G01_POOL_SLOTS; index++) {
+        G01PoolHandle handle = {0};
+        G01_CHECK(g01_pool_allocate(&pool, &handle));
+        G01_CHECK(handle.index != 0U);
+    }
+    G01PoolHandle exhausted = {0};
+    G01_CHECK(!g01_pool_allocate(&pool, &exhausted));
     return 0;
 }
 
 int main(void) {
-    G01_CHECK(check_queue(G01_REJECT_NEW) == 0);
-    G01_CHECK(check_queue(G01_OVERWRITE_OLDEST) == 0);
+    static const size_t capacities[] = {1U, 2U, 3U, 4U, 8U};
+    for (size_t index = 0U; index < sizeof(capacities) / sizeof(capacities[0]); index++) {
+        G01_CHECK(check_queue(G01_REJECT_NEW, capacities[index]) == 0);
+        G01_CHECK(check_queue(G01_OVERWRITE_OLDEST, capacities[index]) == 0);
+    }
     G01_CHECK(check_pool() == 0);
+    G01_CHECK(check_generation_exhaustion() == 0);
     return 0;
 }

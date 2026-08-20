@@ -1,13 +1,17 @@
 #include "g01_lab.h"
 
-uint16_t g01_read_le16(const uint8_t *bytes) {
+bool g01_read_le16(const uint8_t *bytes, size_t length, uint16_t *output) {
     (void)bytes;
-    return 0U;
+    (void)length;
+    (void)output;
+    return false;
 }
 
-uint16_t g01_read_native16(const uint8_t *bytes) {
+bool g01_read_native16(const uint8_t *bytes, size_t length, uint16_t *output) {
     (void)bytes;
-    return 0U;
+    (void)length;
+    (void)output;
+    return false;
 }
 
 bool g01_decode_signals(const uint8_t *payload, size_t length, G01Signals *output) {

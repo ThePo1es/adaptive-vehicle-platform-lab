@@ -149,6 +149,11 @@ required_files=(
     fixtures/g01/sprint-1.3-v1.h
     fixtures/g01/sprint-1.4-v1.h
     fixtures/g01/sprint-1.5-v1.h
+    fixtures/g01/retest-1.1-v1.h
+    fixtures/g01/retest-1.2-v1.h
+    fixtures/g01/retest-1.3-v1.h
+    fixtures/g01/retest-1.4-v1.h
+    fixtures/g01/retest-1.5-v1.h
     fixtures/g05/task-set-v1.yml
     fixtures/g06/can-fd-dlc-v1.csv
     fixtures/g06/can-rta-three-message-v1.json
@@ -172,6 +177,8 @@ required_files=(
     labs/g10_1_release_map/starter/release-map.json
     labs/g10_1_release_map/tests/test_release_map.py
     labs/g01_safe_c/README.md
+    labs/__init__.py
+    labs/g01_safe_c/__init__.py
     labs/g01_safe_c/include/g01_lab.h
     labs/g01_safe_c/reference/codec.c
     labs/g01_safe_c/reference/storage.c
@@ -182,7 +189,11 @@ required_files=(
     labs/g01_safe_c/starter/parser.c
     labs/g01_safe_c/starter/driver.c
     labs/g01_safe_c/tests/test_run_harness.py
+    labs/g01_safe_c/harness_toolchain.py
     labs/g01_safe_c/run_harness.py
+    portfolio/g01-safe-c-components-v1/CMakeLists.txt
+    portfolio/g01-safe-c-components-v1/README.md
+    portfolio/g01-safe-c-components-v1/demo.c
     sources/autosar-r25-11/README.md
     evidence/runnable/g10.1/README.md
     evidence/runnable/g10.1/harness.stdout
@@ -276,11 +287,12 @@ for file in "${documented_lab_files[@]}"; do
 done
 
 bash -n scripts/new-study-log.sh scripts/check_repo.sh
-"$python_cmd" -c 'import ast, pathlib; [ast.parse(pathlib.Path(path).read_text(encoding="utf-8")) for path in ("scripts/check_internal_links.py", "scripts/check_traceability.py", "scripts/check_fixture_semantics.py", "scripts/check_runnable_evidence.py", "scripts/runnable_evidence_support.py", "scripts/runnable_evidence_validator.py", "scripts/tests/test_check_runnable_evidence.py", "labs/g01_safe_c/run_harness.py", "labs/g01_safe_c/tests/test_run_harness.py", "labs/g10_1_release_map/validator.py", "labs/g10_1_release_map/run_harness.py", "labs/g10_1_release_map/tests/test_release_map.py")]'
+"$python_cmd" -c 'import ast, pathlib; [ast.parse(pathlib.Path(path).read_text(encoding="utf-8")) for path in ("scripts/check_internal_links.py", "scripts/check_traceability.py", "scripts/check_fixture_semantics.py", "scripts/check_runnable_evidence.py", "scripts/runnable_evidence_support.py", "scripts/runnable_evidence_validator.py", "scripts/tests/test_check_runnable_evidence.py", "labs/g01_safe_c/harness_toolchain.py", "labs/g01_safe_c/run_harness.py", "labs/g01_safe_c/tests/test_run_harness.py", "labs/g10_1_release_map/validator.py", "labs/g10_1_release_map/run_harness.py", "labs/g10_1_release_map/tests/test_release_map.py")]'
 "$python_cmd" scripts/check_internal_links.py
 "$python_cmd" scripts/check_traceability.py
 "$python_cmd" scripts/check_fixture_semantics.py
-"$python_cmd" labs/g01_safe_c/run_harness.py
+"$python_cmd" -m labs.g01_safe_c.run_harness
+G01_LAB_ID=G1.RETEST "$python_cmd" -m labs.g01_safe_c.run_harness
 "$python_cmd" labs/g10_1_release_map/run_harness.py
 unit_output=$("$python_cmd" -m unittest discover -s labs/g10_1_release_map/tests -p 'test_*.py' 2>&1)
 if ! grep -Fq 'Ran 14 tests' <<<"$unit_output" || ! grep -Fxq 'OK' <<<"$unit_output"; then

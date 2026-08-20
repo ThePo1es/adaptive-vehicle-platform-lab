@@ -4,51 +4,51 @@
 
 ## 동결 절차
 
-평가자는 응시 전에 다음 값을 private manifest에 고정하고 SHA-256만 mastery review에 기록합니다.
+평가자는 응시 전에 다음 값을 비공개 평가 명세에 고정하고 SHA-256만 숙련도 검토 기록에 남깁니다.
 
 - 평가 대상 전체 commit SHA
-- compiler·version·flags·host와 Cortex-M target
+- 컴파일러·버전·옵션·호스트와 Cortex-M 대상
 - 세 과제 ID, 입력 schema version, seed, 예상 관찰값
 - 제한 시간, 허용 문서, 인터넷·AI 사용 범위
-- 독립 oracle commit과 fixture hash
-- 필수 mutant와 치명적 실패 목록
+- 독립 판정기 커밋과 입력 해시
+- 필수 결함 주입과 치명적 실패 목록
 - 평가자, 이해관계, 동결 시각과 timezone
 
-공개 입력과 같은 값·seed·register 순서를 재사용하지 않습니다. 시험 뒤 문제나 oracle 결함이 발견되면 원본 결과를 `Invalid assessment`로 보존하고 새 manifest로 다시 시험합니다.
+공개 입력과 같은 값·난수 씨앗·레지스터 순서를 재사용하지 않습니다. 시험 뒤 문제나 판정기 결함이 발견되면 원본 결과를 `Invalid assessment`로 보존하고 새 평가 명세로 다시 시험합니다.
 
 ## 과제 A: 직렬화와 파서, 60분
 
-새로운 12비트 signed/unsigned 배치와 최대 payload 12인 frame 형식을 제공합니다. 응시자는 byte order·bit numbering·CRC 범위·consumed 규칙을 먼저 표로 고정한 뒤 codec 또는 parser를 구현하거나 결함을 고칩니다.
+새로운 12비트 부호 있음/없음 배치와 최대 데이터 길이 12인 프레임 형식을 제공합니다. 응시자는 바이트 순서·비트 번호·CRC 범위·소비 길이 규칙을 먼저 표로 고정한 뒤 직렬화기 또는 파서를 구현하거나 결함을 고칩니다.
 
 통과 조건:
 
 - signed 경계와 byte 경계 벡터 오차 0
-- 모든 truncation에서 범위 밖 접근과 application output 변경 0
+- 모든 잘림에서 범위 밖 접근과 응용 출력 변경 0
 - 거부 뒤 정상 frame 복구
-- length 선검사, CRC 범위, consumed off-by-one, 오류 뒤 write mutant 생존 0
+- 길이 선검사, CRC 범위, 소비 길이 한 칸 오류, 오류 뒤 쓰기 결함 주입 생존 0
 
 ## 과제 B: 제한된 저장소, 60분
 
-공개 실습과 다른 논리 용량, 가득 참 정책, 연산 seed를 제공합니다. Queue 또는 pool의 불변 조건을 먼저 쓰고 구현·수리합니다.
+공개 실습과 다른 논리 용량, 가득 참 정책, 연산 난수 씨앗을 제공합니다. 큐 또는 풀의 불변 조건을 먼저 쓰고 구현·수리합니다.
 
 통과 조건:
 
-- 독립 reference model과 모든 결과·counter 일치
-- full·empty·stale generation·double free 뒤 상태 일치
+- 독립 기준 모델과 모든 결과·진단 계수 일치
+- 가득 참·비어 있음·오래된 세대값·이중 해제 뒤 상태 일치
 - 용량 0 compile-fail 계약 유지
 - raw foreign pointer 관계 비교, 범위 밖 접근, 동적 할당 없음
 
 ## 과제 C: MMIO·ISR 경계, 60분
 
-접근 등급과 부작용이 다른 register sequence 하나와 target assembly 일부를 제공합니다. 응시자는 잘못된 W1C update, timeout wrap 또는 publish/consume 순서 결함을 진단하고 고칩니다.
+접근 등급과 부작용이 다른 레지스터 사건 순서 하나와 대상 어셈블리 일부를 제공합니다. 응시자는 잘못된 W1C 갱신, 시간 계수 되감기 또는 공개/읽기 순서 결함을 진단하고 고칩니다.
 
 통과 조건:
 
 - register 접근 순서·폭·값이 독립 event oracle과 일치
 - ISR에 parser, allocation, unbounded wait 없음
-- producer payload write와 release publish, acquire consume 순서 설명
+- 생산자의 데이터 쓰기와 release 공개, acquire 읽기 순서 설명
 - host, single-core ISR, C thread, multi-core, DMA 주장을 정확히 제한
-- target atomic이 lock-free가 아니라면 ISR 사용을 거부하거나 다른 동기화 설계를 제시
+- 대상 환경의 원자 연산이 lock-free가 아니라면 ISR 사용을 거부하거나 다른 동기화 설계를 제시
 
 ## 채점
 
@@ -66,9 +66,9 @@
 - sanitizer finding, data race 또는 다른 undefined behavior
 - 거부된 입력이나 실패 operation 뒤 출력·상태 변경
 - 외부 객체 pointer의 관계 비교·뺄셈을 소유권 판정에 사용
-- `memcpy`가 wire endian도 해결한다고 주장
+- `memcpy`가 통신 바이트 순서도 해결한다고 주장
 - W1C register에 read-modify-write 사용
 - `volatile`을 원자성·happens-before·Device ordering 근거로 사용
 - host 가짜 장치 결과를 Cortex-M, multi-core 또는 DMA 검증으로 표시
 
-평가 통과는 G1의 전이 능력을 뜻합니다. 실제 target 측정과 외부 검토가 없으면 전체 챕터 상태는 `Provisional`을 넘지 않습니다.
+평가 통과는 G1의 전이 능력을 뜻합니다. 실제 대상 측정과 외부 검토가 없으면 전체 챕터 상태는 `Provisional`을 넘지 않습니다.

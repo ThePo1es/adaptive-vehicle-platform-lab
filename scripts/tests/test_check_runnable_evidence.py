@@ -2,8 +2,16 @@ from __future__ import annotations
 
 import pytest
 
-from scripts.runnable_evidence_support import REQUIRED_ROLES, canonical_output, required_roles
-from scripts.runnable_evidence_validator import verify_command_shape
+from scripts.runnable_evidence_support import (
+    REQUIRED_ROLES,
+    canonical_output,
+    required_roles,
+)
+from scripts.runnable_evidence_validator import (
+    PINNED_G1_ARGV_PREFIX,
+    PINNED_G1_MODULE,
+    verify_command_shape,
+)
 
 
 def test_inactive_manifest_requires_only_base_artifacts() -> None:
@@ -35,6 +43,20 @@ def test_command_shape_requires_hashed_python_runner() -> None:
     artifacts = {"runner": {"path": "labs/example/run_harness.py"}}
     assert verify_command_shape(command, artifacts) == (
         ["python3", "labs/example/run_harness.py"],
+        {"LAB_ID": "G1.1"},
+    )
+
+
+def test_schema_three_command_pins_uv_python_and_zig() -> None:
+    command = {
+        "argv": [*PINNED_G1_ARGV_PREFIX, PINNED_G1_MODULE],
+        "environment": {"LAB_ID": "G1.1"},
+        "expected_exit": 0,
+        "observed_exit": 0,
+    }
+    artifacts = {"runner": {"path": "labs/g01_safe_c/run_harness.py"}}
+    assert verify_command_shape(command, artifacts, 3) == (
+        [*PINNED_G1_ARGV_PREFIX, PINNED_G1_MODULE],
         {"LAB_ID": "G1.1"},
     )
 

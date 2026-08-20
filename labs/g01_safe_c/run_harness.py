@@ -8,12 +8,14 @@
 from __future__ import annotations
 
 import os
-import shutil
+import platform
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 from typing import Final, NamedTuple
+
+from .harness_toolchain import ToolchainError, compiler_prefix, resolve_compiler
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[2]
 LAB_ROOT: Final = REPO_ROOT / "labs/g01_safe_c"
@@ -53,6 +55,8 @@ class CompileRequest(NamedTuple):
     source_root: Path
     output: Path
     mutant: int
+    optimization: int
+    retest: bool
 
 
 class SprintRun(NamedTuple):
@@ -60,14 +64,15 @@ class SprintRun(NamedTuple):
     sprint: SprintSpec
     source_root: Path
     reference: bool
+    retest: bool
 
 
 SPRINTS: Final = (
     SprintSpec("G1.1", ("codec.c",), "test_codec.c", (1, 2, 3, 4)),
     SprintSpec("G1.2", ("codec.c",), "test_representation.c", (20,)),
     SprintSpec("G1.3", ("storage.c",), "test_storage.c", (30, 31), "invalid_zero_capacity.c"),
-    SprintSpec("G1.4", ("parser.c",), "test_parser.c", (40, 41, 42, 43)),
-    SprintSpec("G1.5", ("storage.c", "driver.c"), "test_driver.c", (50, 51, 52)),
+    SprintSpec("G1.4", ("parser.c",), "test_parser.c", (40, 41, 42, 43, 44)),
+    SprintSpec("G1.5", ("storage.c", "driver.c"), "test_driver.c", (50, 51, 52, 53)),
 )
 
 
@@ -89,28 +94,12 @@ def resolve_source_root(candidate: Path) -> Path:
     return resolved
 
 
-def resolve_compiler() -> Path:
-    configured = os.environ.get("CC")
-    discovered = shutil.which("clang")
-    candidates = tuple(
-        path
-        for path in (
-            Path(configured) if configured else None,
-            Path(discovered) if discovered else None,
-            Path("C:/Program Files/LLVM/bin/clang.exe"),
-        )
-        if path is not None
-    )
-    for candidate in candidates:
-        if candidate.is_file():
-            return candidate.resolve()
-    raise HarnessInputError("Clang 18 or newer was not found; set CC to the compiler path")
-
-
-def compiler_prefix(compiler: Path) -> tuple[str, ...]:
-    if compiler.name.lower() == "zig.exe":
-        return (str(compiler), "cc")
-    return (str(compiler),)
+def parse_selection(lab_id: str) -> tuple[tuple[SprintSpec, ...], bool]:
+    retest = lab_id.endswith(".RETEST")
+    base = lab_id.removesuffix(".RETEST") if retest else lab_id
+    if base == "G1":
+        base = "G1.ALL"
+    return select_sprints(base), retest
 
 
 def compile_binary(request: CompileRequest) -> None:
@@ -121,7 +110,7 @@ def compile_binary(request: CompileRequest) -> None:
     command = (
         *compiler_prefix(request.compiler),
         "-std=c17",
-        "-O1",
+        f"-O{request.optimization}",
         "-g",
         "-Wall",
         "-Wextra",
@@ -133,6 +122,8 @@ def compile_binary(request: CompileRequest) -> None:
         "-fsanitize=address,undefined",
         "-fno-omit-frame-pointer",
         f"-DG01_MUTANT={request.mutant}",
+        "-DG01_TESTING=1",
+        f"-DG01_RETEST={int(request.retest)}",
         f"-I{INCLUDE_ROOT}",
         f"-I{FIXTURE_ROOT}",
         f"-I{TEST_ROOT}",
@@ -190,16 +181,30 @@ def run_sprint(request: SprintRun) -> None:
     with tempfile.TemporaryDirectory(prefix=f"{request.sprint.lab_id.lower()}-") as temporary:
         build_root = Path(temporary)
         output = build_root / "g01-test"
-        compile_binary(
-            CompileRequest(request.compiler, request.sprint, request.source_root, output, 0)
-        )
-        result = run_binary(output)
-        if result.returncode != 0:
-            raise HarnessExecutionError(
-                f"test failed for {request.sprint.lab_id}\n{result.stdout}{result.stderr}"
+        for optimization in (0, 2):
+            compile_binary(
+                CompileRequest(
+                    request.compiler,
+                    request.sprint,
+                    request.source_root,
+                    output,
+                    0,
+                    optimization,
+                    request.retest,
+                )
             )
-        print(f"PASS lab={request.sprint.lab_id} public-cases")
-        if request.reference:
+            result = run_binary(output)
+            if result.returncode != 0:
+                raise HarnessExecutionError(
+                    f"test failed for {request.sprint.lab_id} optimization={optimization}\n"
+                    f"{result.stdout}{result.stderr}"
+                )
+            case_set = "B" if request.retest else "A"
+            print(
+                f"PASS lab={request.sprint.lab_id} cases={case_set} "
+                f"optimization={optimization} public-cases"
+            )
+        if request.reference and not request.retest:
             for mutant in request.sprint.mutants:
                 compile_binary(
                     CompileRequest(
@@ -208,6 +213,8 @@ def run_sprint(request: SprintRun) -> None:
                         request.source_root,
                         output,
                         mutant,
+                        2,
+                        False,
                     )
                 )
                 mutant_result = run_binary(output)
@@ -224,10 +231,17 @@ def main() -> int:
         lab_id = os.environ.get("G01_LAB_ID", "G1.ALL")
         submission = os.environ.get("G01_SUBMISSION_ROOT")
         source_root = resolve_source_root(Path(submission) if submission else REFERENCE_ROOT)
-        compiler = resolve_compiler()
-        for sprint in select_sprints(lab_id):
-            run_sprint(SprintRun(compiler, sprint, source_root, source_root == REFERENCE_ROOT))
-    except (HarnessInputError, HarnessExecutionError, OSError) as error:
+        compiler, identity = resolve_compiler()
+        sprints, retest = parse_selection(lab_id)
+        print(
+            f"TOOLCHAIN python={platform.python_version()} compiler={identity.kind} "
+            f"version={identity.version} target={identity.target}"
+        )
+        for sprint in sprints:
+            run_sprint(
+                SprintRun(compiler, sprint, source_root, source_root == REFERENCE_ROOT, retest)
+            )
+    except (HarnessInputError, HarnessExecutionError, ToolchainError, OSError) as error:
         print(f"G1 harness: FAIL: {error}", file=sys.stderr)
         return 1
     print("G1 harness: PASS")

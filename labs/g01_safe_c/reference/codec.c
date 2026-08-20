@@ -2,20 +2,29 @@
 
 #include <string.h>
 
-uint16_t g01_read_le16(const uint8_t *bytes) {
+bool g01_read_le16(const uint8_t *bytes, size_t length, uint16_t *output) {
+    if ((bytes == NULL) || (output == NULL) || (length < 2U)) {
+        return false;
+    }
     const uint16_t low = bytes[0];
     const uint16_t high = bytes[1];
 #if G01_MUTANT == 20
-    return (uint16_t)((low << 8U) | high);
+    const uint16_t value = (uint16_t)((low << 8U) | high);
 #else
-    return (uint16_t)(low | (uint16_t)(high << 8U));
+    const uint16_t value = (uint16_t)(low | (uint16_t)(high << 8U));
 #endif
+    *output = value;
+    return true;
 }
 
-uint16_t g01_read_native16(const uint8_t *bytes) {
+bool g01_read_native16(const uint8_t *bytes, size_t length, uint16_t *output) {
+    if ((bytes == NULL) || (output == NULL) || (length < sizeof(*output))) {
+        return false;
+    }
     uint16_t value = 0U;
     (void)memcpy(&value, bytes, sizeof(value));
-    return value;
+    *output = value;
+    return true;
 }
 
 bool g01_decode_signals(const uint8_t *payload, size_t length, G01Signals *output) {
@@ -31,7 +40,12 @@ bool g01_decode_signals(const uint8_t *payload, size_t length, G01Signals *outpu
         (payload[6] != 0U) || (payload[7] != 0U)) {
         return false;
     }
-    const uint16_t raw_temperature = g01_read_le16(&payload[2]);
+    uint16_t raw_speed = 0U;
+    uint16_t raw_temperature = 0U;
+    if (!g01_read_le16(payload, length, &raw_speed) ||
+        !g01_read_le16(&payload[2], length - 2U, &raw_temperature)) {
+        return false;
+    }
     const int32_t temperature = (raw_temperature >= 0x8000U)
 #if G01_MUTANT == 3
         ? (int32_t)raw_temperature - 0xFFFF
@@ -43,7 +57,7 @@ bool g01_decode_signals(const uint8_t *payload, size_t length, G01Signals *outpu
         return false;
     }
     G01Signals decoded = {
-        .speed_centi_kmh = g01_read_le16(payload),
+        .speed_centi_kmh = raw_speed,
         .temperature_deci_c = temperature,
         .rolling_counter = (uint8_t)(payload[4] & 0x0FU),
     };

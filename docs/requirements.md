@@ -13,11 +13,11 @@
 
 | ID | Applies to | Requirement | Verification | Status |
 | --- | --- | --- | --- | --- |
-| REQ-C-SER-001 | G1 host library | The wire codec shall decode and encode the versioned 8-bit-octet layout without signed shift, out-of-range signed conversion or output modification after a rejected input. | Golden/boundary vectors + sanitizer + required mutants | Baselined |
-| REQ-C-MEM-001 | G1 host/MCU analysis | Each binary access shall classify its alignment, effective-type, lifetime and endian assumptions; host results shall not be presented as proof of target portability. | Classification fixture + compiler/target assembly review | Baselined |
-| REQ-C-STOR-001 | G1 bounded storage | Queue and pool operations shall preserve their versioned invariants after full, empty, stale-handle and rejected operations without dynamic allocation or foreign-pointer relational comparison. | Reference-model operation traces + sanitizer | Baselined |
-| REQ-C-PARSE-001 | G1 parser | The framed parser shall enforce the versioned length, CRC, consumed-byte and resynchronization contract and shall leave application output unchanged on need-more or rejection. | Differential parser + deterministic corpus + required mutants | Baselined |
-| REQ-C-ISR-001 | G1 host/MCU boundary | The driver boundary shall separate register access, single-core ISR/task publication, C-thread synchronization, multi-core ordering and DMA visibility, and shall use bounded interrupt work with a versioned full policy. | Host event oracle + target lock-free/assembly review | Baselined |
+| REQ-C-SER-001 | G1 host library | The wire codec shall decode and encode the versioned 8-bit-octet layout without signed shift, out-of-range signed conversion or output modification after a rejected input. | Boundary vectors + property round trip + sanitizer + required mutants | Implemented |
+| REQ-C-MEM-001 | G1 host/MCU analysis | Each binary access shall accept an explicit length, preserve output on a short input, and classify its alignment, effective-type, lifetime and endian assumptions; host results shall not be presented as proof of target portability. | Length 0–8 and offset 0–7 matrix at `-O0/-O2` + target assembly review | Implemented |
+| REQ-C-STOR-001 | G1 bounded storage | Queue operations at capacities 1–8 and 32-slot pool operations shall preserve their versioned data and ownership invariants after full, empty, stale-handle, generation-exhaustion and rejected operations; diagnostic counters shall saturate. | Reference-model operation traces + generation-retirement test + sanitizer | Implemented |
+| REQ-C-PARSE-001 | G1 parser | The framed parser shall enforce the versioned length, CRC, consumed-byte and resynchronization contract, including reuse of a rejected magic byte, and shall leave application output unchanged on need-more or rejection. | Every maximum-frame prefix + deterministic corpus + required mutants | Implemented |
+| REQ-C-ISR-001 | G1 host/MCU boundary | The driver boundary shall log 32-bit register access, separate single-core ISR/task publication from C-thread, multi-core and DMA claims, and shall use bounded interrupt work with a saturating full counter. | Host event oracle + isolated release/acquire mutants + target lock-free/assembly review | Implemented |
 
 ## MCU platform
 

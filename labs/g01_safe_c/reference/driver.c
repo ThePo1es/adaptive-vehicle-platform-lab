@@ -11,6 +11,7 @@ static void g01_log(
             .direction = direction,
             .offset = offset,
             .value = value,
+            .width_bits = 32U,
         };
         mmio->log_count++;
     }

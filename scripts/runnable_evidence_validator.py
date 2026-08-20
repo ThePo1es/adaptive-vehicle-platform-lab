@@ -60,17 +60,39 @@ def verify_artifacts(
     return by_role
 
 
+PINNED_G1_ARGV_PREFIX = [
+    "uv",
+    "run",
+    "--offline",
+    "--python",
+    "3.12.13",
+    "--with",
+    "ziglang==0.15.2",
+    "python",
+    "-m",
+]
+PINNED_G1_MODULE = "labs.g01_safe_c.run_harness"
+
+
 def verify_command_shape(
     command: dict[str, Any],
     artifacts: dict[str, dict[str, str]],
+    schema_version: int = 2,
 ) -> tuple[list[str], dict[str, str]]:
     argv_value = command.get("argv")
     runner = artifacts["runner"]["path"]
     if not isinstance(argv_value, list) or not all(isinstance(item, str) for item in argv_value):
         fail("Runnable command argv must be a string list")
     argv = [item for item in argv_value if isinstance(item, str)]
-    if argv != ["python3", runner]:
-        fail("Runnable command must invoke the hashed runner artifact with python3")
+    if schema_version == 3 and runner != "labs/g01_safe_c/run_harness.py":
+        fail("schema 3 runner artifact path is not the G1 module")
+    expected = (
+        ["python3", runner]
+        if schema_version == 2
+        else [*PINNED_G1_ARGV_PREFIX, PINNED_G1_MODULE]
+    )
+    if argv != expected:
+        fail(f"Runnable command does not match schema {schema_version}'s pinned runner command")
     environment_value = command.get("environment")
     if not isinstance(environment_value, dict) or not all(
         isinstance(key, str) and isinstance(value, str) for key, value in environment_value.items()
@@ -90,8 +112,14 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
     expected = manifest.get("environment", {}).get("python")
     if not isinstance(expected, str):
         fail("manifest environment needs an exact Python version")
+    schema_version = manifest["schema_version"]
+    version_command = (
+        [sys.executable, "--version"]
+        if schema_version == 2
+        else [*PINNED_G1_ARGV_PREFIX[:-1], "--version"]
+    )
     version = subprocess.run(
-        [sys.executable, "--version"],
+        version_command,
         cwd=snapshot,
         check=False,
         capture_output=True,
@@ -100,6 +128,28 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
     observed = version.stdout.strip().removeprefix("Python ")
     if version.returncode != 0 or observed != expected:
         fail(f"Python version mismatch: expected {expected}, got {observed}")
+    if schema_version == 3:
+        environment = manifest.get("environment")
+        required = {
+            "uv": "0.12.3",
+            "c_compiler": "zig",
+            "c_compiler_version": "0.15.2",
+            "c_runtime": "Zig 0.15.2 bundled libc",
+            "target_contract": "native x86_64 hosted C17",
+        }
+        if not isinstance(environment, dict) or any(
+            environment.get(key) != value for key, value in required.items()
+        ):
+            fail("schema 3 environment does not seal the G1 toolchain contract")
+        uv_version = subprocess.run(
+            ["uv", "--version"],
+            cwd=snapshot,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        if uv_version.returncode != 0 or uv_version.stdout.strip() != "uv 0.12.3":
+            fail(f"uv version mismatch: {uv_version.stdout.strip()}")
 
 
 def verify_output(
@@ -176,8 +226,11 @@ def verify_repository_check(manifest: dict[str, Any], snapshot: Path) -> None:
 
 def verify_manifest(path: Path, active: bool, indexed_lab_id: str | None = None) -> str:
     manifest = json.loads(path.read_text(encoding="utf-8"))
-    if manifest.get("schema_version") != 2 or manifest.get("status") != "Runnable":
+    schema_version = manifest.get("schema_version")
+    if schema_version not in {2, 3} or manifest.get("status") != "Runnable":
         fail(f"invalid manifest header: {path.relative_to(REPO_ROOT)}")
+    if active and str(manifest.get("lab_id", "")).startswith("G1.") and schema_version != 3:
+        fail("active G1 evidence must use the hermetic schema 3 toolchain contract")
     if active and manifest.get("lab_id") != indexed_lab_id:
         fail(f"active index lab ID {indexed_lab_id} does not match manifest lab ID {manifest.get('lab_id')}")
     starter = manifest.get("starter_commit")
@@ -202,7 +255,7 @@ def verify_manifest(path: Path, active: bool, indexed_lab_id: str | None = None)
     command = manifest.get("command")
     if not isinstance(command, dict):
         fail("command must be an object")
-    argv, command_environment = verify_command_shape(command, artifacts)
+    argv, command_environment = verify_command_shape(command, artifacts, schema_version)
     stdout_path = repository_path(command.get("stdout_path"))
     recorded_stdout = stdout_path.read_bytes()
     if digest(recorded_stdout) != command.get("stdout_sha256"):

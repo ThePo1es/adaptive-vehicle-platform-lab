@@ -16,17 +16,26 @@
               └─ 레지스터·인터럽트 경계 드라이버
 ```
 
-최종 공개물에는 소스, 고정된 공개 입력, 자동 검사 결과, 실패 사례, 적용 범위, 재현 명령을 넣습니다. ISO-TP와 UDS의 프로토콜 의미는 G6에서 다룹니다.
+최종 공개물에는 소스, 고정된 공개 입력 A·B, 자동 검사 결과, 실패 사례, 적용 범위, 재현 명령을 넣습니다. ISO-TP와 UDS의 프로토콜 의미는 G6에서 다룹니다.
 
 ## 시작 전 확인
 
-필수 도구는 Git, Python 3.12, Clang 18 이상과 표준 C 런타임 헤더입니다. Windows에 C SDK가 없다면 완전한 `zig cc` 도구 모음을 `CC`로 지정할 수 있습니다. GCC는 교차 확인에 사용하지만 첫 실행에는 필요하지 않습니다.
+필수 도구는 Git과 `uv` 0.12.3입니다. 첫 준비 명령이 Python 3.12.13, `ziglang` 0.15.2와 Zig에 포함된 C 표준 라이브러리를 사용자 캐시에 설치합니다. 시스템의 `python3` 별칭, Clang, Windows SDK는 사용하지 않습니다.
+
+```bash
+uv run --python 3.12.13 --with ziglang==0.15.2 \
+  python -c "import ziglang; print(ziglang.__file__)"
+```
 
 저장소 루트에서 진입 진단을 실행합니다.
 
 ```bash
-G01_LAB_ID=G1.ENTRY python3 labs/g01_safe_c/run_harness.py
+G01_LAB_ID=G1.ENTRY \
+uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
+  python -m labs.g01_safe_c.run_harness
 ```
+
+PowerShell에서는 먼저 `$env:G01_LAB_ID = "G1.ENTRY"`를 실행한 뒤 `uv run ...` 부분을 실행합니다. 검사기는 Zig 버전과 대상 삼중항을 출력하고, C 표준 헤더를 포함한 짧은 컴파일 확인에 실패한 도구는 거부합니다.
 
 공개 진입 진단은 도구와 입력 계약을 확인할 뿐, 합격을 대신하지 않습니다. 60–90분 동안 [진입 진단 과제](../../docs/gate-entry-diagnostics.md)를 직접 푼 뒤 같은 검사기를 자신의 소스에 연결합니다. 필수 조건을 놓쳤다면 [B-C 보강 모듈](../../docs/gate-entry-diagnostics.md#b-c--바이트와-c-실행-모델-8시간)을 먼저 수행합니다.
 
@@ -40,10 +49,19 @@ cp labs/g01_safe_c/starter/*.c study/g01/src/
 
 G01_SUBMISSION_ROOT=study/g01/src \
 G01_LAB_ID=G1.1 \
-python3 labs/g01_safe_c/run_harness.py
+uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
+  python -m labs.g01_safe_c.run_harness
 ```
 
-검사기는 선택한 실습의 공개 입력과 독립 기준 구현을 사용합니다. 코드가 없는 함수, 컴파일 오류, 잘못된 값, 오류 뒤 상태 변경을 서로 다른 실패로 보여 줍니다. 공개 검사를 통과해도 봉인된 종합 평가와 실제 Cortex-M 검증은 별도로 남습니다.
+검사기는 학습자 소스와 독립적으로 계산한 공개 판정값을 연결합니다. 정답 구현은 학습자 실행 파일에 연결하지 않습니다. 코드가 없는 함수, 컴파일 오류, 잘못된 값, 오류 뒤 상태 변경을 서로 다른 실패로 보여 줍니다. 정답 구현에 심은 단일 결함을 공개 판정기가 모두 잡는지도 별도로 확인합니다. 공개 검사를 통과해도 봉인된 종합 평가와 실제 Cortex-M 검증은 별도로 남습니다.
+
+공개 입력 A를 통과한 뒤 두 번째 입력 B를 같은 최적화 조합으로 실행합니다.
+
+```bash
+G01_LAB_ID=G1.RETEST \
+uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
+  python -m labs.g01_safe_c.run_harness
+```
 
 ## 실습 순서
 
@@ -51,7 +69,7 @@ python3 labs/g01_safe_c/run_harness.py
 | --- | --- | ---: | --- |
 | [1-1 정수와 바이트를 안전하게 변환하기](sprint-1.1.md) | 8바이트 차량 신호 디코더·인코더 | 18–24시간 | [v1](../../evidence/runnable/g1.1/run-manifest-v1.json) |
 | [1-2 메모리 배치와 정렬 오류 이해하기](sprint-1.2.md) | 정렬·별칭·endianness 비교 실험 | 18–22시간 | [v1](../../evidence/runnable/g1.2/run-manifest-v1.json) |
-| [1-3 고정 용량 큐와 메모리 풀 만들기](sprint-1.3.md) | 가득 참 정책이 명확한 큐와 세대 번호 handle 풀 | 26–34시간 | [v1](../../evidence/runnable/g1.3/run-manifest-v1.json) |
+| [1-3 고정 용량 큐와 메모리 풀 만들기](sprint-1.3.md) | 가득 참 정책이 명확한 큐와 세대 번호 핸들 풀 | 26–34시간 | [v1](../../evidence/runnable/g1.3/run-manifest-v1.json) |
 | [1-4 깨진 입력에도 안전한 파서 만들기](sprint-1.4.md) | 전체 버퍼·바이트 단위 프레임 파서 | 32–44시간 | [v1](../../evidence/runnable/g1.4/run-manifest-v1.json) |
 | [1-5 레지스터·인터럽트·동시성 경계 다루기](sprint-1.5.md) | 가짜 레지스터와 ISR→task 전달 경로 | 30–42시간 | [v1](../../evidence/runnable/g1.5/run-manifest-v1.json) |
 
@@ -63,7 +81,7 @@ python3 labs/g01_safe_c/run_harness.py
 2. 컴파일러 이름·버전·옵션과 대상 환경
 3. 처음 실패한 검사와 원인
 4. 정상·경계·오류 입력의 원본 출력
-5. 오류 뒤 출력과 상태가 그대로였다는 근거
+5. 오류 뒤 데이터·소유권 상태가 그대로였고 진단 계수만 포화 증가했다는 근거
 6. 공개 검사에서 다루지 못한 위험
 7. 전이 과제 소요 시간과 재시험 날짜
 
@@ -74,18 +92,18 @@ python3 labs/g01_safe_c/run_harness.py
 - 바이트 조립과 signed 변환에서 막히면 실습 1-1의 16비트 원시값만 남기고 축소합니다.
 - 정렬·별칭 설명이 불확실하면 실습 1-2의 세 접근법 분류표를 다시 작성합니다.
 - 큐 상태가 꼬이면 논리 용량 3의 모든 짧은 연산열을 실행합니다.
-- 파서가 거부 뒤 회복하지 못하면 최대 payload 2인 상태 머신으로 줄입니다.
+- 파서가 거부 뒤 회복하지 못하면 최대 데이터 길이 2인 상태 머신으로 줄입니다.
 - `volatile` 하나로 동시성을 설명하고 있다면 실습 1-5의 네 실행 모델 표부터 다시 봅니다.
 
 같은 공개 입력을 외워 다시 통과한 결과는 재시험으로 인정하지 않습니다. 공개 입력 B 또는 평가자가 봉인한 입력을 사용하고 입력 해시를 결과에 남깁니다.
 
 ## GitHub 포트폴리오로 마무리하기
 
-다섯 실습을 통과하면 `release/g01-safe-c-v1` 브랜치에서 공개 후보를 만듭니다. PR에는 다음을 포함합니다.
+다섯 실습을 통과하면 [CMake 릴리스 작업 공간](../../portfolio/g01-safe-c-components-v1/README.md)으로 깨끗한 빌드·시험·설치·데모를 확인하고 `release/g01-safe-c-v1` 브랜치에서 공개 후보를 만듭니다. PR에는 다음을 포함합니다.
 
 - 깨끗한 checkout에서 실행하는 한 줄 명령
 - 다섯 실습의 통과 출력과 원본 입력 해시
-- sanitizer와 필수 mutant 결과
+- 메모리 오류 검사와 필수 결함 주입 결과
 - 지원하는 C·컴파일러·대상 범위와 지원하지 않는 범위
 - 5–10분 데모 또는 터미널 기록
 - 종합 평가 결과와 독립 검토자

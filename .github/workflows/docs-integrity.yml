@@ -12,17 +12,24 @@ permissions:
 jobs:
   docs-integrity:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 20
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up pinned Python
-        uses: actions/setup-python@v5
+      - name: Set up uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
-          python-version: 3.12.13
+          version: 0.12.3
+
+      - name: Provision the pinned replay toolchain
+        run: >-
+          uv run --python 3.12.13 --with ziglang==0.15.2
+          python -c "import ziglang; print(ziglang.__file__)"
 
       - name: Validate curriculum structure, links and traceability
-        run: bash scripts/check_repo.sh
+        run: >-
+          uv run --offline --python 3.12.13 --with ziglang==0.15.2
+          bash scripts/check_repo.sh
