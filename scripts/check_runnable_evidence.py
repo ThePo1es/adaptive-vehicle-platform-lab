@@ -46,7 +46,7 @@ def selected_manifest_paths(
     selected: list[Path] = []
     historical_index = 0
     for path in manifests:
-        relative = str(path.relative_to(REPO_ROOT))
+        relative = path.relative_to(REPO_ROOT).as_posix()
         if relative in active:
             if shard_index == 0:
                 selected.append(path)
@@ -66,7 +66,7 @@ def verify_manifests(
     verified: list[str] = []
     repository_checks: set[tuple[str, str, str]] = set()
     for path in selected_manifest_paths(manifests, active, shard_count, shard_index):
-        relative = str(path.relative_to(REPO_ROOT))
+        relative = path.relative_to(REPO_ROOT).as_posix()
         is_active = relative in active
         verified.append(
             verify_manifest(
@@ -92,7 +92,7 @@ def main() -> int:
             fail("no Runnable manifests found")
         shard_count, shard_index = replay_shard(os.environ)
         verified = verify_manifests(manifests, active, shard_count, shard_index)
-        discovered = {str(path.relative_to(REPO_ROOT)) for path in manifests}
+        discovered = {path.relative_to(REPO_ROOT).as_posix() for path in manifests}
         missing_active = set(active) - discovered
         if missing_active:
             fail(f"active manifests were not discovered: {', '.join(sorted(missing_active))}")

@@ -147,7 +147,7 @@ def active_manifest_paths() -> dict[str, str]:
         path = repository_path(value)
         if not path.is_file():
             fail(f"active Runnable manifest is missing: {value}")
-        relative = str(path.relative_to(REPO_ROOT))
+        relative = path.relative_to(REPO_ROOT).as_posix()
         if path.parent != EVIDENCE_ROOT / lab_id.lower():
             fail(f"active manifest path does not match {lab_id}: {value}")
         if relative in active:

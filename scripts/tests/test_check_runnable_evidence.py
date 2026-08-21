@@ -26,6 +26,7 @@ from scripts.runnable_evidence_replay import (
 from scripts.runnable_evidence_support import (
     REPO_ROOT,
     REQUIRED_ROLES,
+    active_manifest_paths,
     canonical_output,
     digest,
     required_roles,
@@ -43,12 +44,19 @@ def manifest_path(lab_id: str, version: int) -> Path:
     return REPO_ROOT / "evidence" / "runnable" / lab_id.lower() / f"run-manifest-v{version}.json"
 
 
+def test_active_manifest_index_uses_repository_posix_paths() -> None:
+    active = active_manifest_paths()
+
+    assert active
+    assert all("\\" not in path for path in active)
+
+
 def test_manifest_shards_cover_every_manifest_exactly_once() -> None:
     active_paths = [manifest_path("G1.1", version) for version in range(1, 3)]
     historical_paths = [manifest_path("G1.1", version) for version in range(3, 15)]
     manifests = sorted([*active_paths, *historical_paths])
     active = {
-        str(path.relative_to(REPO_ROOT)): f"G1.{index}"
+        path.relative_to(REPO_ROOT).as_posix(): f"G1.{index}"
         for index, path in enumerate(active_paths, start=1)
     }
     selected_by_shard = [
@@ -73,7 +81,7 @@ def test_manifest_shard_keeps_active_repository_state_serial(
     historical_paths = [manifest_path("G1.1", version) for version in range(3, 7)]
     manifests = sorted([*active_paths, *historical_paths])
     active = {
-        str(path.relative_to(REPO_ROOT)): f"G1.{index}"
+        path.relative_to(REPO_ROOT).as_posix(): f"G1.{index}"
         for index, path in enumerate(active_paths, start=1)
     }
     repository_state_ids: list[int] = []
@@ -103,9 +111,9 @@ def test_manifest_shard_keeps_active_repository_state_serial(
     assert results == [
         fake_verify(
             path,
-            str(path.relative_to(REPO_ROOT)) in active,
-            active.get(str(path.relative_to(REPO_ROOT))),
-            set() if str(path.relative_to(REPO_ROOT)) in active else None,
+            path.relative_to(REPO_ROOT).as_posix() in active,
+            active.get(path.relative_to(REPO_ROOT).as_posix()),
+            set() if path.relative_to(REPO_ROOT).as_posix() in active else None,
         )
         for path in selected_manifest_paths(manifests, active, 4, 0)
     ]
