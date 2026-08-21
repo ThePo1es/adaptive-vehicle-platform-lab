@@ -267,8 +267,14 @@ def test_runtime_probe_does_not_reuse_manifest_environment(
     ) -> subprocess.CompletedProcess[str]:
         _ = cwd
         observed.append(environment)
-        output = "Python 3.12.13\n" if label == "Python version probe" else "uv 0.12.3\n"
-        return subprocess.CompletedProcess(argv, 0, stdout=output, stderr="")
+        if label == "Python version probe":
+            return subprocess.CompletedProcess(
+                argv,
+                0,
+                stdout="",
+                stderr="Python 3.12.13\n",
+            )
+        return subprocess.CompletedProcess(argv, 0, stdout="uv 0.12.3\n", stderr="")
 
     monkeypatch.setenv("VIRTUAL_ENV", "C:/parent/toolchain/.venv")
     monkeypatch.setattr("scripts.runnable_evidence_replay.run_text_probe", probe)

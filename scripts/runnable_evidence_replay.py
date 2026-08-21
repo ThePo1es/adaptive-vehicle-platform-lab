@@ -164,7 +164,8 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
         environment=probe_environment,
         label="Python version probe",
     )
-    observed = version.stdout.strip().removeprefix("Python ")
+    version_text = version.stdout.strip() or version.stderr.strip()
+    observed = version_text.removeprefix("Python ")
     if version.returncode != 0 or observed != expected:
         fail(f"Python version mismatch: expected {expected}, got {observed}")
     if schema_version in {3, 5}:
