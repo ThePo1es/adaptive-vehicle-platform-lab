@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "active": {
-    "G1.1": "evidence/runnable/g1.1/run-manifest-v13.json",
-    "G1.2": "evidence/runnable/g1.2/run-manifest-v13.json",
-    "G1.3": "evidence/runnable/g1.3/run-manifest-v13.json",
-    "G1.4": "evidence/runnable/g1.4/run-manifest-v13.json",
-    "G1.5": "evidence/runnable/g1.5/run-manifest-v13.json",
-    "G2.1": "evidence/runnable/g2.1/run-manifest-v11.json",
-    "G2.2": "evidence/runnable/g2.2/run-manifest-v11.json",
-    "G2.3": "evidence/runnable/g2.3/run-manifest-v11.json",
-    "G2.4": "evidence/runnable/g2.4/run-manifest-v11.json",
-    "G10.1": "evidence/runnable/g10.1/run-manifest-v18.json"
+    "G1.1": "evidence/runnable/g1.1/run-manifest-v14.json",
+    "G1.2": "evidence/runnable/g1.2/run-manifest-v14.json",
+    "G1.3": "evidence/runnable/g1.3/run-manifest-v14.json",
+    "G1.4": "evidence/runnable/g1.4/run-manifest-v14.json",
+    "G1.5": "evidence/runnable/g1.5/run-manifest-v14.json",
+    "G2.1": "evidence/runnable/g2.1/run-manifest-v12.json",
+    "G2.2": "evidence/runnable/g2.2/run-manifest-v12.json",
+    "G2.3": "evidence/runnable/g2.3/run-manifest-v12.json",
+    "G2.4": "evidence/runnable/g2.4/run-manifest-v12.json",
+    "G10.1": "evidence/runnable/g10.1/run-manifest-v19.json"
   }
 }
