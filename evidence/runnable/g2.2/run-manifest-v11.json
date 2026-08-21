@@ -58,7 +58,7 @@
     {
       "role": "evidence-checker",
       "path": "scripts/check_runnable_evidence.py",
-      "sha256": "94a54b099f2f4f769f62ecf1ca8ae866d6bd3a30854041c3b8fafaa096a22a5e"
+      "sha256": "283fb661b9fb1f1aa5ddfd93b177a55d93a87c3f546ab8c302dc8c654083bea2"
     },
     {
       "role": "evidence-replay",
@@ -68,7 +68,7 @@
     {
       "role": "evidence-support",
       "path": "scripts/runnable_evidence_support.py",
-      "sha256": "b5ccaa8a6685a55e93249a68b9e11942edcb507a4f23c76a9835ec60e8ee1ae5"
+      "sha256": "a3c6f201bb3729f043c62811eef3e0c8824113041e1deb6211ecbdc090e15d14"
     },
     {
       "role": "evidence-validator",
