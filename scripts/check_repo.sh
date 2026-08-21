@@ -174,6 +174,9 @@ required_files=(
     fixtures/g03/README.md
     fixtures/g03/input-a.tsv
     fixtures/g03/input-b.tsv
+    fixtures/g03/comparison-input.txt
+    fixtures/g03/comparison-a.tsv
+    fixtures/g03/comparison-b.tsv
     fixtures/g05/task-set-v1.yml
     fixtures/g06/can-fd-dlc-v1.csv
     fixtures/g06/can-rta-three-message-v1.json
@@ -243,7 +246,11 @@ required_files=(
     labs/g03_compiler_analysis/__init__.py
     labs/g03_compiler_analysis/answers.py
     labs/g03_compiler_analysis/contracts.py
+    labs/g03_compiler_analysis/comparison_contract.py
+    labs/g03_compiler_analysis/compiler_compare.py
+    labs/g03_compiler_analysis/defined_inputs.py
     labs/g03_compiler_analysis/elf_checks.py
+    labs/g03_compiler_analysis/gnu_provision.py
     labs/g03_compiler_analysis/run_harness.py
     labs/g03_compiler_analysis/submission.py
     labs/g03_compiler_analysis/toolchain.py
@@ -264,6 +271,7 @@ required_files=(
     labs/g03_compiler_analysis/mutants/101_missing_call.c
     labs/g03_compiler_analysis/mutants/201_hidden_symbol.c
     labs/g03_compiler_analysis/mutants/301_wrong_boundary.c
+    labs/g03_compiler_analysis/mutants/302_bypass_function.c
     labs/g03_compiler_analysis/mutants/401_missing_crc.c
     labs/g03_compiler_analysis/mutants/501_fake_upstream.answers
     portfolio/g01-safe-c-components-v1/CMakeLists.txt
@@ -276,6 +284,7 @@ required_files=(
     portfolio/g02-embedded-cpp-runtime-v1/demo_c.c
     portfolio/g03-compiler-analysis-v1/README.md
     portfolio/g03-compiler-analysis-v1/report-template.md
+    toolchain/g03-arm-gnu.json
     sources/autosar-r25-11/README.md
     evidence/runnable/g10.1/README.md
     evidence/runnable/g10.1/harness.stdout
@@ -370,7 +379,7 @@ for file in "${documented_lab_files[@]}"; do
 done
 
 bash -n scripts/new-study-log.sh scripts/check_repo.sh
-"$python_cmd" -c 'import ast, pathlib; [ast.parse(pathlib.Path(path).read_text(encoding="utf-8")) for path in ("scripts/check_internal_links.py", "scripts/check_traceability.py", "scripts/check_fixture_semantics.py", "scripts/check_runnable_evidence.py", "scripts/runnable_evidence_replay.py", "scripts/runnable_evidence_support.py", "scripts/runnable_evidence_validator.py", "scripts/tests/test_check_runnable_evidence.py", "labs/g01_safe_c/harness_toolchain.py", "labs/g01_safe_c/run_harness.py", "labs/g01_safe_c/tests/test_run_harness.py", "labs/g02_embedded_cpp/elf_contract.py", "labs/g02_embedded_cpp/harness_toolchain.py", "labs/g02_embedded_cpp/run_harness.py", "labs/g02_embedded_cpp/tests/test_run_harness.py", "labs/g03_compiler_analysis/answers.py", "labs/g03_compiler_analysis/contracts.py", "labs/g03_compiler_analysis/elf_checks.py", "labs/g03_compiler_analysis/run_harness.py", "labs/g03_compiler_analysis/submission.py", "labs/g03_compiler_analysis/toolchain.py", "labs/g03_compiler_analysis/tests/test_contracts.py", "labs/g03_compiler_analysis/tests/test_run_harness.py", "labs/g10_1_release_map/validator.py", "labs/g10_1_release_map/run_harness.py", "labs/g10_1_release_map/tests/test_release_map.py")]'
+"$python_cmd" -c 'import ast, pathlib; [ast.parse(pathlib.Path(path).read_text(encoding="utf-8")) for path in ("scripts/check_internal_links.py", "scripts/check_traceability.py", "scripts/check_fixture_semantics.py", "scripts/check_runnable_evidence.py", "scripts/runnable_evidence_replay.py", "scripts/runnable_evidence_support.py", "scripts/runnable_evidence_validator.py", "scripts/tests/test_check_runnable_evidence.py", "labs/g01_safe_c/harness_toolchain.py", "labs/g01_safe_c/run_harness.py", "labs/g01_safe_c/tests/test_run_harness.py", "labs/g02_embedded_cpp/elf_contract.py", "labs/g02_embedded_cpp/harness_toolchain.py", "labs/g02_embedded_cpp/run_harness.py", "labs/g02_embedded_cpp/tests/test_run_harness.py", "labs/g03_compiler_analysis/answers.py", "labs/g03_compiler_analysis/comparison_contract.py", "labs/g03_compiler_analysis/compiler_compare.py", "labs/g03_compiler_analysis/contracts.py", "labs/g03_compiler_analysis/defined_inputs.py", "labs/g03_compiler_analysis/elf_checks.py", "labs/g03_compiler_analysis/gnu_provision.py", "labs/g03_compiler_analysis/run_harness.py", "labs/g03_compiler_analysis/submission.py", "labs/g03_compiler_analysis/toolchain.py", "labs/g03_compiler_analysis/tests/test_contracts.py", "labs/g03_compiler_analysis/tests/test_run_harness.py", "labs/g10_1_release_map/validator.py", "labs/g10_1_release_map/run_harness.py", "labs/g10_1_release_map/tests/test_release_map.py")]'
 "$python_cmd" scripts/check_internal_links.py
 "$python_cmd" scripts/check_traceability.py
 "$python_cmd" scripts/check_fixture_semantics.py
@@ -379,6 +388,7 @@ G01_LAB_ID=G1.RETEST "$python_cmd" -m labs.g01_safe_c.run_harness
 "$python_cmd" -m labs.g02_embedded_cpp.run_harness
 G02_LAB_ID=G2.RETEST "$python_cmd" -m labs.g02_embedded_cpp.run_harness
 "$python_cmd" -m labs.g03_compiler_analysis.run_harness
+G03_LAB_ID=G3.RETEST "$python_cmd" -m labs.g03_compiler_analysis.run_harness
 "$python_cmd" labs/g10_1_release_map/run_harness.py
 unit_output=$("$python_cmd" -m unittest discover -s labs/g10_1_release_map/tests -p 'test_*.py' 2>&1)
 if ! grep -Fq 'Ran 14 tests' <<<"$unit_output" || ! grep -Fxq 'OK' <<<"$unit_output"; then

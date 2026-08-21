@@ -1,11 +1,14 @@
+# pyright: reportMissingTypeStubs=false, reportUnknownArgumentType=false
+# pyright: reportUnknownMemberType=false, reportUnknownVariableType=false
 from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Final, override
+from typing import BinaryIO, override
 
-MACHINES: Final = {40: "EM_ARM", 183: "EM_AARCH64"}
-SYMBOL_TABLE_TYPES: Final = {2, 11}
+from elftools.common.exceptions import ELFError
+from elftools.elf.elffile import ELFFile
+from elftools.elf.sections import SymbolTableSection
 
 
 @dataclass(frozen=True, slots=True)
@@ -25,84 +28,30 @@ class ElfCheckError(Exception):
 
 
 @dataclass(frozen=True, slots=True)
-class Section:
-    name_offset: int
-    section_type: int
-    offset: int
-    size: int
-    link: int
-    entry_size: int
-
-
-@dataclass(frozen=True, slots=True)
 class ElfView:
     machine: str
-    sections: tuple[tuple[str, Section], ...]
+    sections: tuple[tuple[str, int], ...]
     symbols: frozenset[str]
 
 
-def _unsigned(data: bytes, offset: int, width: int) -> int:
-    return int.from_bytes(data[offset : offset + width], "little")
-
-
-def _cstring(data: bytes, offset: int) -> str:
-    end = data.find(b"\0", offset)
-    if end < 0:
-        raise ElfCheckError("unterminated ELF string table entry")
-    return data[offset:end].decode("utf-8")
-
-
-def _section(data: bytes, offset: int, elf_class: int) -> Section:
-    if elf_class == 1:
-        return Section(
-            _unsigned(data, offset, 4),
-            _unsigned(data, offset + 4, 4),
-            _unsigned(data, offset + 16, 4),
-            _unsigned(data, offset + 20, 4),
-            _unsigned(data, offset + 24, 4),
-            _unsigned(data, offset + 36, 4),
-        )
-    return Section(
-        _unsigned(data, offset, 4),
-        _unsigned(data, offset + 4, 4),
-        _unsigned(data, offset + 24, 8),
-        _unsigned(data, offset + 32, 8),
-        _unsigned(data, offset + 40, 4),
-        _unsigned(data, offset + 56, 8),
-    )
+def _bounded_view(stream: BinaryIO) -> ElfView:
+    elf = ELFFile(stream)
+    sections: list[tuple[str, int]] = []
+    symbols: set[str] = set()
+    for section in elf.iter_sections():
+        sections.append((str(section.name), int(section["sh_size"])))
+        if isinstance(section, SymbolTableSection):
+            symbols.update(str(symbol.name) for symbol in section.iter_symbols() if symbol.name)
+    machine = f"{elf['e_machine']}"
+    return ElfView(machine, tuple(sections), frozenset(symbols))
 
 
 def read_elf(path: Path) -> ElfView:
-    data = path.read_bytes()
-    if data[:4] != b"\x7fELF" or data[5] != 1:
-        raise ElfCheckError(f"{path.name}: little-endian ELF is required")
-    elf_class = data[4]
-    if elf_class not in {1, 2}:
-        raise ElfCheckError(f"{path.name}: unsupported ELF class={elf_class}")
-    header = (32, 46, 48, 50) if elf_class == 1 else (40, 58, 60, 62)
-    section_offset = _unsigned(data, header[0], 4 if elf_class == 1 else 8)
-    section_entry_size = _unsigned(data, header[1], 2)
-    section_count = _unsigned(data, header[2], 2)
-    name_index = _unsigned(data, header[3], 2)
-    raw_sections = tuple(
-        _section(data, section_offset + index * section_entry_size, elf_class)
-        for index in range(section_count)
-    )
-    names_section = raw_sections[name_index]
-    names = data[names_section.offset : names_section.offset + names_section.size]
-    sections = tuple((_cstring(names, section.name_offset), section) for section in raw_sections)
-    symbols: set[str] = set()
-    for _, section in sections:
-        if section.section_type not in SYMBOL_TABLE_TYPES or section.entry_size == 0:
-            continue
-        strings_section = raw_sections[section.link]
-        strings = data[strings_section.offset : strings_section.offset + strings_section.size]
-        for entry in range(section.offset, section.offset + section.size, section.entry_size):
-            symbol_name_offset = _unsigned(data, entry, 4)
-            if symbol_name_offset:
-                symbols.add(_cstring(strings, symbol_name_offset))
-    machine = MACHINES.get(_unsigned(data, 18, 2), "UNKNOWN")
-    return ElfView(machine, sections, frozenset(symbols))
+    try:
+        with path.open("rb") as stream:
+            return _bounded_view(stream)
+    except (ELFError, OSError, TypeError, ValueError) as error:
+        raise ElfCheckError(f"{path.name}: invalid ELF: {error}") from error
 
 
 def verify_elf(path: Path, expectation: ElfExpectation) -> None:
@@ -119,7 +68,11 @@ def verify_elf(path: Path, expectation: ElfExpectation) -> None:
 
 
 def text_size(path: Path) -> int:
-    section = next((value for name, value in read_elf(path).sections if name == ".text"), None)
-    if section is None:
-        raise ElfCheckError(f"{path.name}: .text section is missing")
-    return section.size
+    sizes = tuple(
+        size
+        for name, size in read_elf(path).sections
+        if name == ".text" or name.startswith(".text.")
+    )
+    if not sizes:
+        raise ElfCheckError(f"{path.name}: .text sections are missing")
+    return sum(sizes)

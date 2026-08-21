@@ -1,6 +1,6 @@
 # Arm 프로그램의 함수 호출부터 기계어까지 추적하기
 
-> 관리 코드: G3 · 권장 학습 순서: 4번째 · 현재 준비 상태: `Runnable`(G3.4 GNU 비교는 `Provisional`)
+> 관리 코드: G3 · 권장 학습 순서: 4번째 · 현재 준비 상태: `Runnable`
 
 이 장에서는 C 함수 하나를 호출 지점에서 시작해 ARM 레지스터, ELF 재배치, LLVM IR, 대상 기계어까지 거꾸로 추적합니다. 서로 다른 대상이나 ABI의 숫자를 섞어 순위를 만들지 않고, 자동 검사가 확인한 사실과 실제 보드에서 아직 확인하지 못한 사실을 구분하는 것이 핵심입니다.
 
@@ -11,14 +11,16 @@
 | [3-1 ARM32 함수 호출 경로 추적하기](sprint-3.1.md) | Cortex-M4 AAPCS32 호출 경로 표 | Runnable |
 | [3-2 AArch64 ELF에서 오류 주소 복원하기](sprint-3.2.md) | load bias·build ID·DWARF·PLT/GOT 복원 기록 | Runnable |
 | [3-3 C에서 LLVM IR과 기계어까지 연결하기](sprint-3.3.md) | 정의된 입력 차등 판정과 IR·Thumb 산출물 | Runnable |
-| [3-4 같은 ARM 대상에서 GCC와 Clang 공정하게 비교하기](sprint-3.4.md) | 동일 Cortex-M4 계약의 재배치 ELF 비교 | Provisional |
-| [3-5 컴파일러 의심 동작을 줄이고 보고 여부 결정하기](sprint-3.5.md) | 양·음성 대조군과 peer-review 결정 | Runnable |
+| [3-4 같은 ARM 대상에서 GCC와 Clang 공정하게 비교하기](sprint-3.4.md) | 동일 Cortex-M4 계약의 재배치 ELF 비교 | Runnable |
+| [3-5 컴파일러 문제로 의심되는 사례를 최소 예제로 줄이고 신고 여부 판단하기](sprint-3.5.md) | 양·음성 대조군과 동료 검토 결정 | Runnable |
 
 ## 고정 도구와 비교 경계
 
 Python 3.12.13, `pyelftools` 0.32, Zig 0.15.2의 Clang 20.1.2를 사용합니다. G3.1·G3.3·G3.4의 ARM 계약은 Cortex-M4, `thumb-freestanding-eabi`, AAPCS32, soft-float, 재배치 ELF입니다. GCC 비교에만 공식 Arm GNU Toolchain 14.3.Rel1을 사용합니다. 운영체제·보드 실행, cycle·latency, cross-LTO 결과는 이 장에서 검증하지 않습니다.
 
-GNU 아카이브를 준비하지 못해도 나머지 네 실습은 실행할 수 있습니다. G3.4는 고정된 아카이브 파일명과 SHA-256, 설치 루트가 모두 맞을 때만 GCC를 실행합니다. 하나라도 없거나 다르면 자동으로 다른 GCC를 찾지 않고 `PROVISIONAL`로 끝냅니다. 이 상태를 GCC와 Clang 비교 완료로 기록하면 안 됩니다.
+G3.4는 저장소의 플랫폼 명세에 고정된 공식 아카이브를 SHA-256으로 확인하고 해시별 캐시에 안전하게 푼 뒤, 그 안의 GCC만 실행합니다. 아카이브가 없거나 해시·대상·버전이 다르면 시스템 `PATH`의 GCC로 대신하지 않고 실패합니다.
+
+시작하기 전에 [G3 입구 진단과 B-TOOL 보강](../../docs/gate-entry-diagnostics.md)을 먼저 확인합니다. 작은 ELF에서 함수 주소와 섹션·세그먼트 관계를 설명하지 못하면 B-TOOL 자체 점검을 마친 뒤 이 장으로 돌아옵니다.
 
 ## 시작하기
 
@@ -52,14 +54,14 @@ G03_LAB_ID=G3.RETEST uv run --offline --python 3.12.13 \
 
 ## GNU 비교를 여는 방법
 
-공식 아카이브를 직접 내려받아 압축을 푼 뒤 다음 두 값을 지정합니다. 검사기는 아카이브 SHA-256과 `arm-none-eabi-gcc --version`을 모두 확인합니다.
+플랫폼 명세에 고정된 공식 아카이브를 다음 명령으로 준비합니다. 검사기는 내려받은 파일의 SHA-256을 확인한 뒤 경로 탈출을 거부하며 해시별 캐시에 직접 풉니다.
 
 ```bash
-G03_GNU_ARCHIVE=/verified/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi.tar.xz
-G03_GNU_ROOT=/verified/arm-gnu-toolchain-14.3.rel1
+uv run --project toolchain --locked \
+  python -m labs.g03_compiler_analysis.toolchain --download
 ```
 
-Windows x86_64 ZIP과 Linux x86_64 tar.xz의 정확한 해시는 [공통 계약](contract.md)에 있습니다. 압축을 푼 폴더만 있거나 시스템 `PATH`의 GCC만 있는 경우에는 비교를 실행하지 않습니다.
+Windows x86_64 ZIP과 Linux x86_64 tar.xz의 URL·파일명·해시는 [플랫폼 명세](../../toolchain/g03-arm-gnu.json)에 있습니다. 임의로 압축을 푼 폴더나 시스템 `PATH`의 GCC는 사용하지 않습니다.
 
 ## GitHub 포트폴리오 흐름
 

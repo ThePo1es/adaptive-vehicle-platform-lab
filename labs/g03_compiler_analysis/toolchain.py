@@ -1,16 +1,26 @@
 from __future__ import annotations
 
-import hashlib
 import importlib.util
 import os
 import subprocess
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Final, override
 
+from .gnu_provision import (
+    ProvisionError,
+    compiler_environment,
+    provision,
+    read_entry,
+    verify_archive,
+)
+
 PINNED_ZIG_VERSION: Final = "0.15.2"
 PINNED_CLANG_VERSION: Final = "20.1.2"
 PINNED_GNU_RELEASE: Final = "14.3.Rel1"
+REPO_ROOT: Final = Path(__file__).resolve().parents[2]
+MANIFEST_PATH: Final = REPO_ROOT / "toolchain/g03-arm-gnu.json"
 GNU_ARCHIVES: Final = {
     "arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi.tar.xz": (
         "8f6903f8ceb084d9227b9ef991490413014d991874a1e34074443c2a72b14dbd"
@@ -37,15 +47,10 @@ class GnuToolchain:
 
 
 def verify_gnu_archive(archive: Path) -> str:
-    expected = GNU_ARCHIVES.get(archive.name)
-    if expected is None:
-        raise ToolchainError(f"unsupported GNU archive name: {archive.name}")
-    digest = hashlib.sha256(archive.read_bytes()).hexdigest()
-    if digest != expected:
-        raise ToolchainError(
-            f"GNU archive SHA-256 mismatch: observed={digest} expected={expected}"
-        )
-    return digest
+    try:
+        return verify_archive(archive, read_entry(MANIFEST_PATH))
+    except ProvisionError as error:
+        raise ToolchainError(str(error)) from error
 
 
 def resolve_zig() -> Path:
@@ -69,23 +74,35 @@ def resolve_zig() -> Path:
 
 
 def resolve_gnu() -> GnuToolchain:
-    archive_value = os.environ.get("G03_GNU_ARCHIVE")
-    root_value = os.environ.get("G03_GNU_ROOT")
-    if archive_value is None or root_value is None:
-        raise ToolchainError("G03_GNU_ARCHIVE and G03_GNU_ROOT are both required")
-    archive = Path(archive_value).resolve()
-    _ = verify_gnu_archive(archive)
-    executable = "arm-none-eabi-gcc.exe" if os.name == "nt" else "arm-none-eabi-gcc"
-    compiler = Path(root_value).resolve() / "bin" / executable
-    if not compiler.is_file():
-        raise ToolchainError(f"GNU compiler is missing: {compiler}")
-    result = subprocess.run(
-        [str(compiler), "--version"],
-        check=False,
+    cache = Path(os.environ.get("G03_GNU_CACHE", REPO_ROOT / ".cache/g03-arm-gnu"))
+    try:
+        resolved = provision(MANIFEST_PATH, cache.resolve(), download=False)
+    except (OSError, ProvisionError, subprocess.SubprocessError) as error:
+        raise ToolchainError(str(error)) from error
+    return GnuToolchain(resolved.compiler, resolved.archive)
+
+
+def provision_main() -> int:
+    cache = Path(os.environ.get("G03_GNU_CACHE", REPO_ROOT / ".cache/g03-arm-gnu"))
+    try:
+        resolved = provision(MANIFEST_PATH, cache.resolve(), download="--download" in sys.argv)
+    except (OSError, ProvisionError, subprocess.SubprocessError) as error:
+        print(f"G3 GNU provision: FAIL: {error}", file=sys.stderr)
+        return 1
+    version = subprocess.run(
+        [str(resolved.compiler), "--version"],
+        env=compiler_environment(),
+        check=True,
         capture_output=True,
         text=True,
-        timeout=30,
-    )
-    if result.returncode != 0 or "14.3.1" not in result.stdout.splitlines()[0]:
-        raise ToolchainError(f"Arm GNU Toolchain {PINNED_GNU_RELEASE} is required")
-    return GnuToolchain(compiler, archive)
+    ).stdout.splitlines()[0]
+    print(f"archive={resolved.archive}")
+    print(f"sha256={resolved.digest}")
+    print(f"dumpmachine={resolved.machine}")
+    print(f"dumpfullversion={resolved.version}")
+    print(f"version={version}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(provision_main())

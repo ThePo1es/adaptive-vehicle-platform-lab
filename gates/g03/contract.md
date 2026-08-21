@@ -22,7 +22,7 @@ G3.4에서 Clang과 GCC는 같은 C 입력, Cortex-M4, Thumb, AAPCS32, soft-floa
 | Linux x86_64 | `arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi.tar.xz` | `8f6903f8ceb084d9227b9ef991490413014d991874a1e34074443c2a72b14dbd` |
 | Windows x86_64 | `arm-gnu-toolchain-14.3.rel1-mingw-w64-x86_64-arm-none-eabi.zip` | `864c0c8815857d68a1bbba2e5e2782255bb922845c71c97636004a3d74f60986` |
 
-파일명, 해시, 설치 루트, 버전 중 하나라도 맞지 않으면 resolver는 실패로 닫힙니다. 자동 설치나 `PATH` 대체 탐색을 하지 않습니다. 이때 G3.4는 `Provisional`이며 GCC 수치를 만들지 않습니다.
+파일명, 해시, 대상, 버전 중 하나라도 맞지 않으면 도구 준비기는 실패로 닫힙니다. `PATH` 대체 탐색이나 별도 설치 루트 지정은 허용하지 않으며, G3.4는 실패하고 GCC 수치를 만들지 않습니다.
 
 ## 실습별 독립 판정
 
@@ -42,7 +42,8 @@ G3.4에서 Clang과 GCC는 같은 C 입력, Cortex-M4, Thumb, AAPCS32, soft-floa
 | --- | --- | --- |
 | 101 | caller에서 실제 `mix4` 호출 제거 | 호출 심벌·branch-and-link 없음 |
 | 201 | AArch64 export와 외부 호출 제거 | 심벌·재배치 없음 |
-| 301 | 경계 갱신을 덧셈으로 바꿈 | 컴파일 시간 defined-input oracle 실패 |
+| 301 | 경계 갱신을 덧셈으로 바꿈 | 컴파일 시간 검사와 실제 실행 실패 |
+| 302 | 매크로는 맞지만 함수가 입력 B에서 다른 값을 반환 | `-O0`·`-O2` 실행 기대값 불일치 |
 | 401 | `crc_step` 심벌 제거 | 공통 ELF 비교 계약 실패 |
 | 501 | 제출하지 않은 upstream 보고를 `true`로 기록 | no-fake-upstream 대조군 실패 |
 

@@ -103,3 +103,51 @@ jobs:
             ctest --test-dir build/g02-release --output-on-failure
           uv run --project toolchain --locked --no-sync --offline \
             cmake --install build/g02-release --prefix build/g02-install
+
+  g3-compiler-analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      G03_GNU_CACHE: ${{ github.workspace }}/.g03-toolchain
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: 0.12.3
+          checksum: 600cf9a742aca00d292673b16b5acffaa7b8c269a364ad0c2e79498dcb1fe101
+
+      - name: Provision the hash-locked Python and Zig toolchain
+        run: uv sync --project toolchain --locked --python 3.12.13
+
+      - name: Provision and verify official Arm GNU 14.3.Rel1
+        run: >-
+          uv run --project toolchain --locked --no-sync
+          python -m labs.g03_compiler_analysis.toolchain --download
+
+      - name: Run G3 tests and every required mutant offline
+        run: >-
+          uv run --project toolchain --locked --no-sync --offline
+          pytest -q labs/g03_compiler_analysis/tests
+
+      - name: Run public input A offline
+        env:
+          G03_LAB_ID: G3.ALL
+        run: >-
+          uv run --project toolchain --locked --no-sync --offline
+          python -m labs.g03_compiler_analysis.run_harness
+
+      - name: Run independent input B offline
+        env:
+          G03_LAB_ID: G3.RETEST
+        run: >-
+          uv run --project toolchain --locked --no-sync --offline
+          python -m labs.g03_compiler_analysis.run_harness
+
+      - name: Check the G3 portfolio learning record
+        run: |
+          test -s portfolio/g03-compiler-analysis-v1/report-template.md
+          grep -Fq '## 학습·검토 기록' portfolio/g03-compiler-analysis-v1/report-template.md
+          grep -Fq '다음 간격 재시험' portfolio/g03-compiler-analysis-v1/report-template.md
