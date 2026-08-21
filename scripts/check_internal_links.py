@@ -10,6 +10,16 @@ from urllib.parse import unquote, urlsplit
 
 LINK_RE = re.compile(r"(?<!!)\[[^\]]*\]\(([^)]+)\)")
 SCHEMES = {"http", "https", "mailto", "tel", "data"}
+IGNORED_DIRECTORIES = {
+    ".git",
+    ".pytest_cache",
+    ".venv",
+    "CMakeFiles",
+    "Testing",
+    "__pycache__",
+    "node_modules",
+    "venv",
+}
 
 
 def destination(raw: str) -> str:
@@ -41,12 +51,22 @@ def mask_fenced_code(text: str) -> str:
     return "".join(output)
 
 
+def ignored_markdown(markdown: Path, root: Path) -> bool:
+    directories = markdown.relative_to(root).parts[:-1]
+    return any(
+        part in IGNORED_DIRECTORIES
+        or part == "build"
+        or part.startswith(("build-", "cmake-build-"))
+        for part in directories
+    )
+
+
 def main() -> int:
     root = Path(__file__).resolve().parent.parent
     failures: list[str] = []
 
     for markdown in sorted(root.rglob("*.md")):
-        if ".git" in markdown.parts:
+        if ignored_markdown(markdown, root):
             continue
 
         text = markdown.read_text(encoding="utf-8")
