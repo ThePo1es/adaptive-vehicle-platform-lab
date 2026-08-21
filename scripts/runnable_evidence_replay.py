@@ -57,7 +57,12 @@ WINDOWS_REPOSITORY_CHECK = "hash -p /usr/bin/bash bash; source scripts/check_rep
 REPLAY_TIMEOUT_SECONDS = 180
 REPOSITORY_CHECK_TIMEOUT_SECONDS = 600
 PROBE_TIMEOUT_SECONDS = 120
-VERIFIER_ENVIRONMENT_KEYS = {"UV_PROJECT_ENVIRONMENT", "VIRTUAL_ENV"}
+VERIFIER_ENVIRONMENT_KEYS = {
+    "PYTHONHOME",
+    "PYTHONPATH",
+    "UV_PROJECT_ENVIRONMENT",
+    "VIRTUAL_ENV",
+}
 
 
 def clean_verifier_environment(base: Mapping[str, str]) -> dict[str, str]:
@@ -149,7 +154,7 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
     if not isinstance(expected, str):
         fail("manifest environment needs an exact Python version")
     schema_version = manifest["schema_version"]
-    if schema_version == 2:
+    if schema_version in {2, 3, 4}:
         version_command = [sys.executable, "--version"]
     else:
         version_command = [*LOCKED_TOOLCHAIN_ARGV_PREFIX[:-1], "--version"]

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -97,15 +98,36 @@ def test_command_shape_requires_hashed_python_runner() -> None:
     )
 
 
-def test_historical_with_dependencies_replays_through_locked_toolchain() -> None:
+def test_historical_with_dependencies_replays_through_verifier_python() -> None:
     assert translated_replay_argv([*PINNED_G1_ARGV_PREFIX, PINNED_G1_MODULE]) == [
-        *LOCKED_TOOLCHAIN_ARGV_PREFIX,
+        sys.executable,
+        "-m",
         PINNED_G1_MODULE,
     ]
     assert translated_replay_argv([*PINNED_G2_ARGV_PREFIX, PINNED_G2_MODULE]) == [
-        *LOCKED_TOOLCHAIN_ARGV_PREFIX,
+        sys.executable,
+        "-m",
         PINNED_G2_MODULE,
     ]
+
+
+def test_historical_replay_runs_snapshot_module_without_a_project(tmp_path: Path) -> None:
+    (tmp_path / "historical_probe.py").write_text(
+        "print('historical snapshot')\n",
+        encoding="utf-8",
+    )
+    result = subprocess.run(
+        translated_replay_argv([*PINNED_G1_ARGV_PREFIX, "historical_probe"]),
+        cwd=tmp_path,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=5,
+    )
+
+    assert result.returncode == 0
+    assert result.stdout == "historical snapshot\n"
+    assert not (tmp_path / "toolchain").exists()
 
 
 def test_schema_three_command_pins_uv_python_and_zig() -> None:
@@ -258,6 +280,8 @@ def test_replay_drops_parent_uv_environment_paths() -> None:
     assert clean_verifier_environment(
         {
             "PATH": "tools",
+            "PYTHONHOME": "C:/parent/python",
+            "PYTHONPATH": "C:/parent/modules",
             "UV_PROJECT_ENVIRONMENT": "C:/parent/toolchain/.venv",
             "VIRTUAL_ENV": "C:/parent/toolchain/.venv",
         }
@@ -291,6 +315,7 @@ def test_runtime_probe_does_not_reuse_manifest_environment(
         return subprocess.CompletedProcess(argv, 0, stdout="uv 0.12.3\n", stderr="")
 
     monkeypatch.setenv("VIRTUAL_ENV", "C:/parent/toolchain/.venv")
+    monkeypatch.setenv("PYTHONPATH", "C:/parent/modules")
     monkeypatch.setattr("scripts.runnable_evidence_replay.run_text_probe", probe)
     verify_runtime(
         tmp_path,
@@ -309,8 +334,9 @@ def test_runtime_probe_does_not_reuse_manifest_environment(
     )
 
     assert len(observed) == 2
-    assert observed_argv[0] == [*LOCKED_TOOLCHAIN_ARGV_PREFIX[:-1], "--version"]
+    assert observed_argv[0] == [sys.executable, "--version"]
     assert all("VIRTUAL_ENV" not in environment for environment in observed)
+    assert all("PYTHONPATH" not in environment for environment in observed)
     assert all(
         isinstance(key, str) and isinstance(value, str)
         for environment in observed

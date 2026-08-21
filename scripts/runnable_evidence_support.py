@@ -175,17 +175,7 @@ def translated_replay_argv(argv: list[str]) -> list[str]:
     if argv[0] == "python3":
         return [sys.executable, *argv[1:]]
     if argv[:3] == ["uv", "run", "--offline"]:
-        return [
-            "uv",
-            "run",
-            "--project",
-            "toolchain",
-            "--locked",
-            "--offline",
-            "python",
-            "-m",
-            argv[-1],
-        ]
+        return [sys.executable, "-m", argv[-1]]
     return argv
 
 
