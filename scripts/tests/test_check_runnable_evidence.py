@@ -11,6 +11,7 @@ from scripts.runnable_evidence_replay import (
     PINNED_G1_MODULE,
     PINNED_G2_ARGV_PREFIX,
     PINNED_G2_MODULE,
+    clean_verifier_environment,
     pinned_uv_version,
     repository_check_argv,
     run_binary_replay,
@@ -238,6 +239,16 @@ def test_uv_version_accepts_official_build_metadata() -> None:
     assert pinned_uv_version("uv 0.12.3")
     assert pinned_uv_version("uv 0.12.3 (507230998 2026-08-07 x86_64-pc-windows-msvc)")
     assert not pinned_uv_version("uv 0.12.4")
+
+
+def test_replay_drops_parent_uv_environment_paths() -> None:
+    assert clean_verifier_environment(
+        {
+            "PATH": "tools",
+            "UV_PROJECT_ENVIRONMENT": "C:/parent/toolchain/.venv",
+            "VIRTUAL_ENV": "C:/parent/toolchain/.venv",
+        }
+    ) == {"PATH": "tools"}
 
 
 def test_text_evidence_has_platform_independent_newlines() -> None:

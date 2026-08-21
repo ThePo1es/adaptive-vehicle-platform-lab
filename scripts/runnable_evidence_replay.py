@@ -57,6 +57,14 @@ WINDOWS_REPOSITORY_CHECK = "hash -p /usr/bin/bash bash; source scripts/check_rep
 REPLAY_TIMEOUT_SECONDS = 180
 REPOSITORY_CHECK_TIMEOUT_SECONDS = 600
 PROBE_TIMEOUT_SECONDS = 30
+VERIFIER_ENVIRONMENT_KEYS = {"UV_PROJECT_ENVIRONMENT", "VIRTUAL_ENV"}
+
+
+def clean_verifier_environment(base: Mapping[str, str]) -> dict[str, str]:
+    environment = dict(base)
+    for key in VERIFIER_ENVIRONMENT_KEYS:
+        environment.pop(key, None)
+    return environment
 
 
 def repository_check_argv(
@@ -99,11 +107,18 @@ def run_binary_replay(
         fail(f"{label} exceeded {timeout_seconds} seconds")
 
 
-def run_text_probe(argv: list[str], *, cwd: Path, label: str) -> subprocess.CompletedProcess[str]:
+def run_text_probe(
+    argv: list[str],
+    *,
+    cwd: Path,
+    environment: Mapping[str, str],
+    label: str,
+) -> subprocess.CompletedProcess[str]:
     try:
         return subprocess.run(
             argv,
             cwd=cwd,
+            env=dict(environment),
             check=False,
             capture_output=True,
             text=True,
@@ -114,7 +129,7 @@ def run_text_probe(argv: list[str], *, cwd: Path, label: str) -> subprocess.Comp
 
 
 def replay_environment(manifest: dict[str, Any], base: dict[str, str]) -> dict[str, str]:
-    environment = base.copy()
+    environment = clean_verifier_environment(base)
     lab_id = str(manifest.get("lab_id", ""))
     if manifest.get("schema_version") != 2 or not lab_id.startswith("G1."):
         return environment
@@ -142,9 +157,11 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
         version_command = [*PINNED_G2_ARGV_PREFIX[:-1], "--version"]
     else:
         version_command = [*LOCKED_TOOLCHAIN_ARGV_PREFIX[:-1], "--version"]
+    environment = clean_verifier_environment(os.environ)
     version = run_text_probe(
         version_command,
         cwd=snapshot,
+        environment=environment,
         label="Python version probe",
     )
     observed = version.stdout.strip().removeprefix("Python ")
@@ -183,6 +200,7 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
         uv_version = run_text_probe(
             ["uv", "--version"],
             cwd=snapshot,
+            environment=environment,
             label="uv version probe",
         )
         if uv_version.returncode != 0 or not pinned_uv_version(uv_version.stdout.strip()):
@@ -230,7 +248,7 @@ def verify_repository_check(manifest: dict[str, Any], snapshot: Path) -> None:
     stderr_path = repository_path(check.get("stderr_path"))
     expected_stdout = stdout_path.read_bytes()
     expected_stderr = stderr_path.read_bytes()
-    environment = os.environ.copy()
+    environment = clean_verifier_environment(os.environ)
     environment.update(required_environment)
     result = run_binary_replay(
         repository_check_argv(os.name, environment),
