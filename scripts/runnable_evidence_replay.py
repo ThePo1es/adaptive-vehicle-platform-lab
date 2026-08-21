@@ -164,6 +164,13 @@ def verify_output(
         fail("replay stderr does not match manifest")
 
 
+def recorded_command_stdout(command: dict[str, Any], label: str) -> bytes:
+    output = repository_path(command.get("stdout_path")).read_bytes()
+    if digest(output) != command.get("stdout_sha256"):
+        fail(f"recorded {label} stdout hash drifted")
+    return output
+
+
 def verify_repository_check(manifest: dict[str, Any], snapshot: Path) -> None:
     check = manifest.get("repository_check")
     if not isinstance(check, dict):

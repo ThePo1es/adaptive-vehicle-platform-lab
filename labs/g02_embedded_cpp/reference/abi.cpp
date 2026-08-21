@@ -1,5 +1,6 @@
 #include "g02_abi.hpp"
 
+#include <limits>
 #include <new>
 
 #ifndef G02_MUTANT
@@ -7,6 +8,22 @@
 #endif
 
 namespace {
+bool checked_checksum(
+    std::int32_t first,
+    std::int32_t second,
+    std::int32_t third,
+    std::int32_t& output) noexcept {
+    const auto total = static_cast<std::int64_t>(first) + static_cast<std::int64_t>(second) +
+                       static_cast<std::int64_t>(third);
+    if (total < std::numeric_limits<std::int32_t>::min() ||
+        total > std::numeric_limits<std::int32_t>::max()) {
+        output = 0;
+        return false;
+    }
+    output = static_cast<std::int32_t>(total);
+    return true;
+}
+
 class Clock {
 public:
     virtual ~Clock() = default;
@@ -63,9 +80,15 @@ g02::ScenarioResult execute_static(Dependencies& dependencies) noexcept {
         dependencies.cleanup();
         return {status, 0, dependencies.cleanup_count()};
     }
-    const auto checksum = dependencies.now() + transport + dependencies.launch();
+    std::int32_t checksum = 0;
+    const bool valid = checked_checksum(
+        dependencies.now(), transport, dependencies.launch(), checksum);
     dependencies.cleanup();
-    return {g02::OperationStatus::Ok, checksum, dependencies.cleanup_count()};
+    return {
+        valid ? g02::OperationStatus::Ok : g02::OperationStatus::Failed,
+        checksum,
+        dependencies.cleanup_count(),
+    };
 }
 
 class StaticDependencies {
@@ -141,9 +164,14 @@ ScenarioResult run_virtual(FakeDependencies& dependencies) noexcept {
         }
         return {status, 0, dependencies.cleanup_count};
     }
-    const auto checksum = adapter.now() + transport + adapter.launch();
+    std::int32_t checksum = 0;
+    const bool valid = checked_checksum(adapter.now(), transport, adapter.launch(), checksum);
     adapter.cleanup();
-    return {OperationStatus::Ok, checksum, dependencies.cleanup_count};
+    return {
+        valid ? OperationStatus::Ok : OperationStatus::Failed,
+        checksum,
+        dependencies.cleanup_count,
+    };
 }
 
 ScenarioResult run_static(FakeDependencies& dependencies) noexcept {
@@ -159,9 +187,15 @@ ScenarioResult run_manual(FakeDependencies& dependencies) noexcept {
         table.cleanup(&dependencies);
         return {status, 0, dependencies.cleanup_count};
     }
-    const auto checksum = table.now(&dependencies) + transport + table.launch(&dependencies);
+    std::int32_t checksum = 0;
+    const bool valid = checked_checksum(
+        table.now(&dependencies), transport, table.launch(&dependencies), checksum);
     table.cleanup(&dependencies);
-    return {OperationStatus::Ok, checksum, dependencies.cleanup_count};
+    return {
+        valid ? OperationStatus::Ok : OperationStatus::Failed,
+        checksum,
+        dependencies.cleanup_count,
+    };
 }
 }
 
@@ -218,7 +252,10 @@ std::int32_t g02_runtime_run(G02RuntimeHandle* handle, std::int32_t* checksum) n
         dependencies.cleanup(dependencies.context);
         return G02_C_FAILED;
     }
-    *checksum = clock + transport + launcher;
+    if (!checked_checksum(clock, transport, launcher, *checksum)) {
+        dependencies.cleanup(dependencies.context);
+        return G02_C_FAILED;
+    }
     dependencies.cleanup(dependencies.context);
     return G02_C_OK;
 }

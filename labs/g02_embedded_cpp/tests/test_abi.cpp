@@ -9,6 +9,7 @@
 
 #include <array>
 #include <cstdint>
+#include <limits>
 
 namespace {
 using g02::FakeDependencies;
@@ -61,6 +62,30 @@ int test_three_designs_cleanup_on_timeout() {
     for (const auto& result : results) {
         G02_CHECK(result.status == OperationStatus::Timeout);
         G02_CHECK(result.cleanup_count == 1U);
+    }
+    return 0;
+}
+
+int test_three_designs_reject_checksum_overflow() {
+    // Given values whose positive and negative sums do not fit in int32_t.
+    for (const auto clock : {std::numeric_limits<std::int32_t>::max(),
+                             std::numeric_limits<std::int32_t>::min()}) {
+        const std::int32_t transport = clock > 0 ? 1 : -1;
+        auto virtual_deps = FakeDependencies{clock, transport, 0, false};
+        auto static_deps = FakeDependencies{clock, transport, 0, false};
+        auto manual_deps = FakeDependencies{clock, transport, 0, false};
+        // When each design calculates the checksum.
+        const std::array<ScenarioResult, 3> results{
+            g02::run_virtual(virtual_deps),
+            g02::run_static(static_deps),
+            g02::run_manual(manual_deps),
+        };
+        // Then overflow is a value-level failure and cleanup still runs once.
+        for (const auto& result : results) {
+            G02_CHECK(result.status == OperationStatus::Failed);
+            G02_CHECK(result.checksum == 0);
+            G02_CHECK(result.cleanup_count == 1U);
+        }
     }
     return 0;
 }
@@ -136,13 +161,39 @@ int test_c_facade_cleans_up_timeout_path() {
     G02_CHECK(dependencies.cleanup_count == 1U);
     return 0;
 }
+
+int test_c_facade_rejects_checksum_overflow() {
+    // Given callbacks that return values whose sum exceeds int32_t.
+    auto dependencies = FakeDependencies{
+        std::numeric_limits<std::int32_t>::max(), 1, 0, false};
+    const G02CDependencies callbacks{
+        &dependencies,
+        c_clock,
+        c_transport,
+        c_launch,
+        c_cleanup,
+    };
+    G02RuntimeHandle* handle = nullptr;
+    G02_CHECK(g02_runtime_create(&callbacks, &handle) == G02_C_OK);
+    std::int32_t checksum = 99;
+    // When the C facade calculates the checksum.
+    const auto status = g02_runtime_run(handle, &checksum);
+    g02_runtime_destroy(handle);
+    // Then no undefined signed overflow occurs at the ABI boundary.
+    G02_CHECK(status == G02_C_FAILED);
+    G02_CHECK(checksum == 0);
+    G02_CHECK(dependencies.cleanup_count == 1U);
+    return 0;
+}
 }
 
 int main() {
     if (test_three_designs_have_the_same_success_contract() != 0 ||
         test_three_designs_cleanup_on_timeout() != 0 ||
+        test_three_designs_reject_checksum_overflow() != 0 ||
         test_c_facade_has_one_owner_and_no_exception_boundary() != 0 ||
-        test_c_facade_cleans_up_timeout_path() != 0) {
+        test_c_facade_cleans_up_timeout_path() != 0 ||
+        test_c_facade_rejects_checksum_overflow() != 0) {
         return 1;
     }
     std::puts("PASS ABI design equivalence contract");

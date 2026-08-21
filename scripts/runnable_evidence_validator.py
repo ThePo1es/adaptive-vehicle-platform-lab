@@ -13,6 +13,7 @@ from scripts.runnable_evidence_replay import (
     PINNED_G1_MODULE,
     PINNED_G2_ARGV_PREFIX,
     PINNED_G2_MODULE,
+    recorded_command_stdout,
     replay_environment,
     verify_output,
     verify_repository_check,
@@ -105,6 +106,17 @@ def verify_command_shape(
     return argv, environment
 
 
+def verify_retest_command_shape(
+    command: dict[str, Any],
+    artifacts: dict[str, dict[str, str]],
+    lab_id: str,
+) -> tuple[list[str], dict[str, str]]:
+    argv, environment = verify_command_shape(command, artifacts, 4)
+    if environment != {"G02_LAB_ID": f"{lab_id}.RETEST", "PYTHONDONTWRITEBYTECODE": "1"}:
+        fail(f"active G2 retest command must select the B input for {lab_id}")
+    return argv, environment
+
+
 def verify_sprint_lock(
     manifest: dict[str, Any],
     artifacts: dict[str, dict[str, str]],
@@ -175,10 +187,21 @@ def verify_manifest(
     if not isinstance(command, dict):
         fail("command must be an object")
     argv, command_environment = verify_command_shape(command, artifacts, schema_version)
-    stdout_path = repository_path(command.get("stdout_path"))
-    recorded_stdout = stdout_path.read_bytes()
-    if digest(recorded_stdout) != command.get("stdout_sha256"):
-        fail("recorded stdout hash drifted")
+    command_stdout = recorded_command_stdout(command, "primary")
+    retest: tuple[dict[str, Any], list[str], dict[str, str], bytes] | None = None
+    if active and schema_version == 4:
+        retest_value = manifest.get("retest_command")
+        if not isinstance(retest_value, dict):
+            fail("active G2 manifest needs recorded B input evidence")
+        retest_argv, retest_environment = verify_retest_command_shape(
+            retest_value, artifacts, str(manifest["lab_id"])
+        )
+        retest = (
+            retest_value,
+            retest_argv,
+            retest_environment,
+            recorded_command_stdout(retest_value, "retest"),
+        )
     if manifest.get("snapshot") != {
         "method": "git archive",
         "network_required": False,
@@ -199,7 +222,19 @@ def verify_manifest(
             check=False,
             capture_output=True,
         )
-        verify_output(replay, command, recorded_stdout)
+        verify_output(replay, command, command_stdout)
+        if retest is not None:
+            retest_command, retest_argv, retest_environment, retest_stdout = retest
+            retest_env = replay_environment(manifest, os.environ.copy())
+            retest_env.update(retest_environment)
+            retest_replay = subprocess.run(
+                translated_replay_argv(retest_argv),
+                cwd=snapshot,
+                env=retest_env,
+                check=False,
+                capture_output=True,
+            )
+            verify_output(retest_replay, retest_command, retest_stdout)
         if active:
             identity = repository_check_identity(manifest)
             if repository_checks is None or identity not in repository_checks:
@@ -215,6 +250,13 @@ def verify_manifest(
         for field in ("active_seconds", "wall_seconds")
     ):
         fail("harness timing is incomplete")
+    if active and schema_version == 4:
+        retest_timing = timing.get("retest")
+        if not isinstance(retest_timing, dict) or not all(
+            isinstance(retest_timing.get(field), (int, float)) and retest_timing[field] > 0
+            for field in ("active_seconds", "wall_seconds")
+        ):
+            fail("active G2 retest timing is incomplete")
     learner_timing = manifest.get("learner_time_calibration")
     if not isinstance(learner_timing, dict) or learner_timing.get("status") != "Not run":
         fail("machine replay and learner-time calibration must remain separate")

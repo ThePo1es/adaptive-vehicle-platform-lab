@@ -6,7 +6,7 @@ struct FixedClock {
     int value;
 };
 
-int read_fixed(void* context) noexcept {
+__attribute__((noinline)) int read_fixed(void* context) noexcept {
     return static_cast<FixedClock*>(context)->value;
 }
 

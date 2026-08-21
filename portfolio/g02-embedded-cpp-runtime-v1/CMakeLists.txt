@@ -67,7 +67,15 @@ add_test(NAME g02_cpp_demo COMMAND g02_cpp_demo)
 add_test(NAME g02_c_demo COMMAND g02_c_demo)
 
 include(GNUInstallDirs)
-install(TARGETS g02_embedded_cpp ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+include(CMakePackageConfigHelpers)
+
+set(G02_PACKAGE_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/G02EmbeddedCpp")
+
+install(
+    TARGETS g02_embedded_cpp
+    EXPORT G02EmbeddedCppTargets
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+)
 install(
     FILES
         "${G02_INCLUDE_ROOT}/g02_lifetime.hpp"
@@ -76,4 +84,47 @@ install(
         "${G02_INCLUDE_ROOT}/g02_abi.hpp"
         "${G02_INCLUDE_ROOT}/g02_abi_c.h"
     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+)
+install(
+    EXPORT G02EmbeddedCppTargets
+    FILE G02EmbeddedCppTargets.cmake
+    NAMESPACE G02::
+    DESTINATION "${G02_PACKAGE_DIR}"
+)
+configure_package_config_file(
+    "${CMAKE_CURRENT_LIST_DIR}/cmake/G02EmbeddedCppConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/G02EmbeddedCppConfig.cmake"
+    INSTALL_DESTINATION "${G02_PACKAGE_DIR}"
+)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/G02EmbeddedCppConfigVersion.cmake"
+    VERSION "${PROJECT_VERSION}"
+    COMPATIBILITY SameMajorVersion
+)
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/G02EmbeddedCppConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/G02EmbeddedCppConfigVersion.cmake"
+    DESTINATION "${G02_PACKAGE_DIR}"
+)
+
+add_test(
+    NAME g02_installed_consumer
+    COMMAND
+        "${CMAKE_COMMAND}"
+        "-DBUILD_DIR:PATH=${CMAKE_BINARY_DIR}"
+        "-DINSTALL_PREFIX:PATH=${CMAKE_BINARY_DIR}/installed-consumer-prefix"
+        "-DCONSUMER_SOURCE:PATH=${CMAKE_CURRENT_LIST_DIR}/consumer"
+        "-DCONSUMER_BUILD:PATH=${CMAKE_BINARY_DIR}/installed-consumer-build"
+        "-DGENERATOR:STRING=${CMAKE_GENERATOR}"
+        "-DGENERATOR_PLATFORM:STRING=${CMAKE_GENERATOR_PLATFORM}"
+        "-DPARENT_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}"
+        "-DPARENT_CXX_COMPILER_ARG1:STRING=${CMAKE_CXX_COMPILER_ARG1}"
+        "-DPARENT_AR:FILEPATH=${CMAKE_AR}"
+        "-DPARENT_RANLIB:FILEPATH=${CMAKE_RANLIB}"
+        -P "${CMAKE_CURRENT_LIST_DIR}/cmake/verify_installed_consumer.cmake"
+)
+set_tests_properties(
+    g02_installed_consumer
+    PROPERTIES DEPENDS "g02_cpp_demo;g02_c_demo"
 )

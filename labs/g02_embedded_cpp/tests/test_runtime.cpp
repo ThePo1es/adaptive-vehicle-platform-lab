@@ -215,6 +215,27 @@ int test_diagnostic_counters_saturate_instead_of_wrapping() {
     G02_CHECK(drop.dropped_count() == std::numeric_limits<std::uint64_t>::max());
     return 0;
 }
+
+int test_generation_max_retires_callback_slot() {
+    // Given the first free callback slot at its final generation value.
+    EventRuntime runtime{FullPolicy::RejectNewest};
+    Recorder first{};
+    Recorder second{};
+    G02_CHECK(runtime.seed_callback_generation_for_test(
+        0U, std::numeric_limits<std::uint64_t>::max()));
+    const auto final_handle = runtime.register_callback(Callback{record_event, &first});
+    G02_CHECK(final_handle.has_value());
+    G02_CHECK(final_handle->index == 0U);
+    G02_CHECK(final_handle->generation == std::numeric_limits<std::uint64_t>::max());
+    // When that final handle is unregistered and another callback is registered.
+    G02_CHECK(runtime.unregister_callback(*final_handle));
+    const auto next_handle = runtime.register_callback(Callback{record_event, &second});
+    G02_CHECK(next_handle.has_value());
+    // Then the exhausted slot stays retired and the stale handle cannot become live again.
+    G02_CHECK(next_handle->index != final_handle->index);
+    G02_CHECK(!runtime.unregister_callback(*final_handle));
+    return 0;
+}
 }
 
 int main() {
@@ -223,7 +244,8 @@ int main() {
         test_dispatch_uses_callback_snapshot() != 0 ||
         test_reentrant_event_waits_for_next_dispatch() != 0 ||
         test_runtime_operations_do_not_allocate_after_construction() != 0 ||
-        test_diagnostic_counters_saturate_instead_of_wrapping() != 0) {
+        test_diagnostic_counters_saturate_instead_of_wrapping() != 0 ||
+        test_generation_max_retires_callback_slot() != 0) {
         return 1;
     }
     std::puts("PASS fixed-capacity runtime contract");

@@ -23,6 +23,8 @@ class _SymbolView(Protocol):
 class _SymbolTableView(Protocol):
     def iter_symbols(self) -> Iterator[_SymbolView]: ...
 
+    def get_symbol(self, index: int) -> _SymbolView: ...
+
 
 class _SectionView(Protocol):
     def __getitem__(self, key: str) -> int: ...
@@ -31,9 +33,15 @@ class _SectionView(Protocol):
 class _RelocationView(Protocol):
     def num_relocations(self) -> int: ...
 
+    def iter_relocations(self) -> Iterator[_SectionView]: ...
+
+    def __getitem__(self, key: str) -> int: ...
+
 
 class _ElfView(Protocol):
     def get_section_by_name(self, name: str) -> object | None: ...
+
+    def get_section(self, index: int) -> object | None: ...
 
     def iter_sections(self) -> Iterator[object]: ...
 
@@ -44,6 +52,7 @@ class ElfReport:
     text_bytes: int
     relocation_count: int
     symbols: frozenset[str]
+    relocation_symbols: frozenset[str]
 
 
 @dataclass(frozen=True, slots=True)
@@ -90,7 +99,7 @@ def compile_freestanding_object(request: FreestandingBuild) -> None:
 
 def inspect_elf(path: Path, variant: str) -> ElfReport:
     with path.open("rb") as stream:
-        elf = cast(_ElfView, ELFFile(stream))
+        elf = cast(_ElfView, cast(object, ELFFile(stream)))
         text_object = elf.get_section_by_name(".text")
         symbols_object = elf.get_section_by_name(".symtab")
         if text_object is None or symbols_object is None:
@@ -98,12 +107,31 @@ def inspect_elf(path: Path, variant: str) -> ElfReport:
         text = cast(_SectionView, text_object)
         symbols = cast(_SymbolTableView, symbols_object)
         names = frozenset(symbol.name for symbol in symbols.iter_symbols() if symbol.name)
-        relocations = sum(
-            cast(_RelocationView, section).num_relocations()
-            for section in elf.iter_sections()
-            if hasattr(section, "num_relocations")
+        relocation_count = 0
+        relocation_symbols: set[str] = set()
+        for section_object in elf.iter_sections():
+            if not hasattr(section_object, "iter_relocations"):
+                continue
+            section = cast(_RelocationView, section_object)
+            relocation_count += section.num_relocations()
+            symbol_table_object = elf.get_section(int(section["sh_link"]))
+            if symbol_table_object is None:
+                raise ElfContractError(f"{variant} relocation section has no symbol table")
+            symbol_table = cast(_SymbolTableView, symbol_table_object)
+            for relocation in section.iter_relocations():
+                symbol_index = int(relocation["r_info_sym"])
+                if symbol_index == 0:
+                    continue
+                symbol_name = symbol_table.get_symbol(symbol_index).name
+                if symbol_name:
+                    relocation_symbols.add(symbol_name)
+        return ElfReport(
+            variant,
+            int(text["sh_size"]),
+            relocation_count,
+            names,
+            frozenset(relocation_symbols),
         )
-        return ElfReport(variant, int(text["sh_size"]), relocations, names)
 
 
 def verify_reports(reports: tuple[ElfReport, ...]) -> tuple[int, int]:
@@ -119,6 +147,16 @@ def verify_reports(reports: tuple[ElfReport, ...]) -> tuple[int, int]:
     ):
         if symbol not in by_variant[variant].symbols:
             raise ElfContractError(f"{variant} entry symbol is missing")
+    required_relocations = {
+        "virtual": "_ZTV10FixedClock",
+        "static": "_Z10read_clockI10FixedClockEiRT_",
+        "manual": "_Z10read_fixedPv",
+    }
+    for variant, symbol in required_relocations.items():
+        if symbol not in by_variant[variant].relocation_symbols:
+            raise ElfContractError(
+                f"{variant} required relocation target is missing: {symbol}"
+            )
     return (
         sum(report.text_bytes for report in reports),
         sum(report.relocation_count for report in reports),

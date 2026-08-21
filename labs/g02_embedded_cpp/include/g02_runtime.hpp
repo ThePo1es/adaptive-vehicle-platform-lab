@@ -59,6 +59,8 @@ public:
         rejected_ = rejected;
         dropped_ = dropped;
     }
+    [[nodiscard]] bool seed_callback_generation_for_test(
+        std::size_t index, std::uint64_t generation) noexcept;
 #endif
 
 private:

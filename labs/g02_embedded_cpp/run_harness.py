@@ -3,7 +3,7 @@
 # dependencies = ["pyelftools==0.32"]
 # ///
 # ─── How to run ───
-# uv run --with ziglang==0.15.2 labs/g02_embedded_cpp/run_harness.py
+# uv run --with ziglang==0.15.2 --with pyelftools==0.32 python -m labs.g02_embedded_cpp.run_harness
 
 from __future__ import annotations
 
@@ -68,7 +68,7 @@ class SprintRun(NamedTuple):
 
 SPRINTS: Final = (
     SprintSpec("G2.1", "lifetime.cpp", "test_lifetime.cpp", (101, 102), True),
-    SprintSpec("G2.2", "runtime.cpp", "test_runtime.cpp", (201, 202, 203), False),
+    SprintSpec("G2.2", "runtime.cpp", "test_runtime.cpp", (201, 202, 203, 204), False),
     SprintSpec("G2.3", "queue.cpp", "test_queue.cpp", (301, 302), False),
     SprintSpec("G2.4", "abi.cpp", "test_abi.cpp", (401, 402, 403), False, True),
 )
@@ -100,10 +100,31 @@ def resolve_source_root(candidate: Path) -> Path:
     return resolved
 
 
+def require_trusted_submission(submission: str | None, trust: str | None) -> Path:
+    if submission is None:
+        return REFERENCE_ROOT
+    if trust != "1":
+        raise HarnessInputError(
+            "set G02_TRUSTED_LOCAL_EXECUTION=1 only for code you wrote or reviewed"
+        )
+    return resolve_source_root(Path(submission))
+
+
+def resolve_submission_source(source_root: Path, filename: str) -> Path:
+    candidate = source_root / filename
+    try:
+        resolved = candidate.resolve(strict=True)
+    except OSError as error:
+        raise HarnessInputError(f"submission source is missing: {candidate}") from error
+    if candidate.is_symlink() or not resolved.is_relative_to(source_root) or not resolved.is_file():
+        raise HarnessInputError(
+            f"submission source must be a regular file inside its source root: {candidate}"
+        )
+    return resolved
+
+
 def compile_binary(request: CompileRequest) -> None:
-    source = request.source_root / request.sprint.source
-    if not source.is_file():
-        raise HarnessInputError(f"submission source is missing: {source}")
+    source = resolve_submission_source(request.source_root, request.sprint.source)
     command = [
         *compiler_prefix(request.compiler),
         "-std=c++20",
@@ -139,12 +160,18 @@ def compile_binary(request: CompileRequest) -> None:
 
 
 def run_binary(output: Path) -> subprocess.CompletedProcess[str]:
-    environment = os.environ.copy()
-    environment["ASAN_OPTIONS"] = "detect_leaks=0:halt_on_error=1"
-    environment["UBSAN_OPTIONS"] = "halt_on_error=1"
+    environment = {
+        "ASAN_OPTIONS": "detect_leaks=0:halt_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1",
+        "TEMP": str(output.parent),
+        "TMP": str(output.parent),
+    }
+    for key in ("SYSTEMROOT", "WINDIR"):
+        if key in os.environ:
+            environment[key] = os.environ[key]
     return subprocess.run(
         [str(output)],
-        cwd=REPO_ROOT,
+        cwd=output.parent,
         env=environment,
         check=False,
         capture_output=True,
@@ -221,7 +248,9 @@ def main() -> int:
     try:
         selected, retest = parse_selection(os.environ.get("G02_LAB_ID", "G2.ALL"))
         submission = os.environ.get("G02_SUBMISSION_ROOT")
-        source_root = resolve_source_root(Path(submission) if submission else REFERENCE_ROOT)
+        source_root = require_trusted_submission(
+            submission, os.environ.get("G02_TRUSTED_LOCAL_EXECUTION")
+        )
         compiler, identity = resolve_compiler()
         print(
             f"TOOLCHAIN python={platform.python_version()} compiler=zig-c++ "

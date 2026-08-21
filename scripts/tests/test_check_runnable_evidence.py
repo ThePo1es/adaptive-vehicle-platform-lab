@@ -20,6 +20,7 @@ from scripts.runnable_evidence_support import (
 from scripts.runnable_evidence_validator import (
     repository_check_identity,
     verify_command_shape,
+    verify_retest_command_shape,
 )
 
 
@@ -94,6 +95,35 @@ def test_schema_four_command_pins_cpp_and_elf_toolchains() -> None:
     )
 
 
+def test_active_g2_retest_command_requires_lab_specific_b_input() -> None:
+    command = {
+        "argv": [*PINNED_G2_ARGV_PREFIX, PINNED_G2_MODULE],
+        "environment": {
+            "G02_LAB_ID": "G2.1.RETEST",
+            "PYTHONDONTWRITEBYTECODE": "1",
+        },
+        "expected_exit": 0,
+        "observed_exit": 0,
+    }
+    artifacts = {"runner": {"path": "labs/g02_embedded_cpp/run_harness.py"}}
+    assert verify_retest_command_shape(command, artifacts, "G2.1") == (
+        [*PINNED_G2_ARGV_PREFIX, PINNED_G2_MODULE],
+        {"G02_LAB_ID": "G2.1.RETEST", "PYTHONDONTWRITEBYTECODE": "1"},
+    )
+
+
+def test_active_g2_retest_command_rejects_a_input() -> None:
+    command = {
+        "argv": [*PINNED_G2_ARGV_PREFIX, PINNED_G2_MODULE],
+        "environment": {"G02_LAB_ID": "G2.1", "PYTHONDONTWRITEBYTECODE": "1"},
+        "expected_exit": 0,
+        "observed_exit": 0,
+    }
+    artifacts = {"runner": {"path": "labs/g02_embedded_cpp/run_harness.py"}}
+    with pytest.raises(ValueError, match="B input"):
+        _ = verify_retest_command_shape(command, artifacts, "G2.1")
+
+
 def test_uv_version_accepts_official_build_metadata() -> None:
     assert pinned_uv_version("uv 0.12.3")
     assert pinned_uv_version("uv 0.12.3 (507230998 2026-08-07 x86_64-pc-windows-msvc)")
@@ -132,11 +162,11 @@ def test_repository_check_identity_deduplicates_only_identical_replays() -> None
         },
     }
     identity = repository_check_identity(manifest)
-    changed = {
-        **manifest,
+    changed: dict[str, object] = {
+        "starter_commit": "a" * 40,
         "repository_check": {
-            **manifest["repository_check"],
             "stdout_sha256": "d" * 64,
+            "stderr_sha256": "c" * 64,
         },
     }
     assert identity == ("a" * 40, "b" * 64, "c" * 64)

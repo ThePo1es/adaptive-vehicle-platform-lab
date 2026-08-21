@@ -60,13 +60,25 @@ bool EventRuntime::unregister_callback(CallbackHandle handle) noexcept {
     }
     slot.occupied = false;
     slot.callback = {};
-    if (slot.generation == std::numeric_limits<std::uint64_t>::max()) {
+    if (slot.generation == std::numeric_limits<std::uint64_t>::max() && G02_MUTANT != 204) {
         slot.retired = true;
     } else {
         ++slot.generation;
     }
     return true;
 }
+
+#if G02_TESTING
+bool EventRuntime::seed_callback_generation_for_test(
+    std::size_t index, std::uint64_t generation) noexcept {
+    if (index >= callbacks_.size() || callbacks_[index].occupied) {
+        return false;
+    }
+    callbacks_[index].generation = generation;
+    callbacks_[index].retired = false;
+    return true;
+}
+#endif
 
 bool EventRuntime::dispatch_one() noexcept {
     if (count_ == 0U) {
