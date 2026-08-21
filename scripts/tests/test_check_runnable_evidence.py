@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import subprocess
 import sys
+import threading
 from pathlib import Path
 
 import pytest
 
+from scripts.check_runnable_evidence import verify_manifests
 from scripts.runnable_evidence_replay import (
     LOCKED_TOOLCHAIN_ARGV_PREFIX,
     PINNED_G1_ARGV_PREFIX,
@@ -19,6 +21,7 @@ from scripts.runnable_evidence_replay import (
     verify_runtime,
 )
 from scripts.runnable_evidence_support import (
+    REPO_ROOT,
     REQUIRED_ROLES,
     canonical_output,
     digest,
@@ -31,6 +34,88 @@ from scripts.runnable_evidence_validator import (
     verify_command_shape,
     verify_retest_command_shape,
 )
+
+
+def manifest_path(lab_id: str, version: int) -> Path:
+    return REPO_ROOT / "evidence" / "runnable" / lab_id.lower() / f"run-manifest-v{version}.json"
+
+
+def test_manifest_batch_keeps_active_checks_serial_and_parallelizes_history(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    active_path = manifest_path("G1.1", 2)
+    historical_paths = [manifest_path("G1.1", version) for version in range(3, 7)]
+    running = 0
+    peak_running = 0
+    lock = threading.Lock()
+    two_workers_started = threading.Event()
+    release_workers = threading.Event()
+
+    def fake_verify(
+        path: Path,
+        active: bool,
+        indexed_lab_id: str | None,
+        repository_checks: set[tuple[str, str, str]] | None,
+    ) -> str:
+        nonlocal running, peak_running
+        if active:
+            assert indexed_lab_id == "G1.1"
+            assert repository_checks is not None
+            assert running == 0
+            return f"active:{path.name}"
+        assert indexed_lab_id is None
+        assert repository_checks is None
+        with lock:
+            running += 1
+            peak_running = max(peak_running, running)
+            if running == 2:
+                two_workers_started.set()
+        assert two_workers_started.wait(timeout=2)
+        release_workers.set()
+        assert release_workers.wait(timeout=2)
+        with lock:
+            running -= 1
+        return f"history:{path.name}"
+
+    monkeypatch.setattr("scripts.check_runnable_evidence.verify_manifest", fake_verify)
+
+    results = verify_manifests(
+        [active_path, *historical_paths],
+        {str(active_path.relative_to(REPO_ROOT)): "G1.1"},
+    )
+
+    assert peak_running == 2
+    assert results == [
+        f"active:{active_path.name}",
+        *(f"history:{path.name}" for path in historical_paths),
+    ]
+
+
+def test_manifest_batch_waits_for_all_submitted_checks_before_failing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    paths = [manifest_path("G1.1", version) for version in range(1, 5)]
+    checked: set[Path] = set()
+    lock = threading.Lock()
+
+    def fake_verify(
+        path: Path,
+        _active: bool,
+        _indexed_lab_id: str | None,
+        _repository_checks: set[tuple[str, str, str]] | None,
+    ) -> str:
+        with lock:
+            checked.add(path)
+        if path == paths[0]:
+            raise ValueError("broken manifest")
+        return path.name
+
+    monkeypatch.setattr("scripts.check_runnable_evidence.verify_manifest", fake_verify)
+
+    with pytest.raises(ValueError, match="broken manifest"):
+        _ = verify_manifests(paths, {})
+
+    assert checked == set(paths)
 
 
 def test_inactive_manifest_requires_only_base_artifacts() -> None:
