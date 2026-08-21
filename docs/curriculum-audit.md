@@ -3,51 +3,51 @@
 ## 현재 판정
 
 - G8–G12의 Adaptive·MCU·보증·통합 경로 명세: **통과**
-- 91개 Sprint 전체를 바로 실행할 수 있는 완성 과정: **통과 전**
+- 91개 실습 전체를 바로 실행할 수 있는 완성 과정: **통과 전**
 
-81개 실습 안내서는 `Specified`, G1.1–G1.5·G2.1–G2.4·G10.1은 `Runnable` 상태입니다. 열 실습에는 시작 커밋, 공개 입력과 코드의 SHA-256, 실행 명령, 기준 출력, CPU 사용 시간과 실제 경과 시간이 붙었습니다. G1은 Python 3.12.13과 Zig 0.15.2, 공개 입력 A·B, C17 기준 구현·시작 코드·독립 검사와 필수 결함 주입을 함께 잠갔습니다. G2는 같은 도구 모음에서 C++20 공개 입력 A·B, 필수 결함 주입 11개, C17 호출 경계와 두 freestanding 표적의 ELF 계약을 잠갔습니다. 첫 학습자 실행과 실제 Cortex-M 수행 시간은 아직 기록하지 않았습니다.
+81개 실습 안내서는 `Specified`, G1.1–G1.5·G2.1–G2.4·G10.1은 `Runnable` 상태입니다. 열 실습에는 시작 커밋, 공개 입력과 코드의 SHA-256, 실행 명령, 기준 출력, CPU 사용 시간과 실제 경과 시간이 붙었습니다. G1은 Python 3.12.13과 Zig 0.15.2, 공개 입력 A·B, C17 기준 구현·시작 코드·독립 검사와 필수 결함 주입을 함께 잠갔습니다. G2는 같은 도구 모음에서 C++20 공개 입력 A·B, 필수 결함 주입 11개, C17 호출 경계와 두 독립 실행 대상의 ELF 계약을 잠갔습니다. 첫 학습자 실행과 실제 Cortex-M 수행 시간은 아직 기록하지 않았습니다.
 
 ## 이전 감사 항목 대조
 
 | 항목 | 현재 상태 | 확인 위치 |
 | --- | --- | --- |
 | 차량 보안을 G10 뒤로 앞당김 | 해결 | G10.8 IAM, G11A UCM·패키지 보안 |
-| Service Interface → Proxy/Skeleton → SOME/IP 순서 | 해결 | G9.2 → G9.3 → G9.4–9.6 |
-| Proxy/Skeleton 실제 생성 실습 | 해결 | 로컬 IDL 생성기와 CommonAPI 비교를 G9.3에 명시 |
+| 서비스 인터페이스 → 프록시/스켈레톤 → SOME/IP 순서 | 해결 | G9.2 → G9.3 → G9.4–9.6 |
+| 프록시/스켈레톤 실제 생성 실습 | 해결 | 로컬 IDL 생성기와 CommonAPI 비교를 G9.3에 명시 |
 | G8 실시간 Linux·PREEMPT_RT 공백 | 해결 | G8.8–8.9 |
 | PID 재사용·이탈 자식 정리 | 해결 | pidfd, cgroup v2, subreaper, double-fork 시험 |
 | systemd·P01·P03·PHM 재시작 경합 | 해결 | [생명주기 소유권 표](lifecycle-ownership.md) |
 | 저장된 운행 상태의 부팅 적용 | 해결 | 부팅은 `Startup`, 조건·버전·목록 재검증 |
-| DoIP·UDS 결과 혼합 | 해결 | transport 거부, backend 실패, ECU NRC 분리 |
+| DoIP·UDS 결과 혼합 | 해결 | 전송 계층 거부, 백엔드 실패, ECU NRC 분리 |
 | G9 vCAN이 실제 bus-off를 증명하는 문제 | 해결 | P05-SIM과 P05-HW 요구사항 분리 |
-| CAN source gap 판정 근거 | 해결 | rolling counter와 source boot/session ID 필수 |
-| VM PTP 성능 주장 | 해결 | VM은 프로토콜 확인, drift 주장은 물리 노드나 합성 시계만 허용 |
-| Manifest TOCTOU | 해결 | immutable rootfs 또는 descriptor 기반 경로와 교체 입력 모음 |
-| 합성 pcap 정책과 CI 충돌 | 해결 | 공개 fixture 경로와 metadata 조건 추가 |
-| Diagnostics·IAM 구현 공백 | 해결 | G10.7–10.8과 P03 구성요소 추가 |
-| UCM이 단순 A/B updater로 끝나는 문제 | 해결 | G11.1–11.4에 package·cluster·전송·활성화·롤백 계약 추가 |
-| CAN FD 판정 공백 | 해결 | DLC code 0–15와 payload length를 분리하고 BRS, ESI, 두 bit-rate 구간을 요구사항·16-vector oracle로 고정 |
-| G4–G7 개별 과제·MCU 기준선 공백 | 해결 | 27개 Lab Pack, NUCLEO-G474RE/Zephyr 4.4.0 ADR, G4/Classic 요구사항 추가 |
-| G4–G7 수치·시험 입력·계보 공백 | 해결 | Gate별 실행 계약, 8개 합성 입력, 31개 baselined 요구사항, 계산 oracle 독립 검사 추가 |
-| Classic module 책임 합침 | 해결 | Can Driver/CanIf, Wdg/WdgIf/WdgM, ComM/CanSM/CanNm을 분리하고 E2E/SecOC 과제 배정 |
-| CAN analog 계측 과장 | 해결 | controller·logic·analog lane 분리, scope·differential probe가 없으면 analog 판정을 `Unverified`로 제한 |
-| Gate 입구 진단·보강 경로 | 해결 | [입구 진단과 8–16시간 보강 모듈](gate-entry-diagnostics.md) |
-| 모든 Sprint가 같은 시간·종결문을 쓰는 문제 | 해결 | G8–G11 시간 범위 분화, 반복 종결 공식 제거 |
-| 실제 Adaptive stack 경험 | 일부 해결 | CommonAPI 필수 비교와 Industrial Bridge 경로 추가; 실제 SDK/CAPI 과제는 접근성에 따라 미작성 |
-| 외부 검토자 병목 | 일부 해결 | 자동 oracle·upstream 결함을 일반 Sprint에 사용하고 재현·도메인 검토 역할 분리 |
-| 전체 91 Sprint 과제 명세 | 해결 | 81개 Specified, G1 5개·G2 4개·G10.1 Runnable |
-| 시간 추정의 실측 보정 | 미해결 | G10.1 기계 재현은 기록됨; 학습 시간과 G8.6·G9.6·G11.4 pilot 기록 없음 |
+| CAN 메시지 누락 판정 근거 | 해결 | 순환 계수와 송신원 부팅·세션 ID 필수 |
+| VM PTP 성능 주장 | 해결 | VM은 프로토콜 확인, 시계 편차 주장은 물리 노드나 합성 시계만 허용 |
+| 명세 파일 교체 경쟁 조건(TOCTOU) | 해결 | 변경 불가능한 루트 파일 시스템 또는 파일 서술자 기반 경로와 교체 입력 모음 |
+| 합성 pcap 정책과 CI 충돌 | 해결 | 공개 시험 입력 경로와 메타데이터 조건 추가 |
+| 진단·IAM 구현 공백 | 해결 | G10.7–10.8과 P03 구성요소 추가 |
+| UCM이 단순 A/B 갱신기로 끝나는 문제 | 해결 | G11.1–11.4에 패키지·클러스터·전송·활성화·롤백 계약 추가 |
+| CAN FD 판정 공백 | 해결 | DLC 코드 0–15와 데이터 길이를 분리하고 BRS, ESI, 두 비트 전송률 구간을 요구사항·입력 16개·판정 기준으로 고정 |
+| G4–G7 개별 과제·MCU 기준선 공백 | 해결 | 27개 실습 안내서, NUCLEO-G474RE/Zephyr 4.4.0 ADR, G4/Classic 요구사항 추가 |
+| G4–G7 수치·시험 입력·계보 공백 | 해결 | 학습 단계별 실행 계약, 합성 입력 8개, 기준이 정해진 요구사항 31개, 계산 판정 기준의 독립 검사 추가 |
+| Classic 모듈 책임 합침 | 해결 | Can Driver/CanIf, Wdg/WdgIf/WdgM, ComM/CanSM/CanNm을 분리하고 E2E/SecOC 과제 배정 |
+| CAN 아날로그 계측 과장 | 해결 | 컨트롤러·로직·아날로그 확인 구간을 분리하고, 오실로스코프·차동 프로브가 없으면 아날로그 판정을 `Unverified`로 제한 |
+| 학습 단계 입구 진단·보강 경로 | 해결 | [입구 진단과 8–16시간 보강 모듈](gate-entry-diagnostics.md) |
+| 모든 실습이 같은 시간·종결문을 쓰는 문제 | 해결 | G8–G11 시간 범위 분화, 반복 종결 공식 제거 |
+| 실제 Adaptive 구현 환경 경험 | 일부 해결 | CommonAPI 필수 비교와 산업용 도구 연계 실습 추가; 실제 SDK/CAPI 과제는 접근성에 따라 미작성 |
+| 외부 검토자 병목 | 일부 해결 | 자동 판정 기준·상위 프로젝트 결함을 일반 실습에 사용하고 재현·도메인 검토 역할 분리 |
+| 전체 91개 실습 명세 | 해결 | 81개 Specified, G1 5개·G2 4개·G10.1 Runnable |
+| 시간 추정의 실측 보정 | 미해결 | G10.1 기계 재현은 기록됨; 학습 시간과 G8.6·G9.6·G11.4 시범 실행 기록 없음 |
 
 ## 공개 전에 반드시 남은 일
 
-1. G8.6, G9.6, G11.4를 실제로 실행하고 G10.1의 학습 시간을 재서 시간 추정을 보정한다.
+1. G8.6, G9.6, G11.4를 실제로 시범 실행하고 G10.1의 학습 시간을 재서 시간 추정을 보정한다.
 2. 실행이 검증된 과제를 `Runnable`로 올리고, 봉인 문제까지 검토한 과제를 `Assessment-ready`로 올린다.
-3. G10 뒤 Industrial Bridge를 실행 가능한 과제로 만들고 CommonAPI·Yocto·DLT 결과를 남긴다. 공식 SDK나 CAPI에 접근하면 같은 계약 시험을 이식한다.
-4. G0–G2 실제 시간과 네 pilot 결과로 전체 예상 시간을 다시 계산한다.
+3. G10 뒤 산업용 도구 연계 실습을 실행 가능한 과제로 만들고 CommonAPI·Yocto·DLT 결과를 남긴다. 공식 SDK나 CAPI에 접근하면 같은 계약 시험을 이식한다.
+4. G0–G2 실제 시간과 네 시범 실행 결과로 전체 예상 시간을 다시 계산한다.
 
 ## 자동 검사 범위
 
-`scripts/check_repo.sh`는 내부 링크, 요구사항 추적, Lab Pack 필수 절, 합성 입력의 계산 가능한 oracle, 민감 파일, 공개 합성 캡처 metadata를 검사합니다. 기술 정확성, 교육 효과, 표준 적합성은 이 스크립트 통과만으로 판정하지 않습니다.
+`scripts/check_repo.sh`는 내부 링크, 요구사항 추적, 실습 안내서의 필수 절, 합성 입력의 계산 가능한 판정 기준, 민감 파일, 공개 합성 캡처 메타데이터를 검사합니다. 기술 정확성, 교육 효과, 표준 적합성은 이 스크립트 통과만으로 판정하지 않습니다.
 
 현재 검사 결과:
 
@@ -55,8 +55,8 @@
 - 요구사항 103개와 추적성 103개 일치; G1 5개 `Implemented`, 나머지 98개 `Baselined`
 - Specified 실습 안내서 81개와 Runnable 실습 안내서 10개 확인
 - G1 공개 입력 A·B 10개, 기준 구현·시작 코드·검사기 해시, `-O0/-O2`, 필수 결함 주입 16개, 0용량 컴파일 실패 재실행
-- G2 공개 입력 A·B 8개, 기준 구현·시작 코드·검사기 해시, `-O0/-O2`, 필수 결함 주입 11개, C17 호출 경계와 두 freestanding 표적의 ELF 계약 재실행
-- G5–G7·G11·G12 합성 입력 10개의 RTA·DLC·journal·mode/security·변경 영향·통합 oracle 재계산 통과
+- G2 공개 입력 A·B 8개, 기준 구현·시작 코드·검사기 해시, `-O0/-O2`, 필수 결함 주입 11개, C17 호출 경계와 두 독립 실행 대상의 ELF 계약 재실행
+- G5–G7·G11·G12 합성 입력 10개의 RTA·DLC·저널·모드·보안·변경 영향·통합 판정 기준 재계산 통과
 - G10.1 공개 입력의 양성 1개·음성 26개 재실행, 정해진 주장 값과 서명된 신뢰 정책 확인, 시작 파일·시험 입력·출력 해시 확인
 - 자동 검사에서 잡히는 동일 문장 반복 0건
 - `bash -n`과 `git diff --check` 통과

@@ -82,23 +82,23 @@ G12 이후에는 선택한 하위 시스템을 다른 대상 환경에 이식하
 
 ```mermaid
 flowchart TB
-    Client["Client / Diagnostic Tester"]
+    Client["클라이언트 / 진단 시험기"]
 
-    subgraph Linux["Linux Vehicle Computer"]
-        VSS["SOME/IP Vehicle Service"]
-        DG["Diagnostic Gateway"]
-        EM["Execution + State Manager"]
-        HM["Health Monitor"]
-        UM["Update Manager"]
-        OBS["Persistency + Logging"]
+    subgraph Linux["Linux 차량 컴퓨터"]
+        VSS["SOME/IP 차량 서비스"]
+        DG["진단 게이트웨이"]
+        EM["실행·상태 관리자"]
+        HM["건전성 감시기"]
+        UM["업데이트 관리자"]
+        OBS["영속 저장·로그"]
     end
 
     subgraph MCU["RTOS MCU ECU"]
-        Tasks["Periodic Tasks"]
+        Tasks["주기 태스크"]
         CAN["CAN + ISO-TP / UDS"]
-        DTC["DTC + Persistent State"]
-        WDG["Watchdog + Fallback State"]
-        Boot["Boot / Fallback Path (verified at T3)"]
+        DTC["DTC + 영속 상태"]
+        WDG["감시 타이머·대체 상태"]
+        Boot["부팅·대체 경로(T3에서 검증)"]
     end
 
     Client <-->|"SOME/IP / DoIP"| Linux
