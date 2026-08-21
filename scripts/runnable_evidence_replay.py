@@ -56,7 +56,7 @@ LOCKED_TOOLCHAIN_ARGV_PREFIX = [
 WINDOWS_REPOSITORY_CHECK = "hash -p /usr/bin/bash bash; source scripts/check_repo.sh"
 REPLAY_TIMEOUT_SECONDS = 180
 REPOSITORY_CHECK_TIMEOUT_SECONDS = 600
-PROBE_TIMEOUT_SECONDS = 30
+PROBE_TIMEOUT_SECONDS = 120
 VERIFIER_ENVIRONMENT_KEYS = {"UV_PROJECT_ENVIRONMENT", "VIRTUAL_ENV"}
 
 
@@ -157,18 +157,18 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
         version_command = [*PINNED_G2_ARGV_PREFIX[:-1], "--version"]
     else:
         version_command = [*LOCKED_TOOLCHAIN_ARGV_PREFIX[:-1], "--version"]
-    environment = clean_verifier_environment(os.environ)
+    probe_environment = clean_verifier_environment(os.environ)
     version = run_text_probe(
         version_command,
         cwd=snapshot,
-        environment=environment,
+        environment=probe_environment,
         label="Python version probe",
     )
     observed = version.stdout.strip().removeprefix("Python ")
     if version.returncode != 0 or observed != expected:
         fail(f"Python version mismatch: expected {expected}, got {observed}")
     if schema_version in {3, 5}:
-        environment = manifest.get("environment")
+        recorded_environment = manifest.get("environment")
         required = {
             "uv": "0.12.3",
             "c_compiler": "zig",
@@ -176,12 +176,12 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
             "c_runtime": "Zig 0.15.2 bundled libc",
             "target_contract": "native x86_64 hosted C17",
         }
-        if not isinstance(environment, dict) or any(
-            environment.get(key) != value for key, value in required.items()
+        if not isinstance(recorded_environment, dict) or any(
+            recorded_environment.get(key) != value for key, value in required.items()
         ):
             fail(f"schema {schema_version} environment does not seal the G1 toolchain contract")
     elif schema_version in {4, 6}:
-        environment = manifest.get("environment")
+        recorded_environment = manifest.get("environment")
         required = {
             "uv": "0.12.3",
             "cpp_compiler": "zig-c++",
@@ -192,15 +192,15 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
             "target_contract": "native x86_64 hosted C++20",
             "abi_targets": "thumb-freestanding-eabi,aarch64-freestanding-none",
         }
-        if not isinstance(environment, dict) or any(
-            environment.get(key) != value for key, value in required.items()
+        if not isinstance(recorded_environment, dict) or any(
+            recorded_environment.get(key) != value for key, value in required.items()
         ):
             fail(f"schema {schema_version} environment does not seal the G2 C++ and ELF contract")
     if schema_version in {3, 4, 5, 6}:
         uv_version = run_text_probe(
             ["uv", "--version"],
             cwd=snapshot,
-            environment=environment,
+            environment=probe_environment,
             label="uv version probe",
         )
         if uv_version.returncode != 0 or not pinned_uv_version(uv_version.stdout.strip()):

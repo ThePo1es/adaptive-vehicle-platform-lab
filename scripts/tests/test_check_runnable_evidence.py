@@ -15,6 +15,7 @@ from scripts.runnable_evidence_replay import (
     pinned_uv_version,
     repository_check_argv,
     run_binary_replay,
+    verify_runtime,
 )
 from scripts.runnable_evidence_support import (
     REQUIRED_ROLES,
@@ -249,6 +250,51 @@ def test_replay_drops_parent_uv_environment_paths() -> None:
             "VIRTUAL_ENV": "C:/parent/toolchain/.venv",
         }
     ) == {"PATH": "tools"}
+
+
+def test_runtime_probe_does_not_reuse_manifest_environment(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    observed: list[dict[str, str]] = []
+
+    def probe(
+        argv: list[str],
+        *,
+        cwd: Path,
+        environment: dict[str, str],
+        label: str,
+    ) -> subprocess.CompletedProcess[str]:
+        _ = cwd
+        observed.append(environment)
+        output = "Python 3.12.13\n" if label == "Python version probe" else "uv 0.12.3\n"
+        return subprocess.CompletedProcess(argv, 0, stdout=output, stderr="")
+
+    monkeypatch.setenv("VIRTUAL_ENV", "C:/parent/toolchain/.venv")
+    monkeypatch.setattr("scripts.runnable_evidence_replay.run_text_probe", probe)
+    verify_runtime(
+        tmp_path,
+        {
+            "schema_version": 5,
+            "environment": {
+                "python": "3.12.13",
+                "uv": "0.12.3",
+                "c_compiler": "zig",
+                "c_compiler_version": "0.15.2",
+                "c_runtime": "Zig 0.15.2 bundled libc",
+                "target_contract": "native x86_64 hosted C17",
+                "replay_targets": ["x86_64-unknown-windows-gnu"],
+            },
+        },
+    )
+
+    assert len(observed) == 2
+    assert all("VIRTUAL_ENV" not in environment for environment in observed)
+    assert all(
+        isinstance(key, str) and isinstance(value, str)
+        for environment in observed
+        for key, value in environment.items()
+    )
 
 
 def test_text_evidence_has_platform_independent_newlines() -> None:
