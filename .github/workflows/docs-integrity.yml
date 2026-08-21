@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   docs-integrity:
-    name: docs-integrity (evidence ${{ matrix.evidence-label }}/8)
+    name: docs-integrity (evidence ${{ matrix.evidence-label }}/12)
     runs-on: windows-latest
     timeout-minutes: 45
     strategy:
@@ -34,8 +34,16 @@ jobs:
             evidence-label: 7
           - evidence-shard: 7
             evidence-label: 8
+          - evidence-shard: 8
+            evidence-label: 9
+          - evidence-shard: 9
+            evidence-label: 10
+          - evidence-shard: 10
+            evidence-label: 11
+          - evidence-shard: 11
+            evidence-label: 12
     env:
-      RUNNABLE_EVIDENCE_SHARD_COUNT: "8"
+      RUNNABLE_EVIDENCE_SHARD_COUNT: "12"
       RUNNABLE_EVIDENCE_SHARD_INDEX: ${{ matrix.evidence-shard }}
     steps:
       - name: Check out repository
