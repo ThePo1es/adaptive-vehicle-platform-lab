@@ -6,10 +6,10 @@
     "G1.3": "evidence/runnable/g1.3/run-manifest-v8.json",
     "G1.4": "evidence/runnable/g1.4/run-manifest-v8.json",
     "G1.5": "evidence/runnable/g1.5/run-manifest-v8.json",
-    "G2.1": "evidence/runnable/g2.1/run-manifest-v5.json",
-    "G2.2": "evidence/runnable/g2.2/run-manifest-v5.json",
-    "G2.3": "evidence/runnable/g2.3/run-manifest-v5.json",
-    "G2.4": "evidence/runnable/g2.4/run-manifest-v5.json",
+    "G2.1": "evidence/runnable/g2.1/run-manifest-v6.json",
+    "G2.2": "evidence/runnable/g2.2/run-manifest-v6.json",
+    "G2.3": "evidence/runnable/g2.3/run-manifest-v6.json",
+    "G2.4": "evidence/runnable/g2.4/run-manifest-v6.json",
     "G10.1": "evidence/runnable/g10.1/run-manifest-v13.json"
   }
 }
