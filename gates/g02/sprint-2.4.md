@@ -1,10 +1,10 @@
 # 실습 2-4 — 가상 함수·템플릿·C 경계를 비교해 선택하기
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `a50cde9348ba0491554580309ed325b20ee13912`
+> - 시작 커밋: `9c7f7c72a2ae167153017c2411d4d4c38808349a`
 > - 공개 입력 SHA-256: `129604c22c749318f3c16e47bd0b9a9083625d74801a11969faec5911e650c5f`
 > - 재시험 입력 SHA-256: `6dd642cf6de0cc538f33f2e873fe97be970e511e900d39afb8c1cff35ff2b002`
-> - 실행 기록: [G2.4 실행 명세 v7](../../evidence/runnable/g2.4/run-manifest-v7.json)
+> - 실행 기록: [G2.4 실행 명세 v8](../../evidence/runnable/g2.4/run-manifest-v8.json)
 
 > 소속 챕터: [임베디드 C++로 안전한 런타임 만들기](README.md) · 관리 코드: G2.4
 
