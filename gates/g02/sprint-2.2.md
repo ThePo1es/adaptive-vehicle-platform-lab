@@ -1,10 +1,10 @@
 # 실습 2-2 — 힙 없이 동작하는 이벤트 처리기 만들기
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `34ecb867486af58ae71cf17129f4aed04079ea0f`
+> - 시작 커밋: `12593a63079c48bed297d45f8ccb213fd02ebfa6`
 > - 공개 입력 SHA-256: `7e6c1467e982446785c75c762fd305a0346c1fbbb0064a7a6f41d8790f4e2c85`
 > - 재시험 입력 SHA-256: `6ce572b57669c4aa7171afcb460f360e3a7c91b5e723c02eb673c8d62175cead`
-> - 실행 기록: [G2.2 실행 명세 v10](../../evidence/runnable/g2.2/run-manifest-v10.json)
+> - 실행 기록: [G2.2 실행 명세 v11](../../evidence/runnable/g2.2/run-manifest-v11.json)
 
 > 소속 챕터: [임베디드 C++로 안전한 런타임 만들기](README.md) · 관리 코드: G2.2
 

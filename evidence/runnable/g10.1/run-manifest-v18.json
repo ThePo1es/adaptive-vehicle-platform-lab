@@ -1,0 +1,150 @@
+{
+  "schema_version": 2,
+  "lab_id": "G10.1",
+  "status": "Runnable",
+  "verification_scope": "폐쇄형 역할 주장, 보조 위험 문구 검사, 2-of-2 서명 신뢰 정책, 커밋에 묶인 근거, 독립 의미 검토 경계",
+  "starter_commit": "12593a63079c48bed297d45f8ccb213fd02ebfa6",
+  "snapshot": {
+    "method": "git archive",
+    "network_required": false,
+    "working_tree_files_used": false
+  },
+  "artifacts": [
+    {
+      "role": "fixture",
+      "path": "fixtures/g10/release-map-cases-v1.json",
+      "sha256": "35858c0b4ed341c462291955a37027d6ef0ce2c617ec5693a5be7f3b8f948ca5"
+    },
+    {
+      "role": "review-fixture",
+      "path": "fixtures/g10/review-manifest-v1.json",
+      "sha256": "a0f139796205e15740968e3b13ec0436d25829377f568ac915756cecb95e3521"
+    },
+    {
+      "role": "validator",
+      "path": "labs/g10_1_release_map/validator.py",
+      "sha256": "56fd8bbc729c94b22e71aa80e12343bfbe5f2229be2c96ca9b3273490b5f378f"
+    },
+    {
+      "role": "runner",
+      "path": "labs/g10_1_release_map/run_harness.py",
+      "sha256": "f295f61d8572ca961265382e976898588ab6f8f3d4bf22d901ba24392209a5be"
+    },
+    {
+      "role": "starter",
+      "path": "labs/g10_1_release_map/starter/release-map.json",
+      "sha256": "8f9ab50ba073d45d7c40379426b1a1c6b841e033226f35723b8f09132f485e4c"
+    },
+    {
+      "role": "source-lock",
+      "path": "labs/g10_1_release_map/r25-11-document-lock.json",
+      "sha256": "004c542975ab7ce66de6313c30f102b9593c173efe6141bc433d55f8c25c5db6"
+    },
+    {
+      "role": "review-policy",
+      "path": "labs/g10_1_release_map/review-policy.json",
+      "sha256": "fdc5109770121dff83234219a778f8ce9fba84f28ada3a9b494725923cd6d790"
+    },
+    {
+      "role": "review-policy-signature-a",
+      "path": "labs/g10_1_release_map/review-policy.authority-a.sshsig",
+      "sha256": "6fb0d95fc4209d6a92b92b9e11d5ed231f19c56c2f3aeeb4dde024da68f09c9f"
+    },
+    {
+      "role": "review-policy-signature-b",
+      "path": "labs/g10_1_release_map/review-policy.authority-b.sshsig",
+      "sha256": "bc4be774931bd7dd447ba3b76a31ba44a6625a9f21e0bdcc3229dad9167f2174"
+    },
+    {
+      "role": "reviewer-registry",
+      "path": "labs/g10_1_release_map/trusted-reviewers.json",
+      "sha256": "f2b7b135aed4bc7822f01be91976f387b78267db195d1e128882fa1f5d4ad2c3"
+    },
+    {
+      "role": "unit-tests",
+      "path": "labs/g10_1_release_map/tests/test_release_map.py",
+      "sha256": "d827c4fd7b00df59d5e778e29f35779d511a637b14dc2e943af19e6c44ed4e22"
+    },
+    {
+      "role": "evidence-checker",
+      "path": "scripts/check_runnable_evidence.py",
+      "sha256": "283fb661b9fb1f1aa5ddfd93b177a55d93a87c3f546ab8c302dc8c654083bea2"
+    },
+    {
+      "role": "evidence-replay",
+      "path": "scripts/runnable_evidence_replay.py",
+      "sha256": "32c8deecb187fdf39ebf7d4b3d828268615c98e790d3fd873e5f1161fe3b38c5"
+    },
+    {
+      "role": "evidence-support",
+      "path": "scripts/runnable_evidence_support.py",
+      "sha256": "a3c6f201bb3729f043c62811eef3e0c8824113041e1deb6211ecbdc090e15d14"
+    },
+    {
+      "role": "evidence-validator",
+      "path": "scripts/runnable_evidence_validator.py",
+      "sha256": "11beb80c87987c3ba62a02a320587dbe7bdb649ceb3247d6c69ecef3a4b8f1d0"
+    },
+    {
+      "role": "toolchain-lock",
+      "path": "toolchain/uv.lock",
+      "sha256": "336501314b6c88849423382b0722bc03528163b69ab692eb9574bea00a6f1703"
+    },
+    {
+      "role": "toolchain-project",
+      "path": "toolchain/pyproject.toml",
+      "sha256": "bb5dc73a08c67c9d62f1f6ca5ae8a0d143185cc49570ed69b787b9dad08809e1"
+    }
+  ],
+  "command": {
+    "argv": [
+      "python3",
+      "labs/g10_1_release_map/run_harness.py"
+    ],
+    "environment": {
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g10.1/harness-v18.stdout",
+    "stdout_sha256": "083c14a95957995ec4b69848160d6d29b52ecf6ffaf3831d2e22539def16a3e3",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "kernel": "Windows 11 x86_64; LF-canonical text replay"
+  },
+  "timing": {
+    "definition": "Windows records active command time and wall time from the same monotonic elapsed measurement",
+    "harness": {
+      "active_seconds": 0.719,
+      "wall_seconds": 0.719
+    },
+    "repository_check": {
+      "active_seconds": 253.656,
+      "wall_seconds": 253.656
+    }
+  },
+  "repository_check": {
+    "argv": [
+      "bash",
+      "scripts/check_repo.sh"
+    ],
+    "environment": {
+      "SKIP_RUNNABLE_EVIDENCE": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/repository-check-12593a6.stdout",
+    "stdout_sha256": "8bca416659510f34ce3f62d4b07c0ade27dcec3c8d76649823cc64eb708f509f",
+    "stderr_path": "evidence/runnable/repository-check-12593a6.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "learner_time_calibration": {
+    "status": "Not run",
+    "estimate_active_hours": "28-36",
+    "note": "첫 학습 실행에서 독립 과제 소요 시간과 R25-11 원문 검토 결과를 기록한다."
+  },
+  "recorded_at": "2026-08-22T00:01:58+09:00"
+}

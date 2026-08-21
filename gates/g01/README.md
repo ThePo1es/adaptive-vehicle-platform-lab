@@ -67,11 +67,11 @@ uv run --offline --python 3.12.13 --with ziglang==0.15.2 \
 
 | 실습 | 무엇을 만드는가 | 예상 활동 시간 | 실행 증거 |
 | --- | --- | ---: | --- |
-| [1-1 정수와 바이트를 안전하게 변환하기](sprint-1.1.md) | 8바이트 차량 신호 디코더·인코더 | 18–24시간 | [v12](../../evidence/runnable/g1.1/run-manifest-v12.json) |
-| [1-2 메모리 배치와 정렬 오류 이해하기](sprint-1.2.md) | 정렬·별칭·바이트 순서 비교 실험 | 18–22시간 | [v12](../../evidence/runnable/g1.2/run-manifest-v12.json) |
-| [1-3 고정 용량 큐와 메모리 풀 만들기](sprint-1.3.md) | 가득 참 정책이 명확한 큐와 세대 번호 핸들 풀 | 26–34시간 | [v12](../../evidence/runnable/g1.3/run-manifest-v12.json) |
-| [1-4 깨진 입력에도 안전한 파서 만들기](sprint-1.4.md) | 전체 버퍼·바이트 단위 프레임 파서 | 32–44시간 | [v12](../../evidence/runnable/g1.4/run-manifest-v12.json) |
-| [1-5 레지스터·인터럽트·동시성 경계 다루기](sprint-1.5.md) | 가짜 레지스터와 ISR→태스크 전달 경로 | 30–42시간 | [v12](../../evidence/runnable/g1.5/run-manifest-v12.json) |
+| [1-1 정수와 바이트를 안전하게 변환하기](sprint-1.1.md) | 8바이트 차량 신호 디코더·인코더 | 18–24시간 | [v13](../../evidence/runnable/g1.1/run-manifest-v13.json) |
+| [1-2 메모리 배치와 정렬 오류 이해하기](sprint-1.2.md) | 정렬·별칭·바이트 순서 비교 실험 | 18–22시간 | [v13](../../evidence/runnable/g1.2/run-manifest-v13.json) |
+| [1-3 고정 용량 큐와 메모리 풀 만들기](sprint-1.3.md) | 가득 참 정책이 명확한 큐와 세대 번호 핸들 풀 | 26–34시간 | [v13](../../evidence/runnable/g1.3/run-manifest-v13.json) |
+| [1-4 깨진 입력에도 안전한 파서 만들기](sprint-1.4.md) | 전체 버퍼·바이트 단위 프레임 파서 | 32–44시간 | [v13](../../evidence/runnable/g1.4/run-manifest-v13.json) |
+| [1-5 레지스터·인터럽트·동시성 경계 다루기](sprint-1.5.md) | 가짜 레지스터와 ISR→태스크 전달 경로 | 30–42시간 | [v13](../../evidence/runnable/g1.5/run-manifest-v13.json) |
 
 각 시간은 기준 자료 읽기, 안내 실습, 독립 구현, 자동 시험, 전이 과제, 기록을 나눈 계획치입니다. 컴파일과 짧은 자동 검사의 경과 시간은 활동 시간에 포함하지 않습니다. 사람의 첫 전체 실행이 끝나기 전까지 총 124–166시간은 `Provisional`입니다.
 
