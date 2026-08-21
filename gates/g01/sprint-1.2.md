@@ -1,10 +1,10 @@
 # 실습 1-2 — 메모리 배치와 정렬 오류 이해하기
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `907203df4ba24a5bf4b58cf22b742df9d453059a`
+> - 시작 커밋: `34ecb867486af58ae71cf17129f4aed04079ea0f`
 > - 공개 입력 SHA-256: `bda5454d6388af7e778498960974997c2e91a583269626dad48ce039d32c7982`
 > - 재시험 입력 SHA-256: `910a221fdb069941dd9a3de068e6c42fa65d7a4cba8eb8a2ab84cb40440cb90a`
-> - 실행 기록: [G1.2 실행 명세 v11](../../evidence/runnable/g1.2/run-manifest-v11.json)
+> - 실행 기록: [G1.2 실행 명세 v12](../../evidence/runnable/g1.2/run-manifest-v12.json)
 
 > 소속 챕터: [안전한 C로 데이터와 메모리 다루기](README.md) · 관리 코드: G1.2
 

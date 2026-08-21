@@ -1,10 +1,10 @@
 # 실습 1-4 — 깨진 입력에도 안전한 파서 만들기
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `907203df4ba24a5bf4b58cf22b742df9d453059a`
+> - 시작 커밋: `34ecb867486af58ae71cf17129f4aed04079ea0f`
 > - 공개 입력 SHA-256: `4a854226b4d82abf04ceca2d3fb4fbdc744b2f1433b6fae4686fa62f3ed5f350`
 > - 재시험 입력 SHA-256: `198e4f648ad29624e716d72047db760663ea347a839800156d0d9f7f0db5c029`
-> - 실행 기록: [G1.4 실행 명세 v11](../../evidence/runnable/g1.4/run-manifest-v11.json)
+> - 실행 기록: [G1.4 실행 명세 v12](../../evidence/runnable/g1.4/run-manifest-v12.json)
 
 > 소속 챕터: [안전한 C로 데이터와 메모리 다루기](README.md) · 관리 코드: G1.4
 
