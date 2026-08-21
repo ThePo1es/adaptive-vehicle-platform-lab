@@ -21,6 +21,7 @@ from scripts.runnable_evidence_replay import (
     pinned_uv_version,
     repository_check_argv,
     run_binary_replay,
+    run_text_probe,
     verify_runtime,
 )
 from scripts.runnable_evidence_support import (
@@ -398,6 +399,37 @@ def test_replay_drops_parent_uv_environment_paths() -> None:
             "VIRTUAL_ENV": "C:/parent/toolchain/.venv",
         }
     ) == {"PATH": "tools"}
+
+
+def test_text_probe_decodes_utf8_independent_of_windows_locale(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    def fake_run(
+        argv: list[str],
+        *,
+        cwd: Path,
+        env: dict[str, str],
+        check: bool,
+        capture_output: bool,
+        text: bool,
+        timeout: int,
+        encoding: str | None = None,
+    ) -> subprocess.CompletedProcess[str]:
+        _ = (cwd, env, check, capture_output, text, timeout)
+        assert encoding == "utf-8"
+        return subprocess.CompletedProcess(argv, 0, stdout="검증됨\n", stderr="")
+
+    monkeypatch.setattr("scripts.runnable_evidence_replay.subprocess.run", fake_run)
+
+    result = run_text_probe(
+        [sys.executable, "--version"],
+        cwd=tmp_path,
+        environment={"PATH": "tools"},
+        label="UTF-8 probe",
+    )
+
+    assert result.stdout == "검증됨\n"
 
 
 def test_runtime_probe_does_not_reuse_manifest_environment(
