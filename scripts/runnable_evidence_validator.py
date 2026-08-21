@@ -127,8 +127,13 @@ def verify_retest_command_shape(
     schema_version: int = 4,
 ) -> tuple[list[str], dict[str, str]]:
     argv, environment = verify_command_shape(command, artifacts, schema_version)
-    if environment != {"G02_LAB_ID": f"{lab_id}.RETEST", "PYTHONDONTWRITEBYTECODE": "1"}:
-        fail(f"active G2 retest command must select the B input for {lab_id}")
+    lab_variable = "G01_LAB_ID" if schema_version == 5 else "G02_LAB_ID"
+    expected_environment = {
+        lab_variable: f"{lab_id}.RETEST",
+        "PYTHONDONTWRITEBYTECODE": "1",
+    }
+    if environment != expected_environment:
+        fail(f"active retest command must select the B input for {lab_id}")
     return argv, environment
 
 
@@ -200,7 +205,7 @@ def verify_manifest(
     argv, command_environment = verify_command_shape(command, artifacts, schema_version)
     command_stdout = recorded_command_stdout(command, "primary")
     retest: tuple[dict[str, Any], list[str], dict[str, str], bytes] | None = None
-    if active and schema_version == 6:
+    if active and schema_version in {5, 6}:
         retest_value = manifest.get("retest_command")
         if not isinstance(retest_value, dict):
             fail("active G2 manifest needs recorded B input evidence")
@@ -259,7 +264,7 @@ def verify_manifest(
         for field in ("active_seconds", "wall_seconds")
     ):
         fail("harness timing is incomplete")
-    if active and schema_version == 6:
+    if active and schema_version in {5, 6}:
         retest_timing = timing.get("retest")
         if not isinstance(retest_timing, dict) or not all(
             isinstance(retest_timing.get(field), (int, float)) and retest_timing[field] > 0

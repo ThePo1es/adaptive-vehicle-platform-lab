@@ -205,6 +205,23 @@ def test_active_g2_retest_command_requires_lab_specific_b_input() -> None:
     )
 
 
+def test_active_g1_locked_retest_requires_lab_specific_b_input() -> None:
+    command = {
+        "argv": [*LOCKED_TOOLCHAIN_ARGV_PREFIX, PINNED_G1_MODULE],
+        "environment": {
+            "G01_LAB_ID": "G1.1.RETEST",
+            "PYTHONDONTWRITEBYTECODE": "1",
+        },
+        "expected_exit": 0,
+        "observed_exit": 0,
+    }
+    artifacts = {"runner": {"path": "labs/g01_safe_c/run_harness.py"}}
+    assert verify_retest_command_shape(command, artifacts, "G1.1", 5) == (
+        [*LOCKED_TOOLCHAIN_ARGV_PREFIX, PINNED_G1_MODULE],
+        {"G01_LAB_ID": "G1.1.RETEST", "PYTHONDONTWRITEBYTECODE": "1"},
+    )
+
+
 def test_active_g2_retest_command_rejects_a_input() -> None:
     command = {
         "argv": [*PINNED_G2_ARGV_PREFIX, PINNED_G2_MODULE],
