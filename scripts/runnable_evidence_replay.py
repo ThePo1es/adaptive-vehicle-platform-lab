@@ -43,6 +43,16 @@ PINNED_G2_ARGV_PREFIX = [
     "-m",
 ]
 PINNED_G2_MODULE = "labs.g02_embedded_cpp.run_harness"
+LOCKED_TOOLCHAIN_ARGV_PREFIX = [
+    "uv",
+    "run",
+    "--project",
+    "toolchain",
+    "--locked",
+    "--offline",
+    "python",
+    "-m",
+]
 WINDOWS_REPOSITORY_CHECK = "hash -p /usr/bin/bash bash; source scripts/check_repo.sh"
 REPLAY_TIMEOUT_SECONDS = 180
 REPOSITORY_CHECK_TIMEOUT_SECONDS = 600
@@ -128,8 +138,10 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
         version_command = [sys.executable, "--version"]
     elif schema_version == 3:
         version_command = [*PINNED_G1_ARGV_PREFIX[:-1], "--version"]
-    else:
+    elif schema_version == 4:
         version_command = [*PINNED_G2_ARGV_PREFIX[:-1], "--version"]
+    else:
+        version_command = [*LOCKED_TOOLCHAIN_ARGV_PREFIX[:-1], "--version"]
     version = run_text_probe(
         version_command,
         cwd=snapshot,
@@ -138,7 +150,7 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
     observed = version.stdout.strip().removeprefix("Python ")
     if version.returncode != 0 or observed != expected:
         fail(f"Python version mismatch: expected {expected}, got {observed}")
-    if schema_version == 3:
+    if schema_version in {3, 5}:
         environment = manifest.get("environment")
         required = {
             "uv": "0.12.3",
@@ -150,8 +162,8 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
         if not isinstance(environment, dict) or any(
             environment.get(key) != value for key, value in required.items()
         ):
-            fail("schema 3 environment does not seal the G1 toolchain contract")
-    elif schema_version == 4:
+            fail(f"schema {schema_version} environment does not seal the G1 toolchain contract")
+    elif schema_version in {4, 6}:
         environment = manifest.get("environment")
         required = {
             "uv": "0.12.3",
@@ -166,8 +178,8 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
         if not isinstance(environment, dict) or any(
             environment.get(key) != value for key, value in required.items()
         ):
-            fail("schema 4 environment does not seal the G2 C++ and ELF contract")
-    if schema_version in {3, 4}:
+            fail(f"schema {schema_version} environment does not seal the G2 C++ and ELF contract")
+    if schema_version in {3, 4, 5, 6}:
         uv_version = run_text_probe(
             ["uv", "--version"],
             cwd=snapshot,

@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.runnable_evidence_replay import (
+    LOCKED_TOOLCHAIN_ARGV_PREFIX,
     PINNED_G1_ARGV_PREFIX,
     PINNED_G1_MODULE,
     PINNED_G2_ARGV_PREFIX,
@@ -19,6 +20,11 @@ from scripts.runnable_evidence_replay import (
     verify_repository_check,
     verify_runtime,
 )
+
+SEALED_ROLE_PATHS = {
+    "toolchain-lock": "toolchain/uv.lock",
+    "toolchain-project": "toolchain/pyproject.toml",
+}
 from scripts.runnable_evidence_support import (
     FULL_SHA,
     REPO_ROOT,
@@ -54,6 +60,9 @@ def verify_artifacts(
             fail(f"artifact role is missing or duplicated: {role}")
         if not isinstance(relative_path, str) or not relative_path or relative_path in paths:
             fail(f"artifact path is missing or duplicated: {relative_path}")
+        sealed_path = SEALED_ROLE_PATHS.get(role)
+        if sealed_path is not None and relative_path != sealed_path:
+            fail(f"{role} must use {sealed_path}")
         if not isinstance(expected, str) or not SHA256.fullmatch(expected):
             fail(f"artifact sha256 is invalid: {relative_path}")
         if digest(git_bytes(starter, relative_path)) != expected:
@@ -80,16 +89,20 @@ def verify_command_shape(
     if not isinstance(argv_value, list) or not all(isinstance(item, str) for item in argv_value):
         fail("Runnable command argv must be a string list")
     argv = [item for item in argv_value if isinstance(item, str)]
-    if schema_version == 3 and runner != "labs/g01_safe_c/run_harness.py":
-        fail("schema 3 runner artifact path is not the G1 module")
-    if schema_version == 4 and runner != "labs/g02_embedded_cpp/run_harness.py":
-        fail("schema 4 runner artifact path is not the G2 module")
+    if schema_version in {3, 5} and runner != "labs/g01_safe_c/run_harness.py":
+        fail(f"schema {schema_version} runner artifact path is not the G1 module")
+    if schema_version in {4, 6} and runner != "labs/g02_embedded_cpp/run_harness.py":
+        fail(f"schema {schema_version} runner artifact path is not the G2 module")
     if schema_version == 2:
         expected = ["python3", runner]
     elif schema_version == 3:
         expected = [*PINNED_G1_ARGV_PREFIX, PINNED_G1_MODULE]
-    else:
+    elif schema_version == 4:
         expected = [*PINNED_G2_ARGV_PREFIX, PINNED_G2_MODULE]
+    elif schema_version == 5:
+        expected = [*LOCKED_TOOLCHAIN_ARGV_PREFIX, PINNED_G1_MODULE]
+    else:
+        expected = [*LOCKED_TOOLCHAIN_ARGV_PREFIX, PINNED_G2_MODULE]
     if argv != expected:
         fail(f"Runnable command does not match schema {schema_version}'s pinned runner command")
     environment_value = command.get("environment")
@@ -111,8 +124,9 @@ def verify_retest_command_shape(
     command: dict[str, Any],
     artifacts: dict[str, dict[str, str]],
     lab_id: str,
+    schema_version: int = 4,
 ) -> tuple[list[str], dict[str, str]]:
-    argv, environment = verify_command_shape(command, artifacts, 4)
+    argv, environment = verify_command_shape(command, artifacts, schema_version)
     if environment != {"G02_LAB_ID": f"{lab_id}.RETEST", "PYTHONDONTWRITEBYTECODE": "1"}:
         fail(f"active G2 retest command must select the B input for {lab_id}")
     return argv, environment
@@ -157,12 +171,12 @@ def verify_manifest(
 ) -> str:
     manifest = json.loads(path.read_text(encoding="utf-8"))
     schema_version = manifest.get("schema_version")
-    if schema_version not in {2, 3, 4} or manifest.get("status") != "Runnable":
+    if schema_version not in {2, 3, 4, 5, 6} or manifest.get("status") != "Runnable":
         fail(f"invalid manifest header: {path.relative_to(REPO_ROOT)}")
-    if active and str(manifest.get("lab_id", "")).startswith("G1.") and schema_version != 3:
-        fail("active G1 evidence must use the hermetic schema 3 toolchain contract")
-    if active and str(manifest.get("lab_id", "")).startswith("G2.") and schema_version != 4:
-        fail("active G2 evidence must use the hermetic schema 4 toolchain contract")
+    if active and str(manifest.get("lab_id", "")).startswith("G1.") and schema_version != 5:
+        fail("active G1 evidence must use the hash-locked schema 5 toolchain contract")
+    if active and str(manifest.get("lab_id", "")).startswith("G2.") and schema_version != 6:
+        fail("active G2 evidence must use the hash-locked schema 6 toolchain contract")
     if active and manifest.get("lab_id") != indexed_lab_id:
         fail(f"active index lab ID {indexed_lab_id} does not match manifest lab ID {manifest.get('lab_id')}")
     starter = manifest.get("starter_commit")
@@ -186,12 +200,12 @@ def verify_manifest(
     argv, command_environment = verify_command_shape(command, artifacts, schema_version)
     command_stdout = recorded_command_stdout(command, "primary")
     retest: tuple[dict[str, Any], list[str], dict[str, str], bytes] | None = None
-    if active and schema_version == 4:
+    if active and schema_version == 6:
         retest_value = manifest.get("retest_command")
         if not isinstance(retest_value, dict):
             fail("active G2 manifest needs recorded B input evidence")
         retest_argv, retest_environment = verify_retest_command_shape(
-            retest_value, artifacts, str(manifest["lab_id"])
+            retest_value, artifacts, str(manifest["lab_id"]), schema_version
         )
         retest = (
             retest_value,
@@ -245,7 +259,7 @@ def verify_manifest(
         for field in ("active_seconds", "wall_seconds")
     ):
         fail("harness timing is incomplete")
-    if active and schema_version == 4:
+    if active and schema_version == 6:
         retest_timing = timing.get("retest")
         if not isinstance(retest_timing, dict) or not all(
             isinstance(retest_timing.get(field), (int, float)) and retest_timing[field] > 0

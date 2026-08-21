@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from scripts.runnable_evidence_replay import (
+    LOCKED_TOOLCHAIN_ARGV_PREFIX,
     PINNED_G1_ARGV_PREFIX,
     PINNED_G1_MODULE,
     PINNED_G2_ARGV_PREFIX,
@@ -17,10 +18,12 @@ from scripts.runnable_evidence_replay import (
 from scripts.runnable_evidence_support import (
     REQUIRED_ROLES,
     canonical_output,
+    digest,
     required_roles,
 )
 from scripts.runnable_evidence_validator import (
     repository_check_identity,
+    verify_artifacts,
     verify_command_shape,
     verify_retest_command_shape,
 )
@@ -49,7 +52,16 @@ def test_active_g2_manifest_requires_cpp_replay_artifacts() -> None:
 
 def test_active_g2_abi_manifest_requires_c_and_elf_artifacts() -> None:
     roles = required_roles("G2.4", True)
-    assert {"abi-corpus", "c-abi-header", "c-abi-validator", "elf-inspector"} < roles
+    assert {
+        "abi-corpus",
+        "c-abi-header",
+        "c-abi-validator",
+        "consumer-main",
+        "consumer-runner",
+        "demo-c",
+        "demo-cpp",
+        "elf-inspector",
+    } < roles
 
 
 def test_active_g10_manifest_keeps_review_artifacts() -> None:
@@ -108,6 +120,72 @@ def test_schema_four_command_pins_cpp_and_elf_toolchains() -> None:
         [*PINNED_G2_ARGV_PREFIX, PINNED_G2_MODULE],
         {"G02_LAB_ID": "G2.1"},
     )
+
+
+def test_schema_five_command_uses_locked_g1_toolchain() -> None:
+    command = {
+        "argv": [*LOCKED_TOOLCHAIN_ARGV_PREFIX, PINNED_G1_MODULE],
+        "environment": {"LAB_ID": "G1.1"},
+        "expected_exit": 0,
+        "observed_exit": 0,
+    }
+    artifacts = {"runner": {"path": "labs/g01_safe_c/run_harness.py"}}
+    assert verify_command_shape(command, artifacts, 5) == (
+        [*LOCKED_TOOLCHAIN_ARGV_PREFIX, PINNED_G1_MODULE],
+        {"LAB_ID": "G1.1"},
+    )
+
+
+def test_schema_six_command_uses_locked_g2_toolchain() -> None:
+    command = {
+        "argv": [*LOCKED_TOOLCHAIN_ARGV_PREFIX, PINNED_G2_MODULE],
+        "environment": {"G02_LAB_ID": "G2.1"},
+        "expected_exit": 0,
+        "observed_exit": 0,
+    }
+    artifacts = {"runner": {"path": "labs/g02_embedded_cpp/run_harness.py"}}
+    assert verify_command_shape(command, artifacts, 6) == (
+        [*LOCKED_TOOLCHAIN_ARGV_PREFIX, PINNED_G2_MODULE],
+        {"G02_LAB_ID": "G2.1"},
+    )
+
+
+def test_sealed_toolchain_role_rejects_a_different_path(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    expected_file = tmp_path / "expected"
+    expected_file.write_bytes(b"sealed")
+    monkeypatch.setattr(
+        "scripts.runnable_evidence_validator.required_roles",
+        lambda _lab_id, _active: {"toolchain-lock", "toolchain-project"},
+    )
+    monkeypatch.setattr(
+        "scripts.runnable_evidence_validator.git_bytes",
+        lambda _starter, _path: b"sealed",
+    )
+    monkeypatch.setattr(
+        "scripts.runnable_evidence_validator.repository_path",
+        lambda _path: expected_file,
+    )
+    manifest = {
+        "lab_id": "G1.1",
+        "artifacts": [
+            {
+                "role": "toolchain-lock",
+                "path": "fixtures/not-the-lock.txt",
+                "sha256": digest(b"sealed"),
+            },
+            {
+                "role": "toolchain-project",
+                "path": "toolchain/pyproject.toml",
+                "sha256": digest(b"sealed"),
+            },
+        ],
+    }
+
+    with pytest.raises(ValueError, match="toolchain-lock must use toolchain/uv.lock"):
+        _ = verify_artifacts(manifest, "a" * 40, True)
 
 
 def test_active_g2_retest_command_requires_lab_specific_b_input() -> None:

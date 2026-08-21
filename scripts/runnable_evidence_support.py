@@ -42,6 +42,10 @@ G2_ABI_REQUIRED_ROLES = {
     "abi-corpus",
     "c-abi-header",
     "c-abi-validator",
+    "consumer-main",
+    "consumer-runner",
+    "demo-c",
+    "demo-cpp",
     "elf-inspector",
 }
 G10_ACTIVE_REQUIRED_ROLES = REQUIRED_ROLES | REPLAY_ROLES | {
