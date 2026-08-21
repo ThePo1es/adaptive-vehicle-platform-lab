@@ -126,6 +126,7 @@ def run_text_probe(
             env=dict(environment),
             check=False,
             capture_output=True,
+            encoding="utf-8",
             text=True,
             timeout=PROBE_TIMEOUT_SECONDS,
         )

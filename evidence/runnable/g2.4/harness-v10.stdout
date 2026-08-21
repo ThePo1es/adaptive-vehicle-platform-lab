@@ -1,0 +1,10 @@
+TOOLCHAIN python=3.12.13 compiler=zig-c++ version=0.15.2 target_contract=native-x86_64-hosted-c++20
+PASS lab=G2.4 cases=A optimization=0
+PASS lab=G2.4 cases=A optimization=2
+PASS lab=G2.4 mutant=401 killed
+PASS lab=G2.4 mutant=402 killed
+PASS lab=G2.4 mutant=403 killed
+PASS lab=G2.4 c17-header=compatible
+PASS lab=G2.4 abi-target=thumb-freestanding-eabi variants=3 text-bytes=76 relocations=151
+PASS lab=G2.4 abi-target=aarch64-freestanding-none variants=3 text-bytes=140 relocations=128
+G2 harness: PASS

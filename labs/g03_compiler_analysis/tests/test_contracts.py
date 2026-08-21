@@ -106,10 +106,10 @@ def test_provision_rejects_archive_traversal(tmp_path: Path) -> None:
     digest = hashlib.sha256(source_archive.read_bytes()).hexdigest()
     archive = tmp_path / "cache" / digest / "unsafe.zip"
     archive.parent.mkdir(parents=True)
-    source_archive.replace(archive)
+    _ = source_archive.replace(archive)
     host = f"{'windows' if os.name == 'nt' else 'linux'}-{platform.machine().lower()}"
     manifest = tmp_path / "manifest.json"
-    manifest.write_text(json.dumps({"release": "test", "platforms": {host: {
+    _ = manifest.write_text(json.dumps({"release": "14.3.Rel1", "platforms": {host: {
         "url": "https://invalid.example/unsafe.zip", "filename": "unsafe.zip",
         "sha256": digest, "dumpmachine": "arm-none-eabi", "dumpfullversion": "14.3.1",
     }}}), encoding="utf-8")

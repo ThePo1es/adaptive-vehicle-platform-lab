@@ -6,6 +6,11 @@ from pathlib import Path
 
 import pytest
 
+from scripts.check_runnable_evidence import (
+    replay_shard,
+    selected_manifest_paths,
+    verify_manifests,
+)
 from scripts.runnable_evidence_replay import (
     LOCKED_TOOLCHAIN_ARGV_PREFIX,
     PINNED_G1_ARGV_PREFIX,
@@ -16,10 +21,13 @@ from scripts.runnable_evidence_replay import (
     pinned_uv_version,
     repository_check_argv,
     run_binary_replay,
+    run_text_probe,
     verify_runtime,
 )
 from scripts.runnable_evidence_support import (
+    REPO_ROOT,
     REQUIRED_ROLES,
+    active_manifest_paths,
     canonical_output,
     digest,
     required_roles,
@@ -31,6 +39,111 @@ from scripts.runnable_evidence_validator import (
     verify_command_shape,
     verify_retest_command_shape,
 )
+
+
+def manifest_path(lab_id: str, version: int) -> Path:
+    return REPO_ROOT / "evidence" / "runnable" / lab_id.lower() / f"run-manifest-v{version}.json"
+
+
+def test_active_manifest_index_uses_repository_posix_paths() -> None:
+    active = active_manifest_paths()
+
+    assert active
+    assert all("\\" not in path for path in active)
+
+
+def test_manifest_shards_cover_every_manifest_exactly_once() -> None:
+    active_paths = [manifest_path("G1.1", version) for version in range(1, 3)]
+    historical_paths = [manifest_path("G1.1", version) for version in range(3, 15)]
+    manifests = sorted([*active_paths, *historical_paths])
+    active = {
+        path.relative_to(REPO_ROOT).as_posix(): f"G1.{index}"
+        for index, path in enumerate(active_paths, start=1)
+    }
+    selected_by_shard = [
+        set(selected_manifest_paths(manifests, active, 4, shard_index))
+        for shard_index in range(4)
+    ]
+
+    assert set.union(*selected_by_shard) == set(manifests)
+    assert all(
+        left.isdisjoint(right)
+        for index, left in enumerate(selected_by_shard)
+        for right in selected_by_shard[index + 1 :]
+    )
+    assert set(active_paths) <= selected_by_shard[0]
+    assert all(set(active_paths).isdisjoint(paths) for paths in selected_by_shard[1:])
+
+
+def test_manifest_shard_keeps_active_repository_state_serial(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    active_paths = [manifest_path("G1.1", version) for version in range(1, 3)]
+    historical_paths = [manifest_path("G1.1", version) for version in range(3, 7)]
+    manifests = sorted([*active_paths, *historical_paths])
+    active = {
+        path.relative_to(REPO_ROOT).as_posix(): f"G1.{index}"
+        for index, path in enumerate(active_paths, start=1)
+    }
+    repository_state_ids: list[int] = []
+
+    def fake_verify(
+        path: Path,
+        is_active: bool,
+        indexed_lab_id: str | None,
+        repository_checks: set[tuple[str, str, str]] | None,
+    ) -> str:
+        if is_active:
+            assert indexed_lab_id is not None
+            assert repository_checks is not None
+            repository_state_ids.append(id(repository_checks))
+            repository_checks.add((path.name, "b" * 64, "c" * 64))
+            return f"active:{indexed_lab_id}"
+        assert indexed_lab_id is None
+        assert repository_checks is None
+        return f"history:{path.name}"
+
+    monkeypatch.setattr("scripts.check_runnable_evidence.verify_manifest", fake_verify)
+
+    results = verify_manifests(manifests, active, 4, 0)
+
+    assert len(repository_state_ids) == len(active_paths)
+    assert len(set(repository_state_ids)) == 1
+    assert results == [
+        fake_verify(
+            path,
+            path.relative_to(REPO_ROOT).as_posix() in active,
+            active.get(path.relative_to(REPO_ROOT).as_posix()),
+            set() if path.relative_to(REPO_ROOT).as_posix() in active else None,
+        )
+        for path in selected_manifest_paths(manifests, active, 4, 0)
+    ]
+
+
+@pytest.mark.parametrize(
+    ("environment", "message"),
+    [
+        ({"RUNNABLE_EVIDENCE_SHARD_COUNT": "0"}, "positive"),
+        (
+            {
+                "RUNNABLE_EVIDENCE_SHARD_COUNT": "4",
+                "RUNNABLE_EVIDENCE_SHARD_INDEX": "4",
+            },
+            "index",
+        ),
+        ({"RUNNABLE_EVIDENCE_SHARD_COUNT": "many"}, "integers"),
+    ],
+)
+def test_replay_shard_rejects_invalid_boundaries(
+    environment: dict[str, str],
+    message: str,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        _ = replay_shard(environment)
+
+
+def test_replay_shard_defaults_to_the_complete_local_run() -> None:
+    assert replay_shard({}) == (1, 0)
 
 
 def test_inactive_manifest_requires_only_base_artifacts() -> None:
@@ -286,6 +399,37 @@ def test_replay_drops_parent_uv_environment_paths() -> None:
             "VIRTUAL_ENV": "C:/parent/toolchain/.venv",
         }
     ) == {"PATH": "tools"}
+
+
+def test_text_probe_decodes_utf8_independent_of_windows_locale(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    def fake_run(
+        argv: list[str],
+        *,
+        cwd: Path,
+        env: dict[str, str],
+        check: bool,
+        capture_output: bool,
+        text: bool,
+        timeout: int,
+        encoding: str | None = None,
+    ) -> subprocess.CompletedProcess[str]:
+        _ = (cwd, env, check, capture_output, text, timeout)
+        assert encoding == "utf-8"
+        return subprocess.CompletedProcess(argv, 0, stdout="검증됨\n", stderr="")
+
+    monkeypatch.setattr("scripts.runnable_evidence_replay.subprocess.run", fake_run)
+
+    result = run_text_probe(
+        [sys.executable, "--version"],
+        cwd=tmp_path,
+        environment={"PATH": "tools"},
+        label="UTF-8 probe",
+    )
+
+    assert result.stdout == "검증됨\n"
 
 
 def test_runtime_probe_does_not_reuse_manifest_environment(

@@ -11,8 +11,32 @@ permissions:
 
 jobs:
   docs-integrity:
+    name: docs-integrity (evidence ${{ matrix.evidence-label }}/8)
     runs-on: windows-latest
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - evidence-shard: 0
+            evidence-label: 1
+          - evidence-shard: 1
+            evidence-label: 2
+          - evidence-shard: 2
+            evidence-label: 3
+          - evidence-shard: 3
+            evidence-label: 4
+          - evidence-shard: 4
+            evidence-label: 5
+          - evidence-shard: 5
+            evidence-label: 6
+          - evidence-shard: 6
+            evidence-label: 7
+          - evidence-shard: 7
+            evidence-label: 8
+    env:
+      RUNNABLE_EVIDENCE_SHARD_COUNT: "8"
+      RUNNABLE_EVIDENCE_SHARD_INDEX: ${{ matrix.evidence-shard }}
     steps:
       - name: Check out repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1

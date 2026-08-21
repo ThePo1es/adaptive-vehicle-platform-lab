@@ -7,8 +7,8 @@
 | 관리 코드 | 챕터 | 실습 안내서 | 상태 |
 | --- | --- | --- | --- |
 | G0 | 개발 환경과 검증 기준 준비하기 | [2개 실습](g00/) | Specified |
-| G1 | 안전한 C로 데이터와 메모리 다루기 | [챕터 안내와 5개 실습](g01/README.md) | 5 Runnable (v11) |
-| G2 | [임베디드 C++로 안전한 런타임 만들기](g02/README.md) | [4개 실습](g02/) | 4 Runnable (v9) |
+| G1 | 안전한 C로 데이터와 메모리 다루기 | [챕터 안내와 5개 실습](g01/README.md) | 5 Runnable (v13) |
+| G2 | [임베디드 C++로 안전한 런타임 만들기](g02/README.md) | [4개 실습](g02/) | 4 Runnable (v11) |
 | G3 | [Arm 프로그램의 함수 호출부터 기계어까지 추적하기](g03/README.md) | [5개 실습](g03/) | 5 Runnable |
 | G4 | Cortex-M 보드 부팅과 인터럽트 구현하기 | [6개 실습](g04/) | Specified |
 | G5 | RTOS 태스크와 실시간성 검증하기 | [7개 실습](g05/) | Specified |
@@ -21,7 +21,7 @@
 | G11B | MCU–Linux 안전·보안 근거 검토하기 | [3개 실습](g11/) | Specified |
 | G12 | MCU–Linux 차량 플랫폼 최종 통합하기 | [12개 실습](g12/) | Specified |
 
-현재 91개 중 76개가 `Specified`, G1의 5개, G2의 4개, G3의 5개, G10.1이 `Runnable`입니다. 상태 기준은 아래 표를 따르고, 실제 학습 진도는 [PROGRESS.md](../PROGRESS.md)에 기록합니다. G1–G3의 시작점은 각 장 안내에, G10.1의 실행 기록은 [실행 명세 v16](../evidence/runnable/g10.1/run-manifest-v16.json)에 있습니다.
+현재 91개 중 76개가 `Specified`, G1의 5개 실습, G2의 4개 실습, G3의 5개 실습, G10.1이 `Runnable`입니다. 상태 기준은 아래 표를 따르고, 실제 학습 진도는 [PROGRESS.md](../PROGRESS.md)에 기록합니다. G1–G3의 시작점은 각 챕터 안내에, G10.1의 실행 기록은 [실행 명세 v18](../evidence/runnable/g10.1/run-manifest-v18.json)에 있습니다.
 
 | 상태 | 필요한 근거 |
 | --- | --- |
