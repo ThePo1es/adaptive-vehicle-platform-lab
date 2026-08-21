@@ -1,0 +1,248 @@
+{
+  "schema_version": 4,
+  "lab_id": "G2.4",
+  "status": "Runnable",
+  "verification_scope": "native x86_64 hosted C++20 O0/O2, C17 header compilation, three single-fault variants, and ELF structure for two non-hosted targets",
+  "starter_commit": "af3b810a55b4a5444337472f15bd9fb1f5809c32",
+  "snapshot": {
+    "method": "git archive",
+    "network_required": false,
+    "working_tree_files_used": false
+  },
+  "artifacts": [
+    {
+      "role": "fixture",
+      "path": "fixtures/g02/sprint-2.4-v1.hpp",
+      "sha256": "129604c22c749318f3c16e47bd0b9a9083625d74801a11969faec5911e650c5f"
+    },
+    {
+      "role": "validator",
+      "path": "labs/g02_embedded_cpp/tests/test_abi.cpp",
+      "sha256": "4c7299a61d4a840f87b082a645876287344c42c598969538fb91a883bdffe499"
+    },
+    {
+      "role": "oracle",
+      "path": "labs/g02_embedded_cpp/reference/abi.cpp",
+      "sha256": "24f9bcf57e497338ec9c269e15a6b8a99f24439af6314bb88aab4f9a363f95c8"
+    },
+    {
+      "role": "starter",
+      "path": "labs/g02_embedded_cpp/starter/abi.cpp",
+      "sha256": "7cc9b7e3f00b263999c76ccb5fd08c226dc5133ebfa1b723d529cf1ca19aec08"
+    },
+    {
+      "role": "runner",
+      "path": "labs/g02_embedded_cpp/run_harness.py",
+      "sha256": "3e7fc72687e7b2fb4385b02dc85ed4cfa655e4118ce4b402e4bcdb22fcc2af49"
+    },
+    {
+      "role": "interface",
+      "path": "labs/g02_embedded_cpp/include/g02_abi.hpp",
+      "sha256": "e43e72902790207d0ffaf65cdd46630e67eeb18641d6ffd24545ac2a2d79b59f"
+    },
+    {
+      "role": "validator-support",
+      "path": "labs/g02_embedded_cpp/tests/test_support.hpp",
+      "sha256": "dc0528063a63d0f178e743f2cf0cfdd05204b47d8bf26a54ed216db4af8c095c"
+    },
+    {
+      "role": "unit-tests",
+      "path": "labs/g02_embedded_cpp/tests/test_run_harness.py",
+      "sha256": "a858363fa4a586dbafba3ecf45f4c9452fd52fa39e34e7136f9e71332ff985db"
+    },
+    {
+      "role": "test-config",
+      "path": "pytest.ini",
+      "sha256": "a71a64881aa52495c7ee1d1aa12372c357dd409354099c4cefb204dd5948baf4"
+    },
+    {
+      "role": "evidence-checker",
+      "path": "scripts/check_runnable_evidence.py",
+      "sha256": "d9e8baec720e983259201a1ac6ef94a2ff011eb306c2e25dce2ddc45802b3061"
+    },
+    {
+      "role": "evidence-replay",
+      "path": "scripts/runnable_evidence_replay.py",
+      "sha256": "dce56f5b5cb552137496cc05fa43c54e2b09c1373c7a4861e7871c83460f5b80"
+    },
+    {
+      "role": "evidence-support",
+      "path": "scripts/runnable_evidence_support.py",
+      "sha256": "4143793c43207644e3d689c6b3c020a2a17fab97dbea0bdc1bbb067fec2bbac0"
+    },
+    {
+      "role": "evidence-validator",
+      "path": "scripts/runnable_evidence_validator.py",
+      "sha256": "7672246d5c915dbc3a27d54349e86482a7216d95c0b03c8af8f24d67acaa205c"
+    },
+    {
+      "role": "retest-fixture",
+      "path": "fixtures/g02/retest-2.4-v1.hpp",
+      "sha256": "6dd642cf6de0cc538f33f2e873fe97be970e511e900d39afb8c1cff35ff2b002"
+    },
+    {
+      "role": "toolchain-resolver",
+      "path": "labs/g02_embedded_cpp/harness_toolchain.py",
+      "sha256": "d932f7d07d89f3e26b33aa26b1d03f61ab9b39da851bfbc77bcbe21b85025f7b"
+    },
+    {
+      "role": "contract",
+      "path": "gates/g02/contract.md",
+      "sha256": "9be80ed9b2c76f239e247b272a511b681bf9a6641ca3c7b5005896ff88890cae"
+    },
+    {
+      "role": "portfolio-build",
+      "path": "portfolio/g02-embedded-cpp-runtime-v1/CMakeLists.txt",
+      "sha256": "b672f155a43b314c1b6ece4d7938d1daf321d7335572fa6567a0fc161b519a57"
+    },
+    {
+      "role": "abi-corpus",
+      "path": "labs/g02_embedded_cpp/freestanding/virtual.cpp",
+      "sha256": "8e59eb59959036e1cbb76559c28cce54d37c616741a305013277caa8f5b95f3d"
+    },
+    {
+      "role": "c-abi-header",
+      "path": "labs/g02_embedded_cpp/include/g02_abi_c.h",
+      "sha256": "caa5e6c308cb933c4b3b897390e7d06c4951fda2ba792d96dc24a8e62e1d7aa8"
+    },
+    {
+      "role": "c-abi-validator",
+      "path": "labs/g02_embedded_cpp/tests/test_c_abi_header.c",
+      "sha256": "d2113ec117737e9cb86483777dfc3a260193b55c4a24e898a4caf32e06def46c"
+    },
+    {
+      "role": "elf-inspector",
+      "path": "labs/g02_embedded_cpp/elf_contract.py",
+      "sha256": "7b9fa21e363cac85d9ba570dc628974f534a483fa43b3e27846de789a278cf70"
+    },
+    {
+      "role": "elf-manual-corpus",
+      "path": "labs/g02_embedded_cpp/freestanding/manual.cpp",
+      "sha256": "3dcb1f2854f2bddc36f21223ee64e84741a7923604b337ec3c0851c5179b7cec"
+    },
+    {
+      "role": "elf-static-corpus",
+      "path": "labs/g02_embedded_cpp/freestanding/static.cpp",
+      "sha256": "a5836c053fe722480104c0ee0c8510ed9e27fb12281a91882a4d2a4c3570dcf6"
+    },
+    {
+      "role": "elf-unit-tests",
+      "path": "labs/g02_embedded_cpp/tests/test_elf_contract.py",
+      "sha256": "6238c87ca0eb7bb0fef812ce1fb722b4161a2f610f1bd9ee18a81179b1372743"
+    },
+    {
+      "role": "consumer-build",
+      "path": "portfolio/g02-embedded-cpp-runtime-v1/consumer/CMakeLists.txt",
+      "sha256": "4b64d6eb279ba1690aea7a86beba58d8b194214155287d0877d5054b95afa7c2"
+    },
+    {
+      "role": "package-config",
+      "path": "portfolio/g02-embedded-cpp-runtime-v1/cmake/G02EmbeddedCppConfig.cmake.in",
+      "sha256": "478264cd92d3d38f67fa8f3f6f4afb1eb9448b05ec8d78e508b10b30cb5898b4"
+    }
+  ],
+  "command": {
+    "argv": [
+      "uv",
+      "run",
+      "--offline",
+      "--python",
+      "3.12.13",
+      "--with",
+      "ziglang==0.15.2",
+      "--with",
+      "pyelftools==0.32",
+      "python",
+      "-m",
+      "labs.g02_embedded_cpp.run_harness"
+    ],
+    "environment": {
+      "G02_LAB_ID": "G2.4",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g2.4/harness-v2.stdout",
+    "stdout_sha256": "62cbe8b60dbe28fb08c9ee0981706ff3aabff0946a07a9a84f4d3057968cfa63",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "uv": "0.12.3",
+    "cpp_compiler": "zig-c++",
+    "cpp_compiler_version": "0.15.2",
+    "c_compiler": "zig-cc",
+    "c_compiler_version": "0.15.2",
+    "elf_reader": "pyelftools 0.32",
+    "target_contract": "native x86_64 hosted C++20",
+    "abi_targets": "thumb-freestanding-eabi,aarch64-freestanding-none",
+    "recorded_target": "x86_64-unknown-windows-gnu",
+    "replay_targets": [
+      "x86_64-unknown-windows-gnu",
+      "x86_64-linux-gnu"
+    ],
+    "kernel": "Windows 11 x86_64; LF-canonical text replay"
+  },
+  "timing": {
+    "definition": "Windows records active command time and wall time from the same monotonic elapsed measurement",
+    "harness": {
+      "active_seconds": 12.437,
+      "wall_seconds": 12.437
+    },
+    "repository_check": {
+      "active_seconds": 152.047,
+      "wall_seconds": 152.047
+    },
+    "retest": {
+      "active_seconds": 4.532,
+      "wall_seconds": 4.532
+    }
+  },
+  "repository_check": {
+    "argv": [
+      "bash",
+      "scripts/check_repo.sh"
+    ],
+    "environment": {
+      "SKIP_RUNNABLE_EVIDENCE": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/repository-check-af3b810.stdout",
+    "stdout_sha256": "8bca416659510f34ce3f62d4b07c0ade27dcec3c8d76649823cc64eb708f509f",
+    "stderr_path": "evidence/runnable/repository-check-4a6509ef.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "learner_time_calibration": {
+    "status": "Not run",
+    "estimate_active_hours": "26-34",
+    "note": "실제 학습자가 처음부터 수행한 기록이 없으므로 예상 시간은 아직 확정하지 않습니다."
+  },
+  "recorded_at": "2026-08-21T11:19:22+09:00",
+  "retest_command": {
+    "argv": [
+      "uv",
+      "run",
+      "--offline",
+      "--python",
+      "3.12.13",
+      "--with",
+      "ziglang==0.15.2",
+      "--with",
+      "pyelftools==0.32",
+      "python",
+      "-m",
+      "labs.g02_embedded_cpp.run_harness"
+    ],
+    "environment": {
+      "G02_LAB_ID": "G2.4.RETEST",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g2.4/retest-v2.stdout",
+    "stdout_sha256": "22ffe4041020ee17d9e3199a9fe1431561de77197952fb1947e7eab78adf69c7",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}
