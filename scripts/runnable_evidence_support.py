@@ -173,3 +173,22 @@ def runnable_gate_lab_ids() -> set[str]:
 
 def translated_replay_argv(argv: list[str]) -> list[str]:
     return [sys.executable, *argv[1:]] if argv[0] == "python3" else argv
+
+
+def verify_sprint_lock(
+    manifest: dict[str, Any],
+    artifacts: dict[str, dict[str, str]],
+) -> None:
+    lab_id = manifest["lab_id"]
+    match = re.fullmatch(r"G(\d+)\.(\d+)", lab_id)
+    if match is None:
+        fail(f"no Sprint lock parser is configured for {lab_id}")
+    major, minor = match.groups()
+    sprint_path = REPO_ROOT / f"gates/g{int(major):02d}/sprint-{major}.{minor}.md"
+    if not sprint_path.is_file():
+        fail(f"Sprint lock file is missing for {lab_id}")
+    sprint = sprint_path.read_text(encoding="utf-8")
+    starter = manifest["starter_commit"]
+    fixture_hash = artifacts["fixture"]["sha256"]
+    if starter not in sprint or fixture_hash not in sprint:
+        fail("Sprint header does not match active starter and fixture hash")
