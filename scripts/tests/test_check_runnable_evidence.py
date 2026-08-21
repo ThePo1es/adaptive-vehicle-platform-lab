@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import subprocess
 import sys
-import threading
 from pathlib import Path
 
 import pytest
 
-from scripts.check_runnable_evidence import verify_manifests
+from scripts.check_runnable_evidence import (
+    replay_shard,
+    selected_manifest_paths,
+    verify_manifests,
+)
 from scripts.runnable_evidence_replay import (
     LOCKED_TOOLCHAIN_ARGV_PREFIX,
     PINNED_G1_ARGV_PREFIX,
@@ -40,82 +43,98 @@ def manifest_path(lab_id: str, version: int) -> Path:
     return REPO_ROOT / "evidence" / "runnable" / lab_id.lower() / f"run-manifest-v{version}.json"
 
 
-def test_manifest_batch_keeps_active_checks_serial_and_parallelizes_history(
+def test_manifest_shards_cover_every_manifest_exactly_once() -> None:
+    active_paths = [manifest_path("G1.1", version) for version in range(1, 3)]
+    historical_paths = [manifest_path("G1.1", version) for version in range(3, 15)]
+    manifests = sorted([*active_paths, *historical_paths])
+    active = {
+        str(path.relative_to(REPO_ROOT)): f"G1.{index}"
+        for index, path in enumerate(active_paths, start=1)
+    }
+    selected_by_shard = [
+        set(selected_manifest_paths(manifests, active, 4, shard_index))
+        for shard_index in range(4)
+    ]
+
+    assert set.union(*selected_by_shard) == set(manifests)
+    assert all(
+        left.isdisjoint(right)
+        for index, left in enumerate(selected_by_shard)
+        for right in selected_by_shard[index + 1 :]
+    )
+    assert set(active_paths) <= selected_by_shard[0]
+    assert all(set(active_paths).isdisjoint(paths) for paths in selected_by_shard[1:])
+
+
+def test_manifest_shard_keeps_active_repository_state_serial(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    active_path = manifest_path("G1.1", 2)
+    active_paths = [manifest_path("G1.1", version) for version in range(1, 3)]
     historical_paths = [manifest_path("G1.1", version) for version in range(3, 7)]
-    running = 0
-    peak_running = 0
-    lock = threading.Lock()
-    two_workers_started = threading.Event()
-    release_workers = threading.Event()
+    manifests = sorted([*active_paths, *historical_paths])
+    active = {
+        str(path.relative_to(REPO_ROOT)): f"G1.{index}"
+        for index, path in enumerate(active_paths, start=1)
+    }
+    repository_state_ids: list[int] = []
 
     def fake_verify(
         path: Path,
-        active: bool,
+        is_active: bool,
         indexed_lab_id: str | None,
         repository_checks: set[tuple[str, str, str]] | None,
     ) -> str:
-        nonlocal running, peak_running
-        if active:
-            assert indexed_lab_id == "G1.1"
+        if is_active:
+            assert indexed_lab_id is not None
             assert repository_checks is not None
-            assert running == 0
-            return f"active:{path.name}"
+            repository_state_ids.append(id(repository_checks))
+            repository_checks.add((path.name, "b" * 64, "c" * 64))
+            return f"active:{indexed_lab_id}"
         assert indexed_lab_id is None
         assert repository_checks is None
-        with lock:
-            running += 1
-            peak_running = max(peak_running, running)
-            if running == 2:
-                two_workers_started.set()
-        assert two_workers_started.wait(timeout=2)
-        release_workers.set()
-        assert release_workers.wait(timeout=2)
-        with lock:
-            running -= 1
         return f"history:{path.name}"
 
     monkeypatch.setattr("scripts.check_runnable_evidence.verify_manifest", fake_verify)
 
-    results = verify_manifests(
-        [active_path, *historical_paths],
-        {str(active_path.relative_to(REPO_ROOT)): "G1.1"},
-    )
+    results = verify_manifests(manifests, active, 4, 0)
 
-    assert peak_running == 2
+    assert len(repository_state_ids) == len(active_paths)
+    assert len(set(repository_state_ids)) == 1
     assert results == [
-        f"active:{active_path.name}",
-        *(f"history:{path.name}" for path in historical_paths),
+        fake_verify(
+            path,
+            str(path.relative_to(REPO_ROOT)) in active,
+            active.get(str(path.relative_to(REPO_ROOT))),
+            set() if str(path.relative_to(REPO_ROOT)) in active else None,
+        )
+        for path in selected_manifest_paths(manifests, active, 4, 0)
     ]
 
 
-def test_manifest_batch_waits_for_all_submitted_checks_before_failing(
-    monkeypatch: pytest.MonkeyPatch,
+@pytest.mark.parametrize(
+    ("environment", "message"),
+    [
+        ({"RUNNABLE_EVIDENCE_SHARD_COUNT": "0"}, "positive"),
+        (
+            {
+                "RUNNABLE_EVIDENCE_SHARD_COUNT": "4",
+                "RUNNABLE_EVIDENCE_SHARD_INDEX": "4",
+            },
+            "index",
+        ),
+        ({"RUNNABLE_EVIDENCE_SHARD_COUNT": "many"}, "integers"),
+    ],
+)
+def test_replay_shard_rejects_invalid_boundaries(
+    environment: dict[str, str],
+    message: str,
 ) -> None:
-    paths = [manifest_path("G1.1", version) for version in range(1, 5)]
-    checked: set[Path] = set()
-    lock = threading.Lock()
+    with pytest.raises(ValueError, match=message):
+        _ = replay_shard(environment)
 
-    def fake_verify(
-        path: Path,
-        _active: bool,
-        _indexed_lab_id: str | None,
-        _repository_checks: set[tuple[str, str, str]] | None,
-    ) -> str:
-        with lock:
-            checked.add(path)
-        if path == paths[0]:
-            raise ValueError("broken manifest")
-        return path.name
 
-    monkeypatch.setattr("scripts.check_runnable_evidence.verify_manifest", fake_verify)
-
-    with pytest.raises(ValueError, match="broken manifest"):
-        _ = verify_manifests(paths, {})
-
-    assert checked == set(paths)
+def test_replay_shard_defaults_to_the_complete_local_run() -> None:
+    assert replay_shard({}) == (1, 0)
 
 
 def test_inactive_manifest_requires_only_base_artifacts() -> None:
