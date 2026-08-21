@@ -60,7 +60,7 @@ def _identity(compiler: Path) -> ToolchainIdentity:
     return ToolchainIdentity(observed_version, observed_target)
 
 
-def _probe(compiler: Path) -> None:
+def verify_hosted_cpp20(compiler: Path) -> None:
     source = (
         "#include <atomic>\n#include <thread>\n"
         "int main(){std::atomic<int> v{0};std::thread t([&]{v=1;});t.join();return v!=1;}\n"
@@ -81,7 +81,7 @@ def _probe(compiler: Path) -> None:
             check=False,
             capture_output=True,
             text=True,
-            timeout=TOOLCHAIN_PROBE_TIMEOUT_SECONDS,
+            timeout=COMPILER_TIMEOUT_SECONDS,
         )
         if result.returncode == 0:
             execution = subprocess.run(
@@ -102,5 +102,5 @@ def resolve_compiler() -> tuple[Path, ToolchainIdentity]:
     if compiler is None:
         raise ToolchainError("ziglang==0.15.2 is not installed in the verifier environment")
     identity = _identity(compiler)
-    _probe(compiler)
+    verify_hosted_cpp20(compiler)
     return compiler, identity
