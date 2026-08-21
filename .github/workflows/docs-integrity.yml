@@ -37,6 +37,7 @@ jobs:
     env:
       RUNNABLE_EVIDENCE_SHARD_COUNT: "8"
       RUNNABLE_EVIDENCE_SHARD_INDEX: ${{ matrix.evidence-shard }}
+      G03_GNU_CACHE: ${{ github.workspace }}/.g03-toolchain
     steps:
       - name: Check out repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
@@ -70,6 +71,12 @@ jobs:
         run: |
           uv run --project toolchain --locked --no-sync --offline \
             python -c "import os, pathlib; bash = pathlib.Path(os.environ['GIT_BASH_EXE']); print(bash); assert bash.is_file()"
+
+      - name: Provision the G3 Arm GNU comparison toolchain
+        shell: bash
+        run: |
+          uv run --project toolchain --locked --no-sync \
+            python -m labs.g03_compiler_analysis.toolchain --download
 
       - name: Validate curriculum structure, links and traceability
         shell: bash
