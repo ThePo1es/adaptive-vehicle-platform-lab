@@ -1,0 +1,75 @@
+# Arm 프로그램의 함수 호출부터 기계어까지 추적하기
+
+> 관리 코드: G3 · 권장 학습 순서: 4번째 · 현재 준비 상태: `Runnable`(G3.4 GNU 비교는 `Provisional`)
+
+이 장에서는 C 함수 하나를 호출 지점에서 시작해 ARM 레지스터, ELF 재배치, LLVM IR, 대상 기계어까지 거꾸로 추적합니다. 서로 다른 대상이나 ABI의 숫자를 섞어 순위를 만들지 않고, 자동 검사가 확인한 사실과 실제 보드에서 아직 확인하지 못한 사실을 구분하는 것이 핵심입니다.
+
+## 이 장에서 완성하는 것
+
+| 실습 | 결과 | 상태 |
+| --- | --- | --- |
+| [3-1 ARM32 함수 호출 경로 추적하기](sprint-3.1.md) | Cortex-M4 AAPCS32 호출 경로 표 | Runnable |
+| [3-2 AArch64 ELF에서 오류 주소 복원하기](sprint-3.2.md) | load bias·build ID·DWARF·PLT/GOT 복원 기록 | Runnable |
+| [3-3 C에서 LLVM IR과 기계어까지 연결하기](sprint-3.3.md) | 정의된 입력 차등 판정과 IR·Thumb 산출물 | Runnable |
+| [3-4 같은 ARM 대상에서 GCC와 Clang 공정하게 비교하기](sprint-3.4.md) | 동일 Cortex-M4 계약의 재배치 ELF 비교 | Provisional |
+| [3-5 컴파일러 의심 동작을 줄이고 보고 여부 결정하기](sprint-3.5.md) | 양·음성 대조군과 peer-review 결정 | Runnable |
+
+## 고정 도구와 비교 경계
+
+Python 3.12.13, `pyelftools` 0.32, Zig 0.15.2의 Clang 20.1.2를 사용합니다. G3.1·G3.3·G3.4의 ARM 계약은 Cortex-M4, `thumb-freestanding-eabi`, AAPCS32, soft-float, 재배치 ELF입니다. GCC 비교에만 공식 Arm GNU Toolchain 14.3.Rel1을 사용합니다. 운영체제·보드 실행, cycle·latency, cross-LTO 결과는 이 장에서 검증하지 않습니다.
+
+GNU 아카이브를 준비하지 못해도 나머지 네 실습은 실행할 수 있습니다. G3.4는 고정된 아카이브 파일명과 SHA-256, 설치 루트가 모두 맞을 때만 GCC를 실행합니다. 하나라도 없거나 다르면 자동으로 다른 GCC를 찾지 않고 `PROVISIONAL`로 끝냅니다. 이 상태를 GCC와 Clang 비교 완료로 기록하면 안 됩니다.
+
+## 시작하기
+
+```bash
+mkdir -p study/g03/src
+cp labs/g03_compiler_analysis/starter/* study/g03/src/
+
+G03_TRUSTED_LOCAL_EXECUTION=1 \
+G03_SUBMISSION_ROOT=study/g03/src \
+G03_LAB_ID=G3.1 \
+uv run --offline --python 3.12.13 \
+  --with ziglang==0.15.2 --with pyelftools==0.32 \
+  python -m labs.g03_compiler_analysis.run_harness
+```
+
+PowerShell에서는 네 환경 변수를 `$env:G03_LAB_ID = "G3.1"` 같은 형식으로 먼저 지정합니다. 시작 코드는 의도적으로 판정을 통과하지 않습니다. 제3자가 보낸 C 코드를 이 검사기로 바로 실행하지 말고 자격 증명과 네트워크가 없는 일회용 환경에서 확인합니다.
+
+## 공개 입력 A·B와 전체 검사
+
+```bash
+G03_LAB_ID=G3.ALL uv run --offline --python 3.12.13 \
+  --with ziglang==0.15.2 --with pyelftools==0.32 \
+  python -m labs.g03_compiler_analysis.run_harness
+
+G03_LAB_ID=G3.RETEST uv run --offline --python 3.12.13 \
+  --with ziglang==0.15.2 --with pyelftools==0.32 \
+  python -m labs.g03_compiler_analysis.run_harness
+```
+
+입력 A·B는 [공개 입력 설명](../../fixtures/g03/README.md)에 있습니다. `defined=false` 행은 UB 관찰이며 최적화 동등성이나 컴파일러 결함 판정에서 제외합니다. 기준 구현과 결함 주입본은 검사기 자체를 검증할 때만 사용합니다.
+
+## GNU 비교를 여는 방법
+
+공식 아카이브를 직접 내려받아 압축을 푼 뒤 다음 두 값을 지정합니다. 검사기는 아카이브 SHA-256과 `arm-none-eabi-gcc --version`을 모두 확인합니다.
+
+```bash
+G03_GNU_ARCHIVE=/verified/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi.tar.xz
+G03_GNU_ROOT=/verified/arm-gnu-toolchain-14.3.rel1
+```
+
+Windows x86_64 ZIP과 Linux x86_64 tar.xz의 정확한 해시는 [공통 계약](contract.md)에 있습니다. 압축을 푼 폴더만 있거나 시스템 `PATH`의 GCC만 있는 경우에는 비교를 실행하지 않습니다.
+
+## GitHub 포트폴리오 흐름
+
+다섯 실습 기록을 [G3 포트폴리오 양식](../../portfolio/g03-compiler-analysis-v1/README.md)에 모읍니다. `study/g03-call-to-machine` 브랜치에서 작업하고, PR에는 입력 A·B 출력, 도구 버전, ARM 계약, 생성 명령, 주소 복원 계산, defined/UB 분리표, GNU 비교 상태, 아직 실행하지 않은 보드 범위를 함께 올립니다. 실제로 제출하지 않은 upstream issue URL이나 받은 적 없는 reviewer 의견을 적지 않습니다.
+
+## 완료로 쓰지 않는 것
+
+- 재배치 ELF 생성 결과를 Cortex-M4 보드 실행 결과로 표현
+- 서로 다른 CPU·ABI·float ABI·최적화의 크기나 속도를 직접 순위 비교
+- IR 모양이나 오브젝트 크기로 runtime·cycle·캐시 영향을 확정
+- GNU 아카이브가 검증되지 않은 상태에서 G3.4를 완료로 표시
+- UB 차이를 컴파일러 결함이나 최적화 동등성 실패로 분류
+- peer review 전 실제 upstream 제출을 했다고 기록

@@ -1,4 +1,6 @@
-# Sprint 3.1 — AAPCS32
+# 실습 3-1 — ARM32 함수 호출 경로 추적하기
+
+> 상태: `Runnable` · [장 안내](README.md) · [실행 계약](contract.md)
 
 ## 시간과 기준 자료
 

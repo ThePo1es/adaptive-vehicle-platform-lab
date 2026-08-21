@@ -1,0 +1,7 @@
+binary_build_id=8a7d
+debug_build_id=ffff
+runtime_address=0x55551234
+load_bias=0x0
+link_address=0x55551234
+external_call_path=section-is-segment
+dwarf_role=guess-source

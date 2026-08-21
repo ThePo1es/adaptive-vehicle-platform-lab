@@ -11,7 +11,7 @@
 | G0 | Reproducibility, Diagnosis | `FATAL-G0-REPRO`: 새 환경 build 불가 또는 결함 원인 오판 |
 | G1 | Correctness, Independence | `REQ-C-SER-001`, `REQ-C-MEM-001`, `REQ-C-STOR-001`, `REQ-C-PARSE-001`, `REQ-C-ISR-001`; UB, 오류 뒤 출력·상태 훼손, 실행 모델 과장 |
 | G2 | Correctness, Design | `REQ-QUAL-001`, `REQ-QUAL-002`; dangling owner/view, data race, 금지된 동적 할당 |
-| G3 | Diagnosis, Measurement | `REQ-TOOL-001`; GCC를 LLVM IR 근거로 설명, target·ABI가 다른 수치 비교 |
+| G3 | [함수 호출부터 기계어까지 추적](g03-compiler-analysis.md) | `REQ-TOOL-001`; GCC를 LLVM IR 근거로 설명, target·ABI가 다른 수치 비교 |
 | G4 | Diagnosis, Reliability | `REQ-MCU-START-001`, `REQ-MCU-TIME-001`, `REQ-MCU-IRQ-001`, `REQ-MCU-FAULT-001`, `REQ-MCU-DRV-001`, `REQ-MCU-WDG-001`, `REQ-OBS-001`; fault 원인 유실, 무한 ISR, 정의하지 않은 reset 상태 |
 | G5 | Measurement, Reliability | `REQ-RTOS-003`, `REQ-RTOS-004`, `REQ-RTOS-005`, `REQ-RTOS-006`; blocking·jitter 누락, queue·stack overflow 미탐지 |
 | G6 | Correctness, Diagnosis | `REQ-CAN-002`, `REQ-CAN-003`, `REQ-CAN-004`, `REQ-ECU-DIAG-002`, `REQ-ECU-DIAG-003`; malformed 입력이 application state를 훼손 |

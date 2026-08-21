@@ -1,4 +1,6 @@
-# Sprint 3.4 — GCC와 Clang의 Target Code
+# 실습 3-4 — 같은 ARM 대상에서 GCC와 Clang 공정하게 비교하기
+
+> 상태: `Provisional` · 공식 GNU 아카이브가 검증되면 `Runnable` · [장 안내](README.md) · [실행 계약](contract.md)
 
 ## 시간과 기준 자료
 
