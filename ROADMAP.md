@@ -468,34 +468,34 @@ P00 v1 릴리스와 외부 검토까지 마치면 MCU/BSW 지원 직무에 제�
 
 정식 SDP와 문서 접근 권한이 있을 때 진행합니다.
 
-- `MsgSend/MsgReceive/MsgReply`, channel, connection, pulse
-- thread priority와 synchronous IPC의 priority behavior
-- resource manager와 namespace
-- procnto, tracing, crash 분석
-- P01의 lifecycle/fault contract를 QNX에 이식하고 Linux 결과와 비교
+- `MsgSend/MsgReceive/MsgReply`, 채널, 연결, 펄스
+- 스레드 우선순위와 동기식 IPC의 우선순위 동작
+- 자원 관리자와 이름공간
+- procnto, 추적, 비정상 종료 분석
+- P01의 생명주기·고장 계약을 QNX에 이식하고 Linux 결과와 비교
 
 ### N1 — 차량 Ethernet 심화
 
-- gPTP clock error 측정
-- TSN scheduling·traffic shaping 개념 실습
-- switch configuration과 hardware timestamp
-- SOME/IP-TP, E2E protection profile 심화
+- gPTP 시계 오차 측정
+- TSN 스케줄링과 트래픽 형상화(traffic shaping) 개념 실습
+- 스위치 설정과 하드웨어 타임스탬프
+- SOME/IP-TP, E2E 보호 프로파일 심화
 
 ### B1 — BSP와 SoC 심화
 
-- U-Boot/UEFI, kernel port, SMMU/IOMMU, GIC
-- 작은 kernel module 또는 driver와 Yocto 비교
-- DMA mapping, cache coherency, driver 성능
-- virtualization·partitioning은 실제 격리 요구가 있을 때 추가
+- U-Boot/UEFI, 커널 이식, SMMU/IOMMU, GIC
+- 작은 커널 모듈이나 드라이버와 Yocto 비교
+- DMA 매핑, 캐시 일관성, 드라이버 성능
+- 가상화·분할은 실제 격리 요구가 있을 때 추가
 
 ### M1 — 혼합 중요도 시스템
 
 이 용어를 프로젝트에 사용하려면 별도 심화 과정을 통과합니다.
 
-- assurance/criticality level과 workload model
-- shared-resource interference와 temporal/spatial partitioning
-- mode change와 degraded service
-- schedulability·isolation·assurance 근거
+- 보증·중요도 수준과 작업 부하 모델
+- 공유 자원 간섭과 시간·공간 분할
+- 모드 전환과 성능 저하 상태의 서비스
+- 스케줄 가능성·격리·보증 근거
 
 ## G12 이후 장기 유지·이식
 

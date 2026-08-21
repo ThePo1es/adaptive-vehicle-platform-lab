@@ -8,7 +8,7 @@ from typing import Protocol, cast
 
 from elftools.elf.elffile import ELFFile
 
-from .harness_toolchain import compiler_prefix
+from .harness_toolchain import COMPILER_TIMEOUT_SECONDS, compiler_prefix
 
 
 class ElfContractError(Exception):
@@ -73,26 +73,33 @@ class AbiVerification:
 
 
 def compile_freestanding_object(request: FreestandingBuild) -> None:
-    result = subprocess.run(
-        [
-            *compiler_prefix(request.compiler),
-            "-std=c++20",
-            "-O2",
-            "-fno-exceptions",
-            "-fno-rtti",
-            "-ffreestanding",
-            "-nostdlib",
-            "-target",
-            request.target,
-            "-c",
-            str(request.source),
-            "-o",
-            str(request.output),
-        ],
-        check=False,
-        capture_output=True,
-        text=True,
-    )
+    try:
+        result = subprocess.run(
+            [
+                *compiler_prefix(request.compiler),
+                "-std=c++20",
+                "-O2",
+                "-fno-exceptions",
+                "-fno-rtti",
+                "-ffreestanding",
+                "-nostdlib",
+                "-target",
+                request.target,
+                "-c",
+                str(request.source),
+                "-o",
+                str(request.output),
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=COMPILER_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired as error:
+        raise ElfContractError(
+            f"freestanding compile exceeded {COMPILER_TIMEOUT_SECONDS} seconds: "
+            + request.source.name
+        ) from error
     if result.returncode != 0:
         raise ElfContractError(result.stdout + result.stderr)
 
@@ -169,25 +176,31 @@ def verify_reports(
 
 
 def verify_abi_contract(request: AbiVerification) -> None:
-    c_header = subprocess.run(
-        [
-            str(request.compiler),
-            "cc",
-            "-std=c17",
-            "-Wall",
-            "-Wextra",
-            "-Wpedantic",
-            "-Werror",
-            f"-I{request.include_root}",
-            "-c",
-            str(request.test_root / "test_c_abi_header.c"),
-            "-o",
-            str(request.build_root / "c-abi-header.o"),
-        ],
-        check=False,
-        capture_output=True,
-        text=True,
-    )
+    try:
+        c_header = subprocess.run(
+            [
+                str(request.compiler),
+                "cc",
+                "-std=c17",
+                "-Wall",
+                "-Wextra",
+                "-Wpedantic",
+                "-Werror",
+                f"-I{request.include_root}",
+                "-c",
+                str(request.test_root / "test_c_abi_header.c"),
+                "-o",
+                str(request.build_root / "c-abi-header.o"),
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=COMPILER_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired as error:
+        raise ElfContractError(
+            f"C17 header compile exceeded {COMPILER_TIMEOUT_SECONDS} seconds"
+        ) from error
     if c_header.returncode != 0:
         raise ElfContractError(c_header.stdout + c_header.stderr)
     print("PASS lab=G2.4 c17-header=compatible")

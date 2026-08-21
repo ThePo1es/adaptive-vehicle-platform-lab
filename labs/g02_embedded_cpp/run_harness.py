@@ -20,7 +20,18 @@ from .elf_contract import (
     ElfContractError,
     verify_abi_contract,
 )
-from .harness_toolchain import ToolchainError, compiler_prefix, resolve_compiler
+from .harness_toolchain import (
+    COMPILER_TIMEOUT_SECONDS,
+    ToolchainError,
+    compiler_prefix,
+    resolve_compiler,
+)
+from .submission import (
+    HarnessInputError,
+    require_trusted_submission,
+    resolve_submission_source,
+)
+from .submission import resolve_source_root as _resolve_source_root
 
 REPO_ROOT: Final = Path(__file__).resolve().parents[2]
 LAB_ROOT: Final = REPO_ROOT / "labs/g02_embedded_cpp"
@@ -29,10 +40,6 @@ INCLUDE_ROOT: Final = LAB_ROOT / "include"
 FIXTURE_ROOT: Final = REPO_ROOT / "fixtures/g02"
 TEST_ROOT: Final = LAB_ROOT / "tests"
 FREESTANDING_ROOT: Final = LAB_ROOT / "freestanding"
-
-
-class HarnessInputError(Exception):
-    pass
 
 
 class HarnessExecutionError(Exception):
@@ -92,35 +99,7 @@ def parse_selection(lab_id: str) -> tuple[tuple[SprintSpec, ...], bool]:
 
 
 def resolve_source_root(candidate: Path) -> Path:
-    resolved = candidate.resolve()
-    if not resolved.is_relative_to(REPO_ROOT) or not resolved.is_dir():
-        raise HarnessInputError(
-            f"submission root must be an existing repository directory: {candidate}"
-        )
-    return resolved
-
-
-def require_trusted_submission(submission: str | None, trust: str | None) -> Path:
-    if submission is None:
-        return REFERENCE_ROOT
-    if trust != "1":
-        raise HarnessInputError(
-            "set G02_TRUSTED_LOCAL_EXECUTION=1 only for code you wrote or reviewed"
-        )
-    return resolve_source_root(Path(submission))
-
-
-def resolve_submission_source(source_root: Path, filename: str) -> Path:
-    candidate = source_root / filename
-    try:
-        resolved = candidate.resolve(strict=True)
-    except OSError as error:
-        raise HarnessInputError(f"submission source is missing: {candidate}") from error
-    if candidate.is_symlink() or not resolved.is_relative_to(source_root) or not resolved.is_file():
-        raise HarnessInputError(
-            f"submission source must be a regular file inside its source root: {candidate}"
-        )
-    return resolved
+    return _resolve_source_root(candidate, REPO_ROOT)
 
 
 def compile_binary(request: CompileRequest) -> None:
@@ -151,7 +130,20 @@ def compile_binary(request: CompileRequest) -> None:
     command.extend(
         (str(source), str(TEST_ROOT / request.sprint.test), "-o", str(request.output))
     )
-    result = subprocess.run(command, cwd=REPO_ROOT, check=False, capture_output=True, text=True)
+    try:
+        result = subprocess.run(
+            command,
+            cwd=REPO_ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=COMPILER_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired as error:
+        raise HarnessExecutionError(
+            f"compile exceeded {COMPILER_TIMEOUT_SECONDS} seconds for "
+            + f"{request.sprint.lab_id} mutant={request.mutant}"
+        ) from error
     if result.returncode != 0:
         raise HarnessExecutionError(
             f"compile failed for {request.sprint.lab_id} mutant={request.mutant}\n"
@@ -249,7 +241,10 @@ def main() -> int:
         selected, retest = parse_selection(os.environ.get("G02_LAB_ID", "G2.ALL"))
         submission = os.environ.get("G02_SUBMISSION_ROOT")
         source_root = require_trusted_submission(
-            submission, os.environ.get("G02_TRUSTED_LOCAL_EXECUTION")
+            submission,
+            os.environ.get("G02_TRUSTED_LOCAL_EXECUTION"),
+            REPO_ROOT,
+            REFERENCE_ROOT,
         )
         compiler, identity = resolve_compiler()
         print(

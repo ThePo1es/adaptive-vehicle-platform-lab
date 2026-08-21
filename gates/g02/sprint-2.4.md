@@ -10,7 +10,7 @@
 
 ## 시간과 기준 자료
 
-26–34시간을 예상합니다. C++ draft의 [`[class.virtual]`](https://eel.is/c++draft/class.virtual), [`[temp]`](https://eel.is/c++draft/temp), [`[except]`](https://eel.is/c++draft/except)와 [Arm ABI 저장소](https://github.com/ARM-software/abi-aa)를 읽습니다. 사용한 ABI 문서의 태그와 파일 이름을 기록합니다.
+26–34시간을 예상합니다. C++ 표준 초안의 [`[class.virtual]`](https://eel.is/c++draft/class.virtual), [`[temp]`](https://eel.is/c++draft/temp), [`[except]`](https://eel.is/c++draft/except)와 [Arm ABI 저장소](https://github.com/ARM-software/abi-aa)를 읽습니다. 사용한 ABI 문서의 태그와 파일 이름을 기록합니다.
 
 | 활동 | 예상 시간 |
 | --- | ---: |
@@ -36,7 +36,7 @@ O2 최적화에서는 컴파일러가 가상 함수 호출 대상을 미리 알�
 
 ## 독립 실습
 
-독립 실행 대상 두 개에서 세 오브젝트 파일을 같은 Zig와 빌드 옵션으로 만듭니다. 각 파일의 `.text`, 심벌, 재배치 정보를 읽고 가상 함수 구현의 가상 함수 테이블과 C API 진입점 심벌을 찾습니다. 고정한 Zig는 링커 map 파일을 만들지 않으므로 ELF 보고서를 기준으로 삼습니다. 다른 링커의 map 파일을 추가할 때는 빌드 대상, 옵션, 버전을 별도 열에 적습니다.
+독립 실행 대상 두 개에서 세 오브젝트 파일을 같은 Zig와 빌드 옵션으로 만듭니다. 각 파일의 `.text`, 심벌, 재배치 정보를 읽고 가상 함수 구현의 가상 함수 테이블과 C API 진입점 심벌을 찾습니다. 고정한 Zig는 링커 맵 파일을 만들지 않으므로 ELF 보고서를 기준으로 삼습니다. 다른 링커의 맵 파일을 추가할 때는 빌드 대상, 옵션, 버전을 별도 열에 적습니다.
 
 세 방법 가운데 하나를 실행 기반의 `Clock`, `Transport`, `Launcher` 경계에 적용하는 ADR을 씁니다. 빌드 시간, 바이너리 구조, 자원 수명, 검사 대역을 연결하기 쉬운지, 오류 전달 방식, C 사용 여부를 근거로 선택합니다.
 

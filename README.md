@@ -159,7 +159,7 @@ git switch -c study/g00-baseline
 - [평가와 외부 검토 절차](ASSESSMENTS.md)
 - [안전·보안 공학](docs/safety-security-engineering.md)
 - [개발 환경과 장비](docs/development-environment.md)
-- [Linux lifecycle 소유권](docs/lifecycle-ownership.md)
+- [Linux 생명주기 소유권](docs/lifecycle-ownership.md)
 - [AUTOSAR 개념 매핑](docs/autosar-mapping.md)
 - [요구사항](docs/requirements.md)과 [추적성](docs/traceability.md)
 - [공식 참고 자료](docs/references.md)

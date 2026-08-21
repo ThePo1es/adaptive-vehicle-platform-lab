@@ -1,4 +1,4 @@
-# 실습 2-3 — 멈추지 않고 종료되는 작업 큐 만들기
+# 실습 2-3 — 기다리는 스레드를 남기지 않고 닫는 작업 큐 만들기
 
 > - 준비 상태: `Runnable`
 > - 시작 커밋: `8b7ec2e55071c792be18d3e5afd877460baa2583`
@@ -10,7 +10,7 @@
 
 ## 시간과 기준 자료
 
-30–40시간을 잡습니다. C++ draft의 [`[intro.races]`](https://eel.is/c++draft/intro.races), [`[thread.mutex]`](https://eel.is/c++draft/thread.mutex), [`[thread.condition]`](https://eel.is/c++draft/thread.condition)과 [ThreadSanitizer 안내](https://clang.llvm.org/docs/ThreadSanitizer.html)를 읽습니다.
+30–40시간을 잡습니다. C++ 표준 초안의 [`[intro.races]`](https://eel.is/c++draft/intro.races), [`[thread.mutex]`](https://eel.is/c++draft/thread.mutex), [`[thread.condition]`](https://eel.is/c++draft/thread.condition)과 [ThreadSanitizer 안내](https://clang.llvm.org/docs/ThreadSanitizer.html)를 읽습니다.
 
 | 활동 | 예상 시간 |
 | --- | ---: |
@@ -52,7 +52,7 @@
 - `close()`가 생산자·소비자를 모두 깨우고 이미 들어온 값을 보존
 - 고정 입력 100개에서 누락·중복 없이 모든 스레드 종료
 - 실제 시간을 기다리는 `sleep` 없이 결함 301 검출, 결함 302는 15초 제한 안에 시간 초과로 검출
-- 잠금 없는 방식, 경성 실시간(hard real-time), 가능한 모든 스레드 실행 순서의 검증을 주장하지 않음
+- 잠금 없는 방식, 경성 실시간, 가능한 모든 스레드 실행 순서의 검증을 주장하지 않음
 
 ## 재시험 조건
 

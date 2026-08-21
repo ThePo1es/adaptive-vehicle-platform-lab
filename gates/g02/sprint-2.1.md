@@ -10,7 +10,7 @@
 
 ## 시간과 기준 자료
 
-24–32시간을 기준으로 잡습니다. C++ draft의 [`[basic.life]`](https://eel.is/c++draft/basic.life), [`[class.temporary]`](https://eel.is/c++draft/class.temporary), [`[util.smartptr.shared]`](https://eel.is/c++draft/util.smartptr.shared)와 [AddressSanitizer](https://clang.llvm.org/docs/AddressSanitizer.html)를 읽습니다.
+24–32시간을 기준으로 잡습니다. C++ 표준 초안의 [`[basic.life]`](https://eel.is/c++draft/basic.life), [`[class.temporary]`](https://eel.is/c++draft/class.temporary), [`[util.smartptr.shared]`](https://eel.is/c++draft/util.smartptr.shared)와 [AddressSanitizer](https://clang.llvm.org/docs/AddressSanitizer.html)를 읽습니다.
 
 | 활동 | 예상 시간 |
 | --- | ---: |

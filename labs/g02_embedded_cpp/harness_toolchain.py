@@ -8,6 +8,8 @@ from pathlib import Path
 from typing import Final, NamedTuple
 
 PINNED_ZIG_VERSION: Final = "0.15.2"
+COMPILER_TIMEOUT_SECONDS: Final = 120
+TOOLCHAIN_PROBE_TIMEOUT_SECONDS: Final = 30
 
 
 class ToolchainError(Exception):
@@ -38,6 +40,7 @@ def _identity(compiler: Path) -> ToolchainIdentity:
         check=False,
         capture_output=True,
         text=True,
+        timeout=TOOLCHAIN_PROBE_TIMEOUT_SECONDS,
     )
     observed_version = version.stdout.strip()
     if version.returncode != 0 or observed_version != PINNED_ZIG_VERSION:
@@ -49,6 +52,7 @@ def _identity(compiler: Path) -> ToolchainIdentity:
         check=False,
         capture_output=True,
         text=True,
+        timeout=TOOLCHAIN_PROBE_TIMEOUT_SECONDS,
     )
     observed_target = target.stdout.strip()
     if target.returncode != 0 or not observed_target.startswith("x86_64"):
@@ -77,6 +81,7 @@ def _probe(compiler: Path) -> None:
             check=False,
             capture_output=True,
             text=True,
+            timeout=TOOLCHAIN_PROBE_TIMEOUT_SECONDS,
         )
         if result.returncode == 0:
             execution = subprocess.run(

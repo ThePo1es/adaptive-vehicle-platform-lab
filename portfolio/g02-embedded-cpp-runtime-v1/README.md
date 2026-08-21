@@ -12,7 +12,7 @@ ctest --test-dir build/g02-release --output-on-failure
 cmake --install build/g02-release --prefix build/g02-install
 ```
 
-`ctest`는 C·C++ 예제와 설치한 패키지를 별도 CMake 프로젝트에서 불러오는 소비자 확인만 수행합니다. O0·O2, ASan·UBSan, 입력 A·B, 결함 주입본 11개, 두 ELF 대상은 [G2 공개 검사기](../../gates/g02/README.md#공개-검사와-재시험)로 따로 확인합니다.
+`ctest`는 C·C++ 예제를 실행하고, 설치한 패키지가 별도 CMake 프로젝트에서 정상적으로 연결되는지 확인합니다. O0·O2, ASan·UBSan, 입력 A·B, 결함 주입본 11개, 두 ELF 대상은 [G2 공개 검사기](../../gates/g02/README.md#공개-검사와-재시험)로 따로 확인합니다.
 
 자신의 구현을 빌드하려면 첫 번째 명령에 다음 옵션을 추가합니다.
 
