@@ -44,6 +44,9 @@ PINNED_G2_ARGV_PREFIX = [
 ]
 PINNED_G2_MODULE = "labs.g02_embedded_cpp.run_harness"
 WINDOWS_REPOSITORY_CHECK = "hash -p /usr/bin/bash bash; source scripts/check_repo.sh"
+REPLAY_TIMEOUT_SECONDS = 180
+REPOSITORY_CHECK_TIMEOUT_SECONDS = 600
+PROBE_TIMEOUT_SECONDS = 30
 
 
 def repository_check_argv(
@@ -63,6 +66,41 @@ def repository_check_argv(
 
 def pinned_uv_version(value: str) -> bool:
     return re.fullmatch(r"uv 0\.12\.3(?: \(.+\))?", value) is not None
+
+
+def run_binary_replay(
+    argv: list[str],
+    *,
+    cwd: Path,
+    environment: Mapping[str, str],
+    label: str,
+    timeout_seconds: int = REPLAY_TIMEOUT_SECONDS,
+) -> subprocess.CompletedProcess[bytes]:
+    try:
+        return subprocess.run(
+            argv,
+            cwd=cwd,
+            env=dict(environment),
+            check=False,
+            capture_output=True,
+            timeout=timeout_seconds,
+        )
+    except subprocess.TimeoutExpired:
+        fail(f"{label} exceeded {timeout_seconds} seconds")
+
+
+def run_text_probe(argv: list[str], *, cwd: Path, label: str) -> subprocess.CompletedProcess[str]:
+    try:
+        return subprocess.run(
+            argv,
+            cwd=cwd,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=PROBE_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired:
+        fail(f"{label} exceeded {PROBE_TIMEOUT_SECONDS} seconds")
 
 
 def replay_environment(manifest: dict[str, Any], base: dict[str, str]) -> dict[str, str]:
@@ -92,12 +130,10 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
         version_command = [*PINNED_G1_ARGV_PREFIX[:-1], "--version"]
     else:
         version_command = [*PINNED_G2_ARGV_PREFIX[:-1], "--version"]
-    version = subprocess.run(
+    version = run_text_probe(
         version_command,
         cwd=snapshot,
-        check=False,
-        capture_output=True,
-        text=True,
+        label="Python version probe",
     )
     observed = version.stdout.strip().removeprefix("Python ")
     if version.returncode != 0 or observed != expected:
@@ -132,12 +168,10 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
         ):
             fail("schema 4 environment does not seal the G2 C++ and ELF contract")
     if schema_version in {3, 4}:
-        uv_version = subprocess.run(
+        uv_version = run_text_probe(
             ["uv", "--version"],
             cwd=snapshot,
-            check=False,
-            capture_output=True,
-            text=True,
+            label="uv version probe",
         )
         if uv_version.returncode != 0 or not pinned_uv_version(uv_version.stdout.strip()):
             fail(f"uv version mismatch: {uv_version.stdout.strip()}")
@@ -186,12 +220,12 @@ def verify_repository_check(manifest: dict[str, Any], snapshot: Path) -> None:
     expected_stderr = stderr_path.read_bytes()
     environment = os.environ.copy()
     environment.update(required_environment)
-    result = subprocess.run(
+    result = run_binary_replay(
         repository_check_argv(os.name, environment),
         cwd=snapshot,
-        env=environment,
-        check=False,
-        capture_output=True,
+        environment=environment,
+        label="repository check",
+        timeout_seconds=REPOSITORY_CHECK_TIMEOUT_SECONDS,
     )
     if check.get("expected_exit") != 0 or check.get("observed_exit") != 0:
         fail("repository_check manifest does not record a successful run")

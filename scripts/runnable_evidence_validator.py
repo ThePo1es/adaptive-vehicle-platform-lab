@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import os
 import re
-import subprocess
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -15,6 +14,7 @@ from scripts.runnable_evidence_replay import (
     PINNED_G2_MODULE,
     recorded_command_stdout,
     replay_environment,
+    run_binary_replay,
     verify_output,
     verify_repository_check,
     verify_runtime,
@@ -29,6 +29,7 @@ from scripts.runnable_evidence_support import (
     git_bytes,
     repository_path,
     required_roles,
+    run_git,
     translated_replay_argv,
 )
 
@@ -167,18 +168,14 @@ def verify_manifest(
     starter = manifest.get("starter_commit")
     if not isinstance(starter, str) or not FULL_SHA.fullmatch(starter):
         fail("starter_commit must be a full lowercase SHA")
-    if subprocess.run(
-        ["git", "cat-file", "-e", f"{starter}^{{commit}}"],
-        cwd=REPO_ROOT,
-        check=False,
-        capture_output=True,
+    if run_git(
+        ["cat-file", "-e", f"{starter}^{{commit}}"],
+        f"starter lookup for {starter}",
     ).returncode != 0:
         fail(f"starter commit is unavailable: {starter}")
-    if subprocess.run(
-        ["git", "merge-base", "--is-ancestor", starter, "HEAD"],
-        cwd=REPO_ROOT,
-        check=False,
-        capture_output=True,
+    if run_git(
+        ["merge-base", "--is-ancestor", starter, "HEAD"],
+        f"starter ancestry check for {starter}",
     ).returncode != 0:
         fail(f"starter commit is not an ancestor of HEAD: {starter}")
 
@@ -215,24 +212,22 @@ def verify_manifest(
         verify_runtime(snapshot, manifest)
         env = replay_environment(manifest, os.environ.copy())
         env.update(command_environment)
-        replay = subprocess.run(
+        replay = run_binary_replay(
             translated_replay_argv(argv),
             cwd=snapshot,
-            env=env,
-            check=False,
-            capture_output=True,
+            environment=env,
+            label="primary replay",
         )
         verify_output(replay, command, command_stdout)
         if retest is not None:
             retest_command, retest_argv, retest_environment, retest_stdout = retest
             retest_env = replay_environment(manifest, os.environ.copy())
             retest_env.update(retest_environment)
-            retest_replay = subprocess.run(
+            retest_replay = run_binary_replay(
                 translated_replay_argv(retest_argv),
                 cwd=snapshot,
-                env=retest_env,
-                check=False,
-                capture_output=True,
+                environment=retest_env,
+                label="retest replay",
             )
             verify_output(retest_replay, retest_command, retest_stdout)
         if active:

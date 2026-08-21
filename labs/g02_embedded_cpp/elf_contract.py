@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import subprocess
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Protocol, cast
@@ -134,7 +134,10 @@ def inspect_elf(path: Path, variant: str) -> ElfReport:
         )
 
 
-def verify_reports(reports: tuple[ElfReport, ...]) -> tuple[int, int]:
+def verify_reports(
+    reports: tuple[ElfReport, ...],
+    required_relocations: Mapping[str, str] | None = None,
+) -> tuple[int, int]:
     by_variant = {report.variant: report for report in reports}
     if set(by_variant) != {"virtual", "static", "manual"}:
         raise ElfContractError("all three ABI variants are required")
@@ -147,12 +150,14 @@ def verify_reports(reports: tuple[ElfReport, ...]) -> tuple[int, int]:
     ):
         if symbol not in by_variant[variant].symbols:
             raise ElfContractError(f"{variant} entry symbol is missing")
-    required_relocations = {
+    relocation_contract = required_relocations or {
         "virtual": "_ZTV10FixedClock",
         "static": "_Z10read_clockI10FixedClockEiRT_",
         "manual": "_Z10read_fixedPv",
     }
-    for variant, symbol in required_relocations.items():
+    if set(relocation_contract) != set(by_variant):
+        raise ElfContractError("relocation contract must cover all three ABI variants")
+    for variant, symbol in relocation_contract.items():
         if symbol not in by_variant[variant].relocation_symbols:
             raise ElfContractError(
                 f"{variant} required relocation target is missing: {symbol}"

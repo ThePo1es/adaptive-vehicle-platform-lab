@@ -23,11 +23,10 @@ jobs:
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: 0.12.3
+          checksum: b23350c79e8ad0192b8124af13a0f17e8d4e4549524785e1aef389ae5a06990e
 
-      - name: Provision the pinned replay toolchain
-        run: >-
-          uv run --python 3.12.13 --with ziglang==0.15.2 --with pyelftools==0.32
-          python -c "import elftools, ziglang; print(elftools.__version__, ziglang.__file__)"
+      - name: Provision the hash-locked replay toolchain
+        run: uv sync --project toolchain --locked --python 3.12.13
 
       - name: Prepare the historical Python entry point
         shell: bash
@@ -45,11 +44,11 @@ jobs:
       - name: Verify the nested Windows replay tools
         shell: bash
         run: |
-          uv run --offline --python 3.12.13 --with ziglang==0.15.2 --with pyelftools==0.32 \
+          uv run --project toolchain --locked --no-sync --offline \
             python -c "import os, pathlib; bash = pathlib.Path(os.environ['GIT_BASH_EXE']); print(bash); assert bash.is_file()"
 
       - name: Validate curriculum structure, links and traceability
         shell: bash
         run: |
-          uv run --offline --python 3.12.13 --with ziglang==0.15.2 --with pyelftools==0.32 \
+          uv run --project toolchain --locked --no-sync --offline \
             bash scripts/check_repo.sh

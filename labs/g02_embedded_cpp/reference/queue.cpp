@@ -61,7 +61,9 @@ TryPushResult WorkQueue::try_push(int value) noexcept {
 PopResult WorkQueue::pop() noexcept {
     std::unique_lock lock{mutex_};
     while (count_ == 0U && !closed_) {
+        observe(WaitEvent::BeforeWait);
         not_empty_.wait(lock);
+        observe(WaitEvent::AfterWake);
     }
     if (count_ == 0U) {
         return PopResult{PopState::Closed, 0};

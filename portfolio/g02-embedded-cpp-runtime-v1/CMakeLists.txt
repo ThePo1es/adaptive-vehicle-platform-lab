@@ -42,6 +42,12 @@ target_link_libraries(g02_embedded_cpp PUBLIC Threads::Threads)
 
 if(MSVC)
     target_compile_options(g02_embedded_cpp PRIVATE /W4 /WX)
+    set_source_files_properties(
+        "${G02_SOURCE_ROOT}/runtime.cpp"
+        "${G02_SOURCE_ROOT}/queue.cpp"
+        "${G02_SOURCE_ROOT}/abi.cpp"
+        PROPERTIES COMPILE_OPTIONS "/EHs-c-;/GR-"
+    )
 else()
     target_compile_options(
         g02_embedded_cpp
@@ -122,6 +128,7 @@ add_test(
         "-DPARENT_CXX_COMPILER_ARG1:STRING=${CMAKE_CXX_COMPILER_ARG1}"
         "-DPARENT_AR:FILEPATH=${CMAKE_AR}"
         "-DPARENT_RANLIB:FILEPATH=${CMAKE_RANLIB}"
+        "-DEXECUTABLE_SUFFIX:STRING=${CMAKE_EXECUTABLE_SUFFIX}"
         -P "${CMAKE_CURRENT_LIST_DIR}/cmake/verify_installed_consumer.cmake"
 )
 set_tests_properties(

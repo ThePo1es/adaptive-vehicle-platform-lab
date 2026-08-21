@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -11,6 +12,7 @@ from scripts.runnable_evidence_replay import (
     PINNED_G2_MODULE,
     pinned_uv_version,
     repository_check_argv,
+    run_binary_replay,
 )
 from scripts.runnable_evidence_support import (
     REQUIRED_ROLES,
@@ -30,12 +32,19 @@ def test_inactive_manifest_requires_only_base_artifacts() -> None:
 
 def test_active_g1_manifest_requires_replay_artifacts() -> None:
     roles = required_roles("G1.1", True)
-    assert {"evidence-checker", "unit-tests"} < roles
+    assert {"evidence-checker", "toolchain-lock", "toolchain-project", "unit-tests"} < roles
 
 
 def test_active_g2_manifest_requires_cpp_replay_artifacts() -> None:
     roles = required_roles("G2.1", True)
-    assert {"contract", "interface", "portfolio-build", "retest-fixture"} < roles
+    assert {
+        "contract",
+        "interface",
+        "portfolio-build",
+        "retest-fixture",
+        "toolchain-lock",
+        "toolchain-project",
+    } < roles
 
 
 def test_active_g2_abi_manifest_requires_c_and_elf_artifacts() -> None:
@@ -45,7 +54,13 @@ def test_active_g2_abi_manifest_requires_c_and_elf_artifacts() -> None:
 
 def test_active_g10_manifest_keeps_review_artifacts() -> None:
     roles = required_roles("G10.1", True)
-    assert {"review-policy", "reviewer-registry", "source-lock"} < roles
+    assert {
+        "review-policy",
+        "reviewer-registry",
+        "source-lock",
+        "toolchain-lock",
+        "toolchain-project",
+    } < roles
 
 
 def test_unknown_active_lab_has_no_implicit_policy() -> None:
@@ -171,3 +186,20 @@ def test_repository_check_identity_deduplicates_only_identical_replays() -> None
     }
     assert identity == ("a" * 40, "b" * 64, "c" * 64)
     assert repository_check_identity(changed) != identity
+
+
+def test_binary_replay_converts_timeout_to_bounded_failure(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    def raise_timeout(*_args: object, **_kwargs: object) -> None:
+        raise subprocess.TimeoutExpired(["example"], 180)
+
+    monkeypatch.setattr("scripts.runnable_evidence_replay.subprocess.run", raise_timeout)
+    with pytest.raises(ValueError, match="primary replay exceeded"):
+        _ = run_binary_replay(
+            ["example"],
+            cwd=tmp_path,
+            environment={},
+            label="primary replay",
+        )

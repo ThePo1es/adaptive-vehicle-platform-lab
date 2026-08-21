@@ -61,3 +61,23 @@ execute_process(
 if(NOT build_result EQUAL 0)
     message(FATAL_ERROR "installed-consumer build failed\n${build_output}${build_error}")
 endif()
+
+file(
+    GLOB_RECURSE consumer_candidates
+    "${CONSUMER_BUILD}/g02_installed_consumer${EXECUTABLE_SUFFIX}"
+    "${CONSUMER_BUILD}/*/g02_installed_consumer${EXECUTABLE_SUFFIX}"
+)
+list(LENGTH consumer_candidates consumer_count)
+if(NOT consumer_count EQUAL 1)
+    message(FATAL_ERROR "expected one installed consumer executable, found ${consumer_count}")
+endif()
+list(GET consumer_candidates 0 consumer_executable)
+execute_process(
+    COMMAND "${consumer_executable}"
+    RESULT_VARIABLE run_result
+    OUTPUT_VARIABLE run_output
+    ERROR_VARIABLE run_error
+)
+if(NOT run_result EQUAL 0 OR NOT run_output MATCHES "^G2 installed consumer: PASS")
+    message(FATAL_ERROR "installed consumer execution failed\n${run_output}${run_error}")
+endif()

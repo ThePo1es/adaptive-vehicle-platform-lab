@@ -21,41 +21,40 @@ jobs:
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: 0.12.3
+          checksum: 600cf9a742aca00d292673b16b5acffaa7b8c269a364ad0c2e79498dcb1fe101
 
-      - name: Provision the pinned Python, test and C toolchains
-        run: >-
-          uv run --python 3.12.13 --with pytest==9.1.1 --with ziglang==0.15.2
-          python -c "import pytest, ziglang; print(pytest.__version__, ziglang.__file__)"
+      - name: Provision the hash-locked toolchain
+        run: uv sync --project toolchain --locked --python 3.12.13
 
       - name: Run Python harness tests without network access
         run: >-
-          uv run --offline --python 3.12.13 --with pytest==9.1.1 --with ziglang==0.15.2
+          uv run --project toolchain --locked --no-sync --offline
           pytest -q scripts/tests labs/g01_safe_c/tests
 
       - name: Build and run every G1 Safe C lab
         env:
           G01_LAB_ID: G1.ALL
         run: >-
-          uv run --offline --python 3.12.13 --with ziglang==0.15.2
+          uv run --project toolchain --locked --no-sync --offline
           python -m labs.g01_safe_c.run_harness
 
       - name: Run the independent G1 retest input set
         env:
           G01_LAB_ID: G1.RETEST
         run: >-
-          uv run --offline --python 3.12.13 --with ziglang==0.15.2
+          uv run --project toolchain --locked --no-sync --offline
           python -m labs.g01_safe_c.run_harness
 
       - name: Build, test and install the portfolio release scaffold
         run: |
-          uv run --python 3.12.13 --with cmake==3.31.6 --with ninja==1.11.1.4 \
+          uv run --project toolchain --locked --no-sync --offline \
             cmake -S portfolio/g01-safe-c-components-v1 -B build/g01-release -G Ninja \
             -DCMAKE_BUILD_TYPE=Release
-          uv run --offline --python 3.12.13 --with cmake==3.31.6 --with ninja==1.11.1.4 \
+          uv run --project toolchain --locked --no-sync --offline \
             cmake --build build/g01-release
-          uv run --offline --python 3.12.13 --with cmake==3.31.6 --with ninja==1.11.1.4 \
+          uv run --project toolchain --locked --no-sync --offline \
             ctest --test-dir build/g01-release --output-on-failure
-          uv run --offline --python 3.12.13 --with cmake==3.31.6 --with ninja==1.11.1.4 \
+          uv run --project toolchain --locked --no-sync --offline \
             cmake --install build/g01-release --prefix build/g01-install
 
   g2-embedded-cpp:
@@ -69,41 +68,38 @@ jobs:
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           version: 0.12.3
+          checksum: 600cf9a742aca00d292673b16b5acffaa7b8c269a364ad0c2e79498dcb1fe101
 
-      - name: Provision the pinned Python, test, C++ and ELF toolchains
-        run: >-
-          uv run --python 3.12.13 --with pytest==9.1.1 --with ziglang==0.15.2
-          --with pyelftools==0.32
-          python -c "import elftools, pytest, ziglang; print(pytest.__version__, elftools.__version__, ziglang.__file__)"
+      - name: Provision the hash-locked toolchain
+        run: uv sync --project toolchain --locked --python 3.12.13
 
       - name: Run the G2 Python harness tests without network access
         run: >-
-          uv run --offline --python 3.12.13 --with pytest==9.1.1 --with ziglang==0.15.2
-          --with pyelftools==0.32
+          uv run --project toolchain --locked --no-sync --offline
           pytest -q labs/g02_embedded_cpp/tests
 
       - name: Build and run every G2 Embedded C++ lab
         env:
           G02_LAB_ID: G2.ALL
         run: >-
-          uv run --offline --python 3.12.13 --with ziglang==0.15.2 --with pyelftools==0.32
+          uv run --project toolchain --locked --no-sync --offline
           python -m labs.g02_embedded_cpp.run_harness
 
       - name: Run the independent G2 retest input set
         env:
           G02_LAB_ID: G2.RETEST
         run: >-
-          uv run --offline --python 3.12.13 --with ziglang==0.15.2 --with pyelftools==0.32
+          uv run --project toolchain --locked --no-sync --offline
           python -m labs.g02_embedded_cpp.run_harness
 
       - name: Build, test and install the G2 portfolio release
         run: |
-          uv run --python 3.12.13 --with cmake==3.31.6 --with ninja==1.11.1.4 \
+          uv run --project toolchain --locked --no-sync --offline \
             cmake -S portfolio/g02-embedded-cpp-runtime-v1 -B build/g02-release -G Ninja \
             -DCMAKE_BUILD_TYPE=Release
-          uv run --offline --python 3.12.13 --with cmake==3.31.6 --with ninja==1.11.1.4 \
+          uv run --project toolchain --locked --no-sync --offline \
             cmake --build build/g02-release
-          uv run --offline --python 3.12.13 --with cmake==3.31.6 --with ninja==1.11.1.4 \
+          uv run --project toolchain --locked --no-sync --offline \
             ctest --test-dir build/g02-release --output-on-failure
-          uv run --offline --python 3.12.13 --with cmake==3.31.6 --with ninja==1.11.1.4 \
+          uv run --project toolchain --locked --no-sync --offline \
             cmake --install build/g02-release --prefix build/g02-install

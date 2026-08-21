@@ -1,6 +1,12 @@
 #include "g02_runtime.hpp"
 
+#include <cstdio>
+
 int main() {
     g02::EventRuntime runtime{g02::FullPolicy::RejectNewest};
-    return runtime.size() == 0U ? 0 : 1;
+    if (runtime.size() != 0U) {
+        return 1;
+    }
+    std::puts("G2 installed consumer: PASS");
+    return 0;
 }

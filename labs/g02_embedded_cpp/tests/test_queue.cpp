@@ -11,6 +11,7 @@
 #include <array>
 #include <atomic>
 #include <barrier>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <semaphore>
@@ -88,6 +89,25 @@ int test_close_wakes_blocked_producer() {
     return 0;
 }
 
+int test_close_wakes_blocked_consumer() {
+    // Given a consumer blocked on an empty queue.
+    WaitProbe probe{};
+    WorkQueue queue{g02::WaitObserver{observe_wait, &probe}};
+    g02::PopResult consumer_result{};
+    std::jthread consumer([&] { consumer_result = queue.pop(); });
+    if (!probe.before_wait.try_acquire_for(std::chrono::seconds{1})) {
+        queue.close();
+        consumer.join();
+        return 1;
+    }
+    // When the queue is closed.
+    queue.close();
+    consumer.join();
+    // Then the blocked consumer wakes without inventing an item.
+    G02_CHECK(consumer_result.state == PopState::Closed);
+    return 0;
+}
+
 int test_close_allows_drain_then_reports_closed() {
     // Given two queued values.
     WorkQueue queue{};
@@ -155,6 +175,7 @@ int test_two_producers_preserve_every_value_for_100_seeds() {
 int main() {
     if (test_spurious_wakeup_does_not_overfill_queue() != 0 ||
         test_close_wakes_blocked_producer() != 0 ||
+        test_close_wakes_blocked_consumer() != 0 ||
         test_close_allows_drain_then_reports_closed() != 0 ||
         test_two_producers_preserve_every_value_for_100_seeds() != 0) {
         return 1;

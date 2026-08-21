@@ -22,32 +22,42 @@ def valid_reports() -> tuple[ElfReport, ...]:
     return (
         report(
             "virtual",
-            symbols=frozenset({"g02_virtual_entry", "_ZTV10FixedClock"}),
-            relocation_symbols=frozenset({"_ZTV10FixedClock"}),
+            symbols=frozenset({"g02_virtual_entry", "_ZTVTestClock"}),
+            relocation_symbols=frozenset({"virtual-target"}),
         ),
         report(
             "static",
             symbols=frozenset({"g02_static_entry"}),
-            relocation_symbols=frozenset({"_Z10read_clockI10FixedClockEiRT_"}),
+            relocation_symbols=frozenset({"static-target"}),
         ),
         report(
             "manual",
             symbols=frozenset({"g02_manual_entry"}),
-            relocation_symbols=frozenset({"_Z10read_fixedPv"}),
+            relocation_symbols=frozenset({"manual-target"}),
         ),
     )
 
 
 def test_elf_contract_requires_variant_specific_relocation_targets() -> None:
+    contract = {
+        "virtual": "virtual-target",
+        "static": "static-target",
+        "manual": "manual-target",
+    }
     reports = list(valid_reports())
     reports[0] = report(
         "virtual",
-        symbols=frozenset({"g02_virtual_entry", "_ZTV10FixedClock"}),
+        symbols=frozenset({"g02_virtual_entry", "_ZTVTestClock"}),
         relocation_symbols=frozenset(),
     )
     with pytest.raises(ElfContractError, match="required relocation"):
-        _ = verify_reports(tuple(reports))
+        _ = verify_reports(tuple(reports), contract)
 
 
 def test_elf_contract_accepts_all_required_relocation_targets() -> None:
-    assert verify_reports(valid_reports()) == (48, 3)
+    contract = {
+        "virtual": "virtual-target",
+        "static": "static-target",
+        "manual": "manual-target",
+    }
+    assert verify_reports(valid_reports(), contract) == (48, 3)

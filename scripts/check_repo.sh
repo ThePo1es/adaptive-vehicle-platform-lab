@@ -24,6 +24,9 @@ required_files=(
     PROGRESS.md
     SECURITY.md
     THIRD_PARTY_NOTICES.md
+    toolchain/pyproject.toml
+    toolchain/uv.lock
+    toolchain/README.md
     .github/workflows/code-build.yml
     compiler-analysis/README.md
     docs/competency-map.md

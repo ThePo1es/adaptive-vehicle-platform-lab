@@ -22,6 +22,8 @@ REPLAY_ROLES = {
     "evidence-replay",
     "evidence-support",
     "evidence-validator",
+    "toolchain-lock",
+    "toolchain-project",
 }
 G1_ACTIVE_REQUIRED_ROLES = REQUIRED_ROLES | REPLAY_ROLES | {
     "retest-fixture",
@@ -51,6 +53,7 @@ G10_ACTIVE_REQUIRED_ROLES = REQUIRED_ROLES | REPLAY_ROLES | {
     "source-lock",
     "unit-tests",
 }
+GIT_TIMEOUT_SECONDS = 30
 
 
 def fail(message: str) -> NoReturn:
@@ -89,12 +92,23 @@ def repository_path(value: Any) -> Path:
     return path
 
 
+def run_git(arguments: list[str], label: str) -> subprocess.CompletedProcess[bytes]:
+    try:
+        return subprocess.run(
+            ["git", *arguments],
+            cwd=REPO_ROOT,
+            check=False,
+            capture_output=True,
+            timeout=GIT_TIMEOUT_SECONDS,
+        )
+    except subprocess.TimeoutExpired:
+        fail(f"{label} exceeded {GIT_TIMEOUT_SECONDS} seconds")
+
+
 def git_bytes(commit: str, relative_path: str) -> bytes:
-    result = subprocess.run(
-        ["git", "show", f"{commit}:{relative_path}"],
-        cwd=REPO_ROOT,
-        check=False,
-        capture_output=True,
+    result = run_git(
+        ["show", f"{commit}:{relative_path}"],
+        f"git show for {relative_path}",
     )
     if result.returncode != 0:
         fail(f"starter object is unavailable: {commit}:{relative_path}")
@@ -102,11 +116,9 @@ def git_bytes(commit: str, relative_path: str) -> bytes:
 
 
 def archive_starter(commit: str, target: Path) -> None:
-    archived = subprocess.run(
-        ["git", "archive", "--format=tar", commit],
-        cwd=REPO_ROOT,
-        check=False,
-        capture_output=True,
+    archived = run_git(
+        ["archive", "--format=tar", commit],
+        f"git archive for {commit}",
     )
     if archived.returncode != 0:
         fail(f"git archive failed for starter {commit}")
