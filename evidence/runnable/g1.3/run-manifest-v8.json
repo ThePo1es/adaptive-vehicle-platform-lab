@@ -1,0 +1,199 @@
+{
+  "schema_version": 5,
+  "lab_id": "G1.3",
+  "status": "Runnable",
+  "verification_scope": "고정 용량 큐와 세대 번호 풀의 가득 참·오래된 handle·0용량 컴파일 거부",
+  "starter_commit": "2403b2ec21a3cc51bb587a97b9f1601ecdbf82dc",
+  "snapshot": {
+    "method": "git archive",
+    "network_required": false,
+    "working_tree_files_used": false
+  },
+  "artifacts": [
+    {
+      "role": "fixture",
+      "path": "fixtures/g01/sprint-1.3-v1.h",
+      "sha256": "966b9ef4e5c93dfbaa6cb4131a55f96fbe37eb3c935d6f15a79dec5e37f801f1"
+    },
+    {
+      "role": "validator",
+      "path": "labs/g01_safe_c/tests/test_storage.c",
+      "sha256": "4a10bf3a693e53ea6f271ec044b089783ab070a4911d3004e2e6c302c626f89b"
+    },
+    {
+      "role": "oracle",
+      "path": "labs/g01_safe_c/reference/storage.c",
+      "sha256": "07358170bc60cbe74e2719a6f73e755f7d7e09853ec9674da6e631bdfe489472"
+    },
+    {
+      "role": "starter",
+      "path": "labs/g01_safe_c/starter/storage.c",
+      "sha256": "256470491d0d85d6be43ab2f6ed605330afa7fa547f38d2dc41840acd9ff8d66"
+    },
+    {
+      "role": "compile-fail-validator",
+      "path": "labs/g01_safe_c/tests/invalid_zero_capacity.c",
+      "sha256": "b0acbdd57494b8aae3e6070fe1e02f71223bec17170743aec60c2db04f527d20"
+    },
+    {
+      "role": "runner",
+      "path": "labs/g01_safe_c/run_harness.py",
+      "sha256": "9fa771edbfff8c6d1f89294c70170a5c8c686a89e633ec6c354e57b2f5edf634"
+    },
+    {
+      "role": "interface",
+      "path": "labs/g01_safe_c/include/g01_lab.h",
+      "sha256": "09d8e9e28e415672fc6b21fd50f9ed5a5785cd54de96a8e2bd12c23bef5a94a2"
+    },
+    {
+      "role": "validator-support",
+      "path": "labs/g01_safe_c/tests/test_support.h",
+      "sha256": "49f63bcc15a3471e4857caa508d9c51402a64b531cf1fb03e30bcb58e134fae1"
+    },
+    {
+      "role": "unit-tests",
+      "path": "labs/g01_safe_c/tests/test_run_harness.py",
+      "sha256": "348ec1098fff10da9b82584912d5b02c88846d27d3b29be9bbe47bfdac729441"
+    },
+    {
+      "role": "test-config",
+      "path": "pytest.ini",
+      "sha256": "a71a64881aa52495c7ee1d1aa12372c357dd409354099c4cefb204dd5948baf4"
+    },
+    {
+      "role": "evidence-checker",
+      "path": "scripts/check_runnable_evidence.py",
+      "sha256": "d9e8baec720e983259201a1ac6ef94a2ff011eb306c2e25dce2ddc45802b3061"
+    },
+    {
+      "role": "evidence-replay",
+      "path": "scripts/runnable_evidence_replay.py",
+      "sha256": "68720c299c9fcb24c95f31ad0be954bc79bb03befbc0b4b3980fdd16ae99eb83"
+    },
+    {
+      "role": "evidence-support",
+      "path": "scripts/runnable_evidence_support.py",
+      "sha256": "ebf469a625bd61ce0506b92151e0949ac98907dba528b84ca9f61d3d925dc1ad"
+    },
+    {
+      "role": "evidence-validator",
+      "path": "scripts/runnable_evidence_validator.py",
+      "sha256": "11beb80c87987c3ba62a02a320587dbe7bdb649ceb3247d6c69ecef3a4b8f1d0"
+    },
+    {
+      "role": "retest-fixture",
+      "path": "fixtures/g01/retest-1.3-v1.h",
+      "sha256": "78966c8b2059f11c583dbb61fff90e02e1fa6634fefe5a79b99d966ec4944a06"
+    },
+    {
+      "role": "toolchain-resolver",
+      "path": "labs/g01_safe_c/harness_toolchain.py",
+      "sha256": "5f193c11a77aaf8b9a6e370234cac389aaf658abcfbcd0b20867f6e3645df395"
+    },
+    {
+      "role": "toolchain-lock",
+      "path": "toolchain/uv.lock",
+      "sha256": "336501314b6c88849423382b0722bc03528163b69ab692eb9574bea00a6f1703"
+    },
+    {
+      "role": "toolchain-project",
+      "path": "toolchain/pyproject.toml",
+      "sha256": "bb5dc73a08c67c9d62f1f6ca5ae8a0d143185cc49570ed69b787b9dad08809e1"
+    }
+  ],
+  "command": {
+    "argv": [
+      "uv",
+      "run",
+      "--project",
+      "toolchain",
+      "--locked",
+      "--offline",
+      "python",
+      "-m",
+      "labs.g01_safe_c.run_harness"
+    ],
+    "environment": {
+      "G01_LAB_ID": "G1.3",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g1.3/harness-v8.stdout",
+    "stdout_sha256": "3160a4feb56c129ac051a240423bde037b34efac8305b2d9fd5590b82088d789",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "uv": "0.12.3",
+    "c_compiler": "zig",
+    "c_compiler_version": "0.15.2",
+    "c_runtime": "Zig 0.15.2 bundled libc",
+    "target_contract": "native x86_64 hosted C17",
+    "recorded_target": "x86_64-unknown-windows-gnu",
+    "replay_targets": [
+      "x86_64-unknown-windows-gnu",
+      "x86_64-linux-gnu"
+    ],
+    "kernel": "Windows 11 x86_64; LF-canonical text replay"
+  },
+  "timing": {
+    "definition": "Windows records active command time and wall time from the same monotonic elapsed measurement",
+    "harness": {
+      "active_seconds": 9.86,
+      "wall_seconds": 9.86
+    },
+    "repository_check": {
+      "active_seconds": 142.891,
+      "wall_seconds": 142.891
+    },
+    "retest": {
+      "active_seconds": 7.172,
+      "wall_seconds": 7.172
+    }
+  },
+  "repository_check": {
+    "argv": [
+      "bash",
+      "scripts/check_repo.sh"
+    ],
+    "environment": {
+      "SKIP_RUNNABLE_EVIDENCE": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/repository-check-2403b2e.stdout",
+    "stdout_sha256": "8bca416659510f34ce3f62d4b07c0ade27dcec3c8d76649823cc64eb708f509f",
+    "stderr_path": "evidence/runnable/repository-check-2403b2e.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "learner_time_calibration": {
+    "status": "Not run",
+    "estimate_active_hours": "26-34",
+    "note": "첫 학습자 실행에서 안내·독립·전이 과제의 활동 시간과 막힌 지점을 따로 기록한다."
+  },
+  "recorded_at": "2026-08-21T15:54:32+09:00",
+  "retest_command": {
+    "argv": [
+      "uv",
+      "run",
+      "--project",
+      "toolchain",
+      "--locked",
+      "--offline",
+      "python",
+      "-m",
+      "labs.g01_safe_c.run_harness"
+    ],
+    "environment": {
+      "G01_LAB_ID": "G1.3.RETEST",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g1.3/retest-v8.stdout",
+    "stdout_sha256": "da818fcf16e35294149e93131530a3a99ff6c48365a8ffb38f62d9348223957f",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}
