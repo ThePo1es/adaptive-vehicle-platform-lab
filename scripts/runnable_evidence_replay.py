@@ -151,10 +151,6 @@ def verify_runtime(snapshot: Path, manifest: dict[str, Any]) -> None:
     schema_version = manifest["schema_version"]
     if schema_version == 2:
         version_command = [sys.executable, "--version"]
-    elif schema_version == 3:
-        version_command = [*PINNED_G1_ARGV_PREFIX[:-1], "--version"]
-    elif schema_version == 4:
-        version_command = [*PINNED_G2_ARGV_PREFIX[:-1], "--version"]
     else:
         version_command = [*LOCKED_TOOLCHAIN_ARGV_PREFIX[:-1], "--version"]
     probe_environment = clean_verifier_environment(os.environ)

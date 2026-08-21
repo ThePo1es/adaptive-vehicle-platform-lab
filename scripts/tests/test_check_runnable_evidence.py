@@ -22,6 +22,7 @@ from scripts.runnable_evidence_support import (
     canonical_output,
     digest,
     required_roles,
+    translated_replay_argv,
 )
 from scripts.runnable_evidence_validator import (
     repository_check_identity,
@@ -94,6 +95,17 @@ def test_command_shape_requires_hashed_python_runner() -> None:
         ["python3", "labs/example/run_harness.py"],
         {"LAB_ID": "G1.1"},
     )
+
+
+def test_historical_with_dependencies_replays_through_locked_toolchain() -> None:
+    assert translated_replay_argv([*PINNED_G1_ARGV_PREFIX, PINNED_G1_MODULE]) == [
+        *LOCKED_TOOLCHAIN_ARGV_PREFIX,
+        PINNED_G1_MODULE,
+    ]
+    assert translated_replay_argv([*PINNED_G2_ARGV_PREFIX, PINNED_G2_MODULE]) == [
+        *LOCKED_TOOLCHAIN_ARGV_PREFIX,
+        PINNED_G2_MODULE,
+    ]
 
 
 def test_schema_three_command_pins_uv_python_and_zig() -> None:
@@ -257,6 +269,7 @@ def test_runtime_probe_does_not_reuse_manifest_environment(
     tmp_path: Path,
 ) -> None:
     observed: list[dict[str, str]] = []
+    observed_argv: list[list[str]] = []
 
     def probe(
         argv: list[str],
@@ -267,6 +280,7 @@ def test_runtime_probe_does_not_reuse_manifest_environment(
     ) -> subprocess.CompletedProcess[str]:
         _ = cwd
         observed.append(environment)
+        observed_argv.append(argv)
         if label == "Python version probe":
             return subprocess.CompletedProcess(
                 argv,
@@ -281,7 +295,7 @@ def test_runtime_probe_does_not_reuse_manifest_environment(
     verify_runtime(
         tmp_path,
         {
-            "schema_version": 5,
+            "schema_version": 3,
             "environment": {
                 "python": "3.12.13",
                 "uv": "0.12.3",
@@ -295,6 +309,7 @@ def test_runtime_probe_does_not_reuse_manifest_environment(
     )
 
     assert len(observed) == 2
+    assert observed_argv[0] == [*LOCKED_TOOLCHAIN_ARGV_PREFIX[:-1], "--version"]
     assert all("VIRTUAL_ENV" not in environment for environment in observed)
     assert all(
         isinstance(key, str) and isinstance(value, str)

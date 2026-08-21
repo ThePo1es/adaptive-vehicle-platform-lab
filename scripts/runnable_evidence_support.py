@@ -172,7 +172,21 @@ def runnable_gate_lab_ids() -> set[str]:
 
 
 def translated_replay_argv(argv: list[str]) -> list[str]:
-    return [sys.executable, *argv[1:]] if argv[0] == "python3" else argv
+    if argv[0] == "python3":
+        return [sys.executable, *argv[1:]]
+    if argv[:3] == ["uv", "run", "--offline"]:
+        return [
+            "uv",
+            "run",
+            "--project",
+            "toolchain",
+            "--locked",
+            "--offline",
+            "python",
+            "-m",
+            argv[-1],
+        ]
+    return argv
 
 
 def verify_sprint_lock(
