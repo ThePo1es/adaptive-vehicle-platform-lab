@@ -1,10 +1,10 @@
 # 실습 2-3 — 기다리는 스레드를 남기지 않고 닫는 작업 큐 만들기
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `4b646fcddfbf436c0166d25fefa48fe24e1e9b63`
+> - 시작 커밋: `a50cde9348ba0491554580309ed325b20ee13912`
 > - 공개 입력 SHA-256: `6e912abd0d3b16206979344daaaecc3cbe2db5abf0ca363cfdba5837dc7c053e`
 > - 재시험 입력 SHA-256: `b7ae9d241a82e7838c9c6ecc330f1c0b0b3559fef4da0ebbf0074e067c41f96a`
-> - 실행 기록: [G2.3 실행 명세 v6](../../evidence/runnable/g2.3/run-manifest-v6.json)
+> - 실행 기록: [G2.3 실행 명세 v7](../../evidence/runnable/g2.3/run-manifest-v7.json)
 
 > 소속 챕터: [임베디드 C++로 안전한 런타임 만들기](README.md) · 관리 코드: G2.3
 

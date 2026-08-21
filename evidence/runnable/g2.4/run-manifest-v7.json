@@ -1,0 +1,282 @@
+{
+  "schema_version": 6,
+  "lab_id": "G2.4",
+  "status": "Runnable",
+  "verification_scope": "native x86_64 hosted C++20 O0/O2, C17 header compilation, three single-fault variants, and ELF structure for two non-hosted targets",
+  "starter_commit": "a50cde9348ba0491554580309ed325b20ee13912",
+  "snapshot": {
+    "method": "git archive",
+    "network_required": false,
+    "working_tree_files_used": false
+  },
+  "artifacts": [
+    {
+      "role": "fixture",
+      "path": "fixtures/g02/sprint-2.4-v1.hpp",
+      "sha256": "129604c22c749318f3c16e47bd0b9a9083625d74801a11969faec5911e650c5f"
+    },
+    {
+      "role": "validator",
+      "path": "labs/g02_embedded_cpp/tests/test_abi.cpp",
+      "sha256": "4c7299a61d4a840f87b082a645876287344c42c598969538fb91a883bdffe499"
+    },
+    {
+      "role": "oracle",
+      "path": "labs/g02_embedded_cpp/reference/abi.cpp",
+      "sha256": "24f9bcf57e497338ec9c269e15a6b8a99f24439af6314bb88aab4f9a363f95c8"
+    },
+    {
+      "role": "starter",
+      "path": "labs/g02_embedded_cpp/starter/abi.cpp",
+      "sha256": "7cc9b7e3f00b263999c76ccb5fd08c226dc5133ebfa1b723d529cf1ca19aec08"
+    },
+    {
+      "role": "runner",
+      "path": "labs/g02_embedded_cpp/run_harness.py",
+      "sha256": "0583fd841c3629a5c70829e22c33302cafee19fb93c758d881598d7a89c164dc"
+    },
+    {
+      "role": "interface",
+      "path": "labs/g02_embedded_cpp/include/g02_abi.hpp",
+      "sha256": "e43e72902790207d0ffaf65cdd46630e67eeb18641d6ffd24545ac2a2d79b59f"
+    },
+    {
+      "role": "validator-support",
+      "path": "labs/g02_embedded_cpp/tests/test_support.hpp",
+      "sha256": "dc0528063a63d0f178e743f2cf0cfdd05204b47d8bf26a54ed216db4af8c095c"
+    },
+    {
+      "role": "unit-tests",
+      "path": "labs/g02_embedded_cpp/tests/test_run_harness.py",
+      "sha256": "482ac59ab025c5b86fa613ddff04f3a45d7ce58cc72c5ab8b757c1fbf0056a96"
+    },
+    {
+      "role": "test-config",
+      "path": "pytest.ini",
+      "sha256": "a71a64881aa52495c7ee1d1aa12372c357dd409354099c4cefb204dd5948baf4"
+    },
+    {
+      "role": "evidence-checker",
+      "path": "scripts/check_runnable_evidence.py",
+      "sha256": "d9e8baec720e983259201a1ac6ef94a2ff011eb306c2e25dce2ddc45802b3061"
+    },
+    {
+      "role": "evidence-replay",
+      "path": "scripts/runnable_evidence_replay.py",
+      "sha256": "62b97a8e2c610cdd9397a1409f47f873c629f7a3d893e2e053f0996a2d153662"
+    },
+    {
+      "role": "evidence-support",
+      "path": "scripts/runnable_evidence_support.py",
+      "sha256": "ebf469a625bd61ce0506b92151e0949ac98907dba528b84ca9f61d3d925dc1ad"
+    },
+    {
+      "role": "evidence-validator",
+      "path": "scripts/runnable_evidence_validator.py",
+      "sha256": "11beb80c87987c3ba62a02a320587dbe7bdb649ceb3247d6c69ecef3a4b8f1d0"
+    },
+    {
+      "role": "retest-fixture",
+      "path": "fixtures/g02/retest-2.4-v1.hpp",
+      "sha256": "6dd642cf6de0cc538f33f2e873fe97be970e511e900d39afb8c1cff35ff2b002"
+    },
+    {
+      "role": "toolchain-resolver",
+      "path": "labs/g02_embedded_cpp/harness_toolchain.py",
+      "sha256": "24e0069962e75998dcb35291ab94ad94645a22003cd031b4689048302ea24d8c"
+    },
+    {
+      "role": "contract",
+      "path": "gates/g02/contract.md",
+      "sha256": "86edbfb948ad9f20248e1d391efa0f7955807e75781456921349e514904dfd75"
+    },
+    {
+      "role": "portfolio-build",
+      "path": "portfolio/g02-embedded-cpp-runtime-v1/CMakeLists.txt",
+      "sha256": "2862a2d43933de4c6b3ea688e6307da080be5270f4a6d5557cb3f02c7d0fb563"
+    },
+    {
+      "role": "abi-corpus",
+      "path": "labs/g02_embedded_cpp/freestanding/virtual.cpp",
+      "sha256": "8e59eb59959036e1cbb76559c28cce54d37c616741a305013277caa8f5b95f3d"
+    },
+    {
+      "role": "c-abi-header",
+      "path": "labs/g02_embedded_cpp/include/g02_abi_c.h",
+      "sha256": "caa5e6c308cb933c4b3b897390e7d06c4951fda2ba792d96dc24a8e62e1d7aa8"
+    },
+    {
+      "role": "c-abi-validator",
+      "path": "labs/g02_embedded_cpp/tests/test_c_abi_header.c",
+      "sha256": "d2113ec117737e9cb86483777dfc3a260193b55c4a24e898a4caf32e06def46c"
+    },
+    {
+      "role": "elf-inspector",
+      "path": "labs/g02_embedded_cpp/elf_contract.py",
+      "sha256": "4c2e742120a4204decc9cab97f176d53430d65fd52aebb410d842c7e032c3131"
+    },
+    {
+      "role": "elf-manual-corpus",
+      "path": "labs/g02_embedded_cpp/freestanding/manual.cpp",
+      "sha256": "3dcb1f2854f2bddc36f21223ee64e84741a7923604b337ec3c0851c5179b7cec"
+    },
+    {
+      "role": "elf-static-corpus",
+      "path": "labs/g02_embedded_cpp/freestanding/static.cpp",
+      "sha256": "a5836c053fe722480104c0ee0c8510ed9e27fb12281a91882a4d2a4c3570dcf6"
+    },
+    {
+      "role": "elf-unit-tests",
+      "path": "labs/g02_embedded_cpp/tests/test_elf_contract.py",
+      "sha256": "740eda3dfa9ea1e217a301416ab031fcb2863d8f3a9f260cfd63574e2c1d2605"
+    },
+    {
+      "role": "consumer-build",
+      "path": "portfolio/g02-embedded-cpp-runtime-v1/consumer/CMakeLists.txt",
+      "sha256": "4b64d6eb279ba1690aea7a86beba58d8b194214155287d0877d5054b95afa7c2"
+    },
+    {
+      "role": "package-config",
+      "path": "portfolio/g02-embedded-cpp-runtime-v1/cmake/G02EmbeddedCppConfig.cmake.in",
+      "sha256": "478264cd92d3d38f67fa8f3f6f4afb1eb9448b05ec8d78e508b10b30cb5898b4"
+    },
+    {
+      "role": "toolchain-lock",
+      "path": "toolchain/uv.lock",
+      "sha256": "336501314b6c88849423382b0722bc03528163b69ab692eb9574bea00a6f1703"
+    },
+    {
+      "role": "toolchain-project",
+      "path": "toolchain/pyproject.toml",
+      "sha256": "bb5dc73a08c67c9d62f1f6ca5ae8a0d143185cc49570ed69b787b9dad08809e1"
+    },
+    {
+      "role": "consumer-main",
+      "path": "portfolio/g02-embedded-cpp-runtime-v1/consumer/main.cpp",
+      "sha256": "03a8516e09c8c3ba8a038ed961a10e67334f5fe442c9e240fb67975c93d50371"
+    },
+    {
+      "role": "consumer-runner",
+      "path": "portfolio/g02-embedded-cpp-runtime-v1/cmake/verify_installed_consumer.cmake",
+      "sha256": "cb247ef28d2c4d5de5ec9084d161ce8e115c2cff8bc29db75c9adf38cf0f7e03"
+    },
+    {
+      "role": "demo-c",
+      "path": "portfolio/g02-embedded-cpp-runtime-v1/demo_c.c",
+      "sha256": "3dcd018e604bc94fcf02469b5221378d09232d16e5a9b345f99d214c12242d44"
+    },
+    {
+      "role": "demo-cpp",
+      "path": "portfolio/g02-embedded-cpp-runtime-v1/demo.cpp",
+      "sha256": "a74f23e0a5e4eaaf6b5148c5722aaf546f519de1f258d1fe4305fe74e4871c93"
+    },
+    {
+      "role": "submission-guard",
+      "path": "labs/g02_embedded_cpp/submission.py",
+      "sha256": "e2c8db108a8c520372049bf645ecdebd6fa6965886ff0ff31847ff83a43ecacc"
+    },
+    {
+      "role": "toolchain-timeout-test",
+      "path": "labs/g02_embedded_cpp/tests/test_harness_toolchain.py",
+      "sha256": "f1d5fc47dd7147ce6333d3ba08e9a4dde85229ee01ead00763ff35827d3f1e41"
+    }
+  ],
+  "command": {
+    "argv": [
+      "uv",
+      "run",
+      "--project",
+      "toolchain",
+      "--locked",
+      "--offline",
+      "python",
+      "-m",
+      "labs.g02_embedded_cpp.run_harness"
+    ],
+    "environment": {
+      "G02_LAB_ID": "G2.4",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g2.4/harness-v7.stdout",
+    "stdout_sha256": "62cbe8b60dbe28fb08c9ee0981706ff3aabff0946a07a9a84f4d3057968cfa63",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "uv": "0.12.3",
+    "cpp_compiler": "zig-c++",
+    "cpp_compiler_version": "0.15.2",
+    "c_compiler": "zig-cc",
+    "c_compiler_version": "0.15.2",
+    "elf_reader": "pyelftools 0.32",
+    "target_contract": "native x86_64 hosted C++20",
+    "abi_targets": "thumb-freestanding-eabi,aarch64-freestanding-none",
+    "recorded_target": "x86_64-unknown-windows-gnu",
+    "replay_targets": [
+      "x86_64-unknown-windows-gnu",
+      "x86_64-linux-gnu"
+    ],
+    "kernel": "Windows 11 x86_64; LF-canonical text replay"
+  },
+  "timing": {
+    "definition": "Windows records active command time and wall time from the same monotonic elapsed measurement",
+    "harness": {
+      "active_seconds": 17.719,
+      "wall_seconds": 17.719
+    },
+    "repository_check": {
+      "active_seconds": 146.5,
+      "wall_seconds": 146.5
+    },
+    "retest": {
+      "active_seconds": 7.891,
+      "wall_seconds": 7.891
+    }
+  },
+  "repository_check": {
+    "argv": [
+      "bash",
+      "scripts/check_repo.sh"
+    ],
+    "environment": {
+      "SKIP_RUNNABLE_EVIDENCE": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/repository-check-a50cde9.stdout",
+    "stdout_sha256": "8bca416659510f34ce3f62d4b07c0ade27dcec3c8d76649823cc64eb708f509f",
+    "stderr_path": "evidence/runnable/repository-check-a50cde9.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "learner_time_calibration": {
+    "status": "Not run",
+    "estimate_active_hours": "26-34",
+    "note": "실제 학습자가 처음부터 수행한 기록이 없으므로 예상 시간은 아직 확정하지 않습니다."
+  },
+  "recorded_at": "2026-08-21T19:48:34+09:00",
+  "retest_command": {
+    "argv": [
+      "uv",
+      "run",
+      "--project",
+      "toolchain",
+      "--locked",
+      "--offline",
+      "python",
+      "-m",
+      "labs.g02_embedded_cpp.run_harness"
+    ],
+    "environment": {
+      "G02_LAB_ID": "G2.4.RETEST",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g2.4/retest-v7.stdout",
+    "stdout_sha256": "22ffe4041020ee17d9e3199a9fe1431561de77197952fb1947e7eab78adf69c7",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

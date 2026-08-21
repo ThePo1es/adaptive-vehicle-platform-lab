@@ -1,14 +1,14 @@
 # G1 실행 증거
 
-“안전한 C로 데이터와 메모리 다루기”의 다섯 실습을 시작 커밋 `2403b2ec21a3cc51bb587a97b9f1601ecdbf82dc`에서 각각 다시 실행했습니다. Python 3.12.13, uv 0.12.3, Zig 0.15.2와 내장 C 표준 라이브러리를 고정하고 공개 입력 A·B를 모두 확인했습니다. v8은 잠금 파일로 도구 해시를 확인하고 Windows 재생 때 Git Bash 절대 경로를 사용해 WSL 실행기와 섞이지 않도록 고정합니다.
+“안전한 C로 데이터와 메모리 다루기”의 다섯 실습을 시작 커밋 `a50cde9348ba0491554580309ed325b20ee13912`에서 각각 다시 실행했습니다. Python 3.12.13, uv 0.12.3, Zig 0.15.2와 내장 C 표준 라이브러리를 고정하고 공개 입력 A·B를 모두 확인했습니다. v9는 잠금 파일로 도구 해시를 확인하고 Windows 재생 때 Git Bash 절대 경로를 사용해 WSL 실행기와 섞이지 않도록 고정합니다.
 
 | 실습 | 실행 명세 | 확인한 경계 |
 | --- | --- | --- |
-| G1.1 | [v8](../g1.1/run-manifest-v8.json) | 길이·부호·예약 비트·바이트 순서·속성 왕복 |
-| G1.2 | [v8](../g1.2/run-manifest-v8.json) | 위치 0–7·길이 0–8·호스트 바이트 순서 |
-| G1.3 | [v8](../g1.3/run-manifest-v8.json) | 용량 1·2·3·4·8, 32칸 풀, 세대값 고갈 |
-| G1.4 | [v8](../g1.4/run-manifest-v8.json) | 모든 최대 프레임 접두부·CRC·시작 표식 재사용 |
-| G1.5 | [v8](../g1.5/run-manifest-v8.json) | 32비트 MMIO·W1C·시간 제한·release/acquire |
+| G1.1 | [v9](../g1.1/run-manifest-v9.json) | 길이·부호·예약 비트·바이트 순서·속성 왕복 |
+| G1.2 | [v9](../g1.2/run-manifest-v9.json) | 위치 0–7·길이 0–8·호스트 바이트 순서 |
+| G1.3 | [v9](../g1.3/run-manifest-v9.json) | 용량 1·2·3·4·8, 32칸 풀, 세대값 고갈 |
+| G1.4 | [v9](../g1.4/run-manifest-v9.json) | 모든 최대 프레임 접두부·CRC·시작 표식 재사용 |
+| G1.5 | [v9](../g1.5/run-manifest-v9.json) | 32비트 MMIO·W1C·시간 제한·release/acquire |
 
 ```bash
 uv run --project toolchain --locked --offline \

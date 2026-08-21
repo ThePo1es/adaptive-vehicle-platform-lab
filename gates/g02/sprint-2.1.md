@@ -1,10 +1,10 @@
 # 실습 2-1 — 원본이 파괴되어도 안전한 데이터 뷰 만들기
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `4b646fcddfbf436c0166d25fefa48fe24e1e9b63`
+> - 시작 커밋: `a50cde9348ba0491554580309ed325b20ee13912`
 > - 공개 입력 SHA-256: `66752ae713e02cb8b7427caad01e0e7be387015b55a69ffd86b9e99374a21b50`
 > - 재시험 입력 SHA-256: `595e4c01846dd3f4a66c8ff50e90b510b95d9f8be1dfedcba09e3b5d34a61182`
-> - 실행 기록: [G2.1 실행 명세 v6](../../evidence/runnable/g2.1/run-manifest-v6.json)
+> - 실행 기록: [G2.1 실행 명세 v7](../../evidence/runnable/g2.1/run-manifest-v7.json)
 
 > 소속 챕터: [임베디드 C++로 안전한 런타임 만들기](README.md) · 관리 코드: G2.1
 
