@@ -1,4 +1,4 @@
-# 임베디드 C++로 안전한 실행 기반 만들기
+# 임베디드 C++로 안전한 런타임 만들기
 
 > 관리 코드: G2 · 권장 학습 순서: 3번째 · 현재 준비 상태: `Runnable`
 
@@ -6,7 +6,7 @@
 
 ## 이 장에서 완성하는 것
 
-네 실습을 마치면 `임베디드 C++ 실행 기반 v1`이 완성됩니다.
+네 실습을 마치면 `임베디드 C++ 런타임 v1`이 완성됩니다.
 
 ```text
 받아 온 바이트의 수명을 보장하는 데이터 뷰
@@ -46,31 +46,33 @@ PowerShell에서는 먼저 `$env:G02_LAB_ID = "G2.ENTRY"`를 실행한 다음 `u
 mkdir -p study/g02/src
 cp labs/g02_embedded_cpp/starter/*.cpp study/g02/src/
 
-G02_SUBMISSION_ROOT=study/g02/src G02_LAB_ID=G2.1 \
+G02_TRUSTED_LOCAL_EXECUTION=1 G02_SUBMISSION_ROOT=study/g02/src G02_LAB_ID=G2.1 \
 uv run --offline --python 3.12.13 \
   --with ziglang==0.15.2 --with pyelftools==0.32 \
   python -m labs.g02_embedded_cpp.run_harness
 ```
 
-시작 파일은 빌드되지만 공개 검사를 통과하지 못합니다. 검사기는 학습자가 지정한 폴더의 코드와 별도로 작성된 검사 코드·입력만 연결합니다. 완성 구현이 학습자 프로그램에 섞이지 않도록 분리해 두었습니다.
+시작 파일은 빌드되지만 공개 검사를 통과하지 못합니다. 검사기는 학습자가 지정한 폴더의 코드와 별도로 작성된 검사 코드·입력만 연결합니다. 완성 구현이 학습자 프로그램에 섞이지 않도록 분리해 두었습니다. `G02_TRUSTED_LOCAL_EXECUTION=1`은 자신이 작성하거나 직접 검토한 코드에만 사용하세요. 이 로컬 검사기는 파일 시스템과 네트워크를 가두는 보안 샌드박스가 아닙니다.
+
+PowerShell에서는 `$env:G02_TRUSTED_LOCAL_EXECUTION = "1"`, `$env:G02_SUBMISSION_ROOT = "study/g02/src"`, `$env:G02_LAB_ID = "G2.1"`을 차례로 지정한 뒤 같은 `uv run ...` 명령을 실행합니다.
 
 ## 실습 순서
 
 | 실습 | 만드는 것 | 예상 활동 시간 | 준비 상태 |
 | --- | --- | ---: | --- |
-| [2-1 빌린 데이터를 오래 잡아 두지 않기](sprint-2.1.md) | 원본 객체가 사라져도 안전하게 읽을 수 있는 데이터 뷰 | 24–32시간 | Runnable |
+| [2-1 원본이 사라져도 안전한 데이터 뷰 만들기](sprint-2.1.md) | 원본 객체가 사라져도 안전하게 읽을 수 있는 데이터 뷰 | 24–32시간 | Runnable |
 | [2-2 힙 없이 동작하는 이벤트 처리기 만들기](sprint-2.2.md) | 이벤트 32개와 콜백 8개를 담는 고정 용량 처리기 | 28–36시간 | Runnable |
 | [2-3 멈추지 않고 종료되는 작업 큐 만들기](sprint-2.3.md) | 생산자 2개와 소비자 1개가 함께 쓰는 용량 8의 큐 | 30–40시간 | Runnable |
 | [2-4 가상 함수·템플릿·C 경계를 비교해 선택하기](sprint-2.4.md) | 세 가지 구현 비교, C17 공개 API, 두 대상의 ELF 보고서 | 26–34시간 | Runnable |
 
-총 108–142시간은 자료 읽기, 안내 실습, 독립 구현, 실패 원인 분석, 응용 과제, 학습 기록을 모두 합친 예상치입니다. 아직 실제 학습 시간을 바탕으로 계산한 값이 아니므로 `Provisional`로 표시합니다. 자동 빌드에 걸린 시간은 학습 시간과 따로 기록합니다.
+총 108–142시간은 자료를 읽고 안내 실습과 독립 구현을 수행하며, 실패 원인을 분석하고 응용 과제와 학습 기록을 마치는 데 필요한 예상 시간입니다. 아직 실제 학습 시간을 바탕으로 계산한 값이 아니므로 `Provisional`로 표시합니다. 자동 빌드에 걸린 시간은 학습 시간과 따로 기록합니다.
 
 ## 공개 검사와 재시험
 
 전체 공개 입력 A를 실행합니다.
 
 ```bash
-G02_LAB_ID=G2.ALL \
+G02_TRUSTED_LOCAL_EXECUTION=1 G02_SUBMISSION_ROOT=study/g02/src G02_LAB_ID=G2.ALL \
 uv run --offline --python 3.12.13 \
   --with ziglang==0.15.2 --with pyelftools==0.32 \
   python -m labs.g02_embedded_cpp.run_harness
@@ -79,7 +81,7 @@ uv run --offline --python 3.12.13 \
 통과 뒤 값과 경계를 바꾼 입력 B로 다시 시험합니다.
 
 ```bash
-G02_LAB_ID=G2.RETEST \
+G02_TRUSTED_LOCAL_EXECUTION=1 G02_SUBMISSION_ROOT=study/g02/src G02_LAB_ID=G2.RETEST \
 uv run --offline --python 3.12.13 \
   --with ziglang==0.15.2 --with pyelftools==0.32 \
   python -m labs.g02_embedded_cpp.run_harness
@@ -102,7 +104,7 @@ A와 B는 누구나 볼 수 있는 반복 검사입니다. 입력값이 달라�
 네 실습을 모두 통과하면 [CMake 공개 작업 공간](../../portfolio/g02-embedded-cpp-runtime-v1/README.md)에서 새 빌드 폴더로 빌드·검사·설치·예제 실행을 확인합니다. `release/g02-embedded-cpp-v1` 브랜치의 PR에는 다음 자료를 넣습니다.
 
 - 새로 내려받은 저장소에서 재현하는 명령
-- 입력 A·B와 결함 주입본 10개를 검사한 원본 출력
+- 입력 A·B와 결함 주입본 11개를 검사한 원본 출력
 - 객체 수명에 관한 소유 관계도와 큐 종료 상태표
 - 초기화가 끝난 뒤 동적 메모리를 할당하지 않았음을 확인한 구간
 - 같은 Zig·최적화·대상으로 만든 ELF 비교표와 선택 ADR

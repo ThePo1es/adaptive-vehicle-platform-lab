@@ -8,7 +8,7 @@ Status는 `Not started`, `Challenge`, `Learning`, `Building`, `Assessment`, `Pro
 | --- | --- | --- | --- | --- | ---: |
 | G0 | 개발 환경과 검증 기준 준비하기 | Learning | [Baseline dossier](docs/baseline.md) | — | 0 |
 | G1 | [안전한 C로 데이터와 메모리 다루기](gates/g01/README.md) | Not started | 안전 C 컴포넌트 묶음 | — | 0 |
-| G2 | [임베디드 C++로 안전한 실행 기반 만들기](gates/g02/README.md) | Not started | C++ 실행 기반 v1 | [종합 평가](assessments/g02-embedded-cpp.md) 미실행 | 0 |
+| G2 | [임베디드 C++로 안전한 런타임 만들기](gates/g02/README.md) | Not started | C++ 런타임 v1 | [종합 평가](assessments/g02-embedded-cpp.md) 전 | 0 |
 | G3 | ARM 실행 구조와 컴파일 결과 읽기 | Not started | Compiler analysis pack | — | 0 |
 | G4 | Cortex-M 보드 부팅과 인터럽트 구현하기 | Not started | Bootable MCU runtime | — | 0 |
 | G5 | RTOS 태스크와 실시간성 검증하기 | Not started | P00-A | — | 0 |

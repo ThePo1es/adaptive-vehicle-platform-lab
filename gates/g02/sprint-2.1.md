@@ -1,4 +1,4 @@
-# 실습 2-1 — 빌린 데이터를 오래 잡아 두지 않기
+# 실습 2-1 — 원본이 사라져도 안전한 데이터 뷰 만들기
 
 > - 준비 상태: `Runnable`
 > - 시작 커밋: `c95edd7450d6c4fbcdaf82ac8557ee601ae7dcc8`
@@ -6,7 +6,7 @@
 > - 재시험 입력 SHA-256: `595e4c01846dd3f4a66c8ff50e90b510b95d9f8be1dfedcba09e3b5d34a61182`
 > - 실행 기록: [G2.1 실행 명세 v1](../../evidence/runnable/g2.1/run-manifest-v1.json)
 
-> 소속 챕터: [임베디드 C++로 안전한 실행 기반 만들기](README.md) · 관리 코드: G2.1
+> 소속 챕터: [임베디드 C++로 안전한 런타임 만들기](README.md) · 관리 코드: G2.1
 
 ## 시간과 기준 자료
 
@@ -41,7 +41,7 @@
 기준 구현을 보지 않고 `lifetime.cpp`를 완성합니다. 빈 입력, 최대 길이, `MessageOwner` 이동, `vector` 재배치, 큐에서 꺼내기, `PayloadLease` 이동을 모두 확인합니다. 메모리 할당에 실패해도 예외를 API 밖으로 던지지 않고 `OwnerError::AllocationFailed`로 바꿔 반환합니다.
 
 ```bash
-G02_SUBMISSION_ROOT=study/g02/src G02_LAB_ID=G2.1 \
+G02_TRUSTED_LOCAL_EXECUTION=1 G02_SUBMISSION_ROOT=study/g02/src G02_LAB_ID=G2.1 \
 uv run --offline --python 3.12.13 \
   --with ziglang==0.15.2 --with pyelftools==0.32 \
   python -m labs.g02_embedded_cpp.run_harness
@@ -61,4 +61,4 @@ uv run --offline --python 3.12.13 \
 
 ## 다시 시작할 지점
 
-sanitizer가 오류를 내지 않았다는 이유로 원본을 소유하지 않는 `span`을 그대로 두면 안 됩니다. `MessageOwner`를 파괴하자마자 관찰용 `weak_ptr`이 만료되는 경우에도 수명 관리가 잘못된 것입니다. 먼저 바이트 한 개만 값으로 복사하는 가장 단순한 구현으로 돌아간 뒤, 소유권 관리 정보와 원본 저장 공간의 수명을 확인하고 최대 길이와 컨테이너 이동을 차례로 추가합니다.
+메모리·정의되지 않은 동작 검사기(sanitizer)가 오류를 내지 않았다는 이유로 원본을 소유하지 않는 `span`을 그대로 두면 안 됩니다. `MessageOwner`를 파괴하자마자 관찰용 `weak_ptr`이 만료되는 경우에도 수명 관리가 잘못된 것입니다. 먼저 바이트 한 개만 값으로 복사하는 가장 단순한 구현으로 돌아간 뒤, 소유권 관리 정보와 원본 저장 공간의 수명을 확인하고 최대 길이와 컨테이너 이동을 차례로 추가합니다.

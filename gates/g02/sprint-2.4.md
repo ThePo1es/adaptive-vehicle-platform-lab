@@ -6,11 +6,11 @@
 > - 재시험 입력 SHA-256: `6dd642cf6de0cc538f33f2e873fe97be970e511e900d39afb8c1cff35ff2b002`
 > - 실행 기록: [G2.4 실행 명세 v1](../../evidence/runnable/g2.4/run-manifest-v1.json)
 
-> 소속 챕터: [임베디드 C++로 안전한 실행 기반 만들기](README.md) · 관리 코드: G2.4
+> 소속 챕터: [임베디드 C++로 안전한 런타임 만들기](README.md) · 관리 코드: G2.4
 
 ## 시간과 기준 자료
 
-26–34시간을 예상합니다. C++ draft의 [`[class.virtual]`](https://eel.is/c++draft/class.virtual), [`[temp]`](https://eel.is/c++draft/temp), [`[except]`](https://eel.is/c++draft/except)와 [Arm ABI 저장소](https://github.com/ARM-software/abi-aa)를 읽습니다. 사용한 ABI 문서 tag와 파일명을 기록합니다.
+26–34시간을 예상합니다. C++ draft의 [`[class.virtual]`](https://eel.is/c++draft/class.virtual), [`[temp]`](https://eel.is/c++draft/temp), [`[except]`](https://eel.is/c++draft/except)와 [Arm ABI 저장소](https://github.com/ARM-software/abi-aa)를 읽습니다. 사용한 ABI 문서의 태그와 파일 이름을 기록합니다.
 
 | 활동 | 예상 시간 |
 | --- | ---: |
@@ -42,7 +42,7 @@ O2 최적화에서는 컴파일러가 가상 함수 호출 대상을 미리 알�
 
 ## 전이 과제
 
-처음 보는 파일 서술자나 프로세스 핸들 래퍼에 같은 비교표를 적용합니다. 생성 실패, 시간 초과, 정리 함수, 두 번 해제, null 해제의 책임 주체를 60분 안에 정리하고 C와 C++에서 호출하는 흐름을 각각 그립니다.
+처음 보는 파일 서술자나 프로세스 핸들 래퍼에 같은 비교표를 적용합니다. 생성 실패, 시간 초과, 정리 함수, 두 번 해제, 널 포인터 해제의 책임 주체를 60분 안에 정리하고 C와 C++에서 호출하는 흐름을 각각 그립니다.
 
 ## 판정 기준
 
