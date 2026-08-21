@@ -43,6 +43,9 @@ def selected_manifest_paths(
     shard_count: int,
     shard_index: int,
 ) -> list[Path]:
+    if shard_count == 1:
+        return manifests
+
     selected: list[Path] = []
     historical_index = 0
     for path in manifests:
@@ -51,7 +54,7 @@ def selected_manifest_paths(
             if shard_index == 0:
                 selected.append(path)
             continue
-        if historical_index % shard_count == shard_index:
+        if shard_index > 0 and historical_index % (shard_count - 1) == shard_index - 1:
             selected.append(path)
         historical_index += 1
     return selected

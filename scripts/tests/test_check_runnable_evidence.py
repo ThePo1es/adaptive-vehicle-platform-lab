@@ -64,15 +64,22 @@ def test_manifest_shards_cover_every_manifest_exactly_once() -> None:
         set(selected_manifest_paths(manifests, active, 4, shard_index))
         for shard_index in range(4)
     ]
+    all_selected: set[Path] = set()
+    for paths in selected_by_shard:
+        all_selected.update(paths)
+    selected_historical: set[Path] = set()
+    for paths in selected_by_shard[1:]:
+        selected_historical.update(paths)
 
-    assert set.union(*selected_by_shard) == set(manifests)
+    assert all_selected == set(manifests)
     assert all(
         left.isdisjoint(right)
         for index, left in enumerate(selected_by_shard)
         for right in selected_by_shard[index + 1 :]
     )
-    assert set(active_paths) <= selected_by_shard[0]
+    assert selected_by_shard[0] == set(active_paths)
     assert all(set(active_paths).isdisjoint(paths) for paths in selected_by_shard[1:])
+    assert selected_historical == set(historical_paths)
 
 
 def test_manifest_shard_keeps_active_repository_state_serial(
@@ -225,7 +232,7 @@ def test_historical_with_dependencies_replays_through_verifier_python() -> None:
 
 
 def test_historical_replay_runs_snapshot_module_without_a_project(tmp_path: Path) -> None:
-    (tmp_path / "historical_probe.py").write_text(
+    _ = (tmp_path / "historical_probe.py").write_text(
         "print('historical snapshot')\n",
         encoding="utf-8",
     )
@@ -304,18 +311,28 @@ def test_sealed_toolchain_role_rejects_a_different_path(
     tmp_path: Path,
 ) -> None:
     expected_file = tmp_path / "expected"
-    expected_file.write_bytes(b"sealed")
+    _ = expected_file.write_bytes(b"sealed")
+
+    def fake_required_roles(_lab_id: str, _active: bool) -> set[str]:
+        return {"toolchain-lock", "toolchain-project"}
+
+    def fake_git_bytes(_starter: str, _path: str) -> bytes:
+        return b"sealed"
+
+    def fake_repository_path(_path: str) -> Path:
+        return expected_file
+
     monkeypatch.setattr(
         "scripts.runnable_evidence_validator.required_roles",
-        lambda _lab_id, _active: {"toolchain-lock", "toolchain-project"},
+        fake_required_roles,
     )
     monkeypatch.setattr(
         "scripts.runnable_evidence_validator.git_bytes",
-        lambda _starter, _path: b"sealed",
+        fake_git_bytes,
     )
     monkeypatch.setattr(
         "scripts.runnable_evidence_validator.repository_path",
-        lambda _path: expected_file,
+        fake_repository_path,
     )
     manifest = {
         "lab_id": "G1.1",
