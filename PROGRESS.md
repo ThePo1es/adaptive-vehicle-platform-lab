@@ -1,78 +1,78 @@
-# Mastery Progress
+# 학습 진행 현황
 
-Status는 `Not started`, `Challenge`, `Learning`, `Building`, `Assessment`, `Provisional`, `Validated`, `Needs refresh` 중 하나를 사용합니다. `Validated`에는 commit과 reviewer를 붙입니다.
+상태는 저장소에서 쓰는 식별자인 `Not started`, `Challenge`, `Learning`, `Building`, `Assessment`, `Provisional`, `Validated`, `Needs refresh` 중 하나로 기록합니다. 뜻은 각각 시작 전, 사전 통과 도전, 학습 중, 제작 중, 평가 중, 임시 통과, 검증 완료, 재검증 필요입니다. `Validated`로 올릴 때는 근거가 담긴 커밋과 검토자를 함께 적습니다.
 
-## Gate status
+## 학습 단계 현황
 
-| Gate | Focus | Status | 필수 결과물 | 평가 / 검토자 | 실제 시간 |
+| 관리 코드 | 학습 주제 | 상태 | 필수 결과물 | 평가·검토자 | 실제 시간 |
 | --- | --- | --- | --- | --- | ---: |
-| G0 | 개발 환경과 검증 기준 준비하기 | Learning | [Baseline dossier](docs/baseline.md) | — | 0 |
-| G1 | [안전한 C로 데이터와 메모리 다루기](gates/g01/README.md) | Not started | 안전 C 컴포넌트 묶음 | — | 0 |
-| G2 | [임베디드 C++로 안전한 런타임 만들기](gates/g02/README.md) | Not started | C++ 런타임 v1 | [종합 평가](assessments/g02-embedded-cpp.md) 전 | 0 |
-| G3 | ARM 실행 구조와 컴파일 결과 읽기 | Not started | Compiler analysis pack | — | 0 |
-| G4 | Cortex-M 보드 부팅과 인터럽트 구현하기 | Not started | Bootable MCU runtime | — | 0 |
-| G5 | RTOS 태스크와 실시간성 검증하기 | Not started | P00-A | — | 0 |
-| G6 | CAN 통신과 차량 진단 구현하기 | Not started | P00-B | — | 0 |
-| G7 | AUTOSAR Classic 구조로 ECU 기능 묶기 | Not started | P00-C | — | 0 |
-| G8 | 임베디드 Linux 이미지와 프로세스 운영하기 | Not started | P01 + Linux image + RT evidence | — | 0 |
-| G9 | 서비스 인터페이스와 SOME/IP 통신 구현하기 | Not started | Service Interface + P02 + P05-SIM | — | 0 |
-| G10 | AUTOSAR Adaptive 실행·상태·진단·권한 이해하기 | Not started | P03 + Diagnostics + IAM | — | 0 |
-| G11A | 안전한 업데이트와 UCM 구현하기 | Not started | P04-T1/T2 | — | 0 |
-| G11B | MCU–Linux 안전·보안 근거 검토하기 | Not started | P04-T3/assurance | — | 0 |
-| G12 | MCU–Linux 차량 플랫폼 최종 통합하기 | Not started | P06 | — | 0 |
+| G0 | 개발 환경과 검증 기준 준비하기 | Learning (학습 중) | [기준 역량 기록](docs/baseline.md) | — | 0 |
+| G1 | [안전한 C로 데이터와 메모리 다루기](gates/g01/README.md) | Not started (시작 전) | 안전 C 컴포넌트 묶음 | — | 0 |
+| G2 | [임베디드 C++로 안전한 런타임 만들기](gates/g02/README.md) | Not started (시작 전) | C++ 런타임 v1 | [종합 평가](assessments/g02-embedded-cpp.md) 전 | 0 |
+| G3 | ARM 실행 구조와 컴파일 결과 읽기 | Not started (시작 전) | 컴파일 결과 분석 묶음 | — | 0 |
+| G4 | Cortex-M 보드 부팅과 인터럽트 구현하기 | Not started (시작 전) | 부팅 가능한 MCU 실행 기반 | — | 0 |
+| G5 | RTOS 태스크와 실시간성 검증하기 | Not started (시작 전) | P00-A | — | 0 |
+| G6 | CAN 통신과 차량 진단 구현하기 | Not started (시작 전) | P00-B | — | 0 |
+| G7 | AUTOSAR Classic 구조로 ECU 기능 묶기 | Not started (시작 전) | P00-C | — | 0 |
+| G8 | 임베디드 Linux 이미지와 프로세스 운영하기 | Not started (시작 전) | P01 + Linux 이미지 + 실시간성 근거 | — | 0 |
+| G9 | 서비스 인터페이스와 SOME/IP 통신 구현하기 | Not started (시작 전) | 서비스 인터페이스 + P02 + P05-SIM | — | 0 |
+| G10 | AUTOSAR Adaptive 실행·상태·진단·권한 이해하기 | Not started (시작 전) | P03 + 진단 + IAM | — | 0 |
+| G11A | 안전한 업데이트와 UCM 구현하기 | Not started (시작 전) | P04-T1/T2 | — | 0 |
+| G11B | MCU–Linux 안전·보안 근거 검토하기 | Not started (시작 전) | P04-T3 + 보증 근거 | — | 0 |
+| G12 | MCU–Linux 차량 플랫폼 최종 통합하기 | Not started (시작 전) | P06 | — | 0 |
 
-## Portfolio releases
+## 포트폴리오 릴리스
 
-| Release | Target Gate | Status | Tag / demo | External replay |
+| 공개 결과물 | 목표 단계 | 상태 | 태그·시연 | 외부 재현 |
 | --- | --- | --- | --- | --- |
-| Safe C Components v1 | G1 | Planned | — | — |
-| Embedded C++ Runtime v1 | G2 | Planned | — | — |
-| Compiler Analysis Pack v1 | G3 | Planned | — | — |
-| P00-A v1 | G5 | Planned | — | — |
-| P00 v1 | G7 | Planned | — | — |
-| P01 v1 | G8 | Planned | — | — |
-| P02/P05-SIM v1 | G9 | Planned | — | — |
-| Managed Linux Node v1 | G10 | Planned | — | — |
-| P04-T2 | G11A | Planned | — | — |
-| P04 assurance | G11B | Planned | — | — |
-| P06 v1 | G12 | Planned | — | — |
+| 안전한 C 구성 요소 v1 | G1 | Planned (계획) | — | — |
+| 임베디드 C++ 런타임 v1 | G2 | Planned (계획) | — | — |
+| 컴파일 결과 분석 묶음 v1 | G3 | Planned (계획) | — | — |
+| P00-A v1 | G5 | Planned (계획) | — | — |
+| P00 v1 | G7 | Planned (계획) | — | — |
+| P01 v1 | G8 | Planned (계획) | — | — |
+| P02/P05-SIM v1 | G9 | Planned (계획) | — | — |
+| 관리형 Linux 노드 v1 | G10 | Planned (계획) | — | — |
+| P04-T2 | G11A | Planned (계획) | — | — |
+| P04 보증 근거 | G11B | Planned (계획) | — | — |
+| P06 v1 | G12 | Planned (계획) | — | — |
 
 ## 장기 유지·이식
 
-| Cycle | Subsystem | Status | 외부/upstream 근거 | 장기 결과 |
+| 주기 | 하위 시스템 | 상태 | 외부·상위 프로젝트 근거 | 장기 결과 |
 | --- | --- | --- | --- | --- |
-| E1 Maintainer | — | Not started | — | — |
-| E2 Portability | — | Not started | — | — |
-| E3 Performance/Reliability | — | Not started | — | — |
-| E4 Architecture/Teaching | — | Not started | — | — |
+| E1 유지보수 | — | Not started (시작 전) | — | — |
+| E2 이식 | — | Not started (시작 전) | — | — |
+| E3 성능·신뢰성 | — | Not started (시작 전) | — | — |
+| E4 아키텍처·교육 | — | Not started (시작 전) | — | — |
 
-## Current Sprint
+## 현재 실습 주기
 
-| Field | Value |
+| 항목 | 내용 |
 | --- | --- |
-| Active Gate | G0 |
-| Sprint | 0.1 |
-| Question | |
-| Issue / branch | |
+| 현재 학습 단계 | G0 |
+| 실습 | 0.1 |
+| 이번에 답할 질문 | |
+| 이슈·브랜치 | |
 | 예정 근거 | |
 | 검토자 | |
-| Main blocker | |
-| Planned / actual hours | / |
+| 가장 큰 차단 항목 | |
+| 예상·실제 시간 | / |
 
-## Weekly record
+## 주간 기록
 
-| Week | Gate | 진행한 결과물 | 고장 또는 전이 과제 | 검토 | 시간 | 다음 위험 |
+| 주차 | 학습 단계 | 진행한 결과물 | 고장 또는 전이 과제 | 검토 | 시간 | 다음 위험 |
 | --- | --- | --- | --- | --- | ---: | --- |
 |  |  |  |  |  |  |  |
 
 ## 누적 재시험
 
-| 시행일 | 기술 | 선정 방식 | 결과 | 보강 Sprint | 근거 | 다음 시험일 |
+| 시행일 | 기술 | 선정 방식 | 결과 | 보강 실습 | 근거 | 다음 시험일 |
 | --- | --- | --- | --- | --- | --- | --- |
 |  |  | 1·3·6·12개월 / 분기 표본 |  |  |  |  |
 
 ## 근거 목록
 
-| Date | Gate | 확인한 주장 | Code/PR | 원본 자료 | 결과 | 남은 결손 |
+| 날짜 | 학습 단계 | 확인한 주장 | 코드·PR | 원본 자료 | 결과 | 남은 결손 |
 | --- | --- | --- | --- | --- | --- | --- |
 |  |  |  |  |  |  |  |

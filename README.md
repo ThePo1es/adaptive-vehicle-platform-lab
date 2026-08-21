@@ -1,4 +1,4 @@
-# Adaptive Vehicle Platform Lab
+# 적응형 차량 플랫폼 실습
 
 MCU ECU와 Linux 차량 컴퓨터를 직접 만들면서 C/C++, ARM, RTOS, 차량 통신, 진단, 업데이트, 고장 복구를 한 시스템으로 묶는 장기 학습 과정입니다.
 
