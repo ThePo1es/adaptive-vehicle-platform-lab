@@ -1,0 +1,737 @@
+{
+  "schema_version": 3,
+  "description": "G10.1 typed graph 검사기의 공개 양성 1개와 구조·주장·리뷰 결함 음성 26개",
+  "guided_submission": {
+    "schema_version": 3,
+    "profile": "harness",
+    "release": "R25-11",
+    "claim_scope": "concept-aligned local prototype",
+    "conformance_claim": false,
+    "production_status": "educational-prototype",
+    "source_ledger": [
+      {
+        "citation_id": "SYN-BOUNDARY-001",
+        "source_kind": "synthetic",
+        "release": "R25-11",
+        "document_id": "SYNTHETIC_G10_BOUNDARY_ORACLE",
+        "section_title": "Responsibility graph examples",
+        "section_locator": "fixture section 2",
+        "source_url": "fixture://g10/release-map-cases-v1.json",
+        "access_status": "Synthetic",
+        "accessed_on": "2026-08-19",
+        "source_file_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "service-interface",
+        "semantic_role": "Service Interface",
+        "node_type": "design-artifact",
+        "phase": "design-time",
+        "subject": "VehicleState 서비스 계약",
+        "boundary": "P02 local IDL",
+        "configuration_source": "versioned local IDL",
+        "failure_observation": "스키마 호환성 검사 보고서",
+        "mapping_status": "Partial",
+        "implementation_origin": "local-prototype",
+        "limitations": [
+          "ARXML과 공식 서비스 인터페이스 생성기를 사용하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/service-interface",
+            "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "observed_behavior": {
+          "subject": "Service Interface",
+          "action": "defines-contract",
+          "object": "local-method-event-schema",
+          "readiness": "educational-prototype-observed"
+        },
+        "excluded_conformance": "ARXML과 공식 서비스 인터페이스 생성기를 사용하지 않음"
+      },
+      {
+        "id": "generated-proxy",
+        "semantic_role": "Generated Proxy",
+        "node_type": "generated-artifact",
+        "phase": "generation-time",
+        "subject": "생성된 VehicleState client proxy 코드",
+        "boundary": "P02 generated-like client adapter",
+        "configuration_source": "versioned local IDL and generator lock",
+        "failure_observation": "생성 트리와 공개 함수 목록 비교",
+        "mapping_status": "Partial",
+        "implementation_origin": "local-prototype",
+        "limitations": [
+          "ara::com Proxy 코드와 ABI를 구현하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/generated-proxy",
+            "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "observed_behavior": {
+          "subject": "Generated Proxy",
+          "action": "adapts-client",
+          "object": "local-method-event-boundary",
+          "readiness": "educational-prototype-observed"
+        },
+        "excluded_conformance": "ara::com Proxy 코드와 ABI를 구현하지 않음"
+      },
+      {
+        "id": "generated-skeleton",
+        "semantic_role": "Generated Skeleton",
+        "node_type": "generated-artifact",
+        "phase": "generation-time",
+        "subject": "생성된 VehicleState provider skeleton 코드",
+        "boundary": "P02 generated-like provider adapter",
+        "configuration_source": "versioned local IDL and generator lock",
+        "failure_observation": "생성 트리와 provider override 목록 비교",
+        "mapping_status": "Partial",
+        "implementation_origin": "local-prototype",
+        "limitations": [
+          "ara::com Skeleton 코드와 상태 모델을 구현하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/generated-skeleton",
+            "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "observed_behavior": {
+          "subject": "Generated Skeleton",
+          "action": "adapts-provider",
+          "object": "local-provider-entrypoints",
+          "readiness": "educational-prototype-observed"
+        },
+        "excluded_conformance": "ara::com Skeleton 코드와 상태 모델을 구현하지 않음"
+      },
+      {
+        "id": "service-instance-deployment",
+        "semantic_role": "Service Instance Deployment",
+        "node_type": "deployment-artifact",
+        "phase": "deployment-time",
+        "subject": "VehicleState 인스턴스 배치 항목",
+        "boundary": "P03 service deployment entry",
+        "configuration_source": "immutable local deployment JSON",
+        "failure_observation": "배치 명세 유효성 검사 결과",
+        "mapping_status": "Partial",
+        "implementation_origin": "local-prototype",
+        "limitations": [
+          "공식 manifest schema와 배포 도구를 사용하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/service-instance",
+            "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "observed_behavior": {
+          "subject": "Service Instance Deployment",
+          "action": "configures-instance",
+          "object": "local-provider-binding",
+          "readiness": "educational-prototype-observed"
+        },
+        "excluded_conformance": "공식 manifest schema와 배포 도구를 사용하지 않음"
+      },
+      {
+        "id": "someip-binding",
+        "semantic_role": "Communication Binding",
+        "node_type": "binding-artifact",
+        "phase": "deployment-time",
+        "subject": "VehicleState SOME/IP endpoint binding",
+        "boundary": "P02 vsomeip adapter configuration",
+        "configuration_source": "versioned local binding JSON",
+        "failure_observation": "packet과 discovery state 비교",
+        "mapping_status": "Partial",
+        "implementation_origin": "local-prototype",
+        "limitations": [
+          "선택한 SOME/IP 경로만 다루며 다른 통신 binding은 별도 검토가 필요함"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/someip-binding",
+            "sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "observed_behavior": {
+          "subject": "Communication Binding",
+          "action": "configures-transport",
+          "object": "local-someip-endpoint",
+          "readiness": "educational-prototype-observed"
+        },
+        "excluded_conformance": "선택한 SOME/IP 경로만 다루며 다른 통신 binding은 별도 검토가 필요함"
+      },
+      {
+        "id": "runtime-proxy",
+        "semantic_role": "Runtime Proxy",
+        "node_type": "runtime-role",
+        "phase": "runtime",
+        "subject": "VehicleState client proxy 객체",
+        "boundary": "P02 client runtime adapter",
+        "configuration_source": "generated client code and binding configuration",
+        "failure_observation": "availability와 subscription 상태 기록",
+        "mapping_status": "Partial",
+        "implementation_origin": "local-prototype",
+        "limitations": [
+          "공식 ara::com runtime API와 service handle 의미를 제공하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/runtime-proxy",
+            "sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "observed_behavior": {
+          "subject": "Runtime Proxy",
+          "action": "invokes-service",
+          "object": "local-client-runtime",
+          "readiness": "educational-prototype-observed"
+        },
+        "excluded_conformance": "공식 ara::com runtime API와 service handle 의미를 제공하지 않음"
+      },
+      {
+        "id": "runtime-skeleton",
+        "semantic_role": "Runtime Skeleton",
+        "node_type": "runtime-role",
+        "phase": "runtime",
+        "subject": "VehicleState provider skeleton 객체",
+        "boundary": "P02 provider runtime adapter",
+        "configuration_source": "generated provider code and binding configuration",
+        "failure_observation": "요청 처리와 이벤트 발행 상태 기록",
+        "mapping_status": "Partial",
+        "implementation_origin": "local-prototype",
+        "limitations": [
+          "공식 skeleton lifecycle과 field 의미를 전부 제공하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/runtime-skeleton",
+            "sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "observed_behavior": {
+          "subject": "Runtime Skeleton",
+          "action": "handles-service",
+          "object": "local-provider-runtime",
+          "readiness": "educational-prototype-observed"
+        },
+        "excluded_conformance": "공식 skeleton lifecycle과 field 의미를 전부 제공하지 않음"
+      },
+      {
+        "id": "vehicle-state-executable",
+        "semantic_role": "Executable",
+        "node_type": "deployment-artifact",
+        "phase": "deployment-time",
+        "subject": "VehicleState executable 배치 설명",
+        "boundary": "P03 executable manifest entry",
+        "configuration_source": "immutable local execution manifest",
+        "failure_observation": "실행 계획 생성 보고서",
+        "mapping_status": "Partial",
+        "implementation_origin": "local-prototype",
+        "limitations": [
+          "공식 Execution Manifest 요소를 일부 로컬 필드로 축소함"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/executable",
+            "sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "observed_behavior": {
+          "subject": "Executable",
+          "action": "describes-deployment",
+          "object": "local-executable-entry",
+          "readiness": "educational-prototype-observed"
+        },
+        "excluded_conformance": "공식 Execution Manifest 요소를 일부 로컬 필드로 축소함"
+      },
+      {
+        "id": "vehicle-state-process",
+        "semantic_role": "Process",
+        "node_type": "runtime-role",
+        "phase": "runtime",
+        "subject": "실행 중인 VehicleState process",
+        "boundary": "P01 process supervisor",
+        "configuration_source": "P03 process plan",
+        "failure_observation": "pidfd, exit status와 cgroup event",
+        "mapping_status": "Partial",
+        "implementation_origin": "local-prototype",
+        "limitations": [
+          "ara::exec API와 공식 process state 보고를 구현하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/process",
+            "sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "observed_behavior": {
+          "subject": "Process",
+          "action": "executes-plan",
+          "object": "local-process-instance",
+          "readiness": "educational-prototype-observed"
+        },
+        "excluded_conformance": "ara::exec API와 공식 process state 보고를 구현하지 않음"
+      },
+      {
+        "id": "driving-function-state",
+        "semantic_role": "Function Group State",
+        "node_type": "runtime-state",
+        "phase": "runtime",
+        "subject": "Driving Function Group의 목표 상태",
+        "boundary": "P03 local state policy",
+        "configuration_source": "versioned state transition table",
+        "failure_observation": "상태 결정 audit event",
+        "mapping_status": "Partial",
+        "implementation_origin": "local-prototype",
+        "limitations": [
+          "Function Group 모델을 교육용 상태와 요청으로 축소함"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/function-state",
+            "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "observed_behavior": {
+          "subject": "Function Group State",
+          "action": "requests-state",
+          "object": "local-driving-state",
+          "readiness": "educational-prototype-observed"
+        },
+        "excluded_conformance": "Function Group 모델을 교육용 상태와 요청으로 축소함"
+      },
+      {
+        "id": "deadline-supervision",
+        "semantic_role": "Health Supervision",
+        "node_type": "runtime-observation",
+        "phase": "runtime",
+        "subject": "VehicleState deadline supervision 설정과 결과",
+        "boundary": "P03 local health monitor",
+        "configuration_source": "versioned supervision policy",
+        "failure_observation": "deadline supervision event log",
+        "mapping_status": "Partial",
+        "implementation_origin": "local-prototype",
+        "limitations": [
+          "PHM API와 공식 supervision manifest를 사용하지 않음"
+        ],
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ],
+        "local_evidence": [
+          {
+            "path": "synthetic/health-supervision",
+            "sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          }
+        ],
+        "claim_type": "observed-local-behavior",
+        "observed_behavior": {
+          "subject": "Health Supervision",
+          "action": "reports-health",
+          "object": "local-heartbeat-deadline",
+          "readiness": "educational-prototype-observed"
+        },
+        "excluded_conformance": "PHM API와 공식 supervision manifest를 사용하지 않음"
+      }
+    ],
+    "edges": [
+      {
+        "from": "service-interface",
+        "relation": "generates",
+        "to": "generated-proxy"
+      },
+      {
+        "from": "service-interface",
+        "relation": "generates",
+        "to": "generated-skeleton"
+      },
+      {
+        "from": "service-instance-deployment",
+        "relation": "configures",
+        "to": "someip-binding"
+      },
+      {
+        "from": "generated-proxy",
+        "relation": "loads-as",
+        "to": "runtime-proxy"
+      },
+      {
+        "from": "generated-skeleton",
+        "relation": "loads-as",
+        "to": "runtime-skeleton"
+      },
+      {
+        "from": "someip-binding",
+        "relation": "binds",
+        "to": "runtime-proxy"
+      },
+      {
+        "from": "someip-binding",
+        "relation": "binds",
+        "to": "runtime-skeleton"
+      },
+      {
+        "from": "vehicle-state-executable",
+        "relation": "instantiates",
+        "to": "vehicle-state-process"
+      },
+      {
+        "from": "driving-function-state",
+        "relation": "governs-lifecycle",
+        "to": "vehicle-state-process"
+      },
+      {
+        "from": "vehicle-state-process",
+        "relation": "is-supervised-by",
+        "to": "deadline-supervision"
+      },
+      {
+        "from": "runtime-proxy",
+        "relation": "communicates-with",
+        "to": "runtime-skeleton"
+      }
+    ],
+    "selected_binding": {
+      "kind": "SOME/IP",
+      "node_id": "someip-binding"
+    },
+    "lifecycle_scenarios": [
+      {
+        "scenario": "Driving 상태에서 VehicleState heartbeat deadline 위반",
+        "scope": "교육용 local heartbeat recovery scenario",
+        "trigger_reporter": "Platform Health Management",
+        "policy_decision_owner": "State Management",
+        "requested_target": "Driving Function Group의 Degraded 상태",
+        "transition_executor": "Execution Management",
+        "recovery_reporter": "Platform Health Management",
+        "recovery_report": "deadline 위반과 복구 뒤 supervision 결과",
+        "citation_ids": [
+          "SYN-BOUNDARY-001"
+        ]
+      }
+    ],
+    "summary": {
+      "Mapped": 0,
+      "Partial": 11,
+      "Missing": 0,
+      "Out of scope": 0
+    },
+    "review": {
+      "status": "Pending",
+      "reviewer_id": "",
+      "review_manifest_path": "",
+      "review_manifest_sha256": "",
+      "reviewed_citation_ids": [],
+      "reviewer_key_fingerprint": "",
+      "subject_commit": "",
+      "subject_path": "",
+      "review_signature_path": ""
+    },
+    "submitter_id": "synthetic-learner",
+    "submitter_principal_id": "principal-synthetic-learner",
+    "submitter_affiliation": "synthetic-lab"
+  },
+  "negative_cases": [
+    {
+      "id": "artifact-phase",
+      "operation": "replace",
+      "path": "/nodes/0/phase",
+      "value": "runtime",
+      "expected_errors": [
+        "E_PHASE"
+      ]
+    },
+    {
+      "id": "role-coverage",
+      "operation": "replace",
+      "path": "/nodes/1/semantic_role",
+      "value": "Service Interface",
+      "expected_errors": [
+        "E_GRAPH_COVERAGE",
+        "E_PHASE",
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "edge-reference",
+      "operation": "replace",
+      "path": "/edges/0/to",
+      "value": "unknown-node",
+      "expected_errors": [
+        "E_EDGE_REF"
+      ]
+    },
+    {
+      "id": "owner-conflict",
+      "operation": "replace",
+      "path": "/lifecycle_scenarios/0/policy_decision_owner",
+      "value": "Execution Management",
+      "expected_errors": [
+        "E_OWNER_BOUNDARY"
+      ]
+    },
+    {
+      "id": "scope-overclaim",
+      "operation": "replace",
+      "path": "/claim_scope",
+      "value": "AUTOSAR compliant",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "summary-drift",
+      "operation": "replace",
+      "path": "/summary/Partial",
+      "value": 10,
+      "expected_errors": [
+        "E_SUMMARY"
+      ]
+    },
+    {
+      "id": "profile-downgrade",
+      "operation": "replace",
+      "path": "/profile",
+      "value": "submission",
+      "expected_errors": [
+        "E_PROFILE_DOWNGRADE"
+      ]
+    },
+    {
+      "id": "all-missing",
+      "operation": "set-all-mapping-status",
+      "value": "Missing",
+      "expected_errors": [
+        "E_MAPPING_INCOMPLETE"
+      ]
+    },
+    {
+      "id": "gibberish-claim",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior",
+      "value": "x",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "binding-reference",
+      "operation": "replace",
+      "path": "/selected_binding/node_id",
+      "value": "runtime-proxy",
+      "expected_errors": [
+        "E_BINDING"
+      ]
+    },
+    {
+      "id": "self-loop-only",
+      "operation": "replace",
+      "path": "/edges",
+      "value": [
+        {
+          "from": "service-interface",
+          "relation": "communicates-with",
+          "to": "service-interface"
+        }
+      ],
+      "expected_errors": [
+        "E_EDGE_SEMANTICS",
+        "E_GRAPH_CONNECTIVITY"
+      ]
+    },
+    {
+      "id": "reversed-edge",
+      "operation": "replace",
+      "path": "/edges/0",
+      "value": {
+        "from": "generated-proxy",
+        "relation": "generates",
+        "to": "service-interface"
+      },
+      "expected_errors": [
+        "E_EDGE_SEMANTICS",
+        "E_GRAPH_CONNECTIVITY"
+      ]
+    },
+    {
+      "id": "missing-required-edge",
+      "operation": "remove",
+      "path": "/edges/10",
+      "expected_errors": [
+        "E_GRAPH_CONNECTIVITY"
+      ]
+    },
+    {
+      "id": "production-overclaim",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior",
+      "value": "This node is a complete production-ready implementation of the AUTOSAR Adaptive Platform",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "structured-conformance",
+      "operation": "replace",
+      "path": "/conformance_claim",
+      "value": true,
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "reused-local-evidence",
+      "operation": "set-all-local-evidence",
+      "value": [
+        {
+          "path": "synthetic/shared-readme",
+          "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        }
+      ],
+      "expected_errors": [
+        "E_LOCAL_EVIDENCE_DIVERSITY"
+      ]
+    },
+    {
+      "id": "production-grade-series-deployment",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior",
+      "value": "This component is production grade and suitable for series vehicle deployment",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "korean-conformance-overclaim",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior",
+      "value": "이 구성요소는 AUTOSAR 적합 구현이며 양산 적용 가능",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "claim-status-conflict",
+      "operation": "replace",
+      "path": "/nodes/0/claim_type",
+      "value": "known-gap",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "customer-vehicle-overclaim",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior",
+      "value": "This implementation is fit for deployment in customer vehicles.",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "korean-oem-overclaim",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior",
+      "value": "OEM 고객에게 출시 가능한 차량 소프트웨어 수준이다.",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "unstructured-claim-field",
+      "operation": "replace",
+      "path": "/nodes/0/claim",
+      "value": "검증 범위를 벗어난 자유문 주장",
+      "expected_errors": [
+        "E_NODE_FIELD"
+      ]
+    },
+    {
+      "id": "novel-fleet-rollout-overclaim",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior",
+      "value": "This stack is cleared for fleet rollout to paying customers.",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "novel-korean-customer-overclaim",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior",
+      "value": "유료 고객 차량에 바로 출고할 수 있는 품질이다.",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "closed-readiness-tamper",
+      "operation": "replace",
+      "path": "/nodes/0/observed_behavior/readiness",
+      "value": "fleet-ready",
+      "expected_errors": [
+        "E_SCOPE_CLAIM"
+      ]
+    },
+    {
+      "id": "forged-review",
+      "operation": "replace",
+      "path": "/review",
+      "value": {
+        "status": "Reviewed",
+        "reviewer_id": "fake-reviewer",
+        "review_manifest_path": "fixtures/g10/missing-review.json",
+        "review_manifest_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "reviewed_citation_ids": [
+          "SYN-BOUNDARY-001"
+        ]
+      },
+      "expected_errors": [
+        "E_REVIEW",
+        "E_REVIEW_TRUST"
+      ]
+    }
+  ]
+}

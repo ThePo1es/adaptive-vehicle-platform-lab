@@ -4,7 +4,7 @@ Status: Planned
 
 ## 문제
 
-차량 상태를 versioned SOME/IP service로 제공합니다. 서비스의 늦은 시작, 네트워크 단절, 프로세스 재시작에서 클라이언트의 availability 전이를 packet과 test로 확인합니다.
+차량 상태 계약에서 C++ Proxy/Skeleton을 생성하고 SOME/IP binding을 붙입니다. 서비스의 늦은 시작, 네트워크 단절, 프로세스 재시작에서 client availability가 어떻게 바뀌는지 packet과 test로 확인합니다.
 
 ## 인터페이스 초안
 
@@ -31,7 +31,9 @@ flowchart LR
 
 ### 구현
 
-- vsomeip request/response와 publish/subscribe
+- transport 정보가 없는 local IDL과 결정적인 Proxy/Skeleton generator
+- in-memory binding으로 generated boundary 시험
+- generated Skeleton 뒤의 vsomeip adapter와 request/response·publish/subscribe
 - SOME/IP Service Discovery
 - availability callback, subscription, reconnection
 - bounded event queue와 drop counter
@@ -40,7 +42,7 @@ flowchart LR
 
 ### 제외
 
-- `ara::com` API 및 AUTOSAR code generator
+- `ara::com` API, ARXML, AUTOSAR generator
 - 생산 차량 수준의 schema compatibility
 - UI 중심 dashboard
 - E2E를 암호학적 인증으로 취급하는 설계
@@ -66,10 +68,10 @@ flowchart LR
 ## 마일스톤
 
 - [ ] P02-M1: 네이티브 2프로세스 request/response
-- [ ] P02-M2: event publish/subscribe
-- [ ] P02-M3: SD와 availability state
-- [ ] P02-M4: restart/reconnect/fault tests
-- [ ] P02-M5: Raspberry Pi–노트북 2노드 배포와 측정
+- [ ] P02-M2: local IDL → Proxy/Skeleton 생성과 in-memory 시험
+- [ ] P02-M3: generated boundary 뒤 SOME/IP binding과 event publish/subscribe
+- [ ] P02-M4: SD, availability, restart/reconnect/fault tests
+- [ ] P02-M5: 두 Linux node 배포와 측정
 
 ## 필수 실험
 
@@ -87,7 +89,8 @@ flowchart LR
 
 - 민감 정보 없는 SOME/IP-SD와 SOME/IP 캡처
 - 서비스 ID·버전·인터페이스 표
+- generator version, input hash, generated tree hash
 - clean-machine build/run 절차
 - 재연결 integration test
 - 성능 raw data와 보고서
-- `ara::com`과 동일하지 않은 지점 설명
+- CommonAPI 생성물과 local generator 비교, `ara::com`과 동일하지 않은 지점 설명

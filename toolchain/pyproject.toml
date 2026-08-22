@@ -1,0 +1,16 @@
+[project]
+name = "vehicle-lab-ci-toolchain"
+version = "0.1.0"
+requires-python = "==3.12.*"
+dependencies = [
+    "basedpyright==1.39.10",
+    "cmake==3.31.6",
+    "ninja==1.11.1.4",
+    "pyelftools==0.32",
+    "pytest==9.1.1",
+    "ruff==0.16.3",
+    "ziglang==0.15.2",
+]
+
+[tool.uv]
+package = false

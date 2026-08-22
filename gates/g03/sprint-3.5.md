@@ -34,12 +34,12 @@ source UB, 잘못된 flags, target mismatch를 먼저 배제합니다. 실제 up
 - issue를 제출하지 않아도 test-first 분석과 peer review가 완료됨
 - upstream 의견을 받았다면 반영 여부와 이유를 기록
 
-## 힌트
+## 보고 전 확인
 
 1. `creduce`, `llvm-reduce`를 쓰기 전에 증상을 판정하는 script를 만듭니다.
 2. compiler crash, wrong code, missed optimization, poor diagnostic을 구분합니다.
 3. 이미 보고된 문제인지 issue tracker를 검색합니다.
 
-## 치명적 실패와 보충
+## 보고를 멈추는 조건
 
-UB를 compiler bug로 보고하거나 재현을 확인하지 않은 채 upstream issue를 열면 실패입니다. 보충 과제는 알려진 regression 하나를 지정된 commit에서 그대로 재현하고 test case를 읽는 것입니다.
+UB를 컴파일러 버그로 보고했거나 재현을 확인하기 전에 upstream issue를 열었다면 보고 절차를 멈춥니다. 알려진 regression 하나를 지정 commit에서 재현하고 기존 테스트가 판정하는 조건부터 읽습니다.

@@ -1,0 +1,159 @@
+{
+  "schema_version": 3,
+  "lab_id": "G1.1",
+  "status": "Runnable",
+  "verification_scope": "8바이트 차량 신호의 길이·예약 비트·부호 경계·바이트 순서와 오류 뒤 출력 불변",
+  "starter_commit": "af3b810a55b4a5444337472f15bd9fb1f5809c32",
+  "snapshot": {
+    "method": "git archive",
+    "network_required": false,
+    "working_tree_files_used": false
+  },
+  "artifacts": [
+    {
+      "role": "fixture",
+      "path": "fixtures/g01/sprint-1.1-v1.h",
+      "sha256": "1f7561ecf2b45aeee79f6fdbaed571ccf54548f9727fe676dffb6eb0180563fa"
+    },
+    {
+      "role": "validator",
+      "path": "labs/g01_safe_c/tests/test_codec.c",
+      "sha256": "c4dc4c34fa92e9287490cf211c07d2740f48be3c5e755e75160dc8b6a85da5ba"
+    },
+    {
+      "role": "oracle",
+      "path": "labs/g01_safe_c/reference/codec.c",
+      "sha256": "a11cd69e391987029f838711b98663a47c7a7eb6e56639854ad685774746e484"
+    },
+    {
+      "role": "starter",
+      "path": "labs/g01_safe_c/starter/codec.c",
+      "sha256": "a744b00da105d2cb0c030b6bb38f34ddea12fc7a2e65ac227888f054728bfd52"
+    },
+    {
+      "role": "runner",
+      "path": "labs/g01_safe_c/run_harness.py",
+      "sha256": "9fa771edbfff8c6d1f89294c70170a5c8c686a89e633ec6c354e57b2f5edf634"
+    },
+    {
+      "role": "interface",
+      "path": "labs/g01_safe_c/include/g01_lab.h",
+      "sha256": "09d8e9e28e415672fc6b21fd50f9ed5a5785cd54de96a8e2bd12c23bef5a94a2"
+    },
+    {
+      "role": "validator-support",
+      "path": "labs/g01_safe_c/tests/test_support.h",
+      "sha256": "49f63bcc15a3471e4857caa508d9c51402a64b531cf1fb03e30bcb58e134fae1"
+    },
+    {
+      "role": "unit-tests",
+      "path": "labs/g01_safe_c/tests/test_run_harness.py",
+      "sha256": "348ec1098fff10da9b82584912d5b02c88846d27d3b29be9bbe47bfdac729441"
+    },
+    {
+      "role": "test-config",
+      "path": "pytest.ini",
+      "sha256": "a71a64881aa52495c7ee1d1aa12372c357dd409354099c4cefb204dd5948baf4"
+    },
+    {
+      "role": "evidence-checker",
+      "path": "scripts/check_runnable_evidence.py",
+      "sha256": "d9e8baec720e983259201a1ac6ef94a2ff011eb306c2e25dce2ddc45802b3061"
+    },
+    {
+      "role": "evidence-replay",
+      "path": "scripts/runnable_evidence_replay.py",
+      "sha256": "dce56f5b5cb552137496cc05fa43c54e2b09c1373c7a4861e7871c83460f5b80"
+    },
+    {
+      "role": "evidence-support",
+      "path": "scripts/runnable_evidence_support.py",
+      "sha256": "4143793c43207644e3d689c6b3c020a2a17fab97dbea0bdc1bbb067fec2bbac0"
+    },
+    {
+      "role": "evidence-validator",
+      "path": "scripts/runnable_evidence_validator.py",
+      "sha256": "7672246d5c915dbc3a27d54349e86482a7216d95c0b03c8af8f24d67acaa205c"
+    },
+    {
+      "role": "retest-fixture",
+      "path": "fixtures/g01/retest-1.1-v1.h",
+      "sha256": "447028ec427536418f6d5ad31ce099375f1632b0c16bfd56b0745fcb89b6e9d9"
+    },
+    {
+      "role": "toolchain-resolver",
+      "path": "labs/g01_safe_c/harness_toolchain.py",
+      "sha256": "5f193c11a77aaf8b9a6e370234cac389aaf658abcfbcd0b20867f6e3645df395"
+    }
+  ],
+  "command": {
+    "argv": [
+      "uv",
+      "run",
+      "--offline",
+      "--python",
+      "3.12.13",
+      "--with",
+      "ziglang==0.15.2",
+      "python",
+      "-m",
+      "labs.g01_safe_c.run_harness"
+    ],
+    "environment": {
+      "G01_LAB_ID": "G1.1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g1.1/harness-v4.stdout",
+    "stdout_sha256": "52f7f512aa6de039176ed9543cf49c0eb3cba46523db889967ef81355d6e407a",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "uv": "0.12.3",
+    "c_compiler": "zig",
+    "c_compiler_version": "0.15.2",
+    "c_runtime": "Zig 0.15.2 bundled libc",
+    "target_contract": "native x86_64 hosted C17",
+    "recorded_target": "x86_64-unknown-windows-gnu",
+    "replay_targets": [
+      "x86_64-unknown-windows-gnu",
+      "x86_64-linux-gnu"
+    ],
+    "kernel": "Windows 11 x86_64; LF-canonical text replay"
+  },
+  "timing": {
+    "definition": "Windows records active command time and wall time from the same monotonic elapsed measurement",
+    "harness": {
+      "active_seconds": 157.406,
+      "wall_seconds": 157.406
+    },
+    "repository_check": {
+      "active_seconds": 152.047,
+      "wall_seconds": 152.047
+    }
+  },
+  "repository_check": {
+    "argv": [
+      "bash",
+      "scripts/check_repo.sh"
+    ],
+    "environment": {
+      "SKIP_RUNNABLE_EVIDENCE": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/repository-check-af3b810.stdout",
+    "stdout_sha256": "8bca416659510f34ce3f62d4b07c0ade27dcec3c8d76649823cc64eb708f509f",
+    "stderr_path": "evidence/runnable/repository-check-4a6509ef.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "learner_time_calibration": {
+    "status": "Not run",
+    "estimate_active_hours": "18-24",
+    "note": "첫 학습자 실행에서 안내·독립·전이 과제의 활동 시간과 막힌 지점을 따로 기록한다."
+  },
+  "recorded_at": "2026-08-21T11:19:22+09:00"
+}

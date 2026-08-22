@@ -2,7 +2,7 @@
 
 ## 시간과 기준 자료
 
-24–30시간. IETF의 [UDP RFC 768](https://www.rfc-editor.org/rfc/rfc768), [TCP RFC 9293](https://www.rfc-editor.org/rfc/rfc9293), [IPv4 multicast host extensions RFC 1112](https://www.rfc-editor.org/rfc/rfc1112), iproute2의 [`ip-link(8)`](https://man7.org/linux/man-pages/man8/ip-link.8.html), [`network_namespaces(7)`](https://man7.org/linux/man-pages/man7/network_namespaces.7.html)을 읽습니다.
+22–26시간. IETF의 [UDP RFC 768](https://www.rfc-editor.org/rfc/rfc768), [TCP RFC 9293](https://www.rfc-editor.org/rfc/rfc9293), [IPv4 multicast host extensions RFC 1112](https://www.rfc-editor.org/rfc/rfc1112), iproute2의 [`ip-link(8)`](https://man7.org/linux/man-pages/man8/ip-link.8.html), [`network_namespaces(7)`](https://man7.org/linux/man-pages/man7/network_namespaces.7.html)을 읽습니다.
 
 ## 시작 조건과 topology
 
@@ -18,23 +18,23 @@ sender 10/100/1,000Hz, payload 32/512/1,400 byte 조합을 실행합니다. sock
 
 ## 전이 과제
 
-검토자가 route, VLAN membership, multicast join interface, MTU 중 하나를 깨뜨립니다. packet이 사라진 첫 경계를 namespace별 capture와 `ip -details` 출력으로 찾고 복구 test를 추가합니다.
+봉인 namespace에는 route, VLAN membership, multicast join interface, MTU 가운데 하나가 잘못 설정돼 있습니다. packet이 사라진 첫 경계를 namespace별 capture와 `ip -details` 출력으로 찾고 복구 테스트를 추가합니다.
 
 ## 판정 기준
 
 - topology를 빈 host/VM에서 한 명령으로 생성하고 완전히 정리
 - VLAN tag, multicast destination, TCP sequence/ack를 capture에서 설명
-- route fault와 application fault를 서로 다른 관찰 근거로 구분
+- route 고장과 application 고장을 서로 다른 관찰 근거로 구분
 - 송신, wire 관찰, 수신, application 처리 count의 차이를 계산
 - overload에서도 queue와 memory가 정한 상한을 지킴
 - capture filter와 해석 절차를 README에 기록
 
-## 힌트
+## 패킷을 볼 때 확인할 점
 
 1. `ping` 성공만으로 multicast membership과 application port를 확인할 수 없습니다.
 2. loopback, bridge, veth 중 어디서 capture했는지 항상 표시합니다.
 3. TCP 한 번의 `send`와 상대의 한 번의 `recv`는 대응되지 않을 수 있습니다.
 
-## 치명적 실패와 보충
+## 실습 환경을 다시 만드는 경우
 
-host의 실제 network 설정을 깨뜨리거나, packet capture 없이 원인을 추측하거나, TCP를 message transport처럼 parsing하면 실패입니다. 보충 과제는 namespace 두 개와 UDP/TCP 한 경로만 다시 만들고 packet-to-message 표를 작성하는 것입니다.
+호스트 네트워크 설정을 건드렸거나 캡처 없이 원인을 정했거나 TCP 수신 한 번을 메시지 하나로 처리했다면 결과를 버립니다. namespace 두 개와 UDP/TCP 경로 하나씩만 다시 만들고 패킷과 메시지의 관계를 표로 남깁니다.

@@ -1,0 +1,481 @@
+{
+  "schema_version": 3,
+  "profile": "submission",
+  "release": "R25-11",
+  "claim_scope": "concept-aligned local prototype",
+  "conformance_claim": false,
+  "production_status": "educational-prototype",
+  "source_ledger": [
+    {
+      "citation_id": "AP-MANIFEST",
+      "source_kind": "official",
+      "release": "R25-11",
+      "document_id": "AUTOSAR_AP_TPS_ManifestSpecification",
+      "document_revision": "R25-11",
+      "section_title": "",
+      "section_locator": "",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_TPS_ManifestSpecification.pdf",
+      "source_file_path": "sources/autosar-r25-11/AUTOSAR_AP_TPS_ManifestSpecification.pdf",
+      "access_status": "Not read",
+      "accessed_on": "",
+      "source_file_sha256": ""
+    },
+    {
+      "citation_id": "AP-COM",
+      "source_kind": "official",
+      "release": "R25-11",
+      "document_id": "AUTOSAR_AP_SWS_CommunicationManagement",
+      "document_revision": "R25-11",
+      "section_title": "",
+      "section_locator": "",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_CommunicationManagement.pdf",
+      "source_file_path": "sources/autosar-r25-11/AUTOSAR_AP_SWS_CommunicationManagement.pdf",
+      "access_status": "Not read",
+      "accessed_on": "",
+      "source_file_sha256": ""
+    },
+    {
+      "citation_id": "AP-EM",
+      "source_kind": "official",
+      "release": "R25-11",
+      "document_id": "AUTOSAR_AP_SWS_ExecutionManagement",
+      "document_revision": "R25-11",
+      "section_title": "",
+      "section_locator": "",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_ExecutionManagement.pdf",
+      "source_file_path": "sources/autosar-r25-11/AUTOSAR_AP_SWS_ExecutionManagement.pdf",
+      "access_status": "Not read",
+      "accessed_on": "",
+      "source_file_sha256": ""
+    },
+    {
+      "citation_id": "AP-SM",
+      "source_kind": "official",
+      "release": "R25-11",
+      "document_id": "AUTOSAR_AP_SWS_StateManagement",
+      "document_revision": "R25-11",
+      "section_title": "",
+      "section_locator": "",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_StateManagement.pdf",
+      "source_file_path": "sources/autosar-r25-11/AUTOSAR_AP_SWS_StateManagement.pdf",
+      "access_status": "Not read",
+      "accessed_on": "",
+      "source_file_sha256": ""
+    },
+    {
+      "citation_id": "AP-PHM",
+      "source_kind": "official",
+      "release": "R25-11",
+      "document_id": "AUTOSAR_AP_SWS_PlatformHealthManagement",
+      "document_revision": "R25-11",
+      "section_title": "",
+      "section_locator": "",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_PlatformHealthManagement.pdf",
+      "source_file_path": "sources/autosar-r25-11/AUTOSAR_AP_SWS_PlatformHealthManagement.pdf",
+      "access_status": "Not read",
+      "accessed_on": "",
+      "source_file_sha256": ""
+    }
+  ],
+  "nodes": [
+    {
+      "id": "service-interface",
+      "semantic_role": "Service Interface",
+      "node_type": "design-artifact",
+      "phase": "design-time",
+      "subject": "VehicleState 서비스 계약",
+      "boundary": "P02 local IDL",
+      "configuration_source": "versioned local IDL",
+      "failure_observation": "스키마 호환성 검사 보고서",
+      "mapping_status": "Missing",
+      "implementation_origin": "local-prototype",
+      "limitations": [
+        "직접 읽은 절과 로컬 파일의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-COM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "observed_behavior": {
+        "subject": "Service Interface",
+        "action": "defines-contract",
+        "object": "local-method-event-schema",
+        "readiness": "not-observed"
+      },
+      "excluded_conformance": "직접 읽은 절과 로컬 파일의 차이를 기록해야 함"
+    },
+    {
+      "id": "generated-proxy",
+      "semantic_role": "Generated Proxy",
+      "node_type": "generated-artifact",
+      "phase": "generation-time",
+      "subject": "생성된 VehicleState client proxy 코드",
+      "boundary": "P02 generated-like client adapter",
+      "configuration_source": "versioned IDL and generator lock",
+      "failure_observation": "생성 트리와 공개 함수 목록 비교",
+      "mapping_status": "Missing",
+      "implementation_origin": "local-prototype",
+      "limitations": [
+        "공식 생성 코드와 로컬 adapter의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-COM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "observed_behavior": {
+        "subject": "Generated Proxy",
+        "action": "adapts-client",
+        "object": "local-method-event-boundary",
+        "readiness": "not-observed"
+      },
+      "excluded_conformance": "공식 생성 코드와 로컬 adapter의 차이를 기록해야 함"
+    },
+    {
+      "id": "generated-skeleton",
+      "semantic_role": "Generated Skeleton",
+      "node_type": "generated-artifact",
+      "phase": "generation-time",
+      "subject": "생성된 VehicleState provider skeleton 코드",
+      "boundary": "P02 generated-like provider adapter",
+      "configuration_source": "versioned IDL and generator lock",
+      "failure_observation": "생성 트리와 provider override 목록 비교",
+      "mapping_status": "Missing",
+      "implementation_origin": "local-prototype",
+      "limitations": [
+        "공식 생성 코드와 로컬 adapter의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-COM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "observed_behavior": {
+        "subject": "Generated Skeleton",
+        "action": "adapts-provider",
+        "object": "local-provider-entrypoints",
+        "readiness": "not-observed"
+      },
+      "excluded_conformance": "공식 생성 코드와 로컬 adapter의 차이를 기록해야 함"
+    },
+    {
+      "id": "service-instance-deployment",
+      "semantic_role": "Service Instance Deployment",
+      "node_type": "deployment-artifact",
+      "phase": "deployment-time",
+      "subject": "VehicleState 인스턴스 배치 항목",
+      "boundary": "P03 service deployment entry",
+      "configuration_source": "immutable local deployment file",
+      "failure_observation": "배치 명세 유효성 검사 결과",
+      "mapping_status": "Missing",
+      "implementation_origin": "local-prototype",
+      "limitations": [
+        "공식 manifest taxonomy와 로컬 필드의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-MANIFEST"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "observed_behavior": {
+        "subject": "Service Instance Deployment",
+        "action": "configures-instance",
+        "object": "local-provider-binding",
+        "readiness": "not-observed"
+      },
+      "excluded_conformance": "공식 manifest taxonomy와 로컬 필드의 차이를 기록해야 함"
+    },
+    {
+      "id": "someip-binding",
+      "semantic_role": "Communication Binding",
+      "node_type": "binding-artifact",
+      "phase": "deployment-time",
+      "subject": "VehicleState SOME/IP endpoint binding",
+      "boundary": "P02 vsomeip adapter configuration",
+      "configuration_source": "versioned local binding file",
+      "failure_observation": "packet과 discovery state 비교",
+      "mapping_status": "Missing",
+      "implementation_origin": "local-prototype",
+      "limitations": [
+        "다른 통신 binding과 공식 ara::com 배포 의미를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-COM",
+        "AP-MANIFEST"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "observed_behavior": {
+        "subject": "Communication Binding",
+        "action": "configures-transport",
+        "object": "local-someip-endpoint",
+        "readiness": "not-observed"
+      },
+      "excluded_conformance": "다른 통신 binding과 공식 ara::com 배포 의미를 기록해야 함"
+    },
+    {
+      "id": "runtime-proxy",
+      "semantic_role": "Runtime Proxy",
+      "node_type": "runtime-role",
+      "phase": "runtime",
+      "subject": "VehicleState client proxy 객체",
+      "boundary": "P02 client runtime adapter",
+      "configuration_source": "generated client code and binding file",
+      "failure_observation": "availability와 subscription 상태 기록",
+      "mapping_status": "Missing",
+      "implementation_origin": "local-prototype",
+      "limitations": [
+        "공식 runtime API와 service handle 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-COM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "observed_behavior": {
+        "subject": "Runtime Proxy",
+        "action": "invokes-service",
+        "object": "local-client-runtime",
+        "readiness": "not-observed"
+      },
+      "excluded_conformance": "공식 runtime API와 service handle 차이를 기록해야 함"
+    },
+    {
+      "id": "runtime-skeleton",
+      "semantic_role": "Runtime Skeleton",
+      "node_type": "runtime-role",
+      "phase": "runtime",
+      "subject": "VehicleState provider skeleton 객체",
+      "boundary": "P02 provider runtime adapter",
+      "configuration_source": "generated provider code and binding file",
+      "failure_observation": "요청 처리와 이벤트 발행 상태 기록",
+      "mapping_status": "Missing",
+      "implementation_origin": "local-prototype",
+      "limitations": [
+        "공식 skeleton lifecycle과 로컬 객체의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-COM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "observed_behavior": {
+        "subject": "Runtime Skeleton",
+        "action": "handles-service",
+        "object": "local-provider-runtime",
+        "readiness": "not-observed"
+      },
+      "excluded_conformance": "공식 skeleton lifecycle과 로컬 객체의 차이를 기록해야 함"
+    },
+    {
+      "id": "vehicle-state-executable",
+      "semantic_role": "Executable",
+      "node_type": "deployment-artifact",
+      "phase": "deployment-time",
+      "subject": "VehicleState executable 배치 설명",
+      "boundary": "P03 executable manifest entry",
+      "configuration_source": "immutable local execution manifest",
+      "failure_observation": "실행 계획 생성 보고서",
+      "mapping_status": "Missing",
+      "implementation_origin": "local-prototype",
+      "limitations": [
+        "공식 Execution Manifest 요소와 로컬 필드의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-EM",
+        "AP-MANIFEST"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "observed_behavior": {
+        "subject": "Executable",
+        "action": "describes-deployment",
+        "object": "local-executable-entry",
+        "readiness": "not-observed"
+      },
+      "excluded_conformance": "공식 Execution Manifest 요소와 로컬 필드의 차이를 기록해야 함"
+    },
+    {
+      "id": "vehicle-state-process",
+      "semantic_role": "Process",
+      "node_type": "runtime-role",
+      "phase": "runtime",
+      "subject": "실행 중인 VehicleState process",
+      "boundary": "P01 process supervisor",
+      "configuration_source": "P03 process plan",
+      "failure_observation": "pidfd, exit status와 cgroup event",
+      "mapping_status": "Missing",
+      "implementation_origin": "local-prototype",
+      "limitations": [
+        "ara::exec API와 공식 process state 보고를 사용하지 않음"
+      ],
+      "citation_ids": [
+        "AP-EM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "observed_behavior": {
+        "subject": "Process",
+        "action": "executes-plan",
+        "object": "local-process-instance",
+        "readiness": "not-observed"
+      },
+      "excluded_conformance": "ara::exec API와 공식 process state 보고를 사용하지 않음"
+    },
+    {
+      "id": "driving-function-state",
+      "semantic_role": "Function Group State",
+      "node_type": "runtime-state",
+      "phase": "runtime",
+      "subject": "Driving Function Group의 목표 상태",
+      "boundary": "P03 local state policy",
+      "configuration_source": "versioned state transition table",
+      "failure_observation": "상태 결정 audit event",
+      "mapping_status": "Missing",
+      "implementation_origin": "local-prototype",
+      "limitations": [
+        "교육용 상태 모델과 공식 Function Group 의미의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-SM",
+        "AP-EM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "observed_behavior": {
+        "subject": "Function Group State",
+        "action": "requests-state",
+        "object": "local-driving-state",
+        "readiness": "not-observed"
+      },
+      "excluded_conformance": "교육용 상태 모델과 공식 Function Group 의미의 차이를 기록해야 함"
+    },
+    {
+      "id": "deadline-supervision",
+      "semantic_role": "Health Supervision",
+      "node_type": "runtime-observation",
+      "phase": "runtime",
+      "subject": "VehicleState deadline supervision 설정과 결과",
+      "boundary": "P03 local health monitor",
+      "configuration_source": "versioned supervision policy",
+      "failure_observation": "deadline supervision event log",
+      "mapping_status": "Missing",
+      "implementation_origin": "local-prototype",
+      "limitations": [
+        "PHM API와 공식 supervision manifest의 차이를 기록해야 함"
+      ],
+      "citation_ids": [
+        "AP-PHM",
+        "AP-SM"
+      ],
+      "local_evidence": [],
+      "claim_type": "known-gap",
+      "observed_behavior": {
+        "subject": "Health Supervision",
+        "action": "reports-health",
+        "object": "local-heartbeat-deadline",
+        "readiness": "not-observed"
+      },
+      "excluded_conformance": "PHM API와 공식 supervision manifest의 차이를 기록해야 함"
+    }
+  ],
+  "edges": [
+    {
+      "from": "service-interface",
+      "relation": "generates",
+      "to": "generated-proxy"
+    },
+    {
+      "from": "service-interface",
+      "relation": "generates",
+      "to": "generated-skeleton"
+    },
+    {
+      "from": "service-instance-deployment",
+      "relation": "configures",
+      "to": "someip-binding"
+    },
+    {
+      "from": "generated-proxy",
+      "relation": "loads-as",
+      "to": "runtime-proxy"
+    },
+    {
+      "from": "generated-skeleton",
+      "relation": "loads-as",
+      "to": "runtime-skeleton"
+    },
+    {
+      "from": "someip-binding",
+      "relation": "binds",
+      "to": "runtime-proxy"
+    },
+    {
+      "from": "someip-binding",
+      "relation": "binds",
+      "to": "runtime-skeleton"
+    },
+    {
+      "from": "vehicle-state-executable",
+      "relation": "instantiates",
+      "to": "vehicle-state-process"
+    },
+    {
+      "from": "driving-function-state",
+      "relation": "governs-lifecycle",
+      "to": "vehicle-state-process"
+    },
+    {
+      "from": "vehicle-state-process",
+      "relation": "is-supervised-by",
+      "to": "deadline-supervision"
+    },
+    {
+      "from": "runtime-proxy",
+      "relation": "communicates-with",
+      "to": "runtime-skeleton"
+    }
+  ],
+  "selected_binding": {
+    "kind": "SOME/IP",
+    "node_id": "someip-binding"
+  },
+  "lifecycle_scenarios": [
+    {
+      "scenario": "Driving 상태에서 VehicleState heartbeat deadline 위반",
+      "scope": "교육용 local heartbeat recovery scenario",
+      "trigger_reporter": "Platform Health Management",
+      "policy_decision_owner": "State Management",
+      "requested_target": "Driving Function Group의 Degraded 상태",
+      "transition_executor": "Execution Management",
+      "recovery_reporter": "Platform Health Management",
+      "recovery_report": "deadline 위반과 복구 뒤 supervision 결과",
+      "citation_ids": [
+        "AP-PHM",
+        "AP-SM",
+        "AP-EM"
+      ]
+    }
+  ],
+  "summary": {
+    "Mapped": 0,
+    "Partial": 0,
+    "Missing": 11,
+    "Out of scope": 0
+  },
+  "review": {
+    "status": "Pending",
+    "reviewer_id": "",
+    "review_manifest_path": "",
+    "review_manifest_sha256": "",
+    "reviewed_citation_ids": [],
+    "reviewer_key_fingerprint": "",
+    "subject_commit": "",
+    "subject_path": "",
+    "review_signature_path": ""
+  },
+  "submitter_id": "",
+  "submitter_principal_id": "",
+  "submitter_affiliation": ""
+}

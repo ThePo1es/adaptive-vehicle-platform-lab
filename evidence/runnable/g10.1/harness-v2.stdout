@@ -1,0 +1,12 @@
+STRUCTURE_PASS G10.1-MAP nodes=11 edges=11 citations=1 statuses=Mapped:0,Partial:11,Missing:0,Out of scope:0 review=Pending
+PASS negative=artifact-phase expected=E_PHASE observed=E_PHASE
+PASS negative=role-coverage expected=E_GRAPH_COVERAGE,E_PHASE observed=E_GRAPH_COVERAGE,E_PHASE
+PASS negative=edge-reference expected=E_EDGE_REF observed=E_EDGE_REF
+PASS negative=owner-conflict expected=E_OWNER_BOUNDARY observed=E_OWNER_BOUNDARY
+PASS negative=scope-overclaim expected=E_SCOPE_CLAIM observed=E_SCOPE_CLAIM
+PASS negative=summary-drift expected=E_SUMMARY observed=E_SUMMARY
+PASS negative=profile-downgrade expected=E_PROFILE_DOWNGRADE observed=E_PROFILE_DOWNGRADE
+PASS negative=all-missing expected=E_MAPPING_INCOMPLETE observed=E_MAPPING_INCOMPLETE
+PASS negative=gibberish-claim expected=E_NODE_FIELD observed=E_NODE_FIELD
+PASS negative=binding-reference expected=E_BINDING observed=E_BINDING
+G10.1 harness: PASS (1 valid, 10 negative cases)

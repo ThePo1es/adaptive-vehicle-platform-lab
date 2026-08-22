@@ -1,46 +1,71 @@
-# Sprint 1.1 — 정수와 직렬화
+# 실습 1-1 — 정수와 바이트를 안전하게 변환하기
+
+> - 준비 상태: `Runnable`
+> - 시작 커밋: `960110560ce0751f6e18a8642ab2cc564eebed49`
+> - 공개 입력 SHA-256: `1f7561ecf2b45aeee79f6fdbaed571ccf54548f9727fe676dffb6eb0180563fa`
+> - 재시험 입력 SHA-256: `447028ec427536418f6d5ad31ce099375f1632b0c16bfd56b0745fcb89b6e9d9`
+> - 실행 기록: [G1.1 실행 명세 v14](../../evidence/runnable/g1.1/run-manifest-v14.json)
+
+> 소속 챕터: [안전한 C로 데이터와 메모리 다루기](README.md) · 관리 코드: G1.1
 
 ## 시간과 자료
 
-24–30시간. [WG14 N1570](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf) 3.4, 6.2.5, 6.2.6, 6.3.1, 6.5.7, 7.20.1을 읽습니다. C17 차이는 접근 가능한 ISO/IEC 9899:2018과 compiler 문서로 확인합니다.
+18–24시간을 다음처럼 나눕니다.
+
+| 활동 | 계획 시간 |
+| --- | ---: |
+| 정수 변환·표현 규칙 읽기 | 3–4시간 |
+| 안내 디코더 구현 | 4–5시간 |
+| 인코더와 속성 시험 | 4–5시간 |
+| 경계·오류·결함 주입 검사 | 3–4시간 |
+| 전이 과제와 기록 | 4–6시간 |
+
+[WG14 N1570](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf) 3.4, 5.2.4.2.1, 6.2.5, 6.2.6, 6.3.1, 6.5.7, 7.20.1을 읽습니다. 공개 초안과 C17의 차이는 접근 가능한 ISO/IEC 9899:2018 및 사용한 컴파일러 문서에서 확인해 절 번호를 기록합니다.
 
 ## 입력 계약
 
-8-byte payload를 사용합니다.
+고정 입력은 [sprint-1.1-v1.h](../../fixtures/g01/sprint-1.1-v1.h), 공통 전제는 [G1 계약](contract.md#실습-1-1-통신-바이트-정수-계약)을 사용합니다. `CHAR_BIT == 8`과 정확한 폭의 부호 없는 정수 형식 지원을 컴파일할 때 확인합니다.
 
-- byte 0–1: little-endian unsigned speed, scale 0.01 km/h
-- byte 2–3: little-endian signed temperature, scale 0.1 °C
-- byte 4 low nibble: rolling counter 0–15
-- byte 4 high nibble와 byte 5–7: zero reserved
+8바이트 데이터를 사용합니다.
 
-Golden vector `10 27 D7 00 03 00 00 00`은 speed 100.00 km/h, temperature 21.5 °C, counter 3입니다.
+- 바이트 0–1: 리틀 엔디언 부호 없는 속도, 배율 0.01 km/h
+- 바이트 2–3: 리틀 엔디언 부호 있는 온도, 배율 0.1 °C
+- 바이트 4의 하위 니블: 순환 계수 0–15
+- 바이트 4의 상위 니블과 바이트 5–7: 예약 영역이므로 0
+
+기준 벡터 `10 27 D7 00 03 00 00 00`은 속도 100.00 km/h, 온도 21.5 °C, 순환 계수 3입니다. 부호 경계 `0x0000`, `0x7FFF`, `0x8000`, `0xFFFF`와 적용 범위 -40.0–215.0 °C를 따로 검사합니다.
+
+```bash
+G01_LAB_ID=G1.1 uv run --offline --python 3.12.13 \
+  --with ziglang==0.15.2 python -m labs.g01_safe_c.run_harness
+```
 
 ## 안내 실습
 
-고정 폭 정수, explicit byte assembly, input length, reserved-bit 검사로 decoder를 만듭니다. Error path는 output을 변경하지 않습니다.
+고정 폭 부호 없는 정수, 명시적인 바이트 조립, 입력 길이, 예약 비트 검사로 디코더를 만듭니다. 부호 있는 값은 부호 있는 시프트나 범위 밖 강제 변환 대신 원시 부호 없는 값에서 수학적으로 변환합니다. 오류 경로는 출력 구조체를 변경하지 않습니다.
 
 ## 독립 실습
 
-Encoder를 작성하고 `decode(encode(x)) == x`가 유효 범위에서 성립하는지 property test로 확인합니다.
+인코더를 작성하고 `decode(encode(raw)) == raw`가 유효한 원시값 범위에서 성립하는지 속성 시험으로 확인합니다. 공학 단위의 부동소수점 표시와 원시값 왕복은 별도 계약으로 둡니다.
 
 ## 전이 과제
 
-12-bit unsigned signal과 12-bit signed two's-complement signal이 byte 경계를 넘는 새 layout을 90분 안에 구현합니다.
+12비트 부호 없는 신호와 12비트 부호 있는 2의 보수 신호가 바이트 경계를 넘는 새 배치를 90분 안에 구현합니다. 평가자가 제공한 바이트 순서, 비트 번호, 적용 범위를 먼저 표로 고정합니다.
 
 ## 판정 기준
 
-- golden vector와 min/max vector 통과
-- length 0–7, null, reserved bit, out-of-range input 거부
-- signed shift·promotion·overflow UB 없음
-- output unchanged invariant를 property test로 확인
+- 기준 벡터와 최솟값·최댓값 벡터 통과
+- 길이 0–7, 널 포인터, 예약 비트, 범위 밖 입력 거부
+- 부호 있는 시프트·정수 승격·산술 넘침으로 인한 미정의 동작 없음
+- 오류 뒤 출력 불변을 속성 시험으로 확인
+- 필수 의도적 결함인 길이 선검사 제거, 예약 비트 마스크 반전, 부호 경계 `>=` 오류, 바이트 순서 반전을 모두 검출
 
-## 힌트
+## 구현 메모
 
-1. byte를 넓은 unsigned type으로 변환한 뒤 shift합니다.
-2. signed 값의 width를 먼저 분리하고 sign extension을 정의합니다.
-3. floating output과 raw integer contract를 나눕니다.
+1. 바이트를 더 넓은 부호 없는 형식으로 변환한 뒤 시프트합니다.
+2. 부호 있는 신호의 폭을 먼저 분리하고 원시 부호 없는 값에서 결과를 계산합니다.
+3. 부동소수점 표시와 원시 정수 계약을 나눕니다.
 
-## 치명적 실패와 보충
+## 다시 볼 조건
 
-Typed pointer cast로 unaligned payload를 읽거나, 오류 뒤 일부 output이 갱신되면 실패입니다. 보충 과제는 16-bit byte-aligned decoder를 `memcpy`와 explicit assembly 두 방식으로 구현해 비교하는 것입니다.
-
+정렬되지 않은 데이터를 형식 있는 포인터로 강제 변환해 읽었거나 오류 뒤 출력 일부가 바뀌었다면 완료 처리를 미룹니다. 16비트 원시값 디코더 하나로 범위를 줄여 `memcpy` 방식과 바이트 조립 방식을 비교한 뒤 공개 입력 B로 재시험합니다.

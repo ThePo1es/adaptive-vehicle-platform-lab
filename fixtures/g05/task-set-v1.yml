@@ -1,0 +1,53 @@
+schema: rta-task-set/v1
+synthetic: true
+time_unit: us
+priority_rule: larger_integer_is_higher
+analysis:
+  scheduler: fixed_priority_fully_preemptive_single_core
+  recurrence: R_i = C_i + B_i + sum(ceil((R_i + J_h) / T_h) * C_h)
+  deadline_test: R_i + J_i <= D_i
+tasks:
+  - id: sensor
+    release_model: periodic
+    priority: 4
+    period_or_min_interarrival: 1000
+    deadline: 1000
+    execution_bound: 100
+    release_jitter: 0
+    blocking_resource: none
+    blocking_bound: 0
+    stack_budget_bytes: 1024
+    expected_response_bound: 100
+  - id: control
+    release_model: periodic
+    priority: 3
+    period_or_min_interarrival: 2000
+    deadline: 2000
+    execution_bound: 300
+    release_jitter: 50
+    blocking_resource: telemetry_lock
+    blocking_bound: 80
+    stack_budget_bytes: 1536
+    expected_response_bound: 480
+  - id: communication
+    release_model: periodic
+    priority: 2
+    period_or_min_interarrival: 5000
+    deadline: 5000
+    execution_bound: 500
+    release_jitter: 100
+    blocking_resource: gateway_lock
+    blocking_bound: 120
+    stack_budget_bytes: 2048
+    expected_response_bound: 1120
+  - id: diagnostics
+    release_model: sporadic
+    priority: 1
+    period_or_min_interarrival: 10000
+    deadline: 10000
+    execution_bound: 700
+    release_jitter: 200
+    blocking_resource: dtc_store_lock
+    blocking_bound: 150
+    stack_budget_bytes: 2048
+    expected_response_bound: 1850

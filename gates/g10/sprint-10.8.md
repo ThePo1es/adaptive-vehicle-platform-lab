@@ -1,48 +1,42 @@
-# Sprint 10.8 — Adaptive 설계 심사와 P03 릴리스
+# Sprint 10.8 — 인증 주체, 권한 정책, 감사 기록
 
 ## 시간과 기준 자료
 
-24–30시간. R25-11 standards ledger, [AUTOSAR mapping](../../docs/autosar-mapping.md), [mastery review](../../docs/templates/mastery-review.md), P01–P03 evidence를 사용합니다. 시험 시작 전에 public scenario와 비공개 fault manifest의 hash를 기록합니다.
+24–34시간입니다. Linux [`unix(7)`](https://man7.org/linux/man-pages/man7/unix.7.html)의 `SO_PEERCRED`, OpenSSL의 [TLS 1.3 documentation](https://docs.openssl.org/3.0/man7/ssl/), R25-11에서 Identity and Access Management와 Cryptography가 맡는 책임을 읽습니다. Core 실습은 로컬 Unix socket credential을 사용하고, mTLS는 두 node 확장 실습으로 둡니다.
 
-## 릴리스 입력
+## 위협 모델
 
-source tag, AArch64 image, manifest schema/corpus, state·health model tests, SOME/IP captures, persistency kill campaign, SBOM, architecture와 mapping 문서를 release candidate로 묶습니다. 미완료 항목은 숨기지 않고 `Known limits`와 mapping status에 남깁니다.
+보호할 action은 diagnostic read, 상태 request, update staging입니다. 공격자는 다른 UID로 실행, logical address 위조, 오래된 credential 재사용, policy file 교체, audit 삭제를 시도할 수 있다고 둡니다. IP 주소, SOME/IP Client ID, DoIP logical address는 인증 주체로 인정하지 않습니다.
 
 ## 안내 실습
 
-30분 demo에서 다음 흐름을 재현합니다.
+Policy Decision Point는 `principal, action, resource, context, policy_version`을 받아 allow 또는 deny와 rule ID를 반환합니다. Unix socket 연결에서는 kernel이 제공한 PID/UID/GID를 프로세스 instance와 연결합니다. Policy Enforcement Point는 action 직전에 결정을 확인하고, 업무 component는 UID 해석이나 policy parsing을 직접 하지 않습니다.
 
-1. manifest validation과 dependency startup
-2. Function Group에 대응시킨 local state transition
-3. VehicleStateService discovery와 event
-4. missed heartbeat 감지와 bounded recovery
-5. process restart 뒤 persisted state 복구
-6. clean shutdown과 process inventory 확인
+## 독립 실습
 
-## 독립 실습·심사
+default-deny 정책, atomic policy reload, schema/version 검사, stale decision 방지를 구현합니다. audit에는 principal, action, resource, decision, rule ID, policy hash, 프로세스 instance, correlation ID를 남기되 secret과 credential 원문은 기록하지 않습니다. policy 파일은 immutable image 또는 descriptor 기반 검증 경로에서 읽습니다.
 
-검토자가 Service Interface/Proxy·Skeleton, SOME/IP binding, Execution Manifest, lifecycle, State Management, PHM, Persistency 중 세 영역을 골라 설계 질의를 합니다. 답은 R25-11 section, local code/test, 빠진 기능 세 지점을 연결해야 합니다.
+## 전이 과제
 
-## 전이 과제 — 비공개 fault
-
-경계가 틀린 fault 하나를 120분 안에 분석합니다. 예시는 State Controller가 process를 직접 재시작함, health monitor가 state를 결정함, incompatible service가 offer됨, old process heartbeat가 새 instance에 들어옴입니다. 수정 전에 책임을 옮길 위치와 regression test를 제시합니다.
+다른 UID의 client, 같은 PID처럼 보이는 stale session, 위조 logical address, rollback된 policy version, reload 중 request를 차례로 넣습니다. 이어서 두 node mTLS 경로를 선택했다면 certificate subject·SAN을 로컬 principal로 바꾸는 규칙과 폐기된 certificate 처리까지 시험합니다.
 
 ## 판정 기준
 
-- public scenario 전체가 release artifact에서 재현
-- 비공개 fault의 첫 잘못된 책임 경계를 찾고 test-first로 수정
-- P01–P03 requirement와 evidence link가 끊기지 않음
-- R25-11 mapping의 각 `Mapped` 항목을 자격 있는 검토자가 section으로 확인
-- 검토 자격이 부족한 영역은 local 동작 `Validated`, AUTOSAR mapping `Provisional`로 기록
-- 제3자가 새 환경에서 build, boot, fault 하나를 실행하고 서명된 review를 남김
-- release note에 측정 환경, SBOM, 제한, 다음 보강 항목 포함
+- 모든 보안 결정이 인증된 principal과 고정된 policy version을 가짐
+- kernel credential과 application 제공 ID를 구분하고 위조 입력을 거부
+- default-deny 상태에서 등록되지 않은 action·resource가 실행되지 않음
+- policy reload 전후의 request가 어느 version으로 판정됐는지 재현 가능
+- allow/deny 양쪽 audit이 남고 credential·key material은 로그에 없음
+- policy parser의 duplicate key, unknown key, overflow, path swap corpus 통과
+- G9 DoIP와 G10 Diagnostics가 같은 권한 API를 사용하되 transport ID를 principal로 승격하지 않음
+- IAM·Crypto의 공식 책임과 로컬 Unix credential 실습의 한계를 mapping에 표시
 
-## 힌트
+## 실마리
 
-1. 설계 답변은 class 이름보다 책임, 입력, 출력, 실패 mode 순서로 말합니다.
-2. mapping 표의 빈칸은 구현 결함일 수도 있고 범위 제외일 수도 있습니다. 근거를 붙입니다.
-3. demo 전날 새 fault를 고치며 기준을 낮추지 않습니다. 실패는 보강 계획으로 남깁니다.
+- credential을 읽은 시점과 action을 수행한 시점 사이에 connection 또는 프로세스 instance가 바뀔 수 있습니다.
+- audit 저장소가 가득 찼을 때 allow를 계속할지 중단할지 action별로 정해야 합니다.
+- mTLS 확장을 하지 않았다면 network caller는 계속 `unauthenticated endpoint`로 표시합니다.
 
-## 치명적 실패와 보충
+## principal 경계를 다시 확인할 때
 
-공식 문서 인용 없이 AUTOSAR 적합을 주장하거나, 비공개 fault를 다른 component 탓으로 넘기거나, 제3자 재현이 실패하면 G10을 통과하지 못합니다. 16–30시간 보강 후 새 release candidate와 새 비공개 fault로 재심사합니다.
+IP·logical address를 principal로 사용했거나, deny 결정을 기록하지 않았거나, policy reload가 실행 중인 결정을 소급해 바꾸면 재시험합니다. Unix socket client 두 개와 action 하나만 남겨 credential→decision→enforcement→audit 순서를 다시 확인합니다.

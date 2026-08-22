@@ -1,40 +1,42 @@
-# Sprint 9.3 — SOME/IP Service Discovery 생명주기
+# Sprint 9.3 — 코드 생성기와 Proxy/Skeleton 경계
 
 ## 시간과 기준 자료
 
-24–30시간. [AUTOSAR Foundation R25-11](https://www.autosar.org/standards/foundation)의 `SOME/IP Service Discovery Protocol Specification`에서 entry, option, timer, Offer/Find, SubscribeEventgroup 절을 읽습니다. [vsomeip configuration guide](https://github.com/COVESA/vsomeip/blob/master/documentation/vsomeipConfiguration.md)는 고정한 vsomeip tag의 파일을 사용합니다.
+28–40시간입니다. Sprint 9.2의 동결된 계약과 COVESA [CommonAPI Core Tools](https://github.com/COVESA/capicxx-core-tools), [Core Runtime](https://github.com/COVESA/capicxx-core-runtime)을 사용합니다. COVESA 도구는 서로 맞는 tag·commit 조합을 `toolchain-lock.yml`에 고정한 뒤 실행하며, 확인하지 않은 `latest` 조합은 기준선으로 쓰지 않습니다.
 
-## 시작 조건과 model
+## 시작 파일
 
-provider와 consumer의 SD 상태를 표로 작성합니다. Service/Instance/Major/Minor, eventgroup, multicast address, initial delay 범위, repetition, cyclic offer, TTL, subscription TTL을 config와 `sd-contract.md`에 한 번만 선언합니다. timer test는 virtual clock을 씁니다.
+필수 경로는 작은 로컬 IDL과 결정적인 generator입니다. 입력은 method, 이벤트, field, type, error만 지원하고 transport 정보는 받지 않습니다. 비교 경로에서는 같은 계약을 Franca IDL로 옮겨 CommonAPI가 만든 Proxy·Stub 계열 산출물을 읽습니다. 두 결과를 `ara::com` 생성물로 부르지 않습니다.
 
 ## 안내 실습
 
-provider가 늦게 시작되는 경우 `FindService → OfferService → SubscribeEventgroup → SubscribeEventgroupAck → event` 흐름을 capture합니다. 각 packet의 entry와 option run을 해석하고 local availability callback 시점과 나란히 놓습니다.
+generator가 `IVehicleStateProxy`, `IVehicleStateSkeleton`, data type, error type, mock transport를 만들게 합니다. Proxy는 호출과 구독 요청을 type-safe message로 바꾸고, Skeleton은 이를 구현 객체에 전달합니다. in-memory transport로 method 호출과 이벤트 구독을 실행해 wire protocol 없이 경계를 먼저 확인합니다.
 
 ## 독립 실습
 
-StopOffer, TTL expiry, consumer restart, provider restart, subscription renewal을 상태 머신으로 검증합니다. randomized initial delay는 범위 안에서 seed를 기록합니다. 이미 사라진 service의 오래된 event를 consumer가 current data로 쓰지 않도록 availability와 freshness 정책을 연결합니다.
+같은 입력은 byte 단위로 같은 산출물을 내야 합니다. 생성 파일에는 원본 IDL hash와 generator version을 넣고 수정을 금지합니다. unknown type, duplicate member, cyclic type, reserved identifier, incompatible change를 입력 단계에서 거부합니다. hand-written adapter와 business logic은 생성 디렉터리 밖에 둡니다.
 
 ## 전이 과제
 
-검토자가 provider를 지연시키거나 TTL·eventgroup·major version 하나를 바꿉니다. packet과 local state를 함께 보고 unavailable 원인을 90분 안에 찾습니다. 수정 뒤 동일 fault를 자동 재생합니다.
+전이 IDL에는 method 하나가 추가되거나 이벤트 payload가 호환되지 않게 바뀌어 있습니다. IDL diff, 생성 diff, compile failure 또는 compatibility 판정, 수정할 application code를 차례로 보여 줍니다. 이어서 CommonAPI 산출물에서 같은 책임을 맡는 class와 callback을 찾아 비교표에 추가합니다.
 
 ## 판정 기준
 
-- 핵심 SD state와 timer transition이 공식 문서 절에 연결됨
-- delay와 TTL test가 실제 sleep 없이 결정론적으로 통과
-- packet entry/option과 availability/subscription state가 한 timeline에 표시됨
-- provider restart 뒤 bounded time 안에 재탐색·재구독
-- TTL expiry 뒤 stale event를 current로 전달하지 않음
-- 같은 config source에서 vsomeip 설정과 test oracle을 생성하거나 일치 검사
+- Proxy와 Skeleton을 실제 생성하고 in-memory 호출·이벤트 시험을 통과
+- 생성 디렉터리를 지운 뒤 한 명령으로 동일한 tree hash를 재생성
+- 생성 파일을 손으로 고친 흔적이 없고 CI가 dirty generated tree를 거부
+- 잘못된 IDL corpus가 code emission 전에 명확한 위치와 이유로 거부됨
+- application logic이 generator·transport type에 직접 의존하지 않음
+- CommonAPI 생성 결과와 로컬 결과의 책임 차이를 source 위치로 설명
+- Service Interface 변경이 생성 코드와 클라이언트·서비스 빌드에 미치는 영향을 시험
 
 ## 힌트
 
-1. service availability와 eventgroup subscription 성공은 별도 상태입니다.
-2. TTL 단위와 0 값의 의미를 선택한 release 문서에서 직접 확인합니다.
-3. packet이 안 보이면 routing manager와 multicast interface 설정부터 봅니다.
+1. generator snapshot 테스트만 두면 잘못된 산출물도 그대로 승인될 수 있으므로 compile·behavior 테스트를 함께 둡니다.
+2. Proxy는 서비스 구현을 모르고 Skeleton은 client의 업무 흐름을 알 필요가 없습니다.
+3. callback 수명과 unsubscribe 경합을 generated API 계약에 포함합니다.
+4. transport 주소나 SOME/IP ID가 로컬 IDL에 들어오면 경계가 무너진 것입니다.
 
-## 치명적 실패와 보충
+## 생성 경계 위반
 
-hard-coded sleep으로만 discovery를 통과하거나, Offer만 보고 subscription 성공으로 처리하거나, TTL 뒤 stale 값을 계속 노출하면 실패입니다. 보충 과제는 단일 provider/consumer와 virtual timer model만 다시 구성하는 것입니다.
+Proxy/Skeleton을 손으로 작성해 놓고 생성했다고 표시하거나, 생성 파일에 업무 로직을 넣거나, CommonAPI를 AUTOSAR `ara::com` 구현으로 소개하면 통과할 수 없습니다. 보강 범위는 method 하나와 이벤트 하나이며, 생성→compile→loopback 테스트를 깨끗한 디렉터리에서 다시 실행합니다.

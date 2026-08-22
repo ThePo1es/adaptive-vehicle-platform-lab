@@ -1,0 +1,12 @@
+{
+  "schema_version": 2,
+  "namespace": "adaptive-vehicle-platform-lab-g10.1",
+  "policy": {
+    "submitter_reviewer_separation": true,
+    "detached_signature": "OpenSSH SSHSIG",
+    "identity_binding": "authority-attested principal, affiliation, scope and conflict metadata",
+    "registry_change": "release-authority signed policy update"
+  },
+  "reviewers": [],
+  "status": "No independent reviewer enrolled"
+}

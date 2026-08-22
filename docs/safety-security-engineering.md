@@ -1,6 +1,6 @@
 # Safety and Cybersecurity Engineering
 
-이 트랙은 G1부터 작은 산출물을 쌓고 G11에서 통합합니다. 결과물은 교육과 설계 연습에 사용하며, 어디까지 확인했는지는 README의 인증 경계를 따릅니다.
+이 작업은 G1부터 누적합니다. Adaptive 보안과 UCM은 G11A에서 구현하고, MCU/Classic까지 포함한 보증 검토는 G11B에서 마칩니다. 결과물은 교육과 설계 연습용이며 확인 범위는 README에 맞춥니다.
 
 ## Gate별 누적 작업
 
@@ -10,8 +10,9 @@
 | G3–G4 | compiler·ABI 가정, fault record | debug interface, image·key boundary |
 | G5 | deadline miss와 fallback 요구 | task isolation, diagnostic surface |
 | G6–G7 | communication fault, DTC, E2E 개념 | diagnostic authorization, flood, SecOC 개념 |
-| G8–G10 | process containment, resource budget | privilege, identity, service policy, audit |
-| G11 | HARA·FMEA/FTA·assurance case | TARA·trust chain·secure update |
+| G8–G10 | process containment, resource budget | principal, privilege, service policy, audit |
+| G11A | update state·health·rollback consistency | TARA, package trust, key policy, secure update |
+| G11B | HARA·FMEA/FTA·assurance case | cross-domain trust chain과 common-cause review |
 | G12 | cross-node safety argument | end-to-end attack·recovery campaign |
 
 ## Safety work products

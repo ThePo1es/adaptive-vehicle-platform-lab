@@ -1,0 +1,66 @@
+{
+  "schema": "can-fixed-priority-rta/v1",
+  "synthetic": true,
+  "time_unit": "us",
+  "priority_rule": "lower_can_id_is_higher",
+  "bus": {
+    "format": "Classical CAN, 11-bit identifier",
+    "bit_rate": 500000,
+    "bit_time_us": 2,
+    "intermission_bits": 3
+  },
+  "frame_bound": {
+    "base_bits_without_stuff_or_intermission": "44 + 8 * payload_bytes",
+    "stuffable_bits": "34 + 8 * payload_bytes",
+    "maximum_stuff_bits": "floor((stuffable_bits - 1) / 4)",
+    "wire_bits": "base_bits_without_stuff_or_intermission + maximum_stuff_bits + intermission_bits"
+  },
+  "analysis": {
+    "epsilon_us": 2,
+    "blocking": "maximum transmission time of any lower-priority message",
+    "queueing_recurrence": "w_i = B_i + sum(ceil((w_i + J_h + epsilon) / T_h) * C_h)",
+    "response_bound": "R_i = J_i + w_i + C_i",
+    "expected_load_ppm": 280000
+  },
+  "messages": [
+    {
+      "id": "sensor",
+      "can_id": 256,
+      "payload_bytes": 2,
+      "period_or_min_interarrival_us": 1000,
+      "deadline_us": 1000,
+      "release_jitter_us": 0,
+      "wire_bits_bound": 75,
+      "transmission_time_us": 150,
+      "blocking_us": 270,
+      "expected_queueing_us": 270,
+      "expected_response_us": 420
+    },
+    {
+      "id": "control",
+      "can_id": 512,
+      "payload_bytes": 4,
+      "period_or_min_interarrival_us": 2500,
+      "deadline_us": 2000,
+      "release_jitter_us": 50,
+      "wire_bits_bound": 95,
+      "transmission_time_us": 190,
+      "blocking_us": 270,
+      "expected_queueing_us": 420,
+      "expected_response_us": 660
+    },
+    {
+      "id": "diagnostics",
+      "can_id": 768,
+      "payload_bytes": 8,
+      "period_or_min_interarrival_us": 5000,
+      "deadline_us": 4000,
+      "release_jitter_us": 100,
+      "wire_bits_bound": 135,
+      "transmission_time_us": 270,
+      "blocking_us": 0,
+      "expected_queueing_us": 340,
+      "expected_response_us": 710
+    }
+  ]
+}

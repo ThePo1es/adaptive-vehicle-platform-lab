@@ -34,7 +34,7 @@ flowchart TB
 | review·문서·계획 | 10% | PR, evidence, 회고 |
 | LLVM/codegen 분석 | 5% | 현재 Gate 함수 한 개 |
 
-LLVM이 핵심인 G3와 Expert Cycle에서는 비중을 늘립니다. 유지 시험과 문서 시간도 전체 12–15시간 안에서 계산합니다.
+LLVM이 핵심인 G3와 장기 유지·이식 단계에서는 비중을 늘립니다. 유지 시험과 문서 시간도 전체 12–15시간 안에서 계산합니다.
 
 ## Source 읽기
 
@@ -54,7 +54,7 @@ Gate 시작 이슈에 문서명, release/edition/commit, 읽을 절, 학습 목�
 | Sprint 끝 | PR self-review와 동료/멘토 review |
 | Major Gate | sealed fault와 외부 reviewer |
 | release 뒤 | clean reproduction과 사용자 issue |
-| Expert Cycle | upstream maintainer와 장기 regression |
+| G12 이후 | upstream maintainer와 장기 회귀 관찰 |
 
 자동 oracle이 부족하면 먼저 oracle을 만듭니다. 사람 검토가 필요한 설계 판단은 `Provisional` 상태로 관리합니다.
 

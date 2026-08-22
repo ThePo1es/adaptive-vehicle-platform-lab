@@ -1,0 +1,7 @@
+PASS G10.1-MAP rows=7 citations=1 statuses=Mapped:0,Partial:7,Missing:0,Out of scope:0
+PASS negative=stage-order expected=E_STAGE_ORDER observed=E_STAGE_ORDER
+PASS negative=artifact-phase expected=E_PHASE observed=E_PHASE
+PASS negative=owner-conflict expected=E_OWNER_BOUNDARY observed=E_OWNER_BOUNDARY
+PASS negative=scope-overclaim expected=E_SCOPE_CLAIM observed=E_SCOPE_CLAIM
+PASS negative=summary-drift expected=E_SUMMARY observed=E_SUMMARY
+G10.1 harness: PASS (1 valid, 5 negative cases)

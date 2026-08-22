@@ -1,0 +1,66 @@
+{
+  "schema_version": 2,
+  "release": "R25-11",
+  "landing_page": "https://www.autosar.org/standards/adaptive-platform/",
+  "local_directory": "sources/autosar-r25-11",
+  "official_hash_manifest": {
+    "algorithm": "SHA-512",
+    "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_TR_SpecificationHashes",
+    "pin_status": "No digest enrolled; submission validation fails closed"
+  },
+  "documents": [
+    {
+      "document_id": "AUTOSAR_AP_TPS_ManifestSpecification",
+      "document_revision": "R25-11",
+      "filename": "AUTOSAR_AP_TPS_ManifestSpecification.pdf",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_TPS_ManifestSpecification.pdf",
+      "official_sha512": null,
+      "required_semantic_roles": ["Service Instance Deployment", "Executable"],
+      "purpose": "manifest taxonomy and deployment artifacts"
+    },
+    {
+      "document_id": "AUTOSAR_AP_SWS_CommunicationManagement",
+      "document_revision": "R25-11",
+      "filename": "AUTOSAR_AP_SWS_CommunicationManagement.pdf",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_CommunicationManagement.pdf",
+      "official_sha512": null,
+      "required_semantic_roles": [
+        "Service Interface",
+        "Generated Proxy",
+        "Generated Skeleton",
+        "Communication Binding",
+        "Runtime Proxy",
+        "Runtime Skeleton"
+      ],
+      "purpose": "service communication and generated/runtime roles"
+    },
+    {
+      "document_id": "AUTOSAR_AP_SWS_ExecutionManagement",
+      "document_revision": "R25-11",
+      "filename": "AUTOSAR_AP_SWS_ExecutionManagement.pdf",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_ExecutionManagement.pdf",
+      "official_sha512": null,
+      "required_semantic_roles": ["Executable", "Process", "Function Group State"],
+      "purpose": "executable, process and lifecycle execution"
+    },
+    {
+      "document_id": "AUTOSAR_AP_SWS_StateManagement",
+      "document_revision": "R25-11",
+      "filename": "AUTOSAR_AP_SWS_StateManagement.pdf",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_StateManagement.pdf",
+      "official_sha512": null,
+      "required_semantic_roles": ["Function Group State"],
+      "purpose": "Function Group State policy and requests"
+    },
+    {
+      "document_id": "AUTOSAR_AP_SWS_PlatformHealthManagement",
+      "document_revision": "R25-11",
+      "filename": "AUTOSAR_AP_SWS_PlatformHealthManagement.pdf",
+      "source_url": "https://www.autosar.org/fileadmin/standards/R25-11/AP/AUTOSAR_AP_SWS_PlatformHealthManagement.pdf",
+      "official_sha512": null,
+      "required_semantic_roles": ["Health Supervision"],
+      "purpose": "supervision and recovery reporting"
+    }
+  ],
+  "maintenance": "공식 Specification Hashes에서 SHA-512를 확인하고 release authority가 새 review policy에 서명한다. 릴리스 변경 때 URL, 파일명, release, digest를 한 묶음으로 갱신한다."
+}

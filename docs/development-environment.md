@@ -1,6 +1,6 @@
 # Development Environment
 
-G0에서 한 가지 기본 조합을 고정합니다. 선택지가 많아져 Gate 중간에 다시 만드는 일을 막기 위한 기준입니다.
+저장소 기본 조합은 [ADR-0001](adr/0001-mcu-rtos-baseline.md)에 고정했습니다. G0에서는 실제 보유 장비와 host에서 version·revision·SHA를 다시 확인해 release manifest로 옮깁니다. 동급 장비로 바꿀 때는 equivalence test와 새 ADR이 필요합니다.
 
 ## 기본 재현 경로
 
@@ -10,18 +10,18 @@ G0에서 한 가지 기본 조합을 고정합니다. 선택지가 많아져 Gat
 | Language | C17, C++20, Python test/tool | compiler matrix |
 | Build | CMake + Ninja + CTest | one-command build/test |
 | Host compiler | GCC와 Clang, 정확한 version 고정 | warning-clean logs |
-| MCU target | Cortex-M4/M7 또는 M33 board 한 종류 | board ADR와 datasheet |
-| RTOS | Zephyr 또는 FreeRTOS 한 종류 | 선택 이유와 config |
-| Simulator | Zephyr native_sim/QEMU 또는 RTOS host port | contract test |
-| CAN bench | Cortex-M node 2대 또는 board + USB-CAN, transceiver, termination | physical bus trace |
-| Linux target | x86_64 VM/host + AArch64 board 한 대 | image hash와 boot log |
-| Linux image | Buildroot 또는 Yocto 한 경로 | clean image build, SBOM |
+| MCU target | NUCLEO-G474RE, STM32G474RE Cortex-M4F | board ADR, schematic, RM0440, errata |
+| RTOS | Zephyr v4.4.0, `nucleo_g474re/stm32g474xx` | west manifest SHA와 config |
+| Simulator | Zephyr v4.4.0 `native_sim`과 host-side virtual clock | contract test |
+| CAN bench | Cortex-M node 2대, transceiver, termination. 결정적 bus-off 판정에는 기록 가능한 격리형 error injector 추가 | physical bus trace와 injection log |
+| Linux target | x86_64 VM/host + AArch64 QEMU `virt`; board는 Industrial Bridge | image hash와 boot log |
+| Linux image | Core는 Buildroot, 이후 Yocto 이식 | clean image build, SBOM |
 | SOME/IP | COVESA vsomeip | two-node packet trace |
 | Debug | GDB, OpenOCD/J-Link, core dump, strace | fault report |
-| Measurement | monotonic trace, cycle counter, logic analyzer | calibration record |
+| Measurement | monotonic trace, cycle counter, logic analyzer; CAN analog 판정에는 oscilloscope·differential probe | calibration record |
 | CI | GitHub Actions | docs와 code job 분리 |
 
-구체 board와 RTOS는 소유 장비, CAN controller, debugger, 문서 품질을 확인한 뒤 고릅니다. 선택한 조합은 최소 G7까지 유지합니다.
+Zephyr tag, west module commit, SDK, compiler, OpenOCD와 vendor 문서 revision은 G0.2에서 hash를 포함해 잠급니다. v4.4.0은 2026-08-19 기준 지원 중인 stable release이며 이 과정은 G7까지 같은 기준선을 유지합니다.
 
 ## 바로 시작할 수 있는 기준 장비 조합
 
@@ -30,12 +30,15 @@ G0에서 한 가지 기본 조합을 고정합니다. 선택지가 많아져 Gat
 | 수량 | 장비 | 선택 이유와 확인할 점 |
 | ---: | --- | --- |
 | 2 | [NUCLEO-G474RE](https://docs.zephyrproject.org/latest/boards/st/nucleo_g474re/doc/index.html) | Cortex-M4F, FDCAN controller, onboard ST-LINK. CAN transceiver는 별도 필요 |
-| 2 | 3.3V logic 호환 ISO 11898-2 CAN FD transceiver board | standby pin, common ground, nominal/data bit rate 확인 |
+| 2 | MCP2562FD를 사용한 transceiver board | VDD 5 V, VIO 3.3 V, standby pin, common ground, 최대 120 ns propagation delay 확인 |
+| 1 | frame ID·bit 위치·횟수를 기록하는 격리형 CAN error injector 또는 별도 검증한 timer/TXD jig | ACK 부재가 아닌 data-bit error로 bus-off를 재현. 없으면 CAN-BENCH-03은 `Unverified` |
 | 1 set | twisted pair, 분리 가능한 120Ω 종단 저항 2개 | 양 끝 종단과 무종단·오종단 고장 시험에 사용 |
 | 1 | 8-channel 이상 logic analyzer | UART, GPIO marker, interrupt timing 관찰. 측정 한계를 기록 |
+| 1 optional | CAN FD bit rate에 맞는 oscilloscope와 differential probe | differential voltage, edge, ringing, termination 관찰. 없으면 analog acceptance는 `Unverified` |
+| 1 | current-limited bench supply와 즉시 차단 수단 | termination·bit-rate mismatch 시험의 고장 시간과 전류 제한 |
 | 1 | [Raspberry Pi 4 Model B](https://www.raspberrypi.com/products/raspberry-pi-4-model-b/specifications/) 4GB 또는 동급 AArch64 Ethernet SBC | Buildroot image, service 배포, MCU–Linux 통합에 사용 |
 
-기본 소프트웨어 경로는 Zephyr와 Buildroot입니다. 다른 RTOS나 Yocto를 이미 쓴다면 G0 ADR에 문서 품질, 지원 상태, 재현 경로를 적고 대체할 수 있습니다. 이 문서는 장비 구매를 대신하지 않으며, G0.2에서 실제 보유·접근 상태를 확인합니다.
+기본 소프트웨어 경로는 Zephyr와 Buildroot입니다. 다른 RTOS를 쓰거나 Yocto를 core로 대체하면 G0 ADR에 문서 품질, 지원 상태, 재현 경로와 equivalence test를 적습니다. 이 문서는 장비 구매를 대신하지 않으며, G0.2에서 실제 보유·접근 상태를 확인합니다.
 
 ## G0 Hardware and Access ADR
 
@@ -44,7 +47,7 @@ G0에서 한 가지 기본 조합을 고정합니다. 선택지가 많아져 Gat
 | MCU board | model, core, RAM/flash, CAN/FDCAN, clock, quantity |
 | Probe | SWD/JTAG model과 사용 권한 |
 | CAN | transceiver, termination, second node, USB-CAN |
-| Measurement | logic analyzer/scope availability와 bandwidth |
+| Measurement | logic analyzer, oscilloscope, differential probe의 availability·bandwidth·calibration |
 | Linux node | CPU, RAM, network interfaces, storage |
 | RTOS/toolchain | version과 supported target |
 | Standards | document, edition/release, access status |
@@ -66,7 +69,7 @@ G0에서 한 가지 기본 조합을 고정합니다. 선택지가 많아져 Gat
 | Ethernet | Wireshark, tcpdump, iproute2 |
 | Runtime | perf, strace, heaptrack, systemd tools |
 | Time sync | chrony/ptp4l where supported, timestamp calibration script |
-| Image | Buildroot 또는 Yocto, pinned configuration |
+| Image | Buildroot core, Yocto Industrial Bridge, pinned configuration |
 
 compiler와 도구 version은 각 release에 고정합니다. GCC와 Clang의 optimization flag 지원 범위도 version별로 기록합니다.
 
@@ -88,16 +91,16 @@ compiler와 도구 version은 각 release에 고정합니다. GCC와 Clang의 op
 
 ### Stage 2 — Physical CAN bench
 
-- 두 CAN node와 올바른 termination
+- 두 CAN node, 올바른 termination, 승인한 error injector
 - bit timing, load, arbitration, error counter
-- bit-rate mismatch, unplug, bus-off 시험
+- bit-rate mismatch와 termination 관찰, data-bit error 기반 bus-off 시험
 - vcan 결과와 physical 결과 분리
 
 ### Stage 3 — Linux platform
 
 - x86_64 host/VM에서 process·network contract 시험
-- AArch64 board image build와 service packaging
-- kernel config, Device Tree, 작은 module 또는 driver 실습
+- AArch64 QEMU image build와 service packaging; 실제 board는 별도 결과
+- kernel config와 Device Tree 읽기; 작은 module·driver는 Industrial Bridge
 - cgroup, capability, seccomp, logging, crash artifact
 
 ### Stage 4 — Two Linux nodes

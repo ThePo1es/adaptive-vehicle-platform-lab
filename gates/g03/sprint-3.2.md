@@ -33,6 +33,6 @@ ELF header, section, segment, dynamic symbol, relocation, PLT/GOT를 순서대�
 2. `readelf -l`, `-S`, `-r`, `-Ws` 결과를 서로 연결합니다.
 3. crash 주소만 있으면 load bias가 필요한지 먼저 확인합니다.
 
-## 치명적 실패와 보충
+## 주소 계산 재시험
 
-다른 build의 debug file로 source line을 확정하거나 section과 segment를 같은 개념으로 설명하면 실패입니다. 보충 과제는 PIE를 끈 작은 executable에서 주소 계산을 다시 하는 것입니다.
+다른 빌드의 debug file로 소스 줄을 확정했거나 section과 segment를 한 개념으로 설명했다면 PIE를 끈 작은 실행 파일로 돌아갑니다. 파일 offset, virtual address, load bias를 손으로 맞춘 뒤 원래 core를 다시 봅니다.

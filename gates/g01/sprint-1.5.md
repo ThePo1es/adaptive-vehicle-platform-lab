@@ -1,10 +1,18 @@
-# Sprint 1.5 — MMIO와 동시성 경계
+# 실습 1-5 — 레지스터·인터럽트·동시성 경계 다루기
+
+> - 준비 상태: `Runnable`
+> - 시작 커밋: `960110560ce0751f6e18a8642ab2cc564eebed49`
+> - 공개 입력 SHA-256: `56613bc106d6998d1b4179720d352a5ff25ae5cc224a84dca544d8cdd563a8e9`
+> - 재시험 입력 SHA-256: `a19b85ceeeade26927df066aee5358463d9d30e6263bf9b5d7ce62cb2d9f0314`
+> - 실행 기록: [G1.5 실행 명세 v14](../../evidence/runnable/g1.5/run-manifest-v14.json)
+
+> 소속 챕터: [안전한 C로 데이터와 메모리 다루기](README.md) · 관리 코드: G1.5
 
 ## 시간과 자료
 
-24–30시간. N1570 5.1.2.3, 6.7.3, 7.17과 선택한 Arm architecture/compiler의 barrier intrinsic 문서를 읽습니다.
+30–42시간입니다. C17 `volatile`·원자 연산 5–6시간, 가짜 레지스터 5–7시간, ISR→태스크 큐 7–9시간, 어셈블리·대상 환경 검토 5–7시간, DMA 전이와 기록 8–13시간으로 나눕니다. N1570 5.1.2.3, 6.7.3, 7.17, Armv7-M Architecture Reference Manual의 메모리 모델, CMSIS 장벽 내장 함수, 선택한 컴파일러의 ISR 확장 문서를 읽고 판본·절을 기록합니다.
 
-## Register model
+## 레지스터 모델
 
 ```text
 STATUS bit0 RX_READY, bit1 ERROR
@@ -13,33 +21,39 @@ RX_DATA bits0..7
 IRQ_ACK write-one-to-clear bit0
 ```
 
-Host fixture는 read/write log와 side effect를 기록합니다.
+레지스터별 오프셋·폭·RO/RW/W1C·예약 비트 마스크·부작용은 [G1 계약](contract.md#가짜-레지스터)에 고정합니다. 호스트 입력은 읽기/쓰기 순서·폭·값과 부작용을 기록하며 [sprint-1.5-v1.h](../../fixtures/g01/sprint-1.5-v1.h)를 사용합니다.
+
+```bash
+G01_LAB_ID=G1.5 uv run --offline --python 3.12.13 \
+  --with ziglang==0.15.2 python -m labs.g01_safe_c.run_harness
+```
 
 ## 안내 실습
 
-Register access, bit update, polling timeout, write-one-to-clear API를 만듭니다. Read-modify-write가 위험한 register를 구분합니다.
+레지스터 접근, 비트 갱신, 순환 시간 계수 기반의 폴링 제한 시간, write-one-to-clear API를 만듭니다. W1C 레지스터에는 상수값 쓰기만 허용하고 읽기-수정-쓰기가 섞이면 검사가 실패하게 합니다.
 
 ## 독립 실습
 
-ISR은 byte를 bounded queue에 넣고 task가 parser를 실행하는 driver shell을 작성합니다. Queue full policy와 counter를 test합니다.
+ISR을 단일 생산자, 태스크를 단일 소비자로 고정합니다. 생산자는 비원자 데이터를 먼저 쓴 뒤 release로 인덱스를 공개하고 소비자는 acquire 뒤 데이터를 읽습니다. 큐가 가득 찬 경우와 포화 진단 계수를 검사합니다. 호스트 시험에서는 실제 호출에 전달된 `memory_order`를 기록해 release와 acquire 제거를 각각 검출하고, 실제 대상에서는 인덱스 원자 연산이 lock-free인지 매크로와 어셈블리로 따로 확인합니다.
 
 ## 전이 과제
 
-DMA completion flag와 descriptor ownership을 가진 새 peripheral shell을 설계합니다. Compiler barrier, CPU memory barrier, cache maintenance의 필요 조건을 나눕니다.
+DMA 완료 표시와 디스크립터 소유권을 가진 새 주변장치 골격을 설계합니다. C 스레드 동기화, 컴파일러 펜스, CPU 메모리 장벽, 장치 메모리 순서, 캐시 유지 작업의 필요 조건을 각각 나눕니다. 호스트 검사로 DMA 가시성을 증명했다고 쓰지 않습니다.
 
 ## 판정 기준
 
-- `volatile`의 역할과 동기화 한계를 source·assembly로 설명
-- ISR에 allocation·unbounded wait·parser 없음
-- register side effect와 timeout negative test 통과
-- single-core ISR/task와 multi-core/thread contract를 분리
+- `volatile`의 역할과 동기화 한계를 소스·어셈블리로 설명
+- ISR에 동적 할당·끝없는 대기·파서 없음
+- 레지스터 부작용과 시간 제한 오류 시험 통과
+- 단일 코어 ISR/태스크, C 스레드, 다중 코어, DMA 계약을 분리
+- W1C 읽기-수정-쓰기, release 제거, acquire 제거, 시간 계수 되감기 오류를 각각 검출
 
-## 힌트
+## 하드웨어 확인 사항
 
-1. Device ordering, compiler reordering, language data race는 서로 다른 문제입니다.
-2. ISR과 task가 공유하는 상태의 writer/reader를 표로 적습니다.
-3. Host mock이 실제 hardware ordering을 보장하지 않는다는 한계를 기록합니다.
+1. 장치 메모리 순서, 컴파일러 재배치, 언어 수준 데이터 경합은 서로 다른 문제입니다.
+2. ISR과 태스크가 공유하는 상태의 작성자와 읽는 쪽을 표로 적습니다.
+3. 호스트 모의 장치가 실제 하드웨어 순서를 보장하지 않는다는 한계를 기록합니다.
 
-## 치명적 실패와 보충
+## 재시험
 
-`volatile`만으로 atomicity와 happens-before를 주장하거나 ISR에서 무한 loop를 돌면 실패입니다. 보충 과제는 single-producer/single-consumer queue contract를 state diagram으로 다시 작성하는 것입니다.
+`volatile` 하나로 원자성과 선후 관계를 설명했거나 ISR에 끝나지 않는 반복문이 남았다면 SPSC 큐 계약을 상태도로 다시 그립니다. 작성자, 읽는 쪽, 메모리 순서를 표시한 뒤 다른 레지스터 사건 순서와 대상 어셈블리로 재시험합니다.

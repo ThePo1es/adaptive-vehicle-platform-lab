@@ -1,0 +1,6 @@
+PASS lab=G1.4 public-cases
+PASS lab=G1.4 mutant=40 killed
+PASS lab=G1.4 mutant=41 killed
+PASS lab=G1.4 mutant=42 killed
+PASS lab=G1.4 mutant=43 killed
+G1 harness: PASS

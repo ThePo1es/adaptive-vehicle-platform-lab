@@ -1,0 +1,212 @@
+{
+  "schema_version": 6,
+  "lab_id": "G2.3",
+  "status": "Runnable",
+  "verification_scope": "native x86_64 hosted C++20, O0/O2, ASan/UBSan, deterministic wake ordering, 100 fixed inputs and two single-fault variants",
+  "starter_commit": "2403b2ec21a3cc51bb587a97b9f1601ecdbf82dc",
+  "snapshot": {
+    "method": "git archive",
+    "network_required": false,
+    "working_tree_files_used": false
+  },
+  "artifacts": [
+    {
+      "role": "fixture",
+      "path": "fixtures/g02/sprint-2.3-v1.hpp",
+      "sha256": "6e912abd0d3b16206979344daaaecc3cbe2db5abf0ca363cfdba5837dc7c053e"
+    },
+    {
+      "role": "validator",
+      "path": "labs/g02_embedded_cpp/tests/test_queue.cpp",
+      "sha256": "a6fcf5a6c461ba816ef9a2833ae6a2c31d1c9359a09e339b9cdd3ce944da1cd5"
+    },
+    {
+      "role": "oracle",
+      "path": "labs/g02_embedded_cpp/reference/queue.cpp",
+      "sha256": "30da962ae11cf38098365eb473e9dd155f8259c611a47bdcf3a63ca5beeb5233"
+    },
+    {
+      "role": "starter",
+      "path": "labs/g02_embedded_cpp/starter/queue.cpp",
+      "sha256": "a0b9690f61b9548440f43d0df47ddd010155f20231dc2334fb859b3e8e8c7dc6"
+    },
+    {
+      "role": "runner",
+      "path": "labs/g02_embedded_cpp/run_harness.py",
+      "sha256": "0583fd841c3629a5c70829e22c33302cafee19fb93c758d881598d7a89c164dc"
+    },
+    {
+      "role": "interface",
+      "path": "labs/g02_embedded_cpp/include/g02_queue.hpp",
+      "sha256": "d91f9785e171f93afd7622f63404f573ba9aac1bc07b2b406c1fb4aeec085221"
+    },
+    {
+      "role": "validator-support",
+      "path": "labs/g02_embedded_cpp/tests/test_support.hpp",
+      "sha256": "dc0528063a63d0f178e743f2cf0cfdd05204b47d8bf26a54ed216db4af8c095c"
+    },
+    {
+      "role": "unit-tests",
+      "path": "labs/g02_embedded_cpp/tests/test_run_harness.py",
+      "sha256": "482ac59ab025c5b86fa613ddff04f3a45d7ce58cc72c5ab8b757c1fbf0056a96"
+    },
+    {
+      "role": "test-config",
+      "path": "pytest.ini",
+      "sha256": "a71a64881aa52495c7ee1d1aa12372c357dd409354099c4cefb204dd5948baf4"
+    },
+    {
+      "role": "evidence-checker",
+      "path": "scripts/check_runnable_evidence.py",
+      "sha256": "d9e8baec720e983259201a1ac6ef94a2ff011eb306c2e25dce2ddc45802b3061"
+    },
+    {
+      "role": "evidence-replay",
+      "path": "scripts/runnable_evidence_replay.py",
+      "sha256": "68720c299c9fcb24c95f31ad0be954bc79bb03befbc0b4b3980fdd16ae99eb83"
+    },
+    {
+      "role": "evidence-support",
+      "path": "scripts/runnable_evidence_support.py",
+      "sha256": "ebf469a625bd61ce0506b92151e0949ac98907dba528b84ca9f61d3d925dc1ad"
+    },
+    {
+      "role": "evidence-validator",
+      "path": "scripts/runnable_evidence_validator.py",
+      "sha256": "11beb80c87987c3ba62a02a320587dbe7bdb649ceb3247d6c69ecef3a4b8f1d0"
+    },
+    {
+      "role": "retest-fixture",
+      "path": "fixtures/g02/retest-2.3-v1.hpp",
+      "sha256": "b7ae9d241a82e7838c9c6ecc330f1c0b0b3559fef4da0ebbf0074e067c41f96a"
+    },
+    {
+      "role": "toolchain-resolver",
+      "path": "labs/g02_embedded_cpp/harness_toolchain.py",
+      "sha256": "6f7bb2f91ff5812753b2a752d02d2bcbee19e82fe1aae5ce7c53515d62755e73"
+    },
+    {
+      "role": "contract",
+      "path": "gates/g02/contract.md",
+      "sha256": "8e74d2f06d63c121bd335bfe6be140263a4b97402eddde6bc089f9f6d3517a9d"
+    },
+    {
+      "role": "portfolio-build",
+      "path": "portfolio/g02-embedded-cpp-runtime-v1/CMakeLists.txt",
+      "sha256": "2862a2d43933de4c6b3ea688e6307da080be5270f4a6d5557cb3f02c7d0fb563"
+    },
+    {
+      "role": "toolchain-lock",
+      "path": "toolchain/uv.lock",
+      "sha256": "336501314b6c88849423382b0722bc03528163b69ab692eb9574bea00a6f1703"
+    },
+    {
+      "role": "toolchain-project",
+      "path": "toolchain/pyproject.toml",
+      "sha256": "bb5dc73a08c67c9d62f1f6ca5ae8a0d143185cc49570ed69b787b9dad08809e1"
+    },
+    {
+      "role": "submission-guard",
+      "path": "labs/g02_embedded_cpp/submission.py",
+      "sha256": "e2c8db108a8c520372049bf645ecdebd6fa6965886ff0ff31847ff83a43ecacc"
+    }
+  ],
+  "command": {
+    "argv": [
+      "uv",
+      "run",
+      "--project",
+      "toolchain",
+      "--locked",
+      "--offline",
+      "python",
+      "-m",
+      "labs.g02_embedded_cpp.run_harness"
+    ],
+    "environment": {
+      "G02_LAB_ID": "G2.3",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g2.3/harness-v4.stdout",
+    "stdout_sha256": "74e155284a785b8a43f41c74fabe64a71f5817605ac21c76d0a43d3c87f03425",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "uv": "0.12.3",
+    "cpp_compiler": "zig-c++",
+    "cpp_compiler_version": "0.15.2",
+    "c_compiler": "zig-cc",
+    "c_compiler_version": "0.15.2",
+    "elf_reader": "pyelftools 0.32",
+    "target_contract": "native x86_64 hosted C++20",
+    "abi_targets": "thumb-freestanding-eabi,aarch64-freestanding-none",
+    "recorded_target": "x86_64-unknown-windows-gnu",
+    "replay_targets": [
+      "x86_64-unknown-windows-gnu",
+      "x86_64-linux-gnu"
+    ],
+    "kernel": "Windows 11 x86_64; LF-canonical text replay"
+  },
+  "timing": {
+    "definition": "Windows records active command time and wall time from the same monotonic elapsed measurement",
+    "harness": {
+      "active_seconds": 50.093,
+      "wall_seconds": 50.093
+    },
+    "repository_check": {
+      "active_seconds": 142.891,
+      "wall_seconds": 142.891
+    },
+    "retest": {
+      "active_seconds": 16.032,
+      "wall_seconds": 16.032
+    }
+  },
+  "repository_check": {
+    "argv": [
+      "bash",
+      "scripts/check_repo.sh"
+    ],
+    "environment": {
+      "SKIP_RUNNABLE_EVIDENCE": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/repository-check-2403b2e.stdout",
+    "stdout_sha256": "8bca416659510f34ce3f62d4b07c0ade27dcec3c8d76649823cc64eb708f509f",
+    "stderr_path": "evidence/runnable/repository-check-2403b2e.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "learner_time_calibration": {
+    "status": "Not run",
+    "estimate_active_hours": "30-40",
+    "note": "실제 학습자가 처음부터 수행한 기록이 없으므로 예상 시간은 아직 확정하지 않습니다."
+  },
+  "recorded_at": "2026-08-21T15:54:32+09:00",
+  "retest_command": {
+    "argv": [
+      "uv",
+      "run",
+      "--project",
+      "toolchain",
+      "--locked",
+      "--offline",
+      "python",
+      "-m",
+      "labs.g02_embedded_cpp.run_harness"
+    ],
+    "environment": {
+      "G02_LAB_ID": "G2.3.RETEST",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g2.3/retest-v4.stdout",
+    "stdout_sha256": "e9701813fbd3c05b92090584d749de879474d928b53deef915b0c09f99105c2c",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

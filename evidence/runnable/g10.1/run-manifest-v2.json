@@ -1,0 +1,86 @@
+{
+  "schema_version": 2,
+  "lab_id": "G10.1",
+  "status": "Runnable",
+  "verification_scope": "typed-graph validator harness, negative cases, and repository integrity checks",
+  "starter_commit": "59b79dbda7b796bb6f5ae81e8d91fdf25a6cce52",
+  "snapshot": {
+    "method": "git archive",
+    "network_required": false,
+    "working_tree_files_used": false
+  },
+  "artifacts": [
+    {
+      "role": "fixture",
+      "path": "fixtures/g10/release-map-cases-v1.json",
+      "sha256": "17337bf24d659dec4be6d241881c5890420da1d828a2870e229b641503cb1c9c"
+    },
+    {
+      "role": "validator",
+      "path": "labs/g10_1_release_map/validator.py",
+      "sha256": "045ecbe97ac772d960e0a5549065dcfb0f886fa4dc931e0e7ed0cc2ff9ce6f2a"
+    },
+    {
+      "role": "runner",
+      "path": "labs/g10_1_release_map/run_harness.py",
+      "sha256": "eb78ba7aa03e4658824aaef8275829f331af3576f6ba53857ea37df78a1fd048"
+    },
+    {
+      "role": "starter",
+      "path": "labs/g10_1_release_map/starter/release-map.json",
+      "sha256": "86bfababe861512b0c3fd00acb928f48b68ca03171f1a2174325e62e43f79ddd"
+    },
+    {
+      "role": "source-lock",
+      "path": "labs/g10_1_release_map/r25-11-document-lock.json",
+      "sha256": "fa106abe3ba4f02b55bcc85c2768013f6371efd2d1167621debd5d37fd7c5d5c"
+    }
+  ],
+  "command": {
+    "argv": ["python3", "labs/g10_1_release_map/run_harness.py"],
+    "environment": {"PYTHONDONTWRITEBYTECODE": "1"},
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g10.1/harness-v2.stdout",
+    "stdout_sha256": "a930fe9f11ffcb83400975a539bc95c1c47ffe52412c79e9c4699c675bdcf369",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "kernel": "Linux 6.18.35 x86_64"
+  },
+  "timing": {
+    "definition": "CPU 시간은 user와 system의 합, 경과 시간은 Bash TIMEFORMAT 측정값",
+    "harness": {
+      "active_seconds": 0.046,
+      "user_seconds": 0.042,
+      "system_seconds": 0.004,
+      "wall_seconds": 0.045
+    },
+    "repository_check": {
+      "active_seconds": 0.782,
+      "user_seconds": 0.602,
+      "system_seconds": 0.180,
+      "wall_seconds": 0.743
+    }
+  },
+  "repository_check": {
+    "argv": ["bash", "scripts/check_repo.sh"],
+    "environment": {
+      "SKIP_RUNNABLE_EVIDENCE": "1",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g10.1/repository-check-v2.stdout",
+    "stdout_sha256": "c405d705428163112a15410ffb86cac95bc41737b6c39f4da05054cbac68a7c2",
+    "stderr_path": "evidence/runnable/g10.1/repository-check-v2.stderr",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "learner_time_calibration": {
+    "status": "Not run",
+    "estimate_active_hours": "28-36",
+    "note": "첫 학습 실행에서 독립 과제 소요 시간과 R25-11 원문 검토 결과를 기록한다."
+  },
+  "recorded_at": "2026-08-19T11:38:36Z"
+}

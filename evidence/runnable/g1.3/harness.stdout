@@ -1,0 +1,5 @@
+PASS lab=G1.3 public-cases
+PASS lab=G1.3 mutant=30 killed
+PASS lab=G1.3 mutant=31 killed
+PASS lab=G1.3 compile-fail=zero-capacity
+G1 harness: PASS

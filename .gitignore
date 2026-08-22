@@ -48,10 +48,10 @@ captures/private/
 .env.*
 secrets/
 private/
+sources/autosar-r25-11/*.pdf
 
 # Update test artifacts
 slots/
 staging/
 update-packages/
 *.journal
-

@@ -1,39 +1,53 @@
-# Sprint 1.3 — Bounded Storage
+# 실습 1-3 — 고정 용량 큐와 메모리 풀 만들기
+
+> - 준비 상태: `Runnable`
+> - 시작 커밋: `960110560ce0751f6e18a8642ab2cc564eebed49`
+> - 공개 입력 SHA-256: `966b9ef4e5c93dfbaa6cb4131a55f96fbe37eb3c935d6f15a79dec5e37f801f1`
+> - 재시험 입력 SHA-256: `78966c8b2059f11c583dbb61fff90e02e1fa6634fefe5a79b99d966ec4944a06`
+> - 실행 기록: [G1.3 실행 명세 v14](../../evidence/runnable/g1.3/run-manifest-v14.json)
+
+> 소속 챕터: [안전한 C로 데이터와 메모리 다루기](README.md) · 관리 코드: G1.3
 
 ## 시간과 자료
 
-24–30시간. N1570 6.2.4, 6.5.6, 7.22를 읽고, 선택한 coding rule에서 array bounds와 integer wrap 관련 항목을 찾습니다.
+26–34시간입니다. 수명·배열 규칙 3–4시간, 큐 상태 설계 5–6시간, 풀과 핸들 6–8시간, 기준 모델·결함 주입 시험 6–8시간, 전이·기록 6–8시간으로 나눕니다. N1570 6.2.4, 6.5.6, 6.5.8, 7.22를 읽고 선택한 코딩 규칙에서 배열 범위와 정수 되감기 항목을 찾습니다.
 
 ## 시작 계약
 
-Capacity는 compile time에 정하고 dynamic allocation을 사용하지 않습니다. Ring buffer는 `reject-new`와 `overwrite-oldest` 정책을 별도 instance로 지원합니다.
+저장 배열의 최대 크기는 컴파일할 때 정하고 동적 할당을 사용하지 않습니다. 논리 용량은 1 이상이며 0은 컴파일 실패 입력으로 거부합니다. 순환 버퍼는 `reject-new`와 `overwrite-oldest` 정책을 별도 객체로 지원합니다. 공개 연산열과 난수 씨앗은 [sprint-1.3-v1.h](../../fixtures/g01/sprint-1.3-v1.h)에 고정합니다.
+
+```bash
+G01_LAB_ID=G1.3 uv run --offline --python 3.12.13 \
+  --with ziglang==0.15.2 python -m labs.g01_safe_c.run_harness
+```
 
 ## 안내 실습
 
-head, tail, count 중 어떤 상태를 저장할지 ADR로 결정합니다. Empty/full invariant, wrap, push/pop 실패 후 state를 test합니다.
+`head`, `tail`, `count` 중 어떤 상태를 저장할지 ADR로 결정합니다. 비어 있음·가득 참 불변 조건, 위치 되감기, 넣기·꺼내기 실패 뒤 상태를 시험합니다.
 
 ## 독립 실습
 
-Element 32개를 가진 fixed-size object pool을 작성합니다. Double free, foreign pointer, exhaustion을 탐지하고 counter를 제공합니다.
+원소 32개를 가진 고정 크기 메모리 풀을 작성합니다. 원시 포인터를 반환하지 않고 `인덱스 + 세대값` 핸들의 `get/set` 함수로만 값을 다룹니다. 이중 해제, 오래된 핸들, 공간 고갈을 탐지하고 진단 계수를 제공합니다. 세대값이 최댓값에 닿은 칸은 영구 은퇴시킵니다.
 
 ## 전이 과제
 
-90분 동안 DMA descriptor queue를 구현합니다. Producer와 consumer ownership, publish/consume 시점, full policy를 설명합니다.
+90분 동안 DMA 디스크립터 큐를 구현합니다. 생산자와 소비자의 소유권, 공개·소비 시점, 가득 참 정책을 설명합니다. DMA 가시성과 캐시 유지 작업은 C 스레드 동기화와 분리해 미해결 가정으로 남깁니다.
 
 ## 판정 기준
 
-- capacity 0/1/2/power-of-two/non-power-of-two test
-- 100만 operation model test에서 reference deque와 결과 일치
-- 실패 operation 뒤 invariant 유지
-- integer wrap과 index 범위가 sanitizer·property test를 통과
+- 용량 0의 컴파일 실패, 논리 용량 1·2·2의 거듭제곱·그 밖의 용량 실행 시험
+- 고정 난수 씨앗의 100만 연산 기준 모델 시험에서 기준 덱과 결과 일치
+- 실패한 연산 뒤 불변 조건 유지
+- 정수 되감기와 인덱스 범위가 메모리 오류 검사·속성 시험을 통과
+- 오래된 세대값, 이중 해제, 범위 밖 핸들이 데이터·소유권 상태를 바꾸지 않음
+- 진단 계수는 `UINT32_MAX`에서 포화하며 되감기지 않음
 
-## 힌트
+## 구현 전 확인
 
-1. 상태 표현 하나를 고르고 모든 operation의 pre/post condition을 적습니다.
-2. Capacity와 index type의 표현 범위를 확인합니다.
-3. Pool pointer validation은 alignment와 range를 모두 확인합니다.
+1. 상태 표현 하나를 고르고 모든 연산의 사전·사후 조건을 적습니다.
+2. 용량과 인덱스 형식의 표현 범위를 확인합니다.
+3. 풀 소유권은 원시 포인터 관계 비교가 아니라 형식이 정해진 칸의 동일성 또는 세대 번호 핸들로 확인합니다.
 
-## 치명적 실패와 보충
+## 통과를 미루는 경우
 
-Full과 empty가 구분되지 않거나 foreign pointer가 free list를 손상시키면 실패입니다. 보충 과제는 capacity 3의 모든 짧은 operation sequence를 exhaustive test하는 것입니다.
-
+`가득 참`과 `비어 있음`이 같은 상태로 보이거나 잘못된 핸들이 빈칸 목록을 손상시키면 아직 닫지 않습니다. 용량 3으로 줄여 가능한 짧은 연산열을 전부 실행하고 깨진 불변 조건부터 고친 뒤 다른 난수 씨앗으로 재시험합니다.

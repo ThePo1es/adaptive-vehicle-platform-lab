@@ -8,7 +8,6 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-
 ROW_RE = re.compile(r"^\|\s*(REQ-(?:[A-Z]+-)+[0-9]{3})\s*\|", re.MULTILINE)
 
 

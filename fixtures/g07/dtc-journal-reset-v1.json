@@ -1,0 +1,23 @@
+{
+  "schema": "g07-dtc-journal-reset/v1",
+  "synthetic": true,
+  "default_state": "idle",
+  "states": ["idle", "pending", "confirmed", "healed"],
+  "journal": {
+    "slot_count": 2,
+    "sequence_rule": "unsigned monotonic sequence within this fixture; wrap is out of scope",
+    "write_steps": ["erase_target", "write_header", "write_payload", "write_crc", "write_commit"],
+    "selection_rule": "newest committed record with valid schema, length and CRC; otherwise previous committed record; otherwise default"
+  },
+  "cases": [
+    {"id": "J01", "previous": {"sequence": 7, "state": "confirmed"}, "candidate": {"sequence": 8, "state": "healed"}, "reset_after": "before_erase", "corrupt_candidate": false, "expected_sequence": 7, "expected_state": "confirmed"},
+    {"id": "J02", "previous": {"sequence": 7, "state": "confirmed"}, "candidate": {"sequence": 8, "state": "healed"}, "reset_after": "erase_target", "corrupt_candidate": false, "expected_sequence": 7, "expected_state": "confirmed"},
+    {"id": "J03", "previous": {"sequence": 7, "state": "confirmed"}, "candidate": {"sequence": 8, "state": "healed"}, "reset_after": "write_header", "corrupt_candidate": false, "expected_sequence": 7, "expected_state": "confirmed"},
+    {"id": "J04", "previous": {"sequence": 7, "state": "confirmed"}, "candidate": {"sequence": 8, "state": "healed"}, "reset_after": "write_payload", "corrupt_candidate": false, "expected_sequence": 7, "expected_state": "confirmed"},
+    {"id": "J05", "previous": {"sequence": 7, "state": "confirmed"}, "candidate": {"sequence": 8, "state": "healed"}, "reset_after": "write_crc", "corrupt_candidate": false, "expected_sequence": 7, "expected_state": "confirmed"},
+    {"id": "J06", "previous": {"sequence": 7, "state": "confirmed"}, "candidate": {"sequence": 8, "state": "healed"}, "reset_after": "write_commit", "corrupt_candidate": false, "expected_sequence": 8, "expected_state": "healed"},
+    {"id": "J07", "previous": {"sequence": 7, "state": "confirmed"}, "candidate": {"sequence": 8, "state": "healed"}, "reset_after": "write_commit", "corrupt_candidate": true, "expected_sequence": 7, "expected_state": "confirmed"},
+    {"id": "J08", "previous": null, "candidate": {"sequence": 1, "state": "pending"}, "reset_after": "write_crc", "corrupt_candidate": false, "expected_sequence": null, "expected_state": "idle"},
+    {"id": "J09", "previous": null, "candidate": {"sequence": 1, "state": "pending"}, "reset_after": "write_commit", "corrupt_candidate": false, "expected_sequence": 1, "expected_state": "pending"}
+  ]
+}

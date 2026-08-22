@@ -1,0 +1,7 @@
+TOOLCHAIN python=3.12.13 compiler=zig version=0.15.2 target_contract=native-x86_64-hosted
+PASS lab=G1.3 cases=A optimization=0 public-cases
+PASS lab=G1.3 cases=A optimization=2 public-cases
+PASS lab=G1.3 mutant=30 killed
+PASS lab=G1.3 mutant=31 killed
+PASS lab=G1.3 compile-fail=zero-capacity
+G1 harness: PASS

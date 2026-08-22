@@ -8,35 +8,44 @@
 | --- | --- | --- | --- | --- |
 | RTOS periodic task set | AUTOSAR OS | priority, release, resource/blocking, deadline/overrun, stack evidence | OSEK/AUTOSAR API, event/alarm/ScheduleTable, IOC, protection과 conformance 미구현 | Planned |
 | application port facade | SWC / RTE | typed read/write/call contract와 generated-like adapter | ARXML, RTE generator, runnable semantics 미구현 | Planned |
-| CAN driver boundary | MCAL / CanIf | interrupt input, controller state, bounded frame queue | vendor MCAL API와 hardware abstraction breadth 미구현 | Planned |
-| PDU router | PduR | static route table과 upper/lower adapter 분리 | configuration generator와 모든 routing path 미구현 | Planned |
+| CAN controller driver | MCAL Can Driver | controller configuration, interrupt input, error state, bounded hardware queue adapter | vendor MCAL API와 conformance 미구현 | Planned |
+| CAN interface adapter | CanIf | upper-layer PDU indication/transmit request와 controller-mode adapter | 전체 controller/transceiver abstraction과 generated configuration 미구현 | Planned |
+| PDU router | PduR | 로컬 schema에서 생성한 static route table과 upper/lower adapter 분리 | 공식 ARXML generator와 모든 routing path 미구현 | Planned |
 | signal store | COM | endian-safe packing, update bit/freshness, cyclic/on-change policy | 전체 COM signal/group/filter model 미구현 | Planned |
 | ISO-TP transport | CanTp | single/multi-frame reassembly, sequence, timeout | 전체 channel/concurrency/timing parameter set 미구현 | Planned |
 | diagnostic dispatcher | DCM | read-focused UDS session/service/NRC dispatch | production session/security/access control과 전체 service 미구현 | Planned |
 | fault/DTC store | DEM | event status, DTC snapshot, persistence | standardized event memory, aging/debounce 전체 미구현 | Planned |
 | journaled storage | NvM | versioned records, CRC, restore/default path | block model, MemIf/Fee/Ea와 endurance algorithm 미구현 | Planned |
-| watchdog supervisor | WdgM | alive/deadline observation과 safe/degraded trigger | supervision entity/checkpoint model과 safety validation 미구현 | Planned |
-| startup/mode state machine | EcuM / BswM | deterministic startup, run, diagnostic, update, shutdown modes | generated rules, wakeup validation, 전체 BSW orchestration 미구현 | Planned |
-| communication state manager | ComM / CanSM / CanNm | requested communication mode, controller state, bus-off recovery policy | full channel/user mapping, network-management timing과 generated configuration 미구현 | Planned |
+| watchdog driver | Wdg | hardware watchdog start, trigger, mode adapter | vendor MCAL Wdg API와 conformance 미구현 | Planned |
+| watchdog interface | WdgIf | Wdg device 선택과 upper-layer trigger adapter | 다중 device routing과 generated configuration 미구현 | Planned |
+| watchdog supervisor | WdgM | supervised entity checkpoint, alive/deadline observation과 safe/degraded request | full supervision graph와 safety validation 미구현 | Planned |
+| startup/shutdown coordinator | EcuM | deterministic startup, run, shutdown과 wakeup event adapter | 전체 driver init phase와 wakeup validation 미구현 | Planned |
+| mode rule arbiter | BswM | 입력 mode request와 generated local rule evaluation | 공식 ARXML rule generation과 전체 BSW orchestration 미구현 | Planned |
+| communication request arbiter | ComM | user/channel request와 requested communication mode | full user mapping과 generated configuration 미구현 | Planned |
+| CAN state manager | CanSM | controller/transceiver mode와 bus-off recovery state | 전체 controller network와 timing configuration 미구현 | Planned |
+| CAN network manager | CanNm | synthetic network participation·wake/sleep event adapter | 실제 NM PDU timing과 conformance 미구현 | Planned |
 | data protection adapter | E2E Library concept | sequence, data ID, CRC와 receiver state 실험 | profile-specific conformance와 safety integration 미구현 | Planned |
-| authenticated PDU adapter | SecOC / CSM / CryptoIf concept | freshness, MAC verification, key-adapter boundary 실험 | production key management, HSM integration과 conformance 미구현 | Planned |
+| authenticated PDU adapter | SecOC concept | freshness와 authenticator 생성·검증, failure policy 실험 | production key management, 전체 profile과 conformance 미구현 | Planned |
+| crypto service facade | CSM concept | 비동기 또는 동기 MAC job과 result adapter | 전체 job queue·key lifecycle과 conformance 미구현 | Planned |
+| crypto driver router | CryptoIf concept | algorithm/key handle을 synthetic crypto backend에 전달 | vendor Crypto Driver, HSM integration과 conformance 미구현 | Planned |
 | boot/update prototype | OEM/vendor flash-bootloader integration concept | image metadata, integrity, known-good fallback | standardized Classic BSW module로 취급하지 않음; OEM protocol, HSM root, production secure boot chain 미구현 | Planned |
 
 ## Adaptive Platform concepts
 
 | Local component | Related Adaptive concept | 구현한 범위 | 의도적으로 뺀 범위 | 근거 |
 | --- | --- | --- | --- | --- |
-| `vehicle-state-service` | Communication Management / `ara::com` | service, method, event, discovery, reconnection | vsomeip API 사용, `ara::com` API·generator 미구현 | Planned |
-| `execution-manager` | Execution Management | process spawn/stop, dependency order, restart policy | 자체 manifest와 POSIX process 사용, `ara::exec` 미구현 | Planned |
-| manifest mapper | Execution/Service Interface/Service Instance/Machine Manifest concepts | selected fields, validation, deployment relation | 공식 ARXML schema와 generator/toolchain 미구현 | Planned |
+| `vehicle-state-service` | Communication Management / `ara::com` responsibilities | local IDL에서 생성한 Proxy/Skeleton, service, method, event, discovery, reconnection | vsomeip adapter 사용, `ara::com` API·ARXML generator 미구현 | Planned |
+| `execution-manager` | Execution Management | dependency order, lifecycle decision, P01 process action request | 자체 manifest와 POSIX/cgroup mechanism 사용, `ara::exec` 미구현 | Planned |
+| manifest mapper | Application Design, Execution, Service Instance, Machine 관련 manifest concepts | selected fields, validation, deployment relation | Service Interface artifact는 별도 행; 공식 ARXML schema와 toolchain 미구현 | Planned |
 | `state-manager` | State Management | Startup/Driving/Diagnostic/Update/Shutdown 결정 | Function Group 모델을 단순 enum/config로 표현 | Planned |
 | `health-monitor` | Platform Health Management | alive/deadline supervision, recovery trigger | supervision 종류와 recovery policy 일부만 구현 | Planned |
 | `persistency-service` | Persistency | version/config/journal 저장과 복구 | `ara::per` API, redundancy 정책 미구현 | Planned |
-| `diagnostic-gateway` | Diagnostics | DoIP–UDS–ISO-TP read-only routing, policy | 전체 diagnostic conversation·Classic DEM 연동 미구현 | Planned |
-| `update-manager` | Update and Configuration Management | 검증, staging, activation, health check, rollback | 공식 package/manifest 모델 대신 자체 최소 형식 | Planned |
+| `diagnostic-gateway` | DoIP transport/gateway responsibility | vehicle identification, routing activation, alive, read-only backend transport | network endpoint authentication과 전체 DoIP conformance 미구현 | Planned |
+| `diagnostic-manager` | Diagnostics | read-only service registry, provider routing, UDS result와 backend failure 분리 | 전체 diagnostic conversation·Classic DEM 연동 미구현 | Planned |
+| `update-manager` | Update and Configuration Management | package·cluster mapping, transfer resume, processing, activation, health check, rollback | 공식 package format/API 대신 자체 최소 형식, fleet campaign backend 미구현 | Planned |
 | `crypto-adapter` | Cryptography | hash/signature verification, key abstraction | `ara::crypto` API·key slot 모델 미구현 | Planned |
-| `audit-service` | Log and Trace / IAM-related auditing | 구조화 이벤트와 상태 변경 추적 | `ara::log`가 아닌 자체 logger 또는 DLT 도구 | Planned |
-| `policy-engine` | Identity and Access Management | caller/service/action allow-list | 공식 identity/credential model 미구현 | Planned |
+| `audit-service` | Log and Trace / IAM-related auditing | 구조화 이벤트와 상태 변경 추적 | 자체 logger 또는 DLT를 사용하며 `ara::log` 구현으로 표시하지 않음 | Planned |
+| `policy-engine` | Identity and Access Management | Unix peer credential 기반 principal, action/resource policy, versioned decision audit | 공식 identity/credential API와 network credential lifecycle 미구현 | Planned |
 
 ## Cross-platform path
 

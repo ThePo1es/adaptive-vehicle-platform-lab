@@ -1,0 +1,68 @@
+{
+  "schema_version": 2,
+  "lab_id": "G10.1",
+  "status": "Runnable",
+  "verification_scope": "public validator harness and repository integrity checks",
+  "starter_commit": "dcc461286bf29e4e5def8567d5ca2658f0fbbf3d",
+  "snapshot": {
+    "method": "git archive",
+    "network_required": false,
+    "working_tree_files_used": false
+  },
+  "artifacts": [
+    {
+      "role": "fixture",
+      "path": "fixtures/g10/release-map-cases-v1.json",
+      "sha256": "1e3e3c4e1a5ead6496ccafe25cdd678b50a0f2c9d63106b9e292091947398b20"
+    },
+    {
+      "role": "validator",
+      "path": "labs/g10_1_release_map/validator.py",
+      "sha256": "35184f9357a67e1ffbd8402cc53adb12a3f9ab7859fcff1f0f09a7b4a04fa4de"
+    },
+    {
+      "role": "runner",
+      "path": "labs/g10_1_release_map/run_harness.py",
+      "sha256": "0d33f69718c0b79be983e71cce2c4bc888822d0a720546638f4c6391658884c7"
+    },
+    {
+      "role": "starter",
+      "path": "labs/g10_1_release_map/starter/release-map.json",
+      "sha256": "7f81eea671625f8e110b73602abaa46b68b03717f8b949d15e1c955da9cf4b65"
+    }
+  ],
+  "command": {
+    "argv": ["python3", "labs/g10_1_release_map/run_harness.py"],
+    "environment": {"PYTHONDONTWRITEBYTECODE": "1"},
+    "expected_exit": 0,
+    "observed_exit": 0,
+    "stdout_path": "evidence/runnable/g10.1/harness.stdout",
+    "stdout_sha256": "0c02e76fe3202f4f8cd8d5217aebacf444b63ee058841deccbec052b243f524e",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "environment": {
+    "python": "3.12.13",
+    "kernel": "Linux 6.18.35 x86_64"
+  },
+  "timing": {
+    "definition": "active is user plus system CPU time; wall is Bash TIMEFORMAT elapsed time",
+    "harness": {
+      "active_seconds": 0.038,
+      "user_seconds": 0.029,
+      "system_seconds": 0.009,
+      "wall_seconds": 0.038
+    },
+    "repository_check": {
+      "active_seconds": 0.724,
+      "user_seconds": 0.560,
+      "system_seconds": 0.164,
+      "wall_seconds": 0.686
+    }
+  },
+  "learner_time_calibration": {
+    "status": "Not run",
+    "estimate_active_hours": "28-36",
+    "note": "Runnable 판정 범위는 실행 경로 준비까지다. 첫 학습 실행에서 학습 시간과 원문 검토 결과를 기록한다."
+  },
+  "recorded_at": "2026-08-19T11:16:57Z"
+}

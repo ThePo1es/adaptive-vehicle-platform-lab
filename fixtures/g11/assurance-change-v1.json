@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "fixture_id": "G11B-ASSURANCE-CHANGE-V1",
+  "baseline": {
+    "item": "교육용 VehicleState gateway와 actuator simulation",
+    "operating_scenario": "격리된 벤치, 시속 30 km 상당의 합성 입력, 운전자 제어 가능",
+    "top_event": "stale vehicle state가 유효한 값으로 전달됨",
+    "update_tier": "T2",
+    "claim_status": "Provisional"
+  },
+  "change_cases": [
+    {
+      "id": "SCENARIO-SPEED-001",
+      "change": "합성 운행 속도를 30 km/h에서 80 km/h로 올리고 운전자 제어 가능 가정을 제거",
+      "expected_impacts": ["item-definition", "HARA", "safety-goal", "safety-requirement", "fault-test", "assurance-claim"],
+      "unchanged_areas": ["package-signature-vector"],
+      "required_reviewers": ["safety"]
+    },
+    {
+      "id": "COMMON-CLOCK-001",
+      "change": "MCU와 Linux가 함께 의존하는 기준 시계가 250 ms 뒤로 이동",
+      "expected_impacts": ["FMEA", "FTA", "TARA", "freshness-contract", "timing-budget", "degraded-transition", "assurance-claim"],
+      "unchanged_areas": ["signature-verification"],
+      "required_reviewers": ["safety", "security"]
+    },
+    {
+      "id": "TRUST-ROOT-001",
+      "change": "immutable boot trust root와 보호된 monotonic state를 사용할 수 없음",
+      "expected_impacts": ["trust-assumption", "update-tier", "anti-rollback-claim", "recovery-test", "assurance-claim"],
+      "unchanged_areas": ["T1-journal-oracle"],
+      "required_reviewers": ["security"],
+      "expected_tier_ceiling": "T2"
+    }
+  ]
+}
