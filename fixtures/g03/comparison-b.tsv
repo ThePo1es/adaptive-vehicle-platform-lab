@@ -1,0 +1,5 @@
+case_id	gcc_target	clang_target	gcc_source_sha256	clang_source_sha256	gcc_input_sha256	clang_input_sha256	gcc_ir	clang_ir	lto_rank
+target-drift	cortex-m3/thumb/AAPCS32/soft-float	cortex-m4/thumb/AAPCS32/soft-float	a	a	b	b	GIMPLE/RTL	LLVM IR	not-compared
+source-input-drift	cortex-m4/thumb/AAPCS32/soft-float	cortex-m4/thumb/AAPCS32/soft-float	a	changed	b	changed	GIMPLE/RTL	LLVM IR	not-compared
+gcc-dump-mislabeled	cortex-m4/thumb/AAPCS32/soft-float	cortex-m4/thumb/AAPCS32/soft-float	a	a	b	b	LLVM IR	LLVM IR	not-compared
+cross-lto-ranking	cortex-m4/thumb/AAPCS32/soft-float	cortex-m4/thumb/AAPCS32/soft-float	a	a	b	b	GIMPLE/RTL	LLVM IR	gcc-faster

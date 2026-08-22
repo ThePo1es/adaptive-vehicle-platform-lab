@@ -10,3 +10,5 @@ uv sync --project toolchain --locked --python 3.12.13
 ```
 
 두 파일의 변경 내용과 잠금 파일에 기록된 배포 파일 해시를 PR에서 함께 검토합니다. uv 버전을 올릴 때는 [공식 릴리스](https://github.com/astral-sh/uv/releases)의 운영체제별 `.sha256` 파일도 확인해 두 워크플로의 `checksum`을 함께 바꿉니다.
+
+G3의 기본 ARM 산출물은 잠긴 `ziglang==0.15.2`가 제공하는 Clang 20.1.2로 만듭니다. GCC 비교는 [플랫폼 명세](g03-arm-gnu.json)의 공식 Arm GNU Toolchain 14.3.Rel1 URL·파일명·SHA-256을 사용합니다. 도구 준비기는 아카이브를 해시별 캐시에 안전하게 풀고 그 안의 비심벌릭 링크 GCC만 실행합니다. 아카이브, `-dumpmachine`, `-dumpfullversion` 중 하나라도 다르면 시스템 GCC로 대체하지 않고 실패합니다.

@@ -1,0 +1,4 @@
+lab	case	defined	value	limit	expected	observation
+G3.3	zero-limit	true	0	0	0	
+G3.3	middle	true	2	4	3	
+G3.3	signed-overflow	false				별도 signed 예제에서만 관찰

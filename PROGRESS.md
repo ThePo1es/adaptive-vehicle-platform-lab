@@ -9,7 +9,7 @@
 | G0 | 개발 환경과 검증 기준 준비하기 | Learning (학습 중) | [기준 역량 기록](docs/baseline.md) | — | 0 |
 | G1 | [안전한 C로 데이터와 메모리 다루기](gates/g01/README.md) | Not started (시작 전) | 안전 C 컴포넌트 묶음 | — | 0 |
 | G2 | [임베디드 C++로 안전한 런타임 만들기](gates/g02/README.md) | Not started (시작 전) | C++ 런타임 v1 | [종합 평가](assessments/g02-embedded-cpp.md) 전 | 0 |
-| G3 | ARM 실행 구조와 컴파일 결과 읽기 | Not started (시작 전) | 컴파일 결과 분석 묶음 | — | 0 |
+| G3 | [Arm 프로그램의 함수 호출부터 기계어까지 추적하기](gates/g03/README.md) | Not started (시작 전) | 컴파일 결과 분석 묶음 | [종합 평가](assessments/g03-compiler-analysis.md) 전 | 0 |
 | G4 | Cortex-M 보드 부팅과 인터럽트 구현하기 | Not started (시작 전) | 부팅 가능한 MCU 실행 기반 | — | 0 |
 | G5 | RTOS 태스크와 실시간성 검증하기 | Not started (시작 전) | P00-A | — | 0 |
 | G6 | CAN 통신과 차량 진단 구현하기 | Not started (시작 전) | P00-B | — | 0 |

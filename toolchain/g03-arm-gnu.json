@@ -1,0 +1,20 @@
+{
+  "release": "14.3.Rel1",
+  "official_page": "https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads",
+  "platforms": {
+    "linux-x86_64": {
+      "url": "https://developer.arm.com/-/media/Files/downloads/gnu/14.3.rel1/binrel/arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi.tar.xz",
+      "filename": "arm-gnu-toolchain-14.3.rel1-x86_64-arm-none-eabi.tar.xz",
+      "sha256": "8f6903f8ceb084d9227b9ef991490413014d991874a1e34074443c2a72b14dbd",
+      "dumpmachine": "arm-none-eabi",
+      "dumpfullversion": "14.3.1"
+    },
+    "windows-amd64": {
+      "url": "https://developer.arm.com/-/media/Files/downloads/gnu/14.3.rel1/binrel/arm-gnu-toolchain-14.3.rel1-mingw-w64-x86_64-arm-none-eabi.zip",
+      "filename": "arm-gnu-toolchain-14.3.rel1-mingw-w64-x86_64-arm-none-eabi.zip",
+      "sha256": "864c0c8815857d68a1bbba2e5e2782255bb922845c71c97636004a3d74f60986",
+      "dumpmachine": "arm-none-eabi",
+      "dumpfullversion": "14.3.1"
+    }
+  }
+}

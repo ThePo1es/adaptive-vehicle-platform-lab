@@ -1,0 +1,7 @@
+binary_build_id=8a7d
+debug_build_id=8a7d
+runtime_address=0x55551234
+load_bias=0x55550000
+link_address=0x1234
+external_call_path=call-relocation->PLT->GOT
+dwarf_role=link-address-to-source

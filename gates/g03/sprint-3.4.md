@@ -1,44 +1,46 @@
-# Sprint 3.4 — GCC와 Clang의 Target Code
+# 실습 3-4 — 같은 ARM 대상에서 GCC와 Clang 공정하게 비교하기
+
+> 상태: `Runnable` · [장 안내](README.md) · [실행 계약](contract.md)
 
 ## 시간과 기준 자료
 
-24–30시간. [GCC developer options](https://gcc.gnu.org/onlinedocs/gcc/Developer-Options.html), [LLVM optimization remarks](https://llvm.org/docs/Remarks.html), 두 compiler의 현재 command reference를 읽습니다. 지원 flag는 실제 `--help`와 build log로 확인합니다.
+능동 작업 16시간, 도구 실행 6시간, 검토 대기 6시간으로 모두 28시간을 잡습니다. [GCC 개발 선택 사항](https://gcc.gnu.org/onlinedocs/gcc/Developer-Options.html), [LLVM 최적화 설명](https://llvm.org/docs/Remarks.html), 두 컴파일러의 명령 참조를 읽습니다. 지원 여부는 실제 `--help`와 빌드 기록으로 확인합니다.
 
 ## 실험 행렬
 
 같은 C corpus와 같은 target CPU·ABI를 사용합니다.
 
-| Compiler | 중간 표현 자료 | 공통 비교 자료 |
+| 컴파일러 | 중간 표현 자료 | 공통 비교 자료 |
 | --- | --- | --- |
-| GCC | GIMPLE/RTL dump | assembly, map, text/data/bss, runtime/cycle |
-| Clang | LLVM IR과 optimization remarks | assembly, map, text/data/bss, runtime/cycle |
+| GCC | GIMPLE/RTL 덤프 | 어셈블리, 맵, `.text*` 합계 |
+| Clang | LLVM IR과 최적화 설명 | 어셈블리, 맵, `.text*` 합계 |
 
-`-O0`, `-O2`, 지원되는 size profile, LTO off/on을 시험합니다. 모든 조합을 한 번에 돌리기 어렵다면 corpus 두 함수와 profile 세 개를 Core로 고정합니다.
+`-O0`, `-O2`, `-Os`를 같은 C17 원본·입력 해시와 Cortex-M4/Thumb/AAPCS32/soft-float 계약에서 시험합니다. 보드 근거가 없으므로 실행 시간·사이클·캐시와 서로 다른 LTO 조합의 순위는 매기지 않습니다.
 
 ## 안내 실습
 
-CRC 또는 parser loop에서 두 compiler가 만든 branch, call, load/store를 표시합니다. optimization remark와 dump는 각 compiler의 판단을 이해하는 자료로 씁니다.
+CRC 또는 파서 반복문에서 두 컴파일러가 만든 분기, 호출, 읽기와 쓰기를 표시합니다. 최적화 설명과 덤프는 각 컴파일러의 판단을 이해하는 자료로 씁니다.
 
 ## 독립 실습
 
-size와 runtime이 크게 달라지는 함수 하나를 고릅니다. warm-up, sample count, clock, cache 조건, binary hash를 기록하고 원인을 최소 fixture로 줄입니다.
+`.text*` 합계가 크게 달라지는 함수 하나를 고릅니다. 원본·입력·바이너리 해시를 기록하고 원인을 작은 시험 자료로 줄입니다.
 
 ## 전이 과제
 
-compiler version 하나를 바꿔 regression 여부를 재시험합니다. 통계 변동, code layout 변화, 실제 semantic change를 나눠 결론을 냅니다.
+컴파일러 버전 하나를 바꿔 회귀 여부를 재시험합니다. 통계 변동, 코드 배치 변화, 실제 의미 변화로 나눠 결론을 냅니다.
 
 ## 판정 기준
 
 - GCC와 Clang의 중간 표현 이름과 도구를 정확히 구분
-- 같은 target·ABI·workload 안에서 size와 runtime 비교
-- raw result, 생성 명령, compiler·linker version을 보존
+- 같은 대상·ABI·작업 부하에서 `.text*` 합계를 비교
+- 원시 결과, 생성 명령, 컴파일러·링커 버전을 보존
 - 차이가 없는 결과도 그대로 기록하고 과장된 원인을 만들지 않음
 
 ## 힌트
 
 1. 먼저 binary와 workload가 정말 같은 계약인지 확인합니다.
-2. 작은 시간 차이는 반복 순서와 frequency scaling의 영향을 받습니다.
-3. LTO 비교에는 linker와 plugin version도 필요합니다.
+2. 보드 실행 근거가 없는 시간·사이클·캐시 수치는 비교하지 않습니다.
+3. 이 장에서는 서로 다른 LTO 구성을 순위로 만들지 않습니다.
 
 ## 측정을 버리고 다시 할 때
 

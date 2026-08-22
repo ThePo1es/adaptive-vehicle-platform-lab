@@ -1,8 +1,10 @@
-# Sprint 3.1 — AAPCS32
+# 실습 3-1 — ARM32 함수 호출 경로 추적하기
+
+> 상태: `Runnable` · [장 안내](README.md) · [실행 계약](contract.md)
 
 ## 시간과 기준 자료
 
-24–30시간. [Arm ABI repository](https://github.com/ARM-software/abi-aa)의 `aapcs32`와 `aaelf32` 문서를 release tag로 고정해 읽습니다. Cortex-M target triple, CPU, FPU, float ABI, GCC·Clang version과 flags를 manifest에 적습니다.
+능동 작업 15시간, 도구 실행 3시간, 검토와 재시험 대기 4시간으로 모두 22시간을 잡습니다. [Arm ABI 저장소](https://github.com/ARM-software/abi-aa)의 `aapcs32`와 `aaelf32` 문서를 릴리스 태그로 고정해 읽습니다. Cortex-M 대상 삼중항, CPU, FPU, float ABI, GCC·Clang 버전과 선택 사항을 명세에 적습니다.
 
 ## 입력 함수
 
@@ -16,22 +18,22 @@ uint32_t variadic_sum(unsigned count, ...);
 
 ## 안내 실습
 
-`-O0`와 `-O2` assembly를 만들고 parameter, return value, stack alignment, caller/callee-saved register를 표시합니다. debugger가 있으면 함수 진입 직전과 직후 register를 캡처합니다.
+`-O0`과 `-O2` 어셈블리를 만든 뒤 매개변수, 반환값, 스택 정렬, 호출자·피호출자 보존 레지스터를 표시합니다. 디버거를 쓸 수 있다면 함수 진입 전후의 레지스터 값도 저장합니다.
 
 ## 독립 실습
 
-prototype을 보지 않은 assembly 세 개에서 C signature 후보를 작성합니다. 확정할 수 없는 signedness와 type width는 따로 표시하고, symbol·debug info로 확인합니다.
+함수 원형을 보지 않은 어셈블리 세 개에서 C 함수 선언 후보를 작성합니다. 확정할 수 없는 부호 유무와 형식 너비는 따로 표시하고, 심벌과 디버그 정보로 확인합니다.
 
 ## 전이 과제
 
-구조체 크기와 field 조합을 바꾼 함수 하나를 검토자가 제공합니다. 60분 안에 전달 방식과 hidden return pointer 여부를 설명하고 assembly assertion을 추가합니다.
+구조체 크기와 필드 조합을 바꾼 함수 하나를 검토자가 제공합니다. 60분 안에 전달 방식과 숨은 반환 포인터 여부를 설명하고 어셈블리 검사를 추가합니다.
 
 ## 판정 기준
 
-- AAPCS32 절 번호와 실제 instruction을 연결
-- float ABI와 optimization profile을 섞지 않음
-- register만 보고 확정할 수 없는 source 속성을 명확히 표시
-- compiler 두 개에서 ABI 계약이 유지되는지 자동 assertion 또는 disassembly test로 확인
+- AAPCS32 절 번호와 실제 명령을 연결
+- float ABI와 최적화 설정을 섞지 않음
+- 레지스터만 보고 확정할 수 없는 원본 코드 속성을 명확히 표시
+- 두 컴파일러에서 ABI 계약이 유지되는지 자동 검사 또는 역어셈블 검사로 확인
 
 ## 역추적 순서
 
