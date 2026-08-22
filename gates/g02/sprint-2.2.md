@@ -1,7 +1,7 @@
 # 실습 2-2 — 힙 없이 동작하는 이벤트 처리기 만들기
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `abf2aae90dfe739cc28b8fc3c08fa0729f541c34`
+> - 시작 커밋: `960110560ce0751f6e18a8642ab2cc564eebed49`
 > - 공개 입력 SHA-256: `7e6c1467e982446785c75c762fd305a0346c1fbbb0064a7a6f41d8790f4e2c85`
 > - 재시험 입력 SHA-256: `6ce572b57669c4aa7171afcb460f360e3a7c91b5e723c02eb673c8d62175cead`
 > - 실행 기록: [G2.2 실행 명세 v12](../../evidence/runnable/g2.2/run-manifest-v12.json)

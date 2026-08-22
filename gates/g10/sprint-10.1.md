@@ -1,7 +1,7 @@
 # Sprint 10.1 — AUTOSAR Adaptive R25-11 책임 지도
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `abf2aae90dfe739cc28b8fc3c08fa0729f541c34`
+> - 시작 커밋: `960110560ce0751f6e18a8642ab2cc564eebed49`
 > - 공개 입력 SHA-256: `35858c0b4ed341c462291955a37027d6ef0ce2c617ec5693a5be7f3b8f948ca5`
 > - 실행 기록: [G10.1 실행 명세 v19](../../evidence/runnable/g10.1/run-manifest-v19.json)
 

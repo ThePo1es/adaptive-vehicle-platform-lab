@@ -3,7 +3,7 @@
   "lab_id": "G10.1",
   "status": "Runnable",
   "verification_scope": "폐쇄형 역할 주장, 보조 위험 문구 검사, 2-of-2 서명 신뢰 정책, 커밋에 묶인 근거, 독립 의미 검토 경계",
-  "starter_commit": "abf2aae90dfe739cc28b8fc3c08fa0729f541c34",
+  "starter_commit": "960110560ce0751f6e18a8642ab2cc564eebed49",
   "snapshot": {
     "method": "git archive",
     "network_required": false,
@@ -68,7 +68,7 @@
     {
       "role": "evidence-checker",
       "path": "scripts/check_runnable_evidence.py",
-      "sha256": "94a54b099f2f4f769f62ecf1ca8ae866d6bd3a30854041c3b8fafaa096a22a5e"
+      "sha256": "5e08670cef82917135e9b1376557123b3390843df72e24b62b934022ffe96b06"
     },
     {
       "role": "evidence-replay",
@@ -136,9 +136,9 @@
     },
     "expected_exit": 0,
     "observed_exit": 0,
-    "stdout_path": "evidence/runnable/repository-check-abf2aae.stdout",
+    "stdout_path": "evidence/runnable/repository-check-9601105.stdout",
     "stdout_sha256": "8bca416659510f34ce3f62d4b07c0ade27dcec3c8d76649823cc64eb708f509f",
-    "stderr_path": "evidence/runnable/repository-check-abf2aae.stderr",
+    "stderr_path": "evidence/runnable/repository-check-9601105.stderr",
     "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   },
   "learner_time_calibration": {

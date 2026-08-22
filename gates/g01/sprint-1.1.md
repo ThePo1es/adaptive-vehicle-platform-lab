@@ -1,7 +1,7 @@
 # 실습 1-1 — 정수와 바이트를 안전하게 변환하기
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `abf2aae90dfe739cc28b8fc3c08fa0729f541c34`
+> - 시작 커밋: `960110560ce0751f6e18a8642ab2cc564eebed49`
 > - 공개 입력 SHA-256: `1f7561ecf2b45aeee79f6fdbaed571ccf54548f9727fe676dffb6eb0180563fa`
 > - 재시험 입력 SHA-256: `447028ec427536418f6d5ad31ce099375f1632b0c16bfd56b0745fcb89b6e9d9`
 > - 실행 기록: [G1.1 실행 명세 v14](../../evidence/runnable/g1.1/run-manifest-v14.json)

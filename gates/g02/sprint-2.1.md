@@ -1,7 +1,7 @@
 # 실습 2-1 — 원본이 파괴되어도 안전한 데이터 뷰 만들기
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `abf2aae90dfe739cc28b8fc3c08fa0729f541c34`
+> - 시작 커밋: `960110560ce0751f6e18a8642ab2cc564eebed49`
 > - 공개 입력 SHA-256: `66752ae713e02cb8b7427caad01e0e7be387015b55a69ffd86b9e99374a21b50`
 > - 재시험 입력 SHA-256: `595e4c01846dd3f4a66c8ff50e90b510b95d9f8be1dfedcba09e3b5d34a61182`
 > - 실행 기록: [G2.1 실행 명세 v12](../../evidence/runnable/g2.1/run-manifest-v12.json)

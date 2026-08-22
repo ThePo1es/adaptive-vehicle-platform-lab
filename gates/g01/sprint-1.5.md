@@ -1,7 +1,7 @@
 # 실습 1-5 — 레지스터·인터럽트·동시성 경계 다루기
 
 > - 준비 상태: `Runnable`
-> - 시작 커밋: `abf2aae90dfe739cc28b8fc3c08fa0729f541c34`
+> - 시작 커밋: `960110560ce0751f6e18a8642ab2cc564eebed49`
 > - 공개 입력 SHA-256: `56613bc106d6998d1b4179720d352a5ff25ae5cc224a84dca544d8cdd563a8e9`
 > - 재시험 입력 SHA-256: `a19b85ceeeade26927df066aee5358463d9d30e6263bf9b5d7ce62cb2d9f0314`
 > - 실행 기록: [G1.5 실행 명세 v14](../../evidence/runnable/g1.5/run-manifest-v14.json)
